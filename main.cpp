@@ -30,7 +30,7 @@ int main()
 
 		tui::scroll scroll(tui::vec2i(1, 50), tui::SIZE::PERCENTAGE_Y);
 		scroll.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-		scroll.setLenght(100);
+		scroll.setLenght(40);
 		scroll.setHandlePosition(5);
 
 		for (;;)
@@ -74,7 +74,7 @@ int main()
 
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
-			//std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
+			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			std::cout << "Lenght: " << scroll.getLenght() << std::endl;
 			std::cout << "H pos: " << scroll.getHandlePosition() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;

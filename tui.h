@@ -110,21 +110,30 @@ namespace tui
 		private:
 			console_char m_slider =186;
 			console_char m_line = 179;
-			int m_lenght;
-			int m_handle_position;
+			int m_lenght = 0;
+			int m_handle_position =0;
+			int m_handle_lenght = 0;
 
 			void fill()
 			{
-				for (int i = 0; i < getSize().y; i++) { setChar(m_line, vec2i(0, i)); }
+				if (isNeeded())
+				{
+					for (int i = 0; i < getSize().y; i++) { setChar(m_line, vec2i(0, i)); }
 				
-				int handle_lenght = ((getSize().y * 1.f) / m_lenght )* getSize().y;
-				if (handle_lenght < 1) { handle_lenght = 1; }
+					m_handle_lenght = ((getSize().y * 1.f) / m_lenght)* getSize().y;
+					if (m_handle_lenght < 1) { m_handle_lenght = 1; }
+					//if (m_handle_lenght > m_lenght) { m_handle_lenght = m_lenght; }
 
-				float handle_pos_perc = m_handle_position*1.f / (m_lenght*1.f - getSize().y);
+					float handle_pos_perc = m_handle_position * 1.f / (m_lenght*1.f - getSize().y);
 
-				int handle_position = round(getSize().y * (handle_pos_perc) - handle_lenght * (handle_pos_perc));
+					int handle_position = round(getSize().y * (handle_pos_perc)-m_handle_lenght * (handle_pos_perc));
 
-				for (int i = 0; i < handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
+					for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
+				}
+				else
+				{
+					makeTransparent();
+				}
 			}
 		public:
 			scroll(vec2i size, int size_type)
@@ -132,8 +141,29 @@ namespace tui
 				setSize(size, size_type);
 			}
 
+			bool isNeeded()
+			{
+				if (m_lenght <= getSize().y)
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			};
+
 			void setLenght(int lenght) { m_lenght = lenght; }
-			void setHandlePosition(int handle_position) { m_handle_position = handle_position; }
+			void setHandlePosition(int handle_position) 
+			{
+				if (!isNeeded()) { m_handle_position = 0; }
+				else 
+				{
+					if (handle_position >= 0 && handle_position <= m_lenght - getSize().y) { m_handle_position = handle_position; }
+					else if (handle_position < 0) { m_handle_position = 0; }
+					else if (handle_position > m_lenght - getSize().y) { m_handle_position = m_lenght - getSize().y; }
+				}
+			}
 			int getLenght() { return m_lenght; }
 			int getHandlePosition() { return m_handle_position; }
 
