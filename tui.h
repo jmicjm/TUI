@@ -122,7 +122,6 @@ namespace tui
 				
 					m_handle_lenght = ((getSize().y * 1.f) / m_lenght)* getSize().y;
 					if (m_handle_lenght < 1) { m_handle_lenght = 1; }
-					//if (m_handle_lenght > m_lenght) { m_handle_lenght = m_lenght; }
 
 					float handle_pos_perc = m_handle_position * 1.f / (m_lenght*1.f - getSize().y);
 
@@ -143,20 +142,17 @@ namespace tui
 
 			bool isNeeded()
 			{
-				if (m_lenght <= getSize().y)
-				{
-					return false;
-				}
-				else
-				{
-					return true;
-				}
+				if (m_lenght <= getSize().y) { return false; }
+				else { return true; }
 			};
 
 			void setLenght(int lenght) { m_lenght = lenght; }
 			void setHandlePosition(int handle_position) 
 			{
-				if (!isNeeded()) { m_handle_position = 0; }
+				if (!isNeeded()) 
+				{
+					m_handle_position = 0;
+				}
 				else 
 				{
 					if (handle_position >= 0 && handle_position <= m_lenght - getSize().y) { m_handle_position = handle_position; }

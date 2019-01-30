@@ -30,7 +30,7 @@ int main()
 
 		tui::scroll scroll(tui::vec2i(1, 50), tui::SIZE::PERCENTAGE_Y);
 		scroll.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-		scroll.setLenght(40);
+		scroll.setLenght(20);
 		scroll.setHandlePosition(5);
 
 		for (;;)
