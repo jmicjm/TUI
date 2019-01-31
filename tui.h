@@ -108,10 +108,10 @@ namespace tui
 	struct scroll : surface
 	{
 		private:
-			console_char m_slider =186;
+			console_char m_slider = 186;
 			console_char m_line = 179;
 			int m_lenght = 0;
-			int m_handle_position =0;
+			int m_handle_position = 0;
 			int m_handle_lenght = 0;
 
 			void fill()
@@ -146,46 +146,57 @@ namespace tui
 				else { return true; }
 			};
 
-			void setLenght(int lenght) 
+			void adjustHandlePositionRespectLenght()
 			{
-				if (lenght >= 0)
+				if (!isNeeded())
 				{
-					m_lenght = lenght;
+					m_handle_position = 0;
 				}
-				else
-				{
-					m_lenght = 0;
-				}
-				if (m_handle_position > m_lenght - getSize().y && isNeeded())
+				else if (m_handle_position > m_lenght - getSize().y)
 				{
 					m_handle_position = m_lenght - getSize().y;
 				}
-				else if (!isNeeded())
-				{
-					m_handle_position = 0;
-				}
 			}
+
+			void adjustHandlePositionRespectBounds()
+			{
+				adjustHandlePositionRespectLenght();
+
+				if (m_handle_position < 0) { m_handle_position = 0; }
+			}
+
+			void setLenght(int lenght) 
+			{
+				if (lenght >= 0) { m_lenght = lenght; }
+				else { m_lenght = 0; }
+
+				adjustHandlePositionRespectLenght();
+				fill();
+			}
+
 			void setHandlePosition(int handle_position) 
 			{
-				if (!isNeeded()) 
-				{
-					m_handle_position = 0;
-				}
-				else 
-				{
-					if (handle_position >= 0 && handle_position <= m_lenght - getSize().y) { m_handle_position = handle_position; }
-					else if (handle_position < 0) { m_handle_position = 0; }
-					else if (handle_position > m_lenght - getSize().y) { m_handle_position = m_lenght - getSize().y; }
-				}
+				m_handle_position = handle_position;
+
+				adjustHandlePositionRespectBounds();	
+				fill();
 			}
+
 			int getLenght() { return m_lenght; }
 			int getHandlePosition() { return m_handle_position; }
 
 			
-			void update() { fill(); }
+			void update() 
+			{
+				//fill(); 
+			}
 
 			void draw_action() { update(); }
-			void resize_action() { fill(); }
+			void resize_action() 
+			{
+				adjustHandlePositionRespectLenght();
+				fill();
+			}
 	};
 
 
