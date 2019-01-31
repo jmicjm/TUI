@@ -104,7 +104,7 @@ namespace tui
 
 
 
-
+	template<int type>
 	struct scroll : surface
 	{
 		private:
@@ -114,20 +114,48 @@ namespace tui
 			int m_handle_position = 0;
 			int m_handle_lenght = 0;
 
+			int getSurfaceSize() {
+				switch (type)
+				{
+				case tui::SCROLL::DIRECTION::HORIZONTAL:
+					return getSize().x;
+					break; 
+				case tui::SCROLL::DIRECTION::VERTICAL:
+					return getSize().y;
+					break;
+				}
+			}
+
 			void fill()
 			{
 				if (isNeeded())
 				{
-					for (int i = 0; i < getSize().y; i++) { setChar(m_line, vec2i(0, i)); }
-				
-					m_handle_lenght = ((getSize().y * 1.f) / m_lenght)* getSize().y;
+					switch (type)
+					{
+					case tui::SCROLL::DIRECTION::HORIZONTAL:
+						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(i, 0)); }
+						break;
+					case tui::SCROLL::DIRECTION::VERTICAL:
+						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(0, i)); }
+						break;
+					}
+	
+					m_handle_lenght = ((getSurfaceSize() * 1.f) / m_lenght)* getSurfaceSize();
 					if (m_handle_lenght < 1) { m_handle_lenght = 1; }
 
-					float handle_pos_perc = m_handle_position * 1.f / (m_lenght*1.f - getSize().y);
+					float handle_pos_perc = m_handle_position * 1.f / (m_lenght*1.f - getSurfaceSize());
 
-					int handle_position = round(getSize().y * (handle_pos_perc)-m_handle_lenght * (handle_pos_perc));
+					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_lenght * (handle_pos_perc));
 
-					for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
+					switch (type)
+					{
+					case tui::SCROLL::DIRECTION::HORIZONTAL:
+						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(i + handle_position, 0)); }		
+						break;
+					case tui::SCROLL::DIRECTION::VERTICAL:
+						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
+						break;
+					}				
 				}
 				else
 				{
@@ -135,14 +163,24 @@ namespace tui
 				}
 			}
 		public:
-			scroll(vec2i size, int size_type)
+			scroll(int lenght, int lenght_type)
 			{
-				setSize(size, size_type);
+				switch (type)
+				{
+				case tui::SCROLL::DIRECTION::HORIZONTAL:
+					if(lenght_type == tui::SCROLL::LENGHT::CONSTANT) { setSize(vec2i(lenght, 1), tui::SIZE::CONSTANT); }
+					else{ setSize(vec2i(lenght, 1), tui::SIZE::PERCENTAGE_X); }
+					break;
+				case tui::SCROLL::DIRECTION::VERTICAL:
+					if (lenght_type == tui::SCROLL::LENGHT::CONSTANT) { setSize(vec2i(1, lenght), tui::SIZE::CONSTANT); }
+					else{ setSize(vec2i(1, lenght), tui::SIZE::PERCENTAGE_Y); }
+					break;
+				}
 			}
 
 			bool isNeeded()
 			{
-				if (m_lenght <= getSize().y) { return false; }
+				if (m_lenght <= getSurfaceSize()) { return false; }
 				else { return true; }
 			};
 
@@ -152,9 +190,9 @@ namespace tui
 				{
 					m_handle_position = 0;
 				}
-				else if (m_handle_position > m_lenght - getSize().y)
+				else if (m_handle_position > m_lenght - getSurfaceSize())
 				{
-					m_handle_position = m_lenght - getSize().y;
+					m_handle_position = m_lenght - getSurfaceSize();
 				}
 			}
 

@@ -4,6 +4,20 @@ namespace tui
 {
 #define TRANSPARENT 0
 
+	namespace SCROLL
+	{
+		enum DIRECTION
+		{
+			HORIZONTAL = 0,
+			VERTICAL
+		};
+		enum LENGHT
+		{
+			CONSTANT = 0,
+			PERCENTAGE
+		};
+	}
+
 		enum SIZE
 		{
 			CONSTANT = 0,
