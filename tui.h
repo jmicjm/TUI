@@ -146,7 +146,25 @@ namespace tui
 				else { return true; }
 			};
 
-			void setLenght(int lenght) { m_lenght = lenght; }
+			void setLenght(int lenght) 
+			{
+				if (lenght >= 0)
+				{
+					m_lenght = lenght;
+				}
+				else
+				{
+					m_lenght = 0;
+				}
+				if (m_handle_position > m_lenght - getSize().y && isNeeded())
+				{
+					m_handle_position = m_lenght - getSize().y;
+				}
+				else if (!isNeeded())
+				{
+					m_handle_position = 0;
+				}
+			}
 			void setHandlePosition(int handle_position) 
 			{
 				if (!isNeeded()) 
