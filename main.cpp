@@ -28,7 +28,7 @@ int main()
 		tui::text text(tui::vec2i(18, 60), tui::SIZE::PERCENTAGE_Y, ipsum);
 		text.setPosition(tui::position(tui::vec2i(-1, 1), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
-		tui::scroll<tui::SCROLL::DIRECTION::HORIZONTAL> scroll(50, tui::SCROLL::LENGHT::PERCENTAGE);
+		tui::scroll<tui::SCROLL::DIRECTION::HORIZONTAL> scroll(tui::vec2i(50, 1), tui::SIZE::PERCENTAGE_X);
 		scroll.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
 		scroll.setLenght(20);
 		scroll.setHandlePosition(5);
