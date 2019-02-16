@@ -25,9 +25,8 @@ int main()
 		std::string  ipsum = 
 		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
-		tui::text text(tui::vec2i(18, 40), tui::SIZE::PERCENTAGE_Y, ipsum);
-		//text.setPosition(tui::position(tui::vec2i(-1, 1), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
-		text.setPosition(tui::position(tui::vec2i(5, 5), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
+		tui::text text(tui::vec2i(18, 50), tui::SIZE::PERCENTAGE_Y, ipsum);
+		text.setPosition(tui::position(tui::vec2i(-1, 1), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
 
 		tui::scroll<tui::SCROLL::DIRECTION::HORIZONTAL> scroll(tui::vec2i(50, 1), tui::SIZE::PERCENTAGE_X);

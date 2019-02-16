@@ -67,7 +67,7 @@ namespace tui
 				resize(size);
 			}
 
-			void insertSurface(surface &obj)
+			void updateSurfaceSize(surface &obj)
 			{
 				vec2i perc_size = obj.getPercentageSize();
 				switch (obj.getSizeType())
@@ -85,6 +85,12 @@ namespace tui
 					obj.resize(vec2i(obj.getSize().x, (perc_size.y / 100.f) * getSize().y));
 					break;
 				}
+			}
+
+			void insertSurface(surface &obj)
+			{
+				updateSurfaceSize(obj);
+				
 				obj.draw_action();
 
 
