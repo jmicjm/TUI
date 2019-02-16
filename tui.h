@@ -311,8 +311,8 @@ namespace tui
 				m_text.setText(final_string);
 
 				makeTransparent();
-				insertSurface(m_scroll);
 				insertSurface(m_text);
+				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
 			void prepareText()
 			{
