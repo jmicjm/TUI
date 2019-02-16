@@ -67,6 +67,49 @@ namespace tui
 				resize(size);
 			}
 
+			void insertSurface(surface &obj)
+			{
+				vec2i perc_size = obj.getPercentageSize();
+				switch (obj.getSizeType())
+				{
+				case SIZE::CONSTANT:
+					//	obj.resize(obj.getSize());
+					break;
+				case SIZE::PERCENTAGE:
+					obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, (perc_size.y / 100.f) * getSize().y));
+					break;
+				case SIZE::PERCENTAGE_X:
+					obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, obj.getSize().y));
+					break;
+				case SIZE::PERCENTAGE_Y:
+					obj.resize(vec2i(obj.getSize().x, (perc_size.y / 100.f) * getSize().y));
+					break;
+				}
+				obj.draw_action();
+
+
+				int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
+				x_origin += obj.getPosition().getOffset().x;
+
+				int y_origin = getSize().y * (obj.getPosition().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPosition().getRelativePoint().y / 100.f);
+				y_origin += obj.getPosition().getOffset().y;
+
+				for (int i = 0; i < obj.getSize().x; i++)
+				{
+					for (int j = 0; j < obj.getSize().y; j++)
+					{
+						if (x_origin + i < getSize().x
+							&& y_origin + j < getSize().y
+							&& x_origin + i >= 0
+							&& y_origin + j >= 0
+							&& obj.getChar(vec2i(i, j)).getChar() != TRANSPARENT)
+						{
+							m_chars[x_origin + i][y_origin + j] = obj.getChar(vec2i(i, j));
+						}
+					}
+				}
+			}
+
 
 			void makeTransparent()
 			{
@@ -75,6 +118,16 @@ namespace tui
 					for (int j = 0; j < getSize().y; j++)
 					{
 						m_chars[i][j] = TRANSPARENT;
+					}
+				}
+			}
+			void makeBlank()
+			{
+				for (int i = 0; i < getSize().x; i++)
+				{
+					for (int j = 0; j < getSize().y; j++)
+					{
+						m_chars[i][j] = BLANKSYMBOL;
 					}
 				}
 			}
@@ -154,10 +207,9 @@ namespace tui
 						break;
 					}
 				}
-				else
-				{
-					obj.draw_action();
-				}
+				
+				obj.draw_action();
+				
 
 				int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
 				x_origin += obj.getPosition().getOffset().x;

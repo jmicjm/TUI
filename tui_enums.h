@@ -3,6 +3,7 @@
 namespace tui
 {
 #define TRANSPARENT 0
+#define BLANKSYMBOL ' '
 
 	namespace SCROLL
 	{
