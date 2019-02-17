@@ -162,11 +162,18 @@ namespace tui
 			switch ((bool)(GetKeyState(key) & 0x8000))
 			{
 			case true:
-				switch ((bool)(GetKeyState(KEYBOARD::KEY::SHIFT) & 0x8000))
+				if (key != KEYBOARD::SHIFT && key != KEYBOARD::KEY::LSHIFT && key != KEYBOARD::KEY::RSHIFT)
 				{
-				case true:
-					return false;
-				case false:
+					switch ((bool)(GetKeyState(KEYBOARD::KEY::SHIFT) & 0x8000))
+					{
+					case true:
+						return false;
+					case false:
+						return true;
+					}
+				}
+				else
+				{
 					return true;
 				}
 			case false:

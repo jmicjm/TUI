@@ -367,10 +367,10 @@ namespace tui
 
 			void update()
 			{
-				if (isKeyPressed(KEYBOARD::KEY::UP)) {
+				if (isKeyPressed(KEYBOARD::KEY::CAPITAL_A)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
 				}
-				if (isKeyPressed(KEYBOARD::KEY::DOWN)) {
+				if (isKeyPressed(KEYBOARD::KEY::A)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
 				}
 			}
