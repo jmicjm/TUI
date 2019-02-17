@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "tui_console.h"
+#include "tui_input.h"
 //#include "tui_utils.h"
 //#include "tui_enums.h"
 #include <string>
@@ -366,10 +367,10 @@ namespace tui
 
 			void update()
 			{
-				if (GetKeyState(VK_UP) & 0x8000) {
+				if (isKeyPressed(KEYBOARD::KEY::UP)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
 				}
-				if (GetKeyState(VK_DOWN) & 0x8000) {
+				if (isKeyPressed(KEYBOARD::KEY::DOWN)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
 				}
 			}
