@@ -79,6 +79,7 @@ int main()
 			
 			std::cout << "caps " << tui::isCapsLockEnabled() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;
+			std::cout << tui::getInputAsString() << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 	

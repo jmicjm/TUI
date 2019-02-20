@@ -9,6 +9,19 @@
 
 namespace tui
 {
+	struct value_string_pair
+	{
+		int value;
+		std::string string;
+
+		value_string_pair() {}
+		value_string_pair(int val, std::string String)
+		{
+			value = val;
+			string = String;
+		}
+	};
+
 	namespace KEYBOARD
 	{
 		enum KEY
@@ -139,7 +152,8 @@ namespace tui
 		CAPSLK = VK_CAPITAL
 		};
 
-		static std::map<int, std::string> key_string =
+	//	static std::map<int, std::string> key_string =
+		static std::vector<value_string_pair> key_string =
 		{
 			{NUMBER0, "0"},
 			{NUMBER1, "1"},
@@ -254,6 +268,21 @@ namespace tui
 	bool isKeyPressed(int key)
 	{
 		return isKeyPressed(key, TUI_SYNC_INPUT);
+	}
+
+	std::string getInputAsString()
+	{
+		std::string string;
+
+		for (int i = 0; i < KEYBOARD::key_string.size(); i++)
+		{
+			if (isKeyPressed(KEYBOARD::key_string[i].value))
+			{
+				string += KEYBOARD::key_string[i].string;
+			}
+		}
+
+		return string;
 	}
 
 }
