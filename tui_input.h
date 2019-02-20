@@ -1,8 +1,13 @@
 #pragma once
 #include <map>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #define SHIFT_OFFSET 0x900
+
+#define TUI_UNBUFFERED_INPUT 0
+#define TUI_BUFFERED_INPUT 1
 
 #define TUI_SYNC_INPUT 0
 #define TUI_ASYNC_INPUT 1
@@ -235,6 +240,8 @@ namespace tui
 			{SINGLEQUOTE, "'"}
 		};
 
+		std::vector<bool> buffer(key_string.size(), 0);
+
 
 		bool isCapsLockEnabled(int sync)
 		{
@@ -311,10 +318,9 @@ namespace tui
 			return isKeyPressed(key, TUI_SYNC_INPUT);
 		}
 
-		std::string getInputAsString()
+		std::string getInputAsStringUnbuffered()
 		{
 			std::string string;
-
 			for (int i = 0; i < key_string.size(); i++)
 			{
 				if (isKeyPressed(key_string[i].value))
@@ -322,8 +328,55 @@ namespace tui
 					string += key_string[i].string;
 				}
 			}
-
 			return string;
+		}
+
+		std::string getInputAsStringBuffered()
+		{
+			std::string string;
+			for (int i = 0; i < buffer.size(); i++)
+			{
+				if (buffer[i] == true)
+				{
+					string += key_string[i].string;
+				}
+			}
+			return string;
+		}
+
+		std::string getInputAsString(int buffer_type)
+		{
+			switch (buffer_type)
+			{
+			case TUI_UNBUFFERED_INPUT:
+				return getInputAsStringUnbuffered();
+			case TUI_BUFFERED_INPUT:
+				return getInputAsStringBuffered();
+			}
+		}
+
+
+		void bufferThread()
+		{
+			for (;;)
+			{
+				for (int i = 0; i < key_string.size(); i++)
+				{
+					if (isKeyPressed(key_string[i].value))
+					{
+						buffer[i] = true;
+					}
+				}
+				std::this_thread::sleep_for(std::chrono::microseconds(1));
+			}
+		}
+
+		void clearBuffer()
+		{
+			for (int i = 0; i < buffer.size(); i++)
+			{
+				buffer[i] = 0;
+			}
 		}
 
 

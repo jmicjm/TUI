@@ -4,6 +4,7 @@
 
 #include "tui_utils.h"
 #include "tui_enums.h"
+#include "tui_input.h"
 
 
 
@@ -185,6 +186,9 @@ namespace tui
 				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 				updateSize();
 				hidePrompt();
+
+				std::thread keyboardBufferThread(KEYBOARD::bufferThread);
+				keyboardBufferThread.detach();
 			}
 
 			bool wasResized()
@@ -249,6 +253,10 @@ namespace tui
 						m_buffer[i][j].setColor(console_color(COLOR::WHITE, COLOR::BLACK));
 					}
 				}
+
+				
+				KEYBOARD::clearBuffer();
+
 			}
 
 			void display()

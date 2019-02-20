@@ -73,7 +73,7 @@ int main()
 			con.display();
 			
 
-			t_s += tui::KEYBOARD::getInputAsString();
+			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
 
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
@@ -82,6 +82,7 @@ int main()
 			std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;
 			std::cout << t_s << std::endl;
+		//	std::cout << tui::KEYBOARD::keyboardBuffer.size() << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 	
