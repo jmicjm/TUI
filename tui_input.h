@@ -4,11 +4,13 @@
 
 #define SHIFT_OFFSET 0x900
 
+#define TUI_SYNC_INPUT 0
+#define TUI_ASYNC_INPUT 1
+
 namespace tui
 {
 	namespace KEYBOARD
 	{
-
 		enum KEY
 		{
 		NUMBER0 = 0x30,
@@ -108,7 +110,33 @@ namespace tui
 
 		CAPITAL_A = A + SHIFT_OFFSET,
 		CAPITAL_B = B + SHIFT_OFFSET,
+		CAPITAL_C = C + SHIFT_OFFSET,
+		CAPITAL_D = D + SHIFT_OFFSET,
+		CAPITAL_E = E + SHIFT_OFFSET,
+		CAPITAL_F = F + SHIFT_OFFSET,
+		CAPITAL_G = G + SHIFT_OFFSET,
+		CAPITAL_H = H + SHIFT_OFFSET,
+		CAPITAL_I = I + SHIFT_OFFSET,
+		CAPITAL_J = J + SHIFT_OFFSET,
+		CAPITAL_K = K + SHIFT_OFFSET,
+		CAPITAL_L = L + SHIFT_OFFSET,
+		CAPITAL_M = M + SHIFT_OFFSET,
+		CAPITAL_N = N + SHIFT_OFFSET,
+		CAPITAL_O = O + SHIFT_OFFSET,
+		CAPITAL_P = P + SHIFT_OFFSET,
+		CAPITAL_Q = Q + SHIFT_OFFSET,
+		CAPITAL_R = R + SHIFT_OFFSET,
+		CAPITAL_S = S + SHIFT_OFFSET,
+		CAPITAL_T = T + SHIFT_OFFSET,
+		CAPITAL_U = U + SHIFT_OFFSET,
+		CAPITAL_V = V + SHIFT_OFFSET,
+		CAPITAL_W = W + SHIFT_OFFSET,
+		CAPITAL_X = X + SHIFT_OFFSET,
+		CAPITAL_Y = Y + SHIFT_OFFSET,
+		CAPITAL_Z = Z + SHIFT_OFFSET,
 
+
+		CAPSLK = VK_CAPITAL
 		};
 
 		static std::map<int, std::string> key_string =
@@ -153,18 +181,43 @@ namespace tui
 		};
 	}
 
-
-
-	bool isKeyPressed(int key)
+	bool isCapsLockEnabled(int sync)
 	{
+		switch (sync)
+		{
+		case TUI_SYNC_INPUT:
+			return (bool)GetKeyState(KEYBOARD::CAPSLK);
+		case TUI_ASYNC_INPUT:
+			return (bool)GetAsyncKeyState(KEYBOARD::CAPSLK);
+		}
+	}
+	bool isCapsLockEnabled()
+	{
+		return isCapsLockEnabled(TUI_SYNC_INPUT);
+	}
+	
+
+	bool isKeyPressed(int key, int sync)
+	{
+		auto getKeyState = [](int key, int sync)
+		{
+			switch (sync)
+			{
+			case TUI_SYNC_INPUT:
+				return (bool)(GetKeyState(key) & 0x8000);
+			case TUI_ASYNC_INPUT:
+				return (bool)(GetAsyncKeyState(key) & 0x8000);
+			}	
+		};
+
 		if (key < SHIFT_OFFSET)
 		{
-			switch ((bool)(GetKeyState(key) & 0x8000))
+			switch (getKeyState(key, sync))
 			{
 			case true:
 				if (key != KEYBOARD::SHIFT && key != KEYBOARD::KEY::LSHIFT && key != KEYBOARD::KEY::RSHIFT)
 				{
-					switch ((bool)(GetKeyState(KEYBOARD::KEY::SHIFT) & 0x8000))
+					switch (getKeyState(KEYBOARD::SHIFT, sync) ^ isCapsLockEnabled(sync))
 					{
 					case true:
 						return false;
@@ -182,10 +235,10 @@ namespace tui
 		}
 		else
 		{
-			switch ((bool)(GetKeyState(key - SHIFT_OFFSET) & 0x8000))
+			switch (getKeyState(key - SHIFT_OFFSET, sync))
 			{
 			case true:
-				switch ((bool)(GetKeyState(KEYBOARD::KEY::SHIFT) & 0x8000))
+				switch (getKeyState(KEYBOARD::KEY::SHIFT, sync) ^ isCapsLockEnabled(sync))
 				{
 				case true:
 					return true;
@@ -198,5 +251,9 @@ namespace tui
 		}
 	}
 
+	bool isKeyPressed(int key)
+	{
+		return isKeyPressed(key, TUI_SYNC_INPUT);
+	}
 
 }

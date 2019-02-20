@@ -76,10 +76,8 @@ int main()
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-			std::cout << "Lenght: " << scroll.getLenght() << std::endl;
-			std::cout << "H pos: " << scroll.getHandlePosition() << std::endl;
-			std::cout << "xsize: " << scroll.getSize().x << std::endl;
-			std::cout << "ysize: " << scroll.getSize().y << std::endl;
+			
+			std::cout << "caps " << tui::isCapsLockEnabled() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
