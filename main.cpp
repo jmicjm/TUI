@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 
+std::string t_s;
+
 int main()
 {
 
@@ -71,15 +73,15 @@ int main()
 			con.display();
 			
 
-			
+			t_s += tui::KEYBOARD::getInputAsString();
 
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			
-			std::cout << "caps " << tui::isCapsLockEnabled() << std::endl;
+			std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;
-			std::cout << tui::getInputAsString() << std::endl;
+			std::cout << t_s << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 	
