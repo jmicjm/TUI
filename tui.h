@@ -369,16 +369,17 @@ namespace tui
 			{
 				if (isKeyPressed(KEYBOARD::KEY::CAPITAL_A)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
+					fill();
 				}
 				if (isKeyPressed(KEYBOARD::KEY::A)) {
 					m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
+					fill();
 				}
 			}
 
 			void draw_action() 
 			{
 				update();
-				fill(); 
 			}
 			void resize_action()
 			{
@@ -392,6 +393,7 @@ namespace tui
 					prepareText();
 					m_scroll.setLenght(getNumberOfLines());
 				}
+				fill();
 			}
 	};
 
