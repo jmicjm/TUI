@@ -187,8 +187,8 @@ namespace tui
 				updateSize();
 				hidePrompt();
 
-				std::thread keyboardBufferThread(KEYBOARD::bufferThread);
-				keyboardBufferThread.detach();
+				//::thread keyboardBufferThread(KEYBOARD::bufferThread);
+				//keyboardBufferThread.detach(); 
 			}
 
 			bool wasResized()
@@ -255,12 +255,14 @@ namespace tui
 				}
 
 				
-				KEYBOARD::clearBuffer();
+				
 
 			}
 
 			void display()
 			{
+				KEYBOARD::buffer.clearBuffer();
+
 				updateSize();
 
 				std::vector<WORD> temp_attr;

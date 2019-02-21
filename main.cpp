@@ -70,10 +70,14 @@ int main()
 
 		//	scroll.update();
 			con.draw(scroll);
+
+			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
+
 			con.display();
 			
 
-			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
+			
+			//tui::KEYBOARD::clearBuffer();
 
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;

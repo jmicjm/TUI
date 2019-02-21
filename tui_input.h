@@ -29,6 +29,10 @@ namespace tui
 
 	namespace KEYBOARD
 	{
+		bool isKeyPressed(int key);
+
+
+
 		enum KEY
 		{
 			NUMBER0 = 0x30,
@@ -157,7 +161,7 @@ namespace tui
 			CAPSLK = VK_CAPITAL
 		};
 
-
+		//change to map
 		static const std::vector<value_string_pair> key_string =
 		{
 			{NUMBER0, "0"},
@@ -240,8 +244,53 @@ namespace tui
 			{SINGLEQUOTE, "'"}
 		};
 
-		std::vector<bool> buffer(key_string.size(), 0);
+		
+		struct keyboard_buffer
+		{
+			std::vector<bool> buffer;
 
+			bool operator[](int i)
+			{
+				return buffer[i];
+			}
+			int size()
+			{
+				return buffer.size();
+			}
+
+			keyboard_buffer()
+			{
+				std::thread keyboardBufferThread([this] {bufferThread(); });
+				keyboardBufferThread.detach();
+				buffer.resize(key_string.size());
+			}
+
+			void bufferThread()
+			{
+				for (;;)
+				{
+					for (int i = 0; i < key_string.size(); i++)
+					{
+						if (isKeyPressed(key_string[i].value))
+						{
+							buffer[i] = true;
+							std::this_thread::sleep_for(std::chrono::milliseconds(100));
+						}
+					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				}
+			}
+
+			void clearBuffer()
+			{
+				for (int i = 0; i < buffer.size(); i++)
+				{
+					buffer[i] = 0;
+				}
+			}
+
+		};
+		static keyboard_buffer buffer;
 
 		bool isCapsLockEnabled(int sync)
 		{
@@ -318,6 +367,10 @@ namespace tui
 			return isKeyPressed(key, TUI_SYNC_INPUT);
 		}
 
+		
+
+		
+
 		std::string getInputAsStringUnbuffered()
 		{
 			std::string string;
@@ -334,7 +387,7 @@ namespace tui
 		std::string getInputAsStringBuffered()
 		{
 			std::string string;
-			for (int i = 0; i < buffer.size(); i++)
+			for (int i = 0; i <buffer.size(); i++)
 			{
 				if (buffer[i] == true)
 				{
@@ -356,29 +409,10 @@ namespace tui
 		}
 
 
-		void bufferThread()
-		{
-			for (;;)
-			{
-				for (int i = 0; i < key_string.size(); i++)
-				{
-					if (isKeyPressed(key_string[i].value))
-					{
-						buffer[i] = true;
-					}
-				}
-				std::this_thread::sleep_for(std::chrono::microseconds(1));
-			}
-		}
+		
 
-		void clearBuffer()
-		{
-			for (int i = 0; i < buffer.size(); i++)
-			{
-				buffer[i] = 0;
-			}
-		}
+		
 
-
+		
 	}
 }
