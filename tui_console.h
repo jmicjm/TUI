@@ -261,7 +261,7 @@ namespace tui
 
 			void display()
 			{
-				KEYBOARD::buffer.clearBuffer();
+				KEYBOARD::buffer.clear();
 
 				updateSize();
 
