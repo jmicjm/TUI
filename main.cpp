@@ -13,6 +13,7 @@ int main()
 	
 		tui::console con;
 		con.setTitle("tytul");
+		con.setFPSlimit(30);
 
 		tui::rectangle rect;
 		rect.setSize(tui::vec2i(10, 5), tui::SIZE::CONSTANT);
@@ -75,10 +76,6 @@ int main()
 
 			con.draw(text);
 
-			//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-
-		
-
 			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
 		
 			input_text.setText(t_s);
@@ -94,11 +91,11 @@ int main()
 			 
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			
-			std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
-			std::cout << "resized: " << con.wasResized() << std::endl;
+			//std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
+			//std::cout << "resized: " << con.wasResized() << std::endl;
 			//std::cout << t_s << std::endl;
 		//	std::cout << tui::KEYBOARD::keyboardBuffer.size() << std::endl;
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 	
 	return 0;

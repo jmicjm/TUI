@@ -179,6 +179,8 @@ namespace tui
 			HANDLE console_handle;
 			vec2i m_last_size;
 			bool resized;
+			std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000)/30;
+			std::chrono::steady_clock::time_point last_frame_time;
 		public:
 			console()
 			{
@@ -186,6 +188,8 @@ namespace tui
 				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 				updateSize();
 				hidePrompt();
+
+				last_frame_time = std::chrono::steady_clock::now();
 
 				//::thread keyboardBufferThread(KEYBOARD::bufferThread);
 				//keyboardBufferThread.detach(); 
@@ -259,8 +263,20 @@ namespace tui
 
 			}
 
-			void display()
+			void setFPSlimit(int fps)
 			{
+				frame_time = std::chrono::milliseconds(1000) / fps;
+			}
+
+			void display()
+			{	
+				if (std::chrono::steady_clock::now() - last_frame_time < frame_time)
+				{
+					std::this_thread::sleep_until(last_frame_time + frame_time);
+				}
+
+				last_frame_time = std::chrono::steady_clock::now();
+
 				KEYBOARD::buffer.clear();
 
 				updateSize();
