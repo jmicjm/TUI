@@ -353,9 +353,23 @@ namespace tui
 				m_scroll.setPosition(tui::position(tui::vec2i(0, 0), vec2i(POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP)));
 			}
 
+			void adjustSizes()
+			{
+				m_text.resize(vec2i(getSize().x, getSize().y));
+				prepareText();
+				m_scroll.setLenght(getNumberOfLines());
+				if (m_scroll.isNeeded())
+				{
+					m_text.resize(vec2i(getSize().x - 1, getSize().y));
+					prepareText();
+					m_scroll.setLenght(getNumberOfLines());
+				}
+			}
+
 			void setText(std::string txt)
 			{
-				m_unprepared_text = txt;	
+				m_unprepared_text = txt;
+				adjustSizes();
 				fill();
 			}
 
@@ -384,15 +398,7 @@ namespace tui
 			void resize_action()
 			{
 				updateSurfaceSize(m_scroll);
-				m_text.resize(vec2i(getSize().x, getSize().y));
-				prepareText();
-				m_scroll.setLenght(getNumberOfLines());
-				if (m_scroll.isNeeded())
-				{
-					m_text.resize(vec2i(getSize().x-1, getSize().y));
-					prepareText();
-					m_scroll.setLenght(getNumberOfLines());
-				}
+				adjustSizes();
 				fill();
 			}
 	};

@@ -248,30 +248,32 @@ namespace tui
 		
 		struct keyboard_buffer
 		{
-			std::vector<bool> buffer;
-			std::vector<bool> delay_buffer;
-
-			bool operator[](int i) { return buffer[i]; }
-			int size() { return buffer.size(); }
-
-			bool delayed_buffer(int i)
-			{
-				return delay_buffer[i];
-			}
+		private:
+			std::vector<bool> buffer[2];
+			std::string string_buffer[2];
+		public:
+			bool operator[](int i) { return buffer[0][i]; }
+			std::string getString() { return string_buffer[0]; }
+			int size() { return buffer[0].size(); }
 
 			keyboard_buffer()
 			{
-				buffer.resize(key_string.size());
-				delay_buffer.resize(buffer.size());
-
+				buffer[0].resize(key_string.size());
+				buffer[1].resize(key_string.size());
+		
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
 			}
 
 			void bufferThread()
 			{
-				std::vector<std::chrono::steady_clock::time_point> last_key_press(buffer.size(), std::chrono::steady_clock::now());
-				std::vector<int> is_key_hold(buffer.size(), 0);
+				std::vector<std::chrono::steady_clock::time_point> last_key_press(buffer[1].size(), std::chrono::steady_clock::now());
+				std::vector<int> is_key_hold(buffer[1].size(), 0);
+
+				auto indexToString = [](int i)
+				{
+					return key_string[i].string;	
+				};
 
 				for (;;)
 				{
@@ -279,13 +281,14 @@ namespace tui
 					{
 						if (isKeyPressed(key_string[i].value, TUI_UNBUFFERED_INPUT))
 						{
-							buffer[i] = true;	
+							buffer[1][i] = true;	
 
-							if ((is_key_hold[i] == 1 && (std::chrono::steady_clock::now() - last_key_press[i] > std::chrono::milliseconds(500)))
-								|| is_key_hold[i] > 1
-								|| is_key_hold[i] == 0)
+							if (   is_key_hold[i] == 0	
+								||(is_key_hold[i] == 1 && (std::chrono::steady_clock::now() - last_key_press[i] > std::chrono::milliseconds(500)))
+								|| (is_key_hold[i] > 1 && (std::chrono::steady_clock::now() - last_key_press[i] > std::chrono::milliseconds(25)))
+							   )
 							{
-								delay_buffer[i] = true;
+								string_buffer[1] += indexToString(i);
 
 								if (is_key_hold[i] <= 1) { is_key_hold[i]++; }
 								last_key_press[i] = std::chrono::steady_clock::now();
@@ -296,17 +299,19 @@ namespace tui
 							is_key_hold[i] = false;
 						}
 					}
-
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
 			}
 
 			void clear()
 			{
-				for (int i = 0; i < buffer.size(); i++)
+				buffer[0] = buffer[1];
+				string_buffer[0] = string_buffer[1];
+
+				for (int i = 0; i < buffer[0].size(); i++)
 				{
-					buffer[i] = 0;
-					delay_buffer[i] = 0;
+					buffer[1][i] = 0;
+					string_buffer[1].clear();
 				}
 			}
 		};
@@ -315,7 +320,6 @@ namespace tui
 
 
 		bool isCapsLockEnabled(){ return (bool)GetKeyState(KEY::CAPSLK); }
-
 
 		bool isKeyPressedUnbuffered(int key)
 		{
@@ -407,15 +411,7 @@ namespace tui
 
 		std::string getInputAsStringBuffered()
 		{
-			std::string string;
-			for (int i = 0; i <buffer.size(); i++)
-			{
-				if (buffer.delayed_buffer(i) == true)
-				{
-					string += key_string[i].string;
-				}
-			}
-			return string;
+			return buffer.getString();
 		}
 
 		std::string getInputAsString(int buffer_type)

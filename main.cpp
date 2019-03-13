@@ -1,15 +1,16 @@
 #include "tui.h"
 
+
 #include <iostream>
 
 #include <thread>
 #include <chrono>
 
-std::string t_s;
+
 
 int main()
 {
-
+	
 		tui::console con;
 		con.setTitle("tytul");
 
@@ -30,11 +31,16 @@ int main()
 		tui::text text(tui::vec2i(18, 50), tui::SIZE::PERCENTAGE_Y, ipsum);
 		text.setPosition(tui::position(tui::vec2i(-1, 1), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
+		tui::text input_text(tui::vec2i(50, 30), tui::SIZE::PERCENTAGE, "xxxxx ");
+		input_text.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
+
 
 		tui::scroll<tui::SCROLL::DIRECTION::HORIZONTAL> scroll(tui::vec2i(50, 1), tui::SIZE::PERCENTAGE_X);
 		scroll.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
 		scroll.setLenght(20);
 		scroll.setHandlePosition(5);
+
+		std::string t_s;
 
 		for (;;)
 		{
@@ -65,27 +71,32 @@ int main()
 
 			con.draw(box1);
 			con.draw(mainBox);
+			
+
 			con.draw(text);
 
+			//std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 
-		//	scroll.update();
-			con.draw(scroll);
+		
 
 			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
+		
+			input_text.setText(t_s);
+			con.draw(input_text);
 
 			con.display();
 			
-
+			auto end = std::chrono::steady_clock::now();
+			auto diff = end - start;
 			
 			//tui::KEYBOARD::clearBuffer();
 
-			auto end = std::chrono::steady_clock::now();
-			auto diff = end - start;
+			 
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			
 			std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
 			std::cout << "resized: " << con.wasResized() << std::endl;
-			std::cout << t_s << std::endl;
+			//std::cout << t_s << std::endl;
 		//	std::cout << tui::KEYBOARD::keyboardBuffer.size() << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
