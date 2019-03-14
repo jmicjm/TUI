@@ -261,15 +261,13 @@ namespace tui
 			{
 				makeTransparent();
 
-				int pos = 0;
-
-				for (int i = 0; i < getSize().y; i++)
+				for (int i = 0; i < getSize().y; i++)	
 				{
 					for (int j = 0; j < getSize().x; j++)
 					{
-						if (i*getSize().x + j > m_text.size()) { break; }
+						if (i*getSize().x + j >= (int)m_text.size() - 1) { break; } //-1 avoid null termination
 
-						setChar(m_text[pos++], vec2i(j, i));
+						setChar(m_text[i*getSize().x + j], vec2i(j, i));
 					}
 				}
 			}

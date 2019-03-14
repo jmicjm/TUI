@@ -13,7 +13,7 @@ int main()
 	
 		tui::console con;
 		con.setTitle("tytul");
-		con.setFPSlimit(30);
+		con.setFPSlimit(10);
 
 		tui::rectangle rect;
 		rect.setSize(tui::vec2i(10, 5), tui::SIZE::CONSTANT);
@@ -47,12 +47,12 @@ int main()
 		{
 
 			if (GetKeyState(VK_RIGHT) & 0x8000) {
-				//rect.move(tui::vec2i(1, 0));
-				scroll.setHandlePosition(scroll.getHandlePosition() + 1);
+				rect.move(tui::vec2i(1, 0));
+				//scroll.setHandlePosition(scroll.getHandlePosition() + 1);
 			}
 			if (GetKeyState(VK_LEFT) & 0x8000) {
-				//rect.move(tui::vec2i(-1, 0));
-				scroll.setHandlePosition(scroll.getHandlePosition() - 1);
+				rect.move(tui::vec2i(-1, 0));
+				//scroll.setHandlePosition(scroll.getHandlePosition() - 1);
 			}
 			if (GetKeyState(VK_UP) & 0x8000) {
 				//rect.move(tui::vec2i(0, -1));
