@@ -284,6 +284,8 @@ namespace tui
 			}
 			std::string getText() { return m_text; }
 
+			//void draw_action() { fill(); }
+
 			void resize_action() { fill(); }
 	};
 

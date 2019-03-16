@@ -36,35 +36,18 @@ int main()
 		input_text.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 
-		tui::scroll<tui::SCROLL::DIRECTION::HORIZONTAL> scroll(tui::vec2i(50, 1), tui::SIZE::PERCENTAGE_X);
-		scroll.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-		scroll.setLenght(20);
-		scroll.setHandlePosition(5);
-
 		std::string t_s;
 
 		for (;;)
 		{
 
-			if (GetKeyState(VK_RIGHT) & 0x8000) {
+			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::RIGHT)) {
 				rect.move(tui::vec2i(1, 0));
-				//scroll.setHandlePosition(scroll.getHandlePosition() + 1);
 			}
-			if (GetKeyState(VK_LEFT) & 0x8000) {
+			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::LEFT)) {
 				rect.move(tui::vec2i(-1, 0));
-				//scroll.setHandlePosition(scroll.getHandlePosition() - 1);
 			}
-			if (GetKeyState(VK_UP) & 0x8000) {
-				//rect.move(tui::vec2i(0, -1));
-				//text.setText(text.getText() + "O");
-				scroll.setLenght(scroll.getLenght() + 1);
 
-			}
-			if (GetKeyState(VK_DOWN) & 0x8000) {
-				//rect.move(tui::vec2i(0, 1));
-				//text.setText("X");
-				scroll.setLenght(scroll.getLenght() - 1);
-			}
 
 			auto start = std::chrono::steady_clock::now();
 			con.clear();

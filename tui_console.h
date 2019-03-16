@@ -17,13 +17,16 @@ namespace tui
 			position m_position;
 			vec2i percentageSize;
 			int sizeType;
-			void setSizeType(int type) { sizeType = type; }
+			
 		protected:
 			virtual void resize_action() {}
 		public:	
 			virtual void draw_action() {}
 
+			void setSizeType(int type) { sizeType = type; }
+
 			void setChar(console_char character, vec2i position) { m_chars[position.x][position.y] = character; }
+			console_char getchar(vec2i position) { return m_chars[position.x][position.y]; }
 			void setPosition(position pos) { m_position = pos; }
 
 			void move(vec2i offset)
@@ -155,32 +158,43 @@ namespace tui
 	struct console_buffer
 	{
 		protected:
-			std::vector<std::vector<console_char>> m_buffer;
+			surface m_buffer;
 
-			console_buffer() {}
-			console_buffer(int x, int y) { resize(x, y); }
-			console_buffer(vec2i size) : console_buffer(size.x, size.y) {}
+			console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
 
 			void resize(int x, int y)
 			{
-				m_buffer.resize(x);
-				for (int i = 0; i < m_buffer.size(); i++) { m_buffer[i].resize(y); }
+				m_buffer.resize(vec2i(x,y));
 			}
 			void resize(vec2i size) { resize(size.x, size.y); }
 		public:
-			vec2i getSize() { return vec2i(m_buffer.size(), m_buffer[0].size()); }
+			vec2i getSize() { return m_buffer.getSize(); }
+
+			console_char getChar(vec2i position) { return m_buffer.getChar(position); }
+
+			void draw(surface &surf)
+			{
+				m_buffer.insertSurface(surf);
+			}
+
+			void clear()
+			{
+				m_buffer.makeTransparent();
+			}
 	};
 
 
 	//console
 	struct console : console_buffer
 	{
-		//private:
+		private:
 			HANDLE console_handle;
 			vec2i m_last_size;
 			bool resized;
 			std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000)/30;
 			std::chrono::steady_clock::time_point last_frame_time;
+
+			
 		public:
 			console()
 			{
@@ -190,9 +204,6 @@ namespace tui
 				hidePrompt();
 
 				last_frame_time = std::chrono::steady_clock::now();
-
-				//::thread keyboardBufferThread(KEYBOARD::bufferThread);
-				//keyboardBufferThread.detach(); 
 			}
 
 			bool wasResized()
@@ -200,68 +211,6 @@ namespace tui
 				return resized;
 			}
 
-			void draw(surface &obj)
-			{
-				if (wasResized())
-				{
-					vec2i perc_size = obj.getPercentageSize();
-					switch (obj.getSizeType())
-					{
-					case SIZE::CONSTANT:
-					//	obj.resize(obj.getSize());
-						break;
-					case SIZE::PERCENTAGE:
-						obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, (perc_size.y / 100.f) * getSize().y));
-						break;
-					case SIZE::PERCENTAGE_X:
-						obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, obj.getSize().y));
-						break;
-					case SIZE::PERCENTAGE_Y:
-						obj.resize(vec2i(obj.getSize().x, (perc_size.y / 100.f) * getSize().y));
-						break;
-					}
-				}
-				
-				obj.draw_action();
-				
-
-				int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
-				x_origin += obj.getPosition().getOffset().x;
-
-				int y_origin = getSize().y * (obj.getPosition().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPosition().getRelativePoint().y / 100.f);
-				y_origin += obj.getPosition().getOffset().y;
-
-				for (int i = 0; i < obj.getSize().x; i++)
-				{
-					for (int j = 0; j < obj.getSize().y; j++)
-					{
-						if (x_origin + i < getSize().x
-							&& y_origin + j < getSize().y
-							&& x_origin + i >= 0
-							&& y_origin + j >= 0
-							&& obj.getChar(vec2i(i, j)).getChar() != TRANSPARENT)
-						{
-							m_buffer[x_origin + i][y_origin + j] = obj.getChar(vec2i(i, j));
-						}
-					}
-				}
-			}
-			void clear()
-			{
-				//updateSize();
-				for (int i = 0; i < getSize().x; i++)
-				{
-					for (int j = 0; j < getSize().y; j++)
-					{
-						m_buffer[i][j].setChar(' ');
-						m_buffer[i][j].setColor(console_color(COLOR::WHITE, COLOR::BLACK));
-					}
-				}
-
-				
-				
-
-			}
 
 			void setFPSlimit(int fps)
 			{
@@ -288,8 +237,8 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().x; j++)
 					{
-						temp_attr.push_back(m_buffer[j][i].getColor());
-						temp_char.push_back(m_buffer[j][i].getChar());
+						temp_attr.push_back(m_buffer.getChar(vec2i(j,i)).getColor());
+						temp_char.push_back(m_buffer.getChar(vec2i(j,i)).getChar());
 					}
 				}
 				COORD coord = { 0, 0 };
@@ -305,13 +254,7 @@ namespace tui
 				hidePrompt();
 			}
 
-			void setChar(char character, vec2i position, console_color color)
-			{
-				m_buffer[position.x][position.y].setChar(character);
-				m_buffer[position.x][position.y].setColor(color);
-			}
-			void setChar(char character, vec2i position) { setChar(character, position, console_color(COLOR::WHITE, COLOR::BLACK)); }
-			void setTitle(std::string title) { SetConsoleTitleA(title.c_str()); }
+		void setTitle(std::string title) { SetConsoleTitleA(title.c_str()); }
 
 		private:
 			void updateSize()
