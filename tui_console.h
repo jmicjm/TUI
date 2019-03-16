@@ -50,24 +50,7 @@ namespace tui
 			{
 				setSizeType(sizeType);
 				percentageSize = size;
-			/*	switch (getSizeType())
-				{
-					case SIZE::CONSTANT:
-						setSizeType(SIZE::CONSTANT);
-						break;
-					case SIZE::PERCENTAGE:
-						setSizeType(SIZE::PERCENTAGE);
-						percentageSize = size;
-						break;
-					case SIZE::PERCENTAGE_X:
-						setSizeType(SIZE::PERCENTAGE_X);
-						percentageSize = size;
-						break;
-					case SIZE::PERCENTAGE_Y:
-						setSizeType(SIZE::PERCENTAGE_Y);
-						percentageSize = size;
-						break;
-				}*/
+
 				resize(size);
 			}
 
@@ -162,25 +145,16 @@ namespace tui
 
 			console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
 
-			void resize(int x, int y)
-			{
-				m_buffer.resize(vec2i(x,y));
-			}
-			void resize(vec2i size) { resize(size.x, size.y); }
+			void resize(vec2i size) { m_buffer.resize(size); }
+
 		public:
 			vec2i getSize() { return m_buffer.getSize(); }
 
 			console_char getChar(vec2i position) { return m_buffer.getChar(position); }
 
-			void draw(surface &surf)
-			{
-				m_buffer.insertSurface(surf);
-			}
+			void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
-			void clear()
-			{
-				m_buffer.makeTransparent();
-			}
+			void clear() { m_buffer.makeTransparent(); }
 	};
 
 
@@ -193,24 +167,20 @@ namespace tui
 			bool resized;
 			std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000)/30;
 			std::chrono::steady_clock::time_point last_frame_time;
-
 			
 		public:
 			console()
 			{
 				system("chcp 437");
 				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
 				updateSize();
 				hidePrompt();
 
 				last_frame_time = std::chrono::steady_clock::now();
 			}
 
-			bool wasResized()
-			{
-				return resized;
-			}
-
+			bool wasResized() { return resized; }
 
 			void setFPSlimit(int fps)
 			{
@@ -276,7 +246,9 @@ namespace tui
 				m_last_size = console_size;
 				
 			}
+
 			void setGlobalColor(int color) { SetConsoleTextAttribute(console_handle, color); }
+
 			void hidePrompt()
 			{
 				CONSOLE_CURSOR_INFO cursor_info;
