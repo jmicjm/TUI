@@ -140,123 +140,150 @@ namespace tui
 	//buffer
 	struct console_buffer
 	{
-		protected:
-			surface m_buffer;
+	protected:
+		surface m_buffer;
 
-			console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
+		console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
 
-			void resize(vec2i size) { m_buffer.resize(size); }
+		void resize(vec2i size) { m_buffer.resize(size); }
 
-		public:
-			vec2i getSize() { return m_buffer.getSize(); }
+	public:
+		vec2i getSize() { return m_buffer.getSize(); }
 
-			console_char getChar(vec2i position) { return m_buffer.getChar(position); }
+		console_char getChar(vec2i position) { return m_buffer.getChar(position); }
 
-			void draw(surface &surf) { m_buffer.insertSurface(surf); }
+		void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
-			void clear() { m_buffer.makeTransparent(); }
+		void clear_buf() { m_buffer.makeTransparent(); }
 	};
 
 
 	//console
 	struct console : console_buffer
 	{
-		private:
-			HANDLE console_handle;
-			vec2i m_last_size;
-			bool resized;
-			std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000)/30;
-			std::chrono::steady_clock::time_point last_frame_time;
-			
-		public:
-			console()
+	private:
+		HANDLE console_handle;
+		vec2i m_last_size;
+		bool resized;
+		std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000) / 30;
+		std::chrono::steady_clock::time_point last_frame_time;
+
+	public:
+		console()
+		{
+			system("chcp 437");
+			console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+			//SetConsoleMode(console_handle, ENABLE_WRAP_AT_EOL_OUTPUT);
+
+			updateSize();
+			hidePrompt();
+
+			last_frame_time = std::chrono::steady_clock::now();
+		}
+
+		bool wasResized() { return resized; }
+
+		void setFPSlimit(int fps)
+		{
+			frame_time = std::chrono::milliseconds(1000) / fps;
+		}
+
+		void clear()
+		{
+			//updateSize();
+			clear_buf();
+		}
+
+		void display()
+		{
+			if (std::chrono::steady_clock::now() - last_frame_time < frame_time)
 			{
-				system("chcp 437");
-				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-				updateSize();
-				hidePrompt();
-
-				last_frame_time = std::chrono::steady_clock::now();
+				std::this_thread::sleep_until(last_frame_time + frame_time);
 			}
 
-			bool wasResized() { return resized; }
+			last_frame_time = std::chrono::steady_clock::now();
 
-			void setFPSlimit(int fps)
+			KEYBOARD::buffer.clear();
+
+			updateSize();
+
+			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+			GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
+
+
+			std::vector<WORD> temp_attr;
+			std::vector<char> temp_char;
+
+			for (int i = 0; i < getSize().y; i++)
 			{
-				frame_time = std::chrono::milliseconds(1000) / fps;
-			}
-
-			void display()
-			{	
-				if (std::chrono::steady_clock::now() - last_frame_time < frame_time)
+				for (int j = 0; j < console_size.x; j++)
 				{
-					std::this_thread::sleep_until(last_frame_time + frame_time);
-				}
-
-				last_frame_time = std::chrono::steady_clock::now();
-
-				KEYBOARD::buffer.clear();
-
-				updateSize();
-
-				std::vector<WORD> temp_attr;
-				std::vector<char> temp_char;
-
-				for (int i = 0; i < getSize().y; i++)
-				{
-					for (int j = 0; j < getSize().x; j++)
+					if (j < getSize().x)
 					{
-						temp_attr.push_back(m_buffer.getChar(vec2i(j,i)).getColor());
-						temp_char.push_back(m_buffer.getChar(vec2i(j,i)).getChar());
+						temp_attr.push_back(m_buffer.getChar(vec2i(j, i)).getColor());
+						temp_char.push_back(m_buffer.getChar(vec2i(j, i)).getChar());
+					}
+					else
+					{
+						temp_attr.push_back(console_color());
+						temp_char.push_back(char());
 					}
 				}
-				COORD coord = { 0, 0 };
-				DWORD useless = 0;
-				SetConsoleCursorPosition(console_handle, coord); // w/o 10x slower
-
-				WriteConsoleOutputAttribute(console_handle, temp_attr.data(), getSize().x*getSize().y, coord, &useless);
-				WriteConsoleOutputCharacter(console_handle, temp_char.data(), getSize().x*getSize().y, coord, &useless);
-
-				setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
-				SetConsoleCursorPosition(console_handle, coord);
-
-				hidePrompt();
 			}
+			COORD coord = { 0, 0 };
+			DWORD useless = 0;
+			SetConsoleCursorPosition(console_handle, coord); // w/o 10x slower
+
+			WriteConsoleOutputAttribute(console_handle, temp_attr.data(), console_size.x*getSize().y, coord, &useless);
+			WriteConsoleOutputCharacter(console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
+
+
+			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
+			SetConsoleCursorPosition(console_handle, coord);
+
+			hidePrompt();
+		}
 
 		void setTitle(std::string title) { SetConsoleTitleA(title.c_str()); }
 
-		private:
-			void updateSize()
+	private:
+		void updateSize()
+		{
+			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+			GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+			vec2i console_size(buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1, buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1);
+			//vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
+
+
+			if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
 			{
-				CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-				GetConsoleScreenBufferInfo(console_handle, &buffer_info);
-				vec2i console_size(buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1, buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1);
-
-				if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
-				{
-					resize(console_size);
-					resized = true;
-				}
-				else
-				{
-					resized = false;
-				}
-
-				m_last_size = console_size;
-				
+				resize(console_size);
+				//SetConsoleScreenBufferSize(console_handle, { (short)console_size.x, (short)console_size.y });
+				resized = true;
 			}
-
-			void setGlobalColor(int color) { SetConsoleTextAttribute(console_handle, color); }
-
-			void hidePrompt()
+			else
 			{
-				CONSOLE_CURSOR_INFO cursor_info;
-				SetConsoleCursorInfo(console_handle, &cursor_info);
-				cursor_info.bVisible = false;
-				cursor_info.dwSize = 1;
-
-				SetConsoleCursorInfo(console_handle, &cursor_info);
+				resized = false;
 			}
-		};
+			//COORD = {}
+			
+
+			m_last_size = console_size;
+
+		}
+
+		void setGlobalColor(int color) { SetConsoleTextAttribute(console_handle, color); }
+
+		void hidePrompt()
+		{
+			CONSOLE_CURSOR_INFO cursor_info;
+			SetConsoleCursorInfo(console_handle, &cursor_info);
+			cursor_info.bVisible = false;
+			cursor_info.dwSize = 1;
+
+			SetConsoleCursorInfo(console_handle, &cursor_info);
+		}
+	};
 }

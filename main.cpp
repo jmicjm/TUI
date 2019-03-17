@@ -73,7 +73,8 @@ int main()
 
 			 
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-			//std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
+			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
+			std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
 		//	std::cout << ""
 			
 			//std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
