@@ -21,6 +21,12 @@ namespace tui
 		protected:
 			virtual void resize_action() {}
 		public:	
+			surface()
+			{
+				m_chars.resize(1);
+				m_chars[0].resize(1);
+			}
+
 			virtual void draw_action() {}
 
 			void setSizeType(int type) { sizeType = type; }
@@ -37,13 +43,16 @@ namespace tui
 
 			void resize(vec2i size)
 			{
-				m_chars.resize(size.x);
-				for (int i = 0; i < m_chars.size(); i++)
+				if (size.x != getSize().x || size.y != getSize().y)
 				{
-					m_chars[i].resize(size.y);
+					m_chars.resize(size.x);
+					for (int i = 0; i < m_chars.size(); i++)
+					{
+						m_chars[i].resize(size.y);
+					}
+					makeTransparent();
+					resize_action();
 				}
-				makeTransparent();
-				resize_action();
 			}
 			
 			void setSize(vec2i size, int sizeType)
