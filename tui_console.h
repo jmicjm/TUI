@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+
 #include <windows.h>
 
 #include "tui_utils.h"
@@ -12,6 +13,8 @@ namespace tui
 {
 	struct surface
 	{
+		friend class group;
+
 		private:		
 			std::vector<std::vector<console_char>> m_chars;
 			position m_position;
@@ -182,7 +185,7 @@ namespace tui
 		{
 			system("chcp 437");
 			console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-
+			//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 			//SetConsoleMode(console_handle, ENABLE_WRAP_AT_EOL_OUTPUT);
 
 			updateSize();
@@ -200,7 +203,7 @@ namespace tui
 
 		void clear()
 		{
-			//updateSize();
+			updateSize();
 			clear_buf();
 		}
 
@@ -215,7 +218,7 @@ namespace tui
 
 			KEYBOARD::buffer.clear();
 
-			updateSize();
+			//updateSize();
 
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(console_handle, &buffer_info);
@@ -270,7 +273,14 @@ namespace tui
 			{
 				resize(console_size);
 				//SetConsoleScreenBufferSize(console_handle, { (short)console_size.x, (short)console_size.y });
+
 				resized = true;
+
+				
+
+				
+				//HWND x = GetConsoleWindow();
+				//ShowScrollBar(x, SB_BOTH, FALSE);
 			}
 			else
 			{

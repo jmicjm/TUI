@@ -36,6 +36,19 @@ int main()
 		input_text.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 
+		tui::box bx0(tui::vec2i(50, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+		bx0.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::TOP)));
+
+		tui::box bx1(tui::vec2i(50, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+		bx1.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
+
+
+		tui::group grp(tui::vec2i(50, 50), tui::SIZE::PERCENTAGE);
+		grp.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
+
+		grp.addSurface(bx0);
+		grp.addSurface(bx1);
+
 		std::string t_s;
 
 		for (;;)
@@ -63,6 +76,9 @@ int main()
 		
 			input_text.setText(t_s);
 			con.draw(input_text);
+
+
+			con.draw(grp);
 
 			con.display();
 			
