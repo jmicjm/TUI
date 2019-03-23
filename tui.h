@@ -255,7 +255,7 @@ namespace tui
 	struct basic_text : surface
 	{
 		private:
-			std::string m_text;
+			console_string m_text;
 
 			void fill()
 			{
@@ -265,24 +265,24 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().x; j++)
 					{
-						if (i*getSize().x + j >= (int)m_text.size() - 1) { break; } //-1 avoid null termination
+						if (i*getSize().x + j >= m_text.size()) { break; } //-1 avoid null termination
 
 						setChar(m_text[i*getSize().x + j], vec2i(j, i));
 					}
 				}
 			}
 		public:
-			basic_text(vec2i size, int sizeType, std::string txt)
+			basic_text(vec2i size, int sizeType, console_string txt)
 			{
 				setSize(size, sizeType);
 				setText(txt);
 			}
-			void setText(std::string txt)
+			void setText(console_string txt)
 			{
 				m_text = txt;
 				fill();
 			}
-			std::string getText() { return m_text; }
+			console_string getText() { return m_text; }
 
 			//void draw_action() { fill(); }
 
@@ -295,15 +295,15 @@ namespace tui
 			basic_text m_text;
 			scroll<tui::SCROLL::DIRECTION::VERTICAL> m_scroll;
 
-			std::string m_unprepared_text;
-			std::string m_prepared_text;
+			console_string m_unprepared_text;
+			console_string m_prepared_text;
 
 			void fill()
 			{
-				std::string final_string;
+				console_string final_string;
 				for (int i = 0; i < m_text.getSize().x * m_text.getSize().y; i++)
 				{
-					if (m_text.getSize().x * m_scroll.getHandlePosition() + i <= m_prepared_text.size())
+					if (m_text.getSize().x * m_scroll.getHandlePosition() + i < m_prepared_text.size())
 					{
 						final_string.push_back(m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + i]);
 					}
@@ -316,7 +316,7 @@ namespace tui
 			}
 			void prepareText()
 			{
-				std::string prepared;
+				console_string prepared;
 				int pos = 0;
 
 				while (pos < m_unprepared_text.size())
@@ -330,8 +330,11 @@ namespace tui
 							&& m_unprepared_text[pos + 1] != (' ')
 							&& !isPunctuation(m_unprepared_text[pos + 1]))
 						{
-							if (m_unprepared_text[pos - 1] != ' ') { prepared += "-"; }
-							else { prepared += " "; }
+							if (m_unprepared_text[pos - 1] != ' ') {
+								prepared << m_unprepared_text[pos - 1].getColor();
+								prepared << "-"; 
+							}
+							else { prepared += ' '; }
 						}
 						else
 						{
@@ -340,10 +343,11 @@ namespace tui
 						}
 					}
 				}
+				//prepared += ' ';
 				m_prepared_text = prepared;
 			}
 		public:
-			text(vec2i size, int sizeType, std::string txt) 
+			text(vec2i size, int sizeType, console_string txt) 
 			: m_scroll(tui::vec2i(1, 100), tui::SIZE::PERCENTAGE_Y)
 			, m_text(vec2i(size.x-1, 100), tui::SIZE::PERCENTAGE_Y, " ")
 			{
@@ -366,14 +370,14 @@ namespace tui
 				}
 			}
 
-			void setText(std::string txt)
+			void setText(console_string txt)
 			{
 				m_unprepared_text = txt;
 				adjustSizes();
 				fill();
 			}
 
-			std::string getText() { return m_unprepared_text; }
+			console_string getText() { return m_unprepared_text; }
 			int getNumberOfLines()
 			{
 				return ceil(m_prepared_text.size() / (m_text.getSize().x * 1.f));

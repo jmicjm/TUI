@@ -26,8 +26,18 @@ int main()
 		box1.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 		box1.setColor(tui::console_color(tui::COLOR::MAGENTA, tui::COLOR::BLACK));
 
-		std::string  ipsum = 
-		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+		//std::string  ipsum = 
+		//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+
+		tui::console_string ipsum;
+		ipsum << tui::COLOR::CYAN;
+		ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+		ipsum << tui::COLOR::MAGENTA;
+		ipsum << "Vestibulum feugiat egestas urna non euismod. "; 
+		ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
+		ipsum << "Maecenas "; 
+		ipsum << tui::COLOR::MAGENTA;
+		ipsum << "magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
 		tui::text text(tui::vec2i(18, 50), tui::SIZE::PERCENTAGE_Y, ipsum);
 		text.setPosition(tui::position(tui::vec2i(-1, 1), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
@@ -58,6 +68,13 @@ int main()
 		bx0.setColor(tui::console_color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
 
 		std::string t_s;
+
+		tui::console_string con_str("test");
+
+		//con_str << tui::COLOR::BLUE;
+		con_str = "test";
+
+
 
 		for (;;)
 		{
@@ -99,6 +116,7 @@ int main()
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
 			std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
+			std::cout << con_str[con_str.size()-1];
 		//	std::cout << ""
 			
 			//std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;

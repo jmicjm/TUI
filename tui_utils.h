@@ -38,6 +38,7 @@ namespace tui
 			vec2i getRelativePoint() { return m_relative; }
 	};
 
+	//4bit RGBI
 	struct console_color
 	{
 		private:
@@ -76,13 +77,106 @@ namespace tui
 			void setColor(console_color color) { m_color = color; }
 			char getChar() { return m_character; }
 			console_color getColor() { return m_color; }
+			operator char() { return m_character; }
 	};
 
 	struct console_string
 	{
+	private:
 		std::vector<console_char> m_console_string;
 		int m_selected_color;
 
+		
+	public:
+		console_string(){}
+		console_string(const char* str) : console_string(std::string(str)) {}
+		console_string(std::string string) : console_string(string, console_color()) {}
+		console_string(std::string string, console_color color)
+		{
+			m_console_string.resize(string.size());
+
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].setChar(string[i]);
+				m_console_string[i].setColor(color);
+			}
+		}
+
+		void appendString(console_string string)
+		{
+			for (int i = 0; i < string.size(); i++)
+			{
+				m_console_string.push_back(string[i]);
+			}
+		}
+		void assignString(console_string string)
+		{
+			m_console_string.resize(0);
+
+			appendString(string);
+		}
+
+		console_char &operator[] (int i)
+		{
+			return m_console_string[i];
+		}
+
+		void operator<< (console_color color)
+		{
+			m_selected_color = color;
+		}
+
+		void operator<< (console_string string)
+		{
+			for (int i = 0; i < string.size(); i++)
+			{
+				m_console_string.push_back(console_char(string[i], m_selected_color));
+			}
+		}
+
+		void operator= (console_string string)
+		{
+			assignString(string);
+		}
+
+		void operator= (const char* str)
+		{
+			std::string string(str);
+
+			assignString(str);
+		}
+
+		void operator+=(console_string string)
+		{
+			appendString(string);
+		}
+
+		void operator+=(console_char con_char)
+		{
+			m_console_string.push_back(con_char);
+		}
+
+		std::string getStdString()
+		{
+			std::string string;
+			string.resize(m_console_string.size());
+
+			for (int i = 0; i < string.size(); i++)
+			{
+				string[i] = m_console_string[i];
+			}
+
+			return string;
+		}
+
+		operator std::string() { return getStdString(); }
+
+		void push_back(console_char con_char)
+		{
+			m_console_string.push_back(con_char);
+		}
+
+		int size() { return m_console_string.size(); }
 
 	};
 }
