@@ -424,7 +424,7 @@ namespace tui
 		{
 			for (int i = 0; i < m_surfaces.size(); i++)
 			{
-				if(m_surfaces[i] = &surf)
+				if(m_surfaces[i] == &surf)
 				{
 					m_surfaces.erase(m_surfaces.begin() + i);
 				}

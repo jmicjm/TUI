@@ -36,11 +36,14 @@ int main()
 		input_text.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 
-		tui::box bx0(tui::vec2i(50, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+		tui::box bx0(tui::vec2i(33, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
 		bx0.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::TOP)));
 
-		tui::box bx1(tui::vec2i(50, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
-		bx1.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
+		tui::box bx1(tui::vec2i(34, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+		bx1.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::TOP)));
+
+		tui::box bx2(tui::vec2i(33, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+		bx2.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
 
 		tui::group grp(tui::vec2i(50, 50), tui::SIZE::PERCENTAGE);
@@ -48,6 +51,11 @@ int main()
 
 		grp.addSurface(bx0);
 		grp.addSurface(bx1);
+		grp.addSurface(bx2);
+
+		grp.removeSurface(bx1);
+
+		bx0.setColor(tui::console_color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
 
 		std::string t_s;
 
