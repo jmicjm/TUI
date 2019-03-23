@@ -299,7 +299,7 @@ namespace tui
 							is_key_hold[i] = false;
 						}
 					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+					std::this_thread::sleep_for(std::chrono::milliseconds(10));
 				}
 			}
 
@@ -373,9 +373,9 @@ namespace tui
 		{
 			for (int i = 0; i < buffer.size(); i++)
 			{
-				if (buffer[i] == true)
+				if (key_string[i].value == key)		
 				{
-					if (key_string[i].value == key)
+					if (buffer[i] == true)
 					{
 						return true;
 					}
