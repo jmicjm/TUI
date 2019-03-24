@@ -242,7 +242,11 @@ namespace tui
 			{UP, ""},
 			{DOWN, ""},
 			{LEFT, ""},
-			{RIGHT,""}
+			{RIGHT,""},
+
+			{CTRL, "CTRL"},
+			{LCTRL, ""},
+			{RCTRL,""}
 		};
 
 		
@@ -299,7 +303,7 @@ namespace tui
 							is_key_hold[i] = false;
 						}
 					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(10));
+					std::this_thread::sleep_for(std::chrono::milliseconds(20));
 				}
 			}
 

@@ -20,11 +20,11 @@ int main()
 		rect.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
 		rect.setChar(tui::console_char(219, tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
 
-		tui::box mainBox(tui::vec2i(100, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::MEDIUM);
+		tui::box mainBox({ 100, 100 }, tui::SIZE::PERCENTAGE, tui::THICKNESS::MEDIUM);
 
 		tui::box box1(tui::vec2i(20, 100), tui::SIZE::PERCENTAGE_Y, tui::THICKNESS::THIN);
 		box1.setPosition(tui::position(tui::vec2i(0, 0), tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
-		box1.setColor(tui::console_color(tui::COLOR::MAGENTA, tui::COLOR::BLACK));
+		box1.setColor({ tui::COLOR::MAGENTA, tui::COLOR::BLACK });
 
 		//std::string  ipsum = 
 		//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
@@ -75,11 +75,18 @@ int main()
 		con_str = "test";
 
 
+		tui::navigation_group act_group;
+		act_group.activate();
+		act_group.setKeyComboNext({ tui::KEYBOARD::CTRL, tui::KEYBOARD::RIGHT });
+		act_group.addElement(text);
+		act_group.addElement(input_text);
+
+
 
 		for (;;)
 		{
 
-			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::RIGHT)) {
+			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::CTRL)) {
 				rect.move(tui::vec2i(1, 0));
 			}
 			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::LEFT)) {
@@ -89,6 +96,9 @@ int main()
 
 			auto start = std::chrono::steady_clock::now();
 			con.clear();
+
+			act_group.update();
+
 			con.draw(rect);
 
 			con.draw(box1);
@@ -109,21 +119,13 @@ int main()
 			
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
-			
-			//tui::KEYBOARD::clearBuffer();
-
+	
 			 
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
 			std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
-			std::cout << con_str[con_str.size()-1];
-		//	std::cout << ""
-			
-			//std::cout << "caps " << tui::KEYBOARD::isCapsLockEnabled() << std::endl;
-			//std::cout << "resized: " << con.wasResized() << std::endl;
-			//std::cout << t_s << std::endl;
-		//	std::cout << tui::KEYBOARD::keyboardBuffer.size() << std::endl;
-			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::cout << text.isActive();
+	
 		}
 	
 	return 0;

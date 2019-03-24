@@ -11,6 +11,102 @@
 
 namespace tui
 {
+	struct active_element
+	{
+	private:
+		bool active = false;
+	public:
+		virtual void activation_action() {}
+		virtual void disactivation_action() {}
+
+		void activate() 
+		{ 
+			active = true; 
+			activation_action();
+		}
+		void disactivate() 
+		{ 
+			active = false; 
+			disactivation_action();
+		}
+		bool isActive() { return active; }
+	};
+
+	struct navigation_group : active_element
+	{
+	private:
+		std::vector<int> m_key_combo_next;
+		std::vector<active_element*> m_elements;
+
+		bool m_was_next_pressed = false;
+
+		int m_selected = -1;
+
+		time_frame m_time_limit;
+
+
+		void disactivateAll()
+		{
+			for (int i = 0; i < m_elements.size(); i++)
+			{
+				m_elements[i]->disactivate();
+			}
+		}
+
+	public:
+
+		navigation_group() : m_time_limit(std::chrono::milliseconds(1000)) {}
+
+		void setKeyComboNext(std::vector<int> combo)
+		{
+			m_key_combo_next = combo;
+		}
+		void addElement(active_element &element)
+		{
+			m_elements.push_back(&element);
+		}
+
+		void update()
+		{
+			if (isActive())
+			{
+
+				int act = 0;
+
+				for (int i = 0; i < m_key_combo_next.size(); i++)
+				{
+					if (KEYBOARD::isKeyPressed(m_key_combo_next[i], TUI_BUFFERED_INPUT))
+					{
+						act++;
+					}
+				}
+				if (act == m_key_combo_next.size())
+				{
+					m_was_next_pressed = true;
+				}
+
+				if (m_time_limit.isEnd())
+				{
+					
+
+					if (m_was_next_pressed)
+					{
+						disactivateAll();
+
+						if (m_selected < (int)m_elements.size() - 1) { m_selected++; }
+						else { m_selected = 0; }
+						m_elements[m_selected]->activate();
+
+						m_was_next_pressed = false;
+					}
+				}
+			}
+		}
+
+		void disactivation_action() { disactivateAll(); }
+
+	};
+
 	struct surface
 	{
 		friend class group;
@@ -146,6 +242,48 @@ namespace tui
 			operator surface() { return *this; }
 	};
 
+	struct group : surface
+	{
+		std::vector<surface*> m_surfaces;
+
+
+		group(vec2i size, int size_type)
+		{
+			setSize(size, size_type);
+		}
+
+
+		void addSurface(surface &surf)
+		{
+			m_surfaces.push_back(&surf);
+		}
+
+		void removeSurface(surface &surf)
+		{
+			for (int i = 0; i < m_surfaces.size(); i++)
+			{
+				if (m_surfaces[i] == &surf)
+				{
+					m_surfaces.erase(m_surfaces.begin() + i);
+				}
+			}
+		}
+
+		void draw_action()
+		{
+			makeTransparent();
+
+			for (int i = 0; i < m_surfaces.size(); i++)
+			{
+				insertSurface(*m_surfaces[i]);
+			}
+		}
+
+		void resize_action()
+		{
+
+		}
+	};
 
 
 
@@ -177,11 +315,11 @@ namespace tui
 		HANDLE console_handle;
 		vec2i m_last_size;
 		bool resized;
-		std::chrono::milliseconds frame_time = std::chrono::milliseconds(1000) / 30;
-		std::chrono::steady_clock::time_point last_frame_time;
+
+		time_frame fps_control;
 
 	public:
-		console()
+		console() : fps_control(std::chrono::milliseconds(1000) / 30)
 		{
 			system("chcp 437");
 			console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -190,15 +328,13 @@ namespace tui
 
 			updateSize();
 			hidePrompt();
-
-			last_frame_time = std::chrono::steady_clock::now();
 		}
 
 		bool wasResized() { return resized; }
 
 		void setFPSlimit(int fps)
 		{
-			frame_time = std::chrono::milliseconds(1000) / fps;
+			fps_control.setFrameTime(std::chrono::milliseconds(1000) / fps);
 		}
 
 		void clear()
@@ -209,12 +345,7 @@ namespace tui
 
 		void display()
 		{
-			if (std::chrono::steady_clock::now() - last_frame_time < frame_time)
-			{
-				std::this_thread::sleep_until(last_frame_time + frame_time);
-			}
-
-			last_frame_time = std::chrono::steady_clock::now();
+			fps_control.sleepUntilEnd();
 
 			KEYBOARD::buffer.clear();
 
