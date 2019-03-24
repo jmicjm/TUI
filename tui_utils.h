@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 
 namespace tui 
@@ -177,6 +179,58 @@ namespace tui
 		}
 
 		int size() { return m_console_string.size(); }
+
+	};
+
+
+	struct time_frame
+	{
+	private:
+		std::chrono::milliseconds m_frame_time;
+		std::chrono::steady_clock::time_point m_frame_start_point;
+		std::chrono::steady_clock::time_point m_frame_end_point;
+
+		void start()
+		{
+			m_frame_start_point = std::chrono::steady_clock::now();
+		}
+		void stop()
+		{
+			m_frame_end_point = std::chrono::steady_clock::now();
+		}
+		void restart()
+		{
+			stop();
+			start();
+		}
+
+	public:
+		time_frame(std::chrono::milliseconds frame_time)
+		{
+			setFrameTime(frame_time);
+			start();
+		}
+
+		void setFrameTime(std::chrono::milliseconds frame_time)
+		{
+			m_frame_time = frame_time;
+		}
+
+		bool isEnd()
+		{
+			if (std::chrono::steady_clock::now() - m_frame_start_point >= m_frame_time)
+			{
+				restart();
+				return true; 
+			}
+			else { return false; }
+		}
+
+		void sleepUntilEnd()
+		{
+			std::this_thread::sleep_until(m_frame_start_point + m_frame_time);
+			restart();
+		}
 
 	};
 }
