@@ -55,7 +55,7 @@ namespace tui
 
 	public:
 
-		navigation_group() : m_time_limit(std::chrono::milliseconds(1000)) {}
+		navigation_group() : m_time_limit(std::chrono::milliseconds(200)) {}
 
 		void setKeyComboNext(std::vector<int> combo)
 		{
@@ -191,9 +191,11 @@ namespace tui
 
 				int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
 				x_origin += obj.getPosition().getOffset().x;
+				x_origin += obj.getPosition().getPercentageOffset().x * getSize().x/ 100.f;
 
 				int y_origin = getSize().y * (obj.getPosition().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPosition().getRelativePoint().y / 100.f);
 				y_origin += obj.getPosition().getOffset().y;
+				y_origin += obj.getPosition().getPercentageOffset().y * getSize().y /100.f;
 
 				for (int i = 0; i < obj.getSize().x; i++)
 				{

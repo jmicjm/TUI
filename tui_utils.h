@@ -19,24 +19,43 @@ namespace tui
 			x = X;
 			y = Y;
 		}
+
+		bool operator==(vec2i r)
+		{
+			if (x == r.x && y == r.y)
+			{ return true; }
+			else { return false; }
+		}
+		bool operator!=(vec2i r)
+		{
+			if (x != r.x || y != r.y)
+			{ return true; }
+			else { return false; }
+		}
 	};
 
 	struct position
 	{
 		private:
 			vec2i m_offset;
+			vec2i m_percentage_offset;
 			vec2i m_relative;
 		public:
-			position() : position(vec2i(0, 0), vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
-			position(vec2i offset): position(offset, vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
-			position(vec2i offset, vec2i relative_point)
+			position() : position(vec2i(0, 0), vec2i(0,0), vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
+			position(vec2i offset): position(offset, vec2i(0,0), vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
+			position(vec2i offset, vec2i percentage_offset) : position(offset, percentage_offset, vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
+			position(vec2i offset, vec2i percentage_offset, vec2i relative_point)
 			{
 				setOffset(offset);
 				setRelativePoint(relative_point);
+				setPercentageOffset(percentage_offset);
 			}
 			void setOffset(vec2i offset) { m_offset = offset; }
+			void setPercentageOffset(vec2i percentage_offset) { m_percentage_offset = percentage_offset; }
 			void setRelativePoint(vec2i relative) { m_relative = relative; }
+
 			vec2i getOffset() { return m_offset; }
+			vec2i getPercentageOffset() { return m_percentage_offset; }
 			vec2i getRelativePoint() { return m_relative; }
 	};
 

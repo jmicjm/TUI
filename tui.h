@@ -10,13 +10,14 @@
 
 namespace tui 
 {
-	struct rectangle : surface
+	struct rectangle : surface, active_element
 	{
 		private:
 			console_char m_character;
 
 			void fill()
 			{
+
 				for (int i = 0; i < getSize().x; i++)
 				{
 					for (int j = 0; j < getSize().y; j++) {
@@ -31,6 +32,17 @@ namespace tui
 				fill();
 			}
 			void resize_action() { fill(); }
+			void activation_action()
+			{
+				m_character.setColor(tui::COLOR::GREEN);
+				fill();
+				
+			}
+			void disactivation_action()
+			{
+				m_character.setColor(tui::COLOR::RED);
+				fill();
+			}
 	};
 	
 	struct box : surface
