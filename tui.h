@@ -177,9 +177,8 @@ namespace tui
 				}
 			}
 		public:
-			scroll(vec2i size, int size_type)
+			scroll(int length, int size_type)
 			{
-				setSize(size, size_type);
 				switch (direction)
 				{
 				case SCROLL::DIRECTION::HORIZONTAL:
@@ -191,6 +190,73 @@ namespace tui
 					m_line = 179;
 					break;
 				}
+
+				setSize(length, size_type);
+			}
+
+			void setSize(int length, int size_type)
+			{
+				vec2i size;
+				int type;
+				switch (direction)
+				{
+				case SCROLL::DIRECTION::HORIZONTAL:
+					size = { length,1 };
+					if (size_type == SIZE::PERCENTAGE_X || size_type == SIZE::PERCENTAGE)
+					{
+						type = SIZE::PERCENTAGE_X;
+					}
+					else { type = SIZE::CONSTANT; }
+					break;
+				case SCROLL::DIRECTION::VERTICAL:
+					size = { 1, length };
+					if (size_type == SIZE::PERCENTAGE_Y || size_type == SIZE::PERCENTAGE)
+					{
+						type = SIZE::PERCENTAGE_Y;
+					}
+					else { type = SIZE::CONSTANT; }
+					break;
+				}
+				surface::setSize(size, type);
+			}
+
+			void modifySize(int length)
+			{
+				switch (direction)
+				{
+				case SCROLL::DIRECTION::HORIZONTAL:
+					surface::modifySize({ length, 1 });
+					break;
+				case SCROLL::DIRECTION::VERTICAL:
+					surface::modifySize({1, length});
+
+					break;
+				}
+			}
+
+			void setSizeType(int size_type)
+			{
+				int type;
+				switch (direction)
+				{
+				case SCROLL::DIRECTION::HORIZONTAL:
+					if (size_type == SIZE::PERCENTAGE_X || size_type == SIZE::PERCENTAGE)
+					{
+						type = SIZE::PERCENTAGE_X;
+					}
+					else { type = SIZE::CONSTANT; }
+
+					break;
+				case SCROLL::DIRECTION::VERTICAL:
+					if (size_type == SIZE::PERCENTAGE_Y || size_type == SIZE::PERCENTAGE)
+					{
+						type = SIZE::PERCENTAGE_Y;
+					}
+					else { type = SIZE::CONSTANT; }
+
+					break;
+				}
+				surface::setSizeType(type);
 			}
 
 			bool isNeeded()
@@ -250,6 +316,8 @@ namespace tui
 				adjustHandlePositionRespectLenght();
 				fill();
 			}
+
+
 	};
 
 
@@ -361,23 +429,23 @@ namespace tui
 			}
 		public:
 			text(vec2i size, int sizeType, console_string txt) 
-			: m_scroll(vec2i(1, 100), SIZE::PERCENTAGE_Y)
+			: m_scroll(100, SIZE::PERCENTAGE_Y)
 			, m_text(vec2i(size.x-1, 100), SIZE::PERCENTAGE_Y, " ")
 			{
 				setSize(size, sizeType);
 				setText(txt);
-
+				
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 			}
 
 			void adjustSizes()
 			{
-				m_text.resize(vec2i(getSize().x, getSize().y));
+				m_text.modifySize(vec2i(getSize().x, 100));
 				prepareText();
 				m_scroll.setLenght(getNumberOfLines());
 				if (m_scroll.isNeeded())
 				{
-					m_text.resize(vec2i(getSize().x - 1, getSize().y));
+					m_text.modifySize(vec2i(getSize().x - 1, 100));
 					prepareText();
 					m_scroll.setLenght(getNumberOfLines());
 				}

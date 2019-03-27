@@ -116,6 +116,20 @@ namespace tui
 			position m_position;
 			vec2i percentageSize;
 			int sizeType;
+
+			void resize(vec2i size)
+			{
+				if (size.x != getSize().x || size.y != getSize().y)
+				{
+					m_chars.resize(size.x);
+					for (int i = 0; i < m_chars.size(); i++)
+					{
+						m_chars[i].resize(size.y);
+					}
+					makeTransparent();
+					resize_action();
+				}
+			}
 			
 		protected:
 			virtual void resize_action() {}
@@ -140,18 +154,11 @@ namespace tui
 				m_position.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
 			}
 
-			void resize(vec2i size)
+			void modifySize(vec2i size)
 			{
-				if (size.x != getSize().x || size.y != getSize().y)
-				{
-					m_chars.resize(size.x);
-					for (int i = 0; i < m_chars.size(); i++)
-					{
-						m_chars[i].resize(size.y);
-					}
-					makeTransparent();
-					resize_action();
-				}
+				percentageSize = size;
+
+				resize(size);
 			}
 			
 			void setSize(vec2i size, int sizeType)
@@ -296,7 +303,7 @@ namespace tui
 
 		console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
 
-		void resize(vec2i size) { m_buffer.resize(size); }
+		void resize(vec2i size) { m_buffer.modifySize(size); }
 
 	public:
 		vec2i getSize() { return m_buffer.getSize(); }
