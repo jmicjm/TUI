@@ -320,19 +320,6 @@ namespace tui
 
 	};
 
-
-	bool isPunctuation(char symbol)
-	{
-		if(    symbol == '.'
-			|| symbol == ','
-			|| symbol == ':'
-			|| symbol == ';'
-			|| symbol == '!'
-			|| symbol == '?')
-			 { return true; }
-		else { return false; }
-	}
-
 	struct basic_text : surface
 	{
 		private:
