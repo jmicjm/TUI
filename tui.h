@@ -122,7 +122,7 @@ namespace tui
 	struct scroll : surface
 	{
 		private:
-			console_char m_slider = 186;
+			console_char m_slider = 186; //handle
 			console_char m_line = 179;
 			int m_lenght = 0;
 			int m_handle_position = 0;
@@ -192,6 +192,18 @@ namespace tui
 				}
 
 				setSize(length, size_type);
+			}
+
+			void setChars(console_char slider, console_char line)
+			{
+				m_slider = slider;
+				m_line = line;
+				fill();
+			}
+			void setColors(console_color slider, console_color line)
+			{
+				m_slider.setColor(slider);
+				m_line.setColor(line);
 			}
 
 			void setSize(int length, int size_type)
@@ -310,7 +322,7 @@ namespace tui
 				//fill(); 
 			}
 
-			void draw_action() { update(); }
+			void draw_action() { fill(); }
 			void resize_action() 
 			{
 				adjustHandlePositionRespectLenght();
@@ -463,6 +475,8 @@ namespace tui
 						fill();
 					}
 				}
+
+
 			}
 
 			void draw_action() 
@@ -474,6 +488,17 @@ namespace tui
 				updateSurfaceSize(m_scroll);
 				adjustSizes();
 				fill();
+			}
+
+			void activation_action() 
+			{
+				m_scroll.setColors({COLOR::GREEN}, {COLOR::BLUE});
+				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			}
+			void disactivation_action() 
+			{
+				m_scroll.setColors({COLOR::RED}, {COLOR::LIGHTCYAN});
+				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
 	};
 
