@@ -33,6 +33,8 @@ namespace tui
 			THICK
 		};
 
+		
+
 	enum COLOR
 	{
 		BLACK = 0,

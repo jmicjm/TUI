@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <chrono>
 #include <thread>
 
@@ -59,10 +60,35 @@ namespace tui
 			vec2i getRelativePoint() { return m_relative; }
 	};
 
+	struct RGB_color
+	{
+		int r, g, b;
+
+		RGB_color() {}
+		RGB_color(int R, int G, int B)
+		{
+			r = R;
+			g = G;
+			b = B;
+		}
+	};
+
+	static const std::array<RGB_color, 16> c =
+	{
+		{
+	   RGB_color(12,12,12),
+	   RGB_color(12,12,12)
+	   }
+	};
+
 	//4bit RGBI
 	struct console_color
 	{
 		private:
+
+			
+
+
 			int m_foreground;
 			int m_background;
 		public:

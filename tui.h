@@ -34,13 +34,13 @@ namespace tui
 			void resize_action() { fill(); }
 			void activation_action()
 			{
-				m_character.setColor(tui::COLOR::GREEN);
+				m_character.setColor(COLOR::GREEN);
 				fill();
 				
 			}
 			void disactivation_action()
 			{
-				m_character.setColor(tui::COLOR::RED);
+				m_character.setColor(COLOR::RED);
 				fill();
 			}
 	};
@@ -131,10 +131,10 @@ namespace tui
 			int getSurfaceSize() {
 				switch (direction)
 				{
-				case tui::SCROLL::DIRECTION::HORIZONTAL:
+				case SCROLL::DIRECTION::HORIZONTAL:
 					return getSize().x;
 					break; 
-				case tui::SCROLL::DIRECTION::VERTICAL:
+				case SCROLL::DIRECTION::VERTICAL:
 					return getSize().y;
 					break;
 				}
@@ -146,10 +146,10 @@ namespace tui
 				{
 					switch (direction)
 					{
-					case tui::SCROLL::DIRECTION::HORIZONTAL:
+					case SCROLL::DIRECTION::HORIZONTAL:
 						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(i, 0)); }
 						break;
-					case tui::SCROLL::DIRECTION::VERTICAL:
+					case SCROLL::DIRECTION::VERTICAL:
 						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(0, i)); }
 						break;
 					}
@@ -163,10 +163,10 @@ namespace tui
 
 					switch (direction)
 					{
-					case tui::SCROLL::DIRECTION::HORIZONTAL:
+					case SCROLL::DIRECTION::HORIZONTAL:
 						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(i + handle_position, 0)); }		
 						break;
-					case tui::SCROLL::DIRECTION::VERTICAL:
+					case SCROLL::DIRECTION::VERTICAL:
 						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
 						break;
 					}				
@@ -182,11 +182,11 @@ namespace tui
 				setSize(size, size_type);
 				switch (direction)
 				{
-				case tui::SCROLL::DIRECTION::HORIZONTAL:
+				case SCROLL::DIRECTION::HORIZONTAL:
 					m_slider = 205;
 					m_line = 196;
 					break;
-				case tui::SCROLL::DIRECTION::VERTICAL:
+				case SCROLL::DIRECTION::VERTICAL:
 					m_slider = 186;
 					m_line = 179;
 					break;
@@ -278,7 +278,7 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().x; j++)
 					{
-						if (i*getSize().x + j >= m_text.size()) { break; } //-1 avoid null termination
+						if (i*getSize().x + j >= m_text.size()) { break; } 
 
 						setChar(m_text[i*getSize().x + j], vec2i(j, i));
 					}
@@ -306,7 +306,7 @@ namespace tui
 	{
 		private:
 			basic_text m_text;
-			scroll<tui::SCROLL::DIRECTION::VERTICAL> m_scroll;
+			scroll<SCROLL::DIRECTION::VERTICAL> m_scroll;
 
 			console_string m_unprepared_text;
 			console_string m_prepared_text;
@@ -361,13 +361,13 @@ namespace tui
 			}
 		public:
 			text(vec2i size, int sizeType, console_string txt) 
-			: m_scroll(tui::vec2i(1, 100), tui::SIZE::PERCENTAGE_Y)
-			, m_text(vec2i(size.x-1, 100), tui::SIZE::PERCENTAGE_Y, " ")
+			: m_scroll(vec2i(1, 100), SIZE::PERCENTAGE_Y)
+			, m_text(vec2i(size.x-1, 100), SIZE::PERCENTAGE_Y, " ")
 			{
 				setSize(size, sizeType);
 				setText(txt);
 
-				m_scroll.setPosition(tui::position(tui::vec2i(0, 0), vec2i(POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP)));
+				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 			}
 
 			void adjustSizes()

@@ -213,7 +213,6 @@ namespace tui
 				}
 			}
 
-
 			void makeTransparent()
 			{
 				for (int i = 0; i < getSize().x; i++)
@@ -241,7 +240,7 @@ namespace tui
 			vec2i getSize() { return vec2i(m_chars.size(), m_chars[0].size()); }
 			console_char getChar(vec2i position) { return m_chars[position.x][position.y]; }
 			
-			operator surface() { return *this; }
+		
 	};
 
 	struct group : surface
@@ -314,29 +313,28 @@ namespace tui
 	struct console : console_buffer
 	{
 	private:
-		HANDLE console_handle;
+		HANDLE m_console_handle;
 		vec2i m_last_size;
-		bool resized;
-
-		time_frame fps_control;
+		bool m_resized;
+		time_frame m_fps_control;
 
 	public:
-		console() : fps_control(std::chrono::milliseconds(1000) / 30)
+		console() : m_fps_control(std::chrono::milliseconds(1000) / 30)
 		{
 			system("chcp 437");
-			console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+			m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 			//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-			//SetConsoleMode(console_handle, ENABLE_WRAP_AT_EOL_OUTPUT);
+			//SetConsoleMode(m_console_handle, ENABLE_WRAP_AT_EOL_OUTPUT);
 
 			updateSize();
 			hidePrompt();
 		}
 
-		bool wasResized() { return resized; }
+		bool wasm_resized() { return m_resized; }
 
 		void setFPSlimit(int fps)
 		{
-			fps_control.setFrameTime(std::chrono::milliseconds(1000) / fps);
+			m_fps_control.setFrameTime(std::chrono::milliseconds(1000) / fps);
 		}
 
 		void clear()
@@ -347,16 +345,13 @@ namespace tui
 
 		void display()
 		{
-			fps_control.sleepUntilEnd();
+			m_fps_control.sleepUntilEnd();
 
 			KEYBOARD::buffer.clear();
 
-			//updateSize();
-
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-			GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
-
 
 			std::vector<WORD> temp_attr;
 			std::vector<char> temp_char;
@@ -379,15 +374,14 @@ namespace tui
 			}
 			COORD coord = { 0, 0 };
 			DWORD useless = 0;
-			SetConsoleCursorPosition(console_handle, coord); // w/o 10x slower
+			SetConsoleCursorPosition(m_console_handle, coord); // w/o 10x slower
 
-			WriteConsoleOutputAttribute(console_handle, temp_attr.data(), console_size.x*getSize().y, coord, &useless);
-			WriteConsoleOutputCharacter(console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
+			WriteConsoleOutputAttribute(m_console_handle, temp_attr.data(), console_size.x*getSize().y, coord, &useless);
+			WriteConsoleOutputCharacter(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
 
 
 			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
-			SetConsoleCursorPosition(console_handle, coord);
-
+			SetConsoleCursorPosition(m_console_handle, coord);
 			hidePrompt();
 		}
 
@@ -397,45 +391,29 @@ namespace tui
 		void updateSize()
 		{
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-			GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1, buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1);
-			//vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
-
 
 			if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
 			{
 				resize(console_size);
-				//SetConsoleScreenBufferSize(console_handle, { (short)console_size.x, (short)console_size.y });
-
-				resized = true;
-
-				
-
-				
-				//HWND x = GetConsoleWindow();
-				//ShowScrollBar(x, SB_BOTH, FALSE);
+				m_resized = true;
 			}
-			else
-			{
-				resized = false;
-			}
-			//COORD = {}
-			
+			else { m_resized = false; }
 
 			m_last_size = console_size;
-
 		}
 
-		void setGlobalColor(int color) { SetConsoleTextAttribute(console_handle, color); }
+		void setGlobalColor(int color) { SetConsoleTextAttribute(m_console_handle, color); }
 
 		void hidePrompt()
 		{
 			CONSOLE_CURSOR_INFO cursor_info;
-			SetConsoleCursorInfo(console_handle, &cursor_info);
+			SetConsoleCursorInfo(m_console_handle, &cursor_info);
 			cursor_info.bVisible = false;
 			cursor_info.dwSize = 1;
 
-			SetConsoleCursorInfo(console_handle, &cursor_info);
+			SetConsoleCursorInfo(m_console_handle, &cursor_info);
 		}
 	};
 }
