@@ -114,17 +114,26 @@ namespace tui
 		private:		
 			std::vector<std::vector<console_char>> m_chars;
 			position m_position;
-			vec2i percentageSize;
-			int sizeType;
+			//vec2i percentageSize;
+			surface_size size_info;
+			//int sizeType;
 
 			void resize(vec2i size)
 			{
 				if (size.x != getSize().x || size.y != getSize().y)
 				{
-					m_chars.resize(size.x);
-					for (int i = 0; i < m_chars.size(); i++)
+					if (size.x > 0 && size.y > 0)
 					{
-						m_chars[i].resize(size.y);
+						m_chars.resize(size.x);
+						for (int i = 0; i < m_chars.size(); i++)
+						{
+							m_chars[i].resize(size.y);
+						}
+					}
+					else
+					{
+						m_chars.resize(1);
+						m_chars[0].resize(1);
 					}
 					makeTransparent();
 					resize_action();
@@ -142,7 +151,7 @@ namespace tui
 
 			virtual void draw_action() {}
 
-			void setSizeType(int type) { sizeType = type; }
+			//void setSizeType(int type) { sizeType = type; }
 
 			void setChar(console_char character, vec2i position) { m_chars[position.x][position.y] = character; }
 			console_char getchar(vec2i position) { return m_chars[position.x][position.y]; }
@@ -154,24 +163,43 @@ namespace tui
 				m_position.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
 			}
 
-			void modifySize(vec2i size)
+			/*void modifySize(vec2i size)
 			{
 				percentageSize = size;
 
 				resize(size);
-			}
+			}*/
 			
-			void setSize(vec2i size, int sizeType)
+			void setSize(surface_size size)
 			{
-				setSizeType(sizeType);
-				percentageSize = size;
+				size_info = size;
 
-				resize(size);
+				//resize(size.getIntegerSize());
+
+				vec2i perc_size =size.getPercentagesize();
+				vec2i int_size = size.getIntegerSize();
+
+				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
+				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
+
+				if (x < 1) { x = 1; }
+				if (y < 1) { y = 1; }
+
+				resize({ x,y });
+
 			}
 
 			void updateSurfaceSize(surface &obj)
 			{
-				vec2i perc_size = obj.getPercentageSize();
+				vec2i perc_size = obj.getSizeInfo().getPercentagesize();
+				vec2i int_size = obj.getSizeInfo().getIntegerSize();
+
+				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
+				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
+
+				obj.resize({x,y});
+
+				/*vec2i perc_size = obj.getPercentageSize();
 				switch (obj.getSizeType())
 				{
 				case SIZE::CONSTANT:
@@ -186,7 +214,7 @@ namespace tui
 				case SIZE::PERCENTAGE_Y:
 					obj.resize(vec2i(obj.getSize().x, (perc_size.y / 100.f) * getSize().y));
 					break;
-				}
+				}*/
 			}
 
 			void insertSurface(surface &obj)
@@ -241,10 +269,11 @@ namespace tui
 				}
 			}
 
-			int getSizeType() { return sizeType; }
-			vec2i getPercentageSize() { return percentageSize; }
+//int getSizeType() { return sizeType; }
+	//		vec2i getPercentageSize() { return percentageSize; }
 			position getPosition() { return m_position; }
 			vec2i getSize() { return vec2i(m_chars.size(), m_chars[0].size()); }
+			surface_size getSizeInfo() { return size_info; }
 			console_char getChar(vec2i position) { return m_chars[position.x][position.y]; }
 			
 		
@@ -255,9 +284,9 @@ namespace tui
 		std::vector<surface*> m_surfaces;
 
 
-		group(vec2i size, int size_type)
+		group(surface_size size)
 		{
-			setSize(size, size_type);
+			setSize(size);
 		}
 
 
@@ -301,9 +330,9 @@ namespace tui
 	protected:
 		surface m_buffer;
 
-		console_buffer() { m_buffer.setSizeType(SIZE::CONSTANT); }
+		console_buffer() {}
 
-		void resize(vec2i size) { m_buffer.modifySize(size); }
+		void resize(vec2i size) { m_buffer.setSize(size); }
 
 	public:
 		vec2i getSize() { return m_buffer.getSize(); }

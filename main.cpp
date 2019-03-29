@@ -10,45 +10,49 @@
 
 int main()
 {
+
+	tui::console con;
+	con.setTitle("tytul");
+	con.setFPSlimit(10);
+
+	tui::rectangle rect;
+	rect.setSize({{ -2,-2 }, { 20,20 }});
+	rect.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
+	rect.setChar(tui::console_char(219, tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
+
+	tui::box mainBox({ {0,0}, { 100, 100 } }, tui::THICKNESS::MEDIUM);
 	
-		tui::console con;
-		con.setTitle("tytul");
-		con.setFPSlimit(10);
+	tui::box box1({ {20,0}, { 0, 100 } }, tui::THICKNESS::THIN);
+	box1.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
+	box1.setColor({ tui::COLOR::MAGENTA, tui::COLOR::BLACK });
 
-		tui::rectangle rect;
-		rect.setSize(tui::vec2i(10, 5), tui::SIZE::CONSTANT);
-		rect.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-		rect.setChar(tui::console_char(219, tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
+	//std::string  ipsum = 
+	//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
-		tui::box mainBox({ 100, 100 }, tui::SIZE::PERCENTAGE, tui::THICKNESS::MEDIUM);
+	tui::console_string ipsum;
+	ipsum << tui::COLOR::CYAN;
+	ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+	ipsum << tui::COLOR::MAGENTA;
+	ipsum << "Vestibulum feugiat egestas urna non euismod. ";
+	ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
+	ipsum << "Maecenas ";
+	ipsum << tui::COLOR::MAGENTA;
+	ipsum << "magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
-		tui::box box1(tui::vec2i(20, 100), tui::SIZE::PERCENTAGE_Y, tui::THICKNESS::THIN);
-		box1.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
-		box1.setColor({ tui::COLOR::MAGENTA, tui::COLOR::BLACK });
+	tui::text text({ {18,0}, {0, 50} }, ipsum);
+	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
-		//std::string  ipsum = 
-		//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
-
-		tui::console_string ipsum;
-		ipsum << tui::COLOR::CYAN;
-		ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
-		ipsum << tui::COLOR::MAGENTA;
-		ipsum << "Vestibulum feugiat egestas urna non euismod. "; 
-		ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
-		ipsum << "Maecenas "; 
-		ipsum << tui::COLOR::MAGENTA;
-		ipsum << "magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
-
-		tui::text text(tui::vec2i(18, 50), tui::SIZE::PERCENTAGE_Y, ipsum);
-		text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
-
-		text.disactivate();
-
-		tui::text input_text(tui::vec2i(50, 30), tui::SIZE::PERCENTAGE, "xxxxx ");
-		input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
+	text.activate();
 
 
-		tui::box bx0(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
+	
+
+
+	//tui::text input_text({ {0,0}, {50, 30} }, "xxxxx ");
+		//input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
+
+		
+		/*tui::box bx0(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
 		bx0.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }));
 
 		tui::box bx1(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
@@ -72,7 +76,7 @@ int main()
 		//grp.removeSurface(bx1);
 
 		bx0.setColor(tui::console_color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
-
+		*/
 		std::string t_s;
 
 		tui::console_string con_str("test");
@@ -80,7 +84,7 @@ int main()
 		//con_str << tui::COLOR::BLUE;
 		con_str = "test";
 
-		tui::rectangle r0;
+		/*tui::rectangle r0;
 		r0.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
 		r0.setPosition(tui::position(tui::vec2i(20, 0)));
 		r0.setChar(tui::console_char(219));
@@ -102,7 +106,7 @@ int main()
 		act_group.addElement(text);
 		act_group.addElement(input_text);
 
-
+		*/
 
 		for (;;)
 		{
@@ -118,27 +122,29 @@ int main()
 			auto start = std::chrono::steady_clock::now();
 			con.clear();
 
-			act_group.update();
+			//act_group.update();
 
 			con.draw(rect);
 
 			con.draw(box1);
 			con.draw(mainBox);
 			
+			
+			
 
 			con.draw(text);
-
+			/*
 			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
 		
 			input_text.setText(t_s);
 			con.draw(input_text);
-
-			con.draw(r0);
+			*/
+			/*con.draw(r0);
 			con.draw(r1);
 			con.draw(r2);
 
 			con.draw(grp);
-
+			*/
 			con.display();
 			
 			auto end = std::chrono::steady_clock::now();
@@ -146,9 +152,9 @@ int main()
 	
 			 
 			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
-			std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
-			std::cout << text.isActive();
+			//std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
+			//std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
+			//std::cout << text.isActive();
 	
 		}
 	

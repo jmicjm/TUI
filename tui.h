@@ -69,9 +69,9 @@ namespace tui
 				for (int i = 1; i < getSize().y-1; i++) { surface::setChar(vertical_line, vec2i(getSize().x - 1, i)); }
 			}
 		public:
-			box(vec2i size, int sizeType, int thickness)
+			box(surface_size size, int thickness)
 			{
-				setSize(size, sizeType);
+				setSize(size);
 				switch (thickness)
 				{
 					case THICKNESS::THIN:
@@ -85,9 +85,9 @@ namespace tui
 						break;
 				}
 			}
-			box(vec2i size, int sizeType, console_char h_line, console_char v_line, console_char top_l, console_char top_r, console_char bottom_l, console_char bottom_r)
+			box(surface_size size, console_char h_line, console_char v_line, console_char top_l, console_char top_r, console_char bottom_l, console_char bottom_r)
 			{
-				setSize(size, sizeType);
+				setSize(size);
 				setChars(h_line, v_line, top_l, top_r, bottom_l, bottom_r);	
 			}
 
@@ -177,7 +177,7 @@ namespace tui
 				}
 			}
 		public:
-			scroll(int length, int size_type)
+			scroll(surface_size size)
 			{
 				switch (direction)
 				{
@@ -191,7 +191,7 @@ namespace tui
 					break;
 				}
 
-				setSize(length, size_type);
+				setSize(size);
 			}
 
 			void setChars(console_char slider, console_char line)
@@ -204,71 +204,6 @@ namespace tui
 			{
 				m_slider.setColor(slider);
 				m_line.setColor(line);
-			}
-
-			void setSize(int length, int size_type)
-			{
-				vec2i size;
-				int type;
-				switch (direction)
-				{
-				case SCROLL::DIRECTION::HORIZONTAL:
-					size = { length,1 };
-					if (size_type == SIZE::PERCENTAGE_X || size_type == SIZE::PERCENTAGE)
-					{
-						type = SIZE::PERCENTAGE_X;
-					}
-					else { type = SIZE::CONSTANT; }
-					break;
-				case SCROLL::DIRECTION::VERTICAL:
-					size = { 1, length };
-					if (size_type == SIZE::PERCENTAGE_Y || size_type == SIZE::PERCENTAGE)
-					{
-						type = SIZE::PERCENTAGE_Y;
-					}
-					else { type = SIZE::CONSTANT; }
-					break;
-				}
-				surface::setSize(size, type);
-			}
-
-			void modifySize(int length)
-			{
-				switch (direction)
-				{
-				case SCROLL::DIRECTION::HORIZONTAL:
-					surface::modifySize({ length, 1 });
-					break;
-				case SCROLL::DIRECTION::VERTICAL:
-					surface::modifySize({1, length});
-
-					break;
-				}
-			}
-
-			void setSizeType(int size_type)
-			{
-				int type;
-				switch (direction)
-				{
-				case SCROLL::DIRECTION::HORIZONTAL:
-					if (size_type == SIZE::PERCENTAGE_X || size_type == SIZE::PERCENTAGE)
-					{
-						type = SIZE::PERCENTAGE_X;
-					}
-					else { type = SIZE::CONSTANT; }
-
-					break;
-				case SCROLL::DIRECTION::VERTICAL:
-					if (size_type == SIZE::PERCENTAGE_Y || size_type == SIZE::PERCENTAGE)
-					{
-						type = SIZE::PERCENTAGE_Y;
-					}
-					else { type = SIZE::CONSTANT; }
-
-					break;
-				}
-				surface::setSizeType(type);
 			}
 
 			bool isNeeded()
@@ -352,9 +287,9 @@ namespace tui
 				}
 			}
 		public:
-			basic_text(vec2i size, int sizeType, console_string txt)
+			basic_text(surface_size size, console_string txt)
 			{
-				setSize(size, sizeType);
+				setSize(size);
 				setText(txt);
 			}
 			void setText(console_string txt)
@@ -371,34 +306,36 @@ namespace tui
 
 	struct text : surface, active_element
 	{
-		private:
-			basic_text m_text;
-			scroll<SCROLL::DIRECTION::VERTICAL> m_scroll;
+	private:
+		basic_text m_text;
+		scroll<SCROLL::DIRECTION::VERTICAL> m_scroll;
 
-			console_string m_unprepared_text;
-			console_string m_prepared_text;
+		console_string m_unprepared_text;
+		console_string m_prepared_text;
 
-			void fill()
+		void fill()
+		{
+			console_string final_string;
+			for (int i = 0; i < m_text.getSize().x * m_text.getSize().y; i++)
 			{
-				console_string final_string;
-				for (int i = 0; i < m_text.getSize().x * m_text.getSize().y; i++)
+				if (m_text.getSize().x * m_scroll.getHandlePosition() + i < m_prepared_text.size())
 				{
-					if (m_text.getSize().x * m_scroll.getHandlePosition() + i < m_prepared_text.size())
-					{
-						final_string.push_back(m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + i]);
-					}
+					final_string.push_back(m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + i]);
 				}
-				m_text.setText(final_string);
-
-				makeTransparent();
-				insertSurface(m_text);
-				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
-			void prepareText()
-			{
-				console_string prepared;
-				int pos = 0;
+			m_text.setText(final_string);
 
+			makeTransparent();
+			insertSurface(m_text);
+			if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
+		}
+		void prepareText()
+		{
+			console_string prepared;
+			int pos = 0;
+
+			if (getSize().x > 2 && getSize().y >= 1)
+			{
 				while (pos < m_unprepared_text.size())
 				{
 					for (int j = 0; j < m_text.getSize().x; j++)
@@ -412,7 +349,7 @@ namespace tui
 						{
 							if (m_unprepared_text[pos - 1] != ' ') {
 								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << "-"; 
+								prepared << "-";
 							}
 							else { prepared += ' '; }
 						}
@@ -423,28 +360,35 @@ namespace tui
 						}
 					}
 				}
-				//prepared += ' ';
-				m_prepared_text = prepared;
 			}
-		public:
-			text(vec2i size, int sizeType, console_string txt) 
-			: m_scroll(100, SIZE::PERCENTAGE_Y)
-			, m_text(vec2i(size.x-1, 100), SIZE::PERCENTAGE_Y, " ")
+			else
 			{
-				setSize(size, sizeType);
-				setText(txt);
-				
+				prepared = m_unprepared_text;
+			}
+			//prepared += ' ';
+			m_prepared_text = prepared;
+		}
+	public:
+		text(surface_size size, console_string txt)
+			: m_scroll({{1,0},{0,100}})
+			, m_text({{-1,0}, {100,100}}, " ")
+			{
+				setSize(size);
+
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
+				setText(txt);		
 			}
 
 			void adjustSizes()
 			{
-				m_text.modifySize(vec2i(getSize().x, 100));
+				m_text.setSize({ {0,0}, {100,100} });
+				updateSurfaceSize(m_text);
 				prepareText();
 				m_scroll.setLenght(getNumberOfLines());
 				if (m_scroll.isNeeded())
 				{
-					m_text.modifySize(vec2i(getSize().x - 1, 100));
+					m_text.setSize({ {-1,0}, {100,100} });
+					updateSurfaceSize(m_text);
 					prepareText();
 					m_scroll.setLenght(getNumberOfLines());
 				}

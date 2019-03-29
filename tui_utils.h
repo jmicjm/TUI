@@ -35,6 +35,30 @@ namespace tui
 		}
 	};
 
+	struct surface_size
+	{
+	private:
+		vec2i m_integer_size;
+		vec2i m_percentage_size;
+
+	public:
+		surface_size() : surface_size({ 0,0 }, { 0,0 }) {}
+		surface_size(vec2i size) : surface_size(size, { 0,0 }) {}
+		surface_size(vec2i size, vec2i percentage)
+		{
+			setSize(size, percentage);
+		}
+
+		void setSize(vec2i size, vec2i percentage)
+		{
+			m_integer_size = size;
+			m_percentage_size = percentage;
+		}
+		vec2i getIntegerSize() { return m_integer_size; }
+		vec2i getPercentagesize() { return m_percentage_size; }
+
+	};
+
 	struct position
 	{
 		private:
@@ -193,6 +217,13 @@ namespace tui
 			assignString(str);
 		}
 
+		void operator= (console_char con_char)
+		{
+			m_console_string.resize(0);
+
+			m_console_string.push_back(con_char);
+		}
+
 		void operator+=(console_string string)
 		{
 			appendString(string);
@@ -278,4 +309,20 @@ namespace tui
 		}
 
 	};
+
+
+	bool isPunctuation(char symbol)
+	{
+		if (symbol == '.'
+			|| symbol == ','
+			|| symbol == ':'
+			|| symbol == ';'
+			|| symbol == '!'
+			|| symbol == '?')
+		{
+			return true;
+		}
+		else { return false; }
+	}
+
 }
