@@ -55,7 +55,7 @@ namespace tui
 
 	public:
 
-		navigation_group() : m_time_limit(std::chrono::milliseconds(200)) {}
+		navigation_group() : m_time_limit(std::chrono::milliseconds(300)) {}
 
 		void setKeyComboNext(std::vector<int> combo)
 		{
@@ -104,6 +104,15 @@ namespace tui
 		}
 
 		void disactivation_action() { disactivateAll(); }
+		void activation_action() 
+		{
+			disactivateAll();
+			m_selected = 0;
+			if (m_elements.size() > 0)
+			{
+				m_elements[0]->activate();
+			}
+		}
 
 	};
 
@@ -182,8 +191,8 @@ namespace tui
 				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
 				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
 
-				if (x < 1) { x = 1; }
-				if (y < 1) { y = 1; }
+				//if (x < 1) { x = 1; }
+				//if (y < 1) { y = 1; }
 
 				resize({ x,y });
 

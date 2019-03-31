@@ -131,10 +131,10 @@ namespace tui
 			int getSurfaceSize() {
 				switch (direction)
 				{
-				case SCROLL::DIRECTION::HORIZONTAL:
+				case DIRECTION::HORIZONTAL:
 					return getSize().x;
 					break; 
-				case SCROLL::DIRECTION::VERTICAL:
+				case DIRECTION::VERTICAL:
 					return getSize().y;
 					break;
 				}
@@ -146,10 +146,10 @@ namespace tui
 				{
 					switch (direction)
 					{
-					case SCROLL::DIRECTION::HORIZONTAL:
+					case DIRECTION::HORIZONTAL:
 						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(i, 0)); }
 						break;
-					case SCROLL::DIRECTION::VERTICAL:
+					case DIRECTION::VERTICAL:
 						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(0, i)); }
 						break;
 					}
@@ -163,10 +163,10 @@ namespace tui
 
 					switch (direction)
 					{
-					case SCROLL::DIRECTION::HORIZONTAL:
+					case DIRECTION::HORIZONTAL:
 						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(i + handle_position, 0)); }		
 						break;
-					case SCROLL::DIRECTION::VERTICAL:
+					case DIRECTION::VERTICAL:
 						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
 						break;
 					}				
@@ -181,11 +181,11 @@ namespace tui
 			{
 				switch (direction)
 				{
-				case SCROLL::DIRECTION::HORIZONTAL:
+				case DIRECTION::HORIZONTAL:
 					m_slider = 205;
 					m_line = 196;
 					break;
-				case SCROLL::DIRECTION::VERTICAL:
+				case DIRECTION::VERTICAL:
 					m_slider = 186;
 					m_line = 179;
 					break;
@@ -308,10 +308,13 @@ namespace tui
 	{
 	private:
 		basic_text m_text;
-		scroll<SCROLL::DIRECTION::VERTICAL> m_scroll;
+		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		console_string m_unprepared_text;
 		console_string m_prepared_text;
+
+		int keyUp = KEYBOARD::KEY::UP;
+		int keyDown = KEYBOARD::KEY::DOWN;
 
 		void fill()
 		{
@@ -407,21 +410,39 @@ namespace tui
 				return ceil(m_prepared_text.size() / (m_text.getSize().x * 1.f));
 			}
 
+			void goToLine(int line)
+			{
+				m_scroll.setHandlePosition(line);
+			}
+
+			void lineUp()
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
+				fill();
+			}
+			void lineDown()
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
+				fill();
+			}
+
+			void setUpKey(int key) { keyUp = key; }
+			int getUpKey() { return keyUp; }
+			void setDownKey(int key) { keyDown = key; }
+			int getDownKey() { return keyDown; }
+
 			void update()
 			{
 				if (isActive()) {
-					if (isKeyPressedBuffered(KEYBOARD::KEY::UP)) {
-						m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
-						fill();
+					if (KEYBOARD::isKeyPressedBuffered(keyUp)) {
+						lineUp();
 					}
-					if (isKeyPressedBuffered(KEYBOARD::KEY::DOWN)) {
-						m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
-						fill();
+					if (KEYBOARD::isKeyPressedBuffered(keyDown)) {
+						lineDown();
 					}
 				}
-
-
 			}
+
 
 			void draw_action() 
 			{
@@ -436,14 +457,32 @@ namespace tui
 
 			void activation_action() 
 			{
-				m_scroll.setColors({COLOR::GREEN}, {COLOR::BLUE});
+				m_scroll.setColors({COLOR::WHITE}, {COLOR::WHITE});
 				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
 			void disactivation_action() 
 			{
-				m_scroll.setColors({COLOR::RED}, {COLOR::LIGHTCYAN});
+				m_scroll.setColors({COLOR::DARKGRAY}, {COLOR::DARKGRAY});
 				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
+	};
+
+	template<int direction>
+	struct bar : surface
+	{
+	private:
+		int m_length;
+		int m_max_length;
+
+		console_char m_bar;
+		console_char m_start;
+		console_char m_end;
+
+		void fill()
+		{
+			
+		}
+
 	};
 
 

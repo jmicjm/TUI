@@ -5,18 +5,18 @@ namespace tui
 #define TRANSPARENT 0
 #define BLANKSYMBOL ' '
 
-	namespace SCROLL
+	namespace DIRECTION
 	{
 		enum DIRECTION
 		{
 			HORIZONTAL = 0,
 			VERTICAL
 		};
-		enum LENGHT
+		/*enum LENGHT
 		{
 			CONSTANT = 0,
 			PERCENTAGE
-		};
+		};*/
 	}
 
 		enum SIZE

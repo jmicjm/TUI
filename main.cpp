@@ -42,14 +42,14 @@ int main()
 	tui::text text({ {18,0}, {0, 50} }, ipsum);
 	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
-	text.activate();
+	//text.activate();
 
 
 	
 
 
-	//tui::text input_text({ {0,0}, {50, 30} }, "xxxxx ");
-		//input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
+	tui::text input_text({ {0,0}, {50, 30} }, "xxxxx ");
+		input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 		
 		/*tui::box bx0(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
@@ -96,17 +96,18 @@ int main()
 		r2.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
 		r2.setPosition(tui::position(tui::vec2i(24, 0)));
 		r2.setChar(tui::console_char(219));
+		*/
 
 		tui::navigation_group act_group;
-		act_group.activate();
+		
 		act_group.setKeyComboNext({ tui::KEYBOARD::CTRL, tui::KEYBOARD::RIGHT });
 		//act_group.addElement(r0);
 		//act_group.addElement(r1);
 		//act_group.addElement(r2);
 		act_group.addElement(text);
 		act_group.addElement(input_text);
-
-		*/
+		act_group.activate();
+		
 
 		for (;;)
 		{
@@ -122,7 +123,7 @@ int main()
 			auto start = std::chrono::steady_clock::now();
 			con.clear();
 
-			//act_group.update();
+			act_group.update();
 
 			con.draw(rect);
 
@@ -133,11 +134,15 @@ int main()
 			
 
 			con.draw(text);
-			/*
+
+
 			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
-		
+
 			input_text.setText(t_s);
 			con.draw(input_text);
+			/*
+			
+			
 			*/
 			/*con.draw(r0);
 			con.draw(r1);
