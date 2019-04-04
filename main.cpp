@@ -1,3 +1,4 @@
+#define TUI_TARGET_SYSTEM_WINDOWS
 #include "tui.h"
 
 
@@ -12,7 +13,7 @@ int main()
 {
 
 	tui::console con;
-	con.setTitle("tytul");
+	//con.setTitle("tytul");
 	con.setFPSlimit(10);
 
 	tui::rectangle rect;
@@ -156,8 +157,8 @@ int main()
 			auto diff = end - start;
 	
 			 
-			std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-			//std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
+			//std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
+			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
 			//std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
 			//std::cout << text.isActive();
 	

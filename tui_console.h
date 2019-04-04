@@ -1,11 +1,16 @@
 #pragma once
 #include <vector>
 
-#include <windows.h>
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+	#include <windows.h>
+#endif
 
 #include "tui_utils.h"
 #include "tui_enums.h"
-#include "tui_input.h"
+
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+	#include "tui_input.h"
+#endif
 
 
 
@@ -350,7 +355,7 @@ namespace tui
 
 		void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
-		void clear_buf() { m_buffer.makeTransparent(); }
+		void clear_buf() { m_buffer.makeBlank(); }
 	};
 
 
@@ -358,7 +363,9 @@ namespace tui
 	struct console : console_buffer
 	{
 	private:
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
 		HANDLE m_console_handle;
+#endif
 		vec2i m_last_size;
 		bool m_resized;
 		time_frame m_fps_control;
@@ -366,16 +373,18 @@ namespace tui
 	public:
 		console() : m_fps_control(std::chrono::milliseconds(1000) / 30)
 		{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			system("chcp 437");
 			m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 			//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-			//SetConsoleMode(m_console_handle, ENABLE_WRAP_AT_EOL_OUTPUT);
+			//SetConsoleMode(m_console_handle, 0);
+#endif
 
 			updateSize();
 			hidePrompt();
 		}
 
-		bool wasm_resized() { return m_resized; }
+		bool was_resized() { return m_resized; }
 
 		void setFPSlimit(int fps)
 		{
@@ -394,6 +403,7 @@ namespace tui
 
 			KEYBOARD::buffer.clear();
 
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
@@ -407,12 +417,12 @@ namespace tui
 				{
 					if (j < getSize().x)
 					{
-						temp_attr.push_back(m_buffer.getChar(vec2i(j, i)).getColor());
+						temp_attr.push_back(m_buffer.getChar(vec2i(j, i)).getColor().getRGBIColor());
 						temp_char.push_back(m_buffer.getChar(vec2i(j, i)).getChar());
 					}
 					else
 					{
-						temp_attr.push_back(console_color());
+						temp_attr.push_back(console_color().getRGBIColor());
 						temp_char.push_back(char());
 					}
 				}
@@ -425,19 +435,28 @@ namespace tui
 			WriteConsoleOutputCharacter(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
 
 
-			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
+			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK).getRGBIColor());
 			SetConsoleCursorPosition(m_console_handle, coord);
+#endif
 			hidePrompt();
 		}
 
-		void setTitle(std::string title) { SetConsoleTitleA(title.c_str()); }
+		void setTitle(std::string title) 
+		{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+			SetConsoleTitleA(title.c_str()); 
+#endif
+		}
 
 	private:
 		void updateSize()
 		{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1, buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1);
+			//vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
+#endif
 
 			if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
 			{
@@ -449,16 +468,23 @@ namespace tui
 			m_last_size = console_size;
 		}
 
-		void setGlobalColor(int color) { SetConsoleTextAttribute(m_console_handle, color); }
+		void setGlobalColor(int color) 
+		{
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
+			SetConsoleTextAttribute(m_console_handle, color); 
+#endif
+		}
 
 		void hidePrompt()
 		{
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_CURSOR_INFO cursor_info;
 			SetConsoleCursorInfo(m_console_handle, &cursor_info);
 			cursor_info.bVisible = false;
 			cursor_info.dwSize = 1;
 
 			SetConsoleCursorInfo(m_console_handle, &cursor_info);
+#endif
 		}
 	};
 }

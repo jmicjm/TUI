@@ -110,9 +110,6 @@ namespace tui
 	{
 		private:
 
-			
-
-
 			int m_foreground;
 			int m_background;
 		public:
@@ -124,10 +121,10 @@ namespace tui
 				m_background = background;
 				m_foreground = foreground;
 			}
-			int getColor() { return 16 * m_background + m_foreground; }
+			int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
 			int getForegroundColor() { return m_foreground; }
 			int getBackgoundColor() { return m_background; }
-			operator int() { return getColor(); }
+			//operator int() { return getRGBIColor(); }
 	};
 
 	struct console_char
@@ -155,7 +152,7 @@ namespace tui
 	{
 	private:
 		std::vector<console_char> m_console_string;
-		int m_selected_color;
+		console_color m_selected_color;
 
 		
 	public:
