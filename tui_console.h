@@ -1,16 +1,21 @@
 #pragma once
 #include <vector>
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
 	#include <windows.h>
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+	#include <sys/ioctl.h>
+	#include <unistd.h>
 #endif
 
 #include "tui_utils.h"
 #include "tui_enums.h"
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+//#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include "tui_input.h"
-#endif
+//#endif
 
 
 
@@ -384,6 +389,7 @@ namespace tui
 			hidePrompt();
 		}
 
+
 		bool was_resized() { return m_resized; }
 
 		void setFPSlimit(int fps)
@@ -435,7 +441,7 @@ namespace tui
 			WriteConsoleOutputCharacter(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
 
 
-			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK).getRGBIColor());
+			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
 			SetConsoleCursorPosition(m_console_handle, coord);
 #endif
 			hidePrompt();
@@ -451,11 +457,22 @@ namespace tui
 	private:
 		void updateSize()
 		{
+			vec2i console_size;
+
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
-			vec2i console_size(buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1, buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1);
-			//vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
+			
+			console_size.x = buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1;
+			console_size.y = buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1;
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			winsize w;
+			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+			console_size.x = w.ws_col;
+			console_size.y = w.ws_row;
 #endif
 
 			if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
@@ -468,10 +485,14 @@ namespace tui
 			m_last_size = console_size;
 		}
 
-		void setGlobalColor(int color) 
+		void setGlobalColor(console_color color) 
 		{
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
-			SetConsoleTextAttribute(m_console_handle, color); 
+			SetConsoleTextAttribute(m_console_handle, color.getRGBIColor()); 
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			std::cout << color.getEscapeCode();
 #endif
 		}
 
@@ -484,6 +505,10 @@ namespace tui
 			cursor_info.dwSize = 1;
 
 			SetConsoleCursorInfo(m_console_handle, &cursor_info);
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			std::cout << "\033[?25l";
 #endif
 		}
 	};

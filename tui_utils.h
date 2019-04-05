@@ -123,7 +123,19 @@ namespace tui
 			}
 			int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
 			int getForegroundColor() { return m_foreground; }
-			int getBackgoundColor() { return m_background; }
+			int getBackgroundColor() { return m_background; }
+			std::string getForegroundColorLinux() { return linuxFG[m_foreground]; }
+			std::string getBackgroundColorLinux() { return linuxBG[m_background]; }
+			std::string getEscapeCode()
+			{
+				std::string esc_c = "\033[";
+				esc_c += getForegroundColorLinux();
+				esc_c += ";";
+				esc_c += getBackgroundColorLinux();
+				esc_c += "m";
+
+				return esc_c;
+			}
 			//operator int() { return getRGBIColor(); }
 	};
 

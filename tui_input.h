@@ -4,6 +4,8 @@
 #include <thread>
 #include <chrono>
 
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+
 #define SHIFT_OFFSET 0xF00
 
 #define TUI_UNBUFFERED_INPUT 0
@@ -431,3 +433,4 @@ namespace tui
 
 	}
 }
+#endif

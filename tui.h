@@ -413,6 +413,7 @@ namespace tui
 			void goToLine(int line)
 			{
 				m_scroll.setHandlePosition(line);
+				fill();
 			}
 
 			void lineUp()
