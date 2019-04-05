@@ -8,6 +8,9 @@
 #include <chrono>
 #include <thread>
 
+#include <locale>
+#include <codecvt>
+
 
 namespace tui 
 {
@@ -142,22 +145,22 @@ namespace tui
 	struct console_char
 	{
 		private:
-			char m_character = ' ';
+			wchar_t m_character = ' ';
 			console_color m_color;
 		public:
 			console_char() : console_char(' ', console_color()) {}
-			console_char(char character) : console_char(character, console_color()) {}
-			console_char(char character, console_color color)
+			console_char(wchar_t character) : console_char(character, console_color()) {}
+			console_char(wchar_t character, console_color color)
 			{
 				setChar(character);
 				setColor(color);
 			}
 
-			void setChar(char character) { m_character = character; }
+			void setChar(wchar_t character) { m_character = character; }
 			void setColor(console_color color) { m_color = color; }
-			char getChar() { return m_character; }
+			wchar_t getChar() { return m_character; }
 			console_color getColor() { return m_color; }
-			operator char() { return m_character; }
+			operator wchar_t() { return m_character; }
 	};
 
 	struct console_string
@@ -165,13 +168,24 @@ namespace tui
 	private:
 		std::vector<console_char> m_console_string;
 		console_color m_selected_color;
-
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		
 	public:
 		console_string(){}
-		console_string(const char* str) : console_string(std::string(str)) {}
-		console_string(std::string string) : console_string(string, console_color()) {}
-		console_string(std::string string, console_color color)
+		console_string(const console_string &str)
+		{
+			m_console_string.resize(str.size());
+
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].setChar(str[i]);
+				m_console_string[i].setColor(str[i].getColor());
+			}
+		}
+		console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {}
+		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
+		console_string(std::wstring string) : console_string(string, console_color()) {}
+		console_string(std::wstring string, console_color color)
 		{
 			m_console_string.resize(string.size());
 
@@ -200,6 +214,10 @@ namespace tui
 		{
 			return m_console_string[i];
 		}
+		console_char operator[] (int i) const
+		{
+			return m_console_string[i];
+		}
 
 		void operator<< (console_color color)
 		{
@@ -219,9 +237,9 @@ namespace tui
 			assignString(string);
 		}
 
-		void operator= (const char* str)
+		void operator= (const wchar_t* str)
 		{
-			std::string string(str);
+			std::wstring string(str);
 
 			assignString(str);
 		}
@@ -243,9 +261,9 @@ namespace tui
 			m_console_string.push_back(con_char);
 		}
 
-		std::string getStdString()
+		std::wstring getStdString()
 		{
-			std::string string;
+			std::wstring string;
 			string.resize(m_console_string.size());
 
 			for (int i = 0; i < string.size(); i++)
@@ -256,7 +274,7 @@ namespace tui
 			return string;
 		}
 
-		operator std::string() { return getStdString(); }
+		operator std::wstring() { return getStdString(); }
 
 		void push_back(console_char con_char)
 		{
@@ -264,6 +282,7 @@ namespace tui
 		}
 
 		int size() { return m_console_string.size(); }
+		int size() const { return m_console_string.size(); }
 
 	};
 

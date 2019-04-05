@@ -32,24 +32,24 @@ int main()
 
 	tui::console_string ipsum;
 	ipsum << tui::COLOR::CYAN;
-	ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+	ipsum << L"Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
 	ipsum << tui::COLOR::MAGENTA;
-	ipsum << "Vestibulum feugiat egestas urna non euismod. ";
+	ipsum << L"Vestibulum feugiat egestas urna non euismod. ";
 	ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
-	ipsum << "Maecenas ";
+	ipsum << L"Maecenas ";
 	ipsum << tui::COLOR::MAGENTA;
-	ipsum << "magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+	ipsum << L"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
 	tui::text text({ {18,0}, {0, 50} }, ipsum);
 	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
-	//text.activate();
+	text.activate();
 
 
 	
 
 
-	tui::text input_text({ {0,0}, {50, 30} }, "xxxxx ");
+	tui::text input_text({ {0,0}, {50, 30} }, L"xxxxx ");
 		input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 		
@@ -80,10 +80,10 @@ int main()
 		*/
 		std::string t_s;
 
-		tui::console_string con_str("test");
+		tui::console_string con_str(L"test");
 
 		//con_str << tui::COLOR::BLUE;
-		con_str = "test";
+		con_str = L"test";
 
 		/*tui::rectangle r0;
 		r0.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
@@ -99,7 +99,7 @@ int main()
 		r2.setChar(tui::console_char(219));
 		*/
 
-		tui::navigation_group act_group;
+/*tui::navigation_group act_group;
 		
 		act_group.setKeyComboNext({ tui::KEYBOARD::CTRL, tui::KEYBOARD::RIGHT });
 		//act_group.addElement(r0);
@@ -108,23 +108,23 @@ int main()
 		act_group.addElement(text);
 		act_group.addElement(input_text);
 		act_group.activate();
-		
+		*/
 
 		for (;;)
 		{
-
+			/*
 			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::CTRL)) {
 				rect.move(tui::vec2i(1, 0));
 			}
 			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::LEFT)) {
 				rect.move(tui::vec2i(-1, 0));
 			}
-
+			*/
 
 			auto start = std::chrono::steady_clock::now();
 			con.clear();
 
-			act_group.update();
+		//	act_group.update();
 
 			con.draw(rect);
 

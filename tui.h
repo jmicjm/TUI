@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cmath>
 
+
+
 namespace tui 
 {
 	struct rectangle : surface, active_element
@@ -186,8 +188,8 @@ namespace tui
 					m_line = 196;
 					break;
 				case DIRECTION::VERTICAL:
-					m_slider = 186;
-					m_line = 179;
+					m_slider = L'\x2551';
+					m_line = L'\x2502';
 					break;
 				}
 
@@ -315,6 +317,8 @@ namespace tui
 
 		int keyUp = KEYBOARD::KEY::UP;
 		int keyDown = KEYBOARD::KEY::DOWN;
+		//int keyUp = 0;
+		//int keyDown = 0;
 
 		void fill()
 		{
@@ -352,7 +356,7 @@ namespace tui
 						{
 							if (m_unprepared_text[pos - 1] != ' ') {
 								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << "-";
+								prepared << L"-";
 							}
 							else { prepared += ' '; }
 						}
@@ -374,7 +378,7 @@ namespace tui
 	public:
 		text(surface_size size, console_string txt)
 			: m_scroll({{1,0},{0,100}})
-			, m_text({{-1,0}, {100,100}}, " ")
+			, m_text({{-1,0}, {100,100}}, L" ")
 			{
 				setSize(size);
 

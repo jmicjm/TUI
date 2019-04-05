@@ -2,6 +2,7 @@
 #include <vector>
 
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
+#define UNICODE
 	#include <windows.h>
 #endif
 
@@ -85,7 +86,7 @@ namespace tui
 
 				for (int i = 0; i < m_key_combo_next.size(); i++)
 				{
-					if (KEYBOARD::isKeyPressed(m_key_combo_next[i], TUI_BUFFERED_INPUT))
+					//if (KEYBOARD::isKeyPressed(m_key_combo_next[i], TUI_BUFFERED_INPUT))
 					{
 						act++;
 					}
@@ -379,7 +380,8 @@ namespace tui
 		console() : m_fps_control(std::chrono::milliseconds(1000) / 30)
 		{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-			system("chcp 437");
+			//system("chcp 437");
+			system("chcp 10000");
 			m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 			//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 			//SetConsoleMode(m_console_handle, 0);
@@ -415,7 +417,7 @@ namespace tui
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
 
 			std::vector<WORD> temp_attr;
-			std::vector<char> temp_char;
+			std::vector<wchar_t> temp_char;
 
 			for (int i = 0; i < getSize().y; i++)
 			{
@@ -429,7 +431,7 @@ namespace tui
 					else
 					{
 						temp_attr.push_back(console_color().getRGBIColor());
-						temp_char.push_back(char());
+						temp_char.push_back(wchar_t());
 					}
 				}
 			}
@@ -438,12 +440,13 @@ namespace tui
 			SetConsoleCursorPosition(m_console_handle, coord); // w/o 10x slower
 
 			WriteConsoleOutputAttribute(m_console_handle, temp_attr.data(), console_size.x*getSize().y, coord, &useless);
-			WriteConsoleOutputCharacter(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
+			WriteConsoleOutputCharacterW(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
 
 
-			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
+		
 			SetConsoleCursorPosition(m_console_handle, coord);
 #endif
+			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
 			hidePrompt();
 		}
 
