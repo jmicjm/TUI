@@ -147,19 +147,22 @@ namespace tui
 			{
 				if (size.x != getSize().x || size.y != getSize().y)
 				{
-					if (size.x > 0 && size.y > 0)
+					vec2i new_size = size;
+					if (size.x < 1)
 					{
-						m_chars.resize(size.x);
+						new_size.x = 1;
+					}
+					if (size.y < 1)
+					{
+						new_size.y = 1;
+					}
+					
+						m_chars.resize(new_size.x);
 						for (int i = 0; i < m_chars.size(); i++)
 						{
-							m_chars[i].resize(size.y);
+							m_chars[i].resize(new_size.y);
 						}
-					}
-					else
-					{
-						m_chars.resize(1);
-						m_chars[0].resize(1);
-					}
+					
 					makeTransparent();
 					resize_action();
 				}
