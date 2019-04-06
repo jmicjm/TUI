@@ -87,26 +87,7 @@ namespace tui
 			vec2i getRelativePoint() { return m_relative; }
 	};
 
-	struct RGB_color
-	{
-		int r, g, b;
 
-		RGB_color() {}
-		RGB_color(int R, int G, int B)
-		{
-			r = R;
-			g = G;
-			b = B;
-		}
-	};
-
-	static const std::array<RGB_color, 16> c =
-	{
-		{
-	   RGB_color(12,12,12),
-	   RGB_color(12,12,12)
-	   }
-	};
 
 	//4bit RGBI
 	struct console_color
@@ -139,6 +120,18 @@ namespace tui
 
 				return esc_c;
 			}
+			bool operator==(console_color c)
+			{
+				if (c.m_background == m_background && c.m_foreground == m_foreground)
+				{ return true; }
+				else { return false; }
+			}
+			bool operator!=(console_color c)
+			{
+				if (c.m_background != m_background || c.m_foreground != m_foreground)
+				{ return true; }
+				else { return false; }
+			}
 			//operator int() { return getRGBIColor(); }
 	};
 
@@ -161,6 +154,19 @@ namespace tui
 			wchar_t getChar() { return m_character; }
 			console_color getColor() { return m_color; }
 			operator wchar_t() { return m_character; }
+
+			bool operator==(console_char c)
+			{
+				if(m_character == c.m_character && m_color == c.m_color)
+				{ return true; }
+				else { return false; }
+			}
+			bool operator!=(console_char c)
+			{
+				if (m_character != c.m_character || m_color != c.m_color)
+				{ return true; }
+				else { return false; }
+			}
 	};
 
 	struct console_string

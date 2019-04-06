@@ -355,9 +355,46 @@ namespace tui
 	protected:
 		surface m_buffer;
 
+		surface m_last_buffer;
+
 		console_buffer() {}
 
 		void resize(vec2i size) { m_buffer.setSize(size); }
+
+		void updateLastBuffer()
+		{
+			if (m_last_buffer.getSize() != m_buffer.getSize())
+			{
+				m_last_buffer.setSize(m_buffer.getSize());
+			}
+
+			for (int i = 0; i < m_buffer.getSize().x; i++)
+			{
+				for (int j = 0; j < m_buffer.getSize().y; j++)
+				{
+					m_last_buffer.setChar(m_buffer.getChar({ i,j }), { i,j });
+				}
+			}
+		}
+		bool changed()
+		{
+			if (m_last_buffer.getSize() != m_buffer.getSize())
+			{
+				return true;
+			}
+
+			for (int i = 0; i < m_buffer.getSize().x; i++)
+			{
+				for (int j = 0; j < m_buffer.getSize().y; j++)
+				{
+					if (m_buffer.getChar({ i,j }) != m_last_buffer.getChar({ i,j }))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 
 	public:
 		vec2i getSize() { return m_buffer.getSize(); }
@@ -419,6 +456,8 @@ namespace tui
 
 		//	KEYBOARD::buffer.clear();
 
+			if (!changed()) { return; }
+
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
@@ -475,6 +514,7 @@ namespace tui
 #endif
 			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
 			//hidePrompt();
+			updateLastBuffer();
 		}
 
 		void setTitle(std::string title) 

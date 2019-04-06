@@ -350,11 +350,11 @@ namespace tui
 						if (pos >= m_unprepared_text.size()) { break; }
 						if (j == m_text.getSize().x - 1
 							&& !isPunctuation(m_unprepared_text[pos])
-							&& m_unprepared_text[pos] != (' ')
-							&& m_unprepared_text[pos + 1] != (' ')
+							&& m_unprepared_text[pos].getChar() != (' ')
+							&& m_unprepared_text[pos + 1].getChar() != (' ')
 							&& !isPunctuation(m_unprepared_text[pos + 1]))
 						{
-							if (m_unprepared_text[pos - 1] != ' ') {
+							if (m_unprepared_text[pos - 1].getChar() != ' ') {
 								prepared << m_unprepared_text[pos - 1].getColor();
 								prepared << L"-";
 							}
@@ -362,7 +362,7 @@ namespace tui
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos] == ' ') { pos++; }
+							if (j == 0 && m_unprepared_text[pos].getChar() == ' ') { pos++; }
 							prepared += m_unprepared_text[pos++];
 						}
 					}
