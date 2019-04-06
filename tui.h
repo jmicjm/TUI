@@ -77,13 +77,13 @@ namespace tui
 				switch (thickness)
 				{
 					case THICKNESS::THIN:
-						setChars(console_char(196), console_char(179), console_char(218), console_char(191), console_char(192), console_char(217));
+						setChars(console_char(L'\x2500'), console_char(L'\x2502'), console_char(L'\x250C'), console_char(L'\x2510'), console_char(L'\x2514'), console_char(L'\x2518'));
 						break;
 					case THICKNESS::MEDIUM:
-						setChars(console_char(205), console_char(186), console_char(201), console_char(187), console_char(200), console_char(188));
+						setChars(console_char(L'\x2550'), console_char(L'\x2551'), console_char(L'\x2554'), console_char(L'\x2557'), console_char(L'\x255A'), console_char(L'\x255D'));
 						break;
 					case THICKNESS::THICK:
-						setChars(console_char(219), console_char(219), console_char(219), console_char(219), console_char(219), console_char(219));
+						setChars(console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'));
 						break;
 				}
 			}
@@ -124,8 +124,8 @@ namespace tui
 	struct scroll : surface
 	{
 		private:
-			console_char m_slider = 186; //handle
-			console_char m_line = 179;
+			console_char m_slider; //handle
+			console_char m_line;
 			int m_lenght = 0;
 			int m_handle_position = 0;
 			int m_handle_lenght = 0;
@@ -184,8 +184,8 @@ namespace tui
 				switch (direction)
 				{
 				case DIRECTION::HORIZONTAL:
-					m_slider = 205;
-					m_line = 196;
+					m_slider = L'\x2550';
+					m_line = L'\x2500';
 					break;
 				case DIRECTION::VERTICAL:
 					m_slider = L'\x2551';
@@ -315,10 +315,10 @@ namespace tui
 		console_string m_unprepared_text;
 		console_string m_prepared_text;
 
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		//int keyUp = 0;
-		//int keyDown = 0;
+		//int keyUp = KEYBOARD::KEY::UP;
+		//int keyDown = KEYBOARD::KEY::DOWN;
+		int keyUp = 0;
+		int keyDown = 0;
 
 		void fill()
 		{
@@ -439,12 +439,12 @@ namespace tui
 			void update()
 			{
 				if (isActive()) {
-					if (KEYBOARD::isKeyPressedBuffered(keyUp)) {
+					/*if (KEYBOARD::isKeyPressedBuffered(keyUp)) {
 						lineUp();
 					}
 					if (KEYBOARD::isKeyPressedBuffered(keyDown)) {
 						lineDown();
-					}
+					}*/
 				}
 			}
 

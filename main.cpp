@@ -19,7 +19,7 @@ int main()
 	tui::rectangle rect;
 	rect.setSize({{ -2,-2 }, { 20,20 }});
 	rect.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-	rect.setChar(tui::console_char(219, tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
+	rect.setChar(tui::console_char(L'\x2588', tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
 
 	tui::box mainBox({ {0,0}, { 100, 100 } }, tui::THICKNESS::MEDIUM);
 	
@@ -137,9 +137,11 @@ int main()
 			con.draw(text);
 
 
-			t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
+			//t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
 
-			input_text.setText(t_s);
+		
+
+			//input_text.setText(t_s);
 			con.draw(input_text);
 			/*
 			
@@ -158,7 +160,7 @@ int main()
 	
 			 
 			//std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-			std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
+		//	std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
 			//std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
 			//std::cout << text.isActive();
 	

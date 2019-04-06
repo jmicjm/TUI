@@ -168,7 +168,7 @@ namespace tui
 	private:
 		std::vector<console_char> m_console_string;
 		console_color m_selected_color;
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		
 	public:
 		console_string(){}
@@ -182,7 +182,7 @@ namespace tui
 				m_console_string[i].setColor(str[i].getColor());
 			}
 		}
-		console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {}
+		console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {} //string need to be ascii
 		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
 		console_string(std::wstring string) : console_string(string, console_color()) {}
 		console_string(std::wstring string, console_color color)

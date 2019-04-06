@@ -9,10 +9,15 @@
 #ifdef TUI_TARGET_SYSTEM_LINUX
 	#include <sys/ioctl.h>
 	#include <unistd.h>
+	#include <termios.h>
 #endif
 
 #include "tui_utils.h"
 #include "tui_enums.h"
+
+#include <iostream>
+#include <locale>
+#include <codecvt>
 
 //#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include "tui_input.h"
@@ -387,6 +392,9 @@ namespace tui
 			//SetConsoleMode(m_console_handle, 0);
 #endif
 
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			
+#endif
 			updateSize();
 			hidePrompt();
 		}
@@ -409,7 +417,7 @@ namespace tui
 		{
 			m_fps_control.sleepUntilEnd();
 
-			KEYBOARD::buffer.clear();
+		//	KEYBOARD::buffer.clear();
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
@@ -446,8 +454,27 @@ namespace tui
 		
 			SetConsoleCursorPosition(m_console_handle, coord);
 #endif
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			
+			std::wstring w_str;
+			std::string str;
+
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
+			for (int i = 0; i < getSize().y; i++)
+			{
+				for (int j = 0; j < getSize().x; j++)
+				{
+					//w_str += m_buffer.getChar({ j, i });
+					str += m_buffer.getChar({ j, i }).getColor().getEscapeCode();
+					str+= converter.to_bytes(m_buffer.getChar({ j, i }));
+				}	
+			}
+			std::cout << str;
+			std::cout << "\033[H";
+#endif
 			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
-			hidePrompt();
+			//hidePrompt();
 		}
 
 		void setTitle(std::string title) 
