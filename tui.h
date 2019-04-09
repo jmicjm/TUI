@@ -347,12 +347,15 @@ namespace tui
 				{
 					for (int j = 0; j < m_text.getSize().x; j++)
 					{
+						
 						if (pos >= m_unprepared_text.size()) { break; }
 						if (j == m_text.getSize().x - 1
+							&& pos +1 < m_unprepared_text.size()
 							&& !isPunctuation(m_unprepared_text[pos])
-							&& m_unprepared_text[pos].getChar() != (' ')
+							&& m_unprepared_text[pos].getChar() != (' ')	
+							&& !isPunctuation(m_unprepared_text[pos + 1])
 							&& m_unprepared_text[pos + 1].getChar() != (' ')
-							&& !isPunctuation(m_unprepared_text[pos + 1]))
+							)
 						{
 							if (m_unprepared_text[pos - 1].getChar() != ' ') {
 								prepared << m_unprepared_text[pos - 1].getColor();
@@ -439,12 +442,12 @@ namespace tui
 			void update()
 			{
 				if (isActive()) {
-					/*if (KEYBOARD::isKeyPressedBuffered(keyUp)) {
+					if (KEYBOARD::isKeyPressed('a')) {
 						lineUp();
 					}
-					if (KEYBOARD::isKeyPressedBuffered(keyDown)) {
+					if (KEYBOARD::isKeyPressed('b')) {
 						lineDown();
-					}*/
+					}
 				}
 			}
 

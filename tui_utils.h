@@ -190,6 +190,7 @@ namespace tui
 		}
 		console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {} //string need to be ascii
 		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
+		console_string(const char* str) : console_string(std::string(str)) {}
 		console_string(std::wstring string) : console_string(string, console_color()) {}
 		console_string(std::wstring string, console_color color)
 		{

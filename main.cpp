@@ -32,7 +32,7 @@ int main()
 
 	tui::console_string ipsum;
 	ipsum << tui::COLOR::CYAN;
-	ipsum << L"Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+	ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
 	ipsum << tui::COLOR::MAGENTA;
 	ipsum << L"Vestibulum feugiat egestas urna non euismod. ";
 	ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
@@ -40,7 +40,7 @@ int main()
 	ipsum << tui::COLOR::MAGENTA;
 	ipsum << L"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
-	tui::text text({ {18,0}, {0, 50} }, ipsum);
+	tui::text text({ {3,0}, {0, 50} }, ipsum);
 	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
 	text.activate();
@@ -137,11 +137,11 @@ int main()
 			con.draw(text);
 
 
-			//t_s += tui::KEYBOARD::getInputAsString(TUI_BUFFERED_INPUT);
+			t_s += tui::KEYBOARD::getInputAsString();
 
-		
+			//t_s += 'd';
 
-			//input_text.setText(t_s);
+			input_text.setText(t_s);
 			con.draw(input_text);
 			/*
 			
@@ -158,6 +158,7 @@ int main()
 			auto end = std::chrono::steady_clock::now();
 			auto diff = end - start;
 	
+		//	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 			 
 			//std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
 		//	std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
