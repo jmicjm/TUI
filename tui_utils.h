@@ -97,8 +97,8 @@ namespace tui
 			int m_foreground;
 			int m_background;
 		public:
-			console_color() { setColor(tui::COLOR::WHITE, tui::COLOR::BLACK); }
-			console_color(int foreground) { setColor(foreground, tui::COLOR::BLACK); }
+			console_color() : console_color(tui::COLOR::WHITE, tui::COLOR::BLACK) {}
+			console_color(int foreground) : console_color(foreground, tui::COLOR::BLACK) {}
 			console_color(int foreground, int background) { setColor(foreground, background); }
 			void setColor(int foreground, int background)
 			{
@@ -346,7 +346,7 @@ namespace tui
 	};
 
 
-	bool isPunctuation(char symbol)
+	inline bool isPunctuation(char symbol)
 	{
 		if (symbol == '.'
 			|| symbol == ','

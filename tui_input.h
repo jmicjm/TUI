@@ -90,12 +90,12 @@ namespace tui
 		};
 		static keyboard_buffer buffer;
 
-		bool isKeyPressed(int key)
+		inline bool isKeyPressed(int key)
 		{
 			return buffer[key];
 		}
 
-		std::string getInputAsString()
+		inline std::string getInputAsString()
 		{
 			return buffer.getString();
 		}
