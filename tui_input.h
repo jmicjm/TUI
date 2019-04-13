@@ -10,7 +10,7 @@
 	#include <conio.h>
 #define TUI_GETCH_RANGE 256
 
-#define SPECIAL_OFFSET 0xF00
+#define TUI_BUFFER_OFFSET 0xF00 // could be any value above TUI_GETCH_RANGE
 
 
 
@@ -37,16 +37,36 @@ namespace tui
 
 		}
 
+		enum KEY
+		{
+			UP = TUI_BUFFER_OFFSET + 72,
+			DOWN = TUI_BUFFER_OFFSET + 80,
+			LEFT = TUI_BUFFER_OFFSET + 75,
+			RIGHt = TUI_BUFFER_OFFSET + 77
+
+		};
+
 		
 		
 		struct keyboard_buffer
 		{
 		private:
 			std::vector<bool> buffer[2];
+			std::vector<bool> second_buffer[2];
 			//std::vector<int> times_pressed[2];
 			std::string string_buffer[2];
 		public:
-			bool operator[](int i) { return buffer[0][i]; }
+			bool operator[](int i) 
+			{
+				if (i < TUI_BUFFER_OFFSET)
+				{
+					return buffer[0][i];
+				}
+				else
+				{
+					return second_buffer[0][i - TUI_BUFFER_OFFSET];
+				}
+			}
 			std::string getString() { return string_buffer[0]; }
 			int size() { return buffer[0].size(); }
 
@@ -54,6 +74,8 @@ namespace tui
 			{
 				buffer[0].resize(TUI_GETCH_RANGE);
 				buffer[1].resize(TUI_GETCH_RANGE);
+				second_buffer[0].resize(TUI_GETCH_RANGE);
+				second_buffer[1].resize(TUI_GETCH_RANGE);
 		
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
@@ -65,13 +87,17 @@ namespace tui
 				{
 					int pressed = _getch();
 
-					buffer[1][pressed] = true;
-
-					string_buffer[1] += (char)pressed;
+					if (pressed != 0 && pressed != 224)
+					{
+						buffer[1][pressed] = true;
+						string_buffer[1] += (char)pressed;
+					}
 
 					if (pressed == 0 || pressed == 224)
 					{
 						int second_getch = _getch();
+
+						second_buffer[1][second_getch] = true;
 					}
 				}
 			}
@@ -79,11 +105,13 @@ namespace tui
 			void clear()
 			{
 				buffer[0] = buffer[1];
+				second_buffer[0] = second_buffer[1];
 				string_buffer[0] = string_buffer[1];
 
 				for (int i = 0; i < buffer[0].size(); i++)
 				{
 					buffer[1][i] = 0;
+					second_buffer[1][i] = 0;
 					string_buffer[1].clear();
 				}
 			}

@@ -442,10 +442,10 @@ namespace tui
 			void update()
 			{
 				if (isActive()) {
-					if (KEYBOARD::isKeyPressed('a')) {
+					if (KEYBOARD::isKeyPressed(tui::KEYBOARD::KEY::UP)) {
 						lineUp();
 					}
-					if (KEYBOARD::isKeyPressed('b')) {
+					if (KEYBOARD::isKeyPressed(tui::KEYBOARD::KEY::DOWN)) {
 						lineDown();
 					}
 				}

@@ -512,8 +512,8 @@ namespace tui
 					str+= converter.to_bytes(m_buffer.getChar({ j, i }));
 				}	
 			}
-			std::cout << str;
-			std::cout << "\033[H";
+			std::cout << str << "\033[H";
+
 #endif
 			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
 			//hidePrompt();
