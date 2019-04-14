@@ -365,8 +365,11 @@ namespace tui
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos].getChar() == ' ') { pos++; }
-							prepared += m_unprepared_text[pos++];
+							if (j == 0 && m_unprepared_text[pos].getChar() == ' ' && pos !=0) { pos++; }// ommit space at start of line
+							if (pos < m_unprepared_text.size())
+							{
+								prepared += m_unprepared_text[pos++];
+							}
 						}
 					}
 				}
