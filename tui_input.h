@@ -1,5 +1,4 @@
 #pragma once
-#include <map>
 #include <string>
 #include <thread>
 #include <chrono>
@@ -8,6 +7,8 @@
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include <conio.h>
+#endif
+
 #define TUI_GETCH_RANGE 256
 
 #define TUI_BUFFER_OFFSET 0xF00 // could be any value above TUI_GETCH_RANGE
@@ -17,19 +18,6 @@
 
 namespace tui
 {
-	struct value_string_pair
-	{
-		int value;
-		std::string string;
-
-		value_string_pair() {}
-		value_string_pair(int val, std::string String)
-		{
-			value = val;
-			string = String;
-		}
-	};
-
 	namespace KEYBOARD
 	{
 		void CTRLC_handler()
@@ -37,6 +25,7 @@ namespace tui
 
 		}
 
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 		enum KEY
 		{
 			ENTER = 13,
@@ -71,14 +60,14 @@ namespace tui
 			RIGHt = TUI_BUFFER_OFFSET + 77
 
 		};
-
+#endif
 		
 		
 		struct keyboard_buffer
 		{
 		private:
 			std::vector<bool> buffer[2];
-			std::vector<bool> second_buffer[2];
+			std::vector<bool> second_buffer[2]; //buffer for "characters" that needs to return more than one time
 			//std::vector<int> times_pressed[2];
 			std::string string_buffer[2];
 		public:
@@ -111,7 +100,13 @@ namespace tui
 			{
 				for (;;)
 				{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 					int pressed = _getch();
+
+					if (pressed == 3)
+					{
+						CTRLC_handler();
+					}
 
 					if (pressed != 0 && pressed != 224)
 					{
@@ -122,12 +117,13 @@ namespace tui
 					if (pressed == 0 || pressed == 224)
 					{
 						int second_getch = _getch();
-
 						second_buffer[1][second_getch] = true;
 					}
+#endif
 				}
 			}
 
+			//swaps buffers and clear [1] ones
 			void clear()
 			{
 				buffer[0] = buffer[1];
@@ -144,16 +140,31 @@ namespace tui
 		};
 		static keyboard_buffer buffer;
 
+		//return true if key was pressed in iteration before last clear
 		inline bool isKeyPressed(int key)
 		{
 			return buffer[key];
 		}
 
+		//return string that consist of characters pressed in iteration before last clear
 		inline std::string getInputAsString()
 		{
 			return buffer.getString();
 		}
 
+		/*NOTE ABOUT DOUBLE BUFFERING
+
+		X -> clear()
+		abcd -> key presses
+
+						   isKeyPressed() or getInputAsString() used here returns these characters
+						    \/																	|
+		|X|ab|cd|X|ab|cd|X|ab|cd|X|																|
+				  /	    \																		|
+				 |	     |<---------------------------------------------------------------------/
+
+				without double buffering "cd" part will be lost		
+		*/
+
 	}
 }
-#endif
