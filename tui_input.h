@@ -111,7 +111,10 @@ namespace tui
 					if (pressed != 0 && pressed != 224)
 					{
 						buffer[1][pressed] = true;
-						string_buffer[1] += (char)pressed;
+						//if (pressed >= 32 && pressed <= 126)
+						//{
+							string_buffer[1] += (char)pressed;
+						//}
 					}
 
 					if (pressed == 0 || pressed == 224)

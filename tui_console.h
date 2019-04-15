@@ -425,11 +425,8 @@ namespace tui
 		console() : m_fps_control(std::chrono::milliseconds(1000) / 30)
 		{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-			//system("chcp 437");
-			system("chcp 10000");
+			system("chcp 65001");
 			m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-			//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-			//SetConsoleMode(m_console_handle, 0);
 #endif
 
 #ifdef TUI_TARGET_SYSTEM_LINUX
