@@ -174,7 +174,7 @@ namespace tui
 	private:
 		std::vector<console_char> m_console_string;
 		console_color m_selected_color;
-		//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		
 	public:
 		console_string(){}
@@ -188,17 +188,29 @@ namespace tui
 				m_console_string[i].setColor(str[i].getColor());
 			}
 		}
-		console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {} //string need to be ascii
-		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
-		console_string(const char* str) : console_string(std::string(str)) {}
-		console_string(std::wstring string) : console_string(string, console_color()) {}
-		console_string(std::wstring string, console_color color)
+		//console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {} //string need to be ascii
+		console_string(std::string str) 
 		{
-			m_console_string.resize(string.size());
+			std::wstring wstr = converter.from_bytes(str);
+
+			m_console_string.resize(wstr.size());
 
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
-				m_console_string[i].setChar(string[i]);
+				m_console_string[i].setChar(wstr[i]);
+				m_console_string[i].setColor(console_color());
+			}
+		}
+		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
+		console_string(const char* str) : console_string(std::string(str)) {}
+		console_string(std::wstring wstr) : console_string(wstr, console_color()) {}
+		console_string(std::wstring wstr, console_color color)
+		{
+			m_console_string.resize(wstr.size());
+
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].setChar(wstr[i]);
 				m_console_string[i].setColor(color);
 			}
 		}
