@@ -372,4 +372,25 @@ namespace tui
 		else { return false; }
 	}
 
+	inline std::u32string Utf8ToUtf32(std::string str)
+	{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
+		auto conv = converter.from_bytes(str);
+
+		return std::u32string(reinterpret_cast<char32_t const*>(conv.data()), conv.length());
+#endif
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+
+		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+		return converter.from_bytes(str);
+#endif
+	}
+
+	inline size_t GetUtf8StrLength(std::string str)
+	{
+		return Utf8ToUtf32(str).size();
+	}
+
 }
