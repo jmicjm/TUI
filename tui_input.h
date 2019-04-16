@@ -9,6 +9,10 @@
 	#include <conio.h>
 #endif
 
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+#include "termios.h"
+#endif
+
 #define TUI_GETCH_RANGE 256
 
 #define TUI_BUFFER_OFFSET 0xF00 // could be any value above TUI_GETCH_RANGE
@@ -20,6 +24,8 @@ namespace tui
 {
 	namespace KEYBOARD
 	{
+
+
 		void CTRLC_handler()
 		{
 
@@ -66,9 +72,15 @@ namespace tui
 		struct keyboard_buffer
 		{
 		private:
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			termios default_settings;
+			termios noncanon_settings;
+			termios nonblocking_settings;
+#endif
+
 			std::vector<bool> buffer[2];
 			std::vector<bool> second_buffer[2]; //buffer for "characters" that needs to return more than one time
-			//std::vector<int> times_pressed[2];
+
 			std::string string_buffer[2];
 		public:
 			bool operator[](int i) 
@@ -87,6 +99,21 @@ namespace tui
 
 			keyboard_buffer()
 			{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+				tcgetattr(0, &default_settings);
+
+				noncanon_settings = default_settings;
+				noncanon_settings.c_lflag &= ~ICANON;
+				noncanon_settings.c_lflag &= ~ECHO;
+
+				nonblocking_settings = noncanon_settings;
+				nonblocking_settings.c_cc[VMIN] = 0;
+				nonblocking_settings.c_cc[VTIME] = 0;
+
+				tcsetattr(0, TCSANOW, &noncanon_settings);
+#endif
+
+
 				buffer[0].resize(TUI_GETCH_RANGE);
 				buffer[1].resize(TUI_GETCH_RANGE);
 				second_buffer[0].resize(TUI_GETCH_RANGE);
@@ -111,10 +138,10 @@ namespace tui
 					if (pressed != 0 && pressed != 224)
 					{
 						buffer[1][pressed] = true;
-						//if (pressed >= 32 && pressed <= 126)
-						//{
+						if (pressed >= 32)
+						{
 							string_buffer[1] += (char)pressed;
-						//}
+						}
 					}
 
 					if (pressed == 0 || pressed == 224)
