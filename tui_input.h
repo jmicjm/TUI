@@ -2,7 +2,9 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <vector>
 
+#include "tui_config.h"
 
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
@@ -26,7 +28,7 @@ namespace tui
 	{
 
 
-		void CTRLC_handler()
+		inline void CTRLC_handler()
 		{
 
 		}
@@ -168,7 +170,7 @@ namespace tui
 				}
 			}
 		};
-		static keyboard_buffer buffer;
+		extern keyboard_buffer buffer;
 
 		//return true if key was pressed in iteration before last clear
 		inline bool isKeyPressed(int key)

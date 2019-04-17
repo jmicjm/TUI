@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "tui_config.h"
+
 #include "tui_console.h"
 //#include "tui_input.h"
 //#include "tui_utils.h"
