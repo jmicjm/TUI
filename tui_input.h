@@ -65,9 +65,115 @@ namespace tui
 			UP = TUI_BUFFER_OFFSET + 72,
 			DOWN = TUI_BUFFER_OFFSET + 80,
 			LEFT = TUI_BUFFER_OFFSET + 75,
-			RIGHt = TUI_BUFFER_OFFSET + 77
+			RIGHT = TUI_BUFFER_OFFSET + 77
 
 		};
+#endif
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+		struct key_seq_pair
+		{
+			std::string name;
+			std::vector<int> seq;
+			key_seq_pair() {}
+			key_seq_pair(std::string Name) : name(Name) {}
+			key_seq_pair(std::string Name, std::vector<int> Seq) : name(Name), seq(Seq) {}
+		};
+
+		enum KEY
+		{
+			ENTER = 13,
+			BACKSPACE = 127,
+			ESC = 27,
+			TAB = 9,
+
+			PGUP = TUI_BUFFER_OFFSET + 2,
+			PGDN = TUI_BUFFER_OFFSET + 3,
+
+			DEL = TUI_BUFFER_OFFSET + 4,
+			INS = TUI_BUFFER_OFFSET + 5,
+			END = TUI_BUFFER_OFFSET + 6,
+			HOME = TUI_BUFFER_OFFSET + 7,
+
+			F1 = TUI_BUFFER_OFFSET + 8,
+			F2 = TUI_BUFFER_OFFSET + 9,
+			F3 = TUI_BUFFER_OFFSET + 10,
+			F4 = TUI_BUFFER_OFFSET + 11,
+			F5 = TUI_BUFFER_OFFSET + 12,
+			F6 = TUI_BUFFER_OFFSET + 13,
+			F7 = TUI_BUFFER_OFFSET + 14,
+			F8 = TUI_BUFFER_OFFSET + 15,
+			F9 = TUI_BUFFER_OFFSET + 16,
+			F10 = TUI_BUFFER_OFFSET + 17,
+			F11 = TUI_BUFFER_OFFSET + 18,
+			F12 = TUI_BUFFER_OFFSET + 19,
+
+			UP = TUI_BUFFER_OFFSET + 20,
+			DOWN = TUI_BUFFER_OFFSET + 21,
+			LEFT = TUI_BUFFER_OFFSET + 22,
+			RIGHT = TUI_BUFFER_OFFSET + 23
+		};
+
+		struct terminal_info
+		{
+			terminal_info()
+			{
+				//parse terminfo
+			}
+
+			std::vector<key_seq_pair> sequences =
+			{
+				{"kpp"}, //PGUP
+				{"knp"}, //PGDN
+
+				{"kdch1"}, //DELETE
+				{"kich1"}, //INSERT
+				{"kend"}, //END
+				{"khome"}, //HOME
+
+				{"kf1"}, //F1
+				{"kf2"},
+				{"kf3"},
+				{"kf4"},
+				{"kf5"},
+				{"kf6"},
+				{"kf7"},
+				{"kf8"},
+				{"kf9"},
+				{"kf10"},
+				{"kf11"},
+				{"kf12"}, //F12
+
+				{"kcuu1"}, //UP
+				{"kcud1"}, //DOWN
+				{"kcub1"}, //LEFT
+				{"kcuf1"} //RIGHT
+			};
+
+
+			std::string smkx;
+			std::string rmkx;
+
+			int longest_seq;
+			int shortest_seq;
+
+			//return position of sequence, if there is no given sequence return -1
+			int getSeqNumber(std::vector<int> seq)
+			{
+				for (int i = 0; i < sequences.size(); i++)
+				{
+					if (sequences[i].seq == seq)
+					{
+						return i;
+					}
+				}
+				return -1;
+			}
+
+		};
+		extern terminal_info term_info;
+
+
 #endif
 		
 		
