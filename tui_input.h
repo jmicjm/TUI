@@ -139,17 +139,25 @@ namespace tui
 
 					if (pressed != 0 && pressed != 224)
 					{
-						buffer[1][pressed] = true;
-						if (pressed >= 32)
+						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
 						{
-							string_buffer[1] += (char)pressed;
+							buffer[1][pressed] = true;
+
+							if (pressed >= 32)
+							{
+								string_buffer[1] += (char)pressed;
+							}
 						}
 					}
 
 					if (pressed == 0 || pressed == 224)
 					{
 						int second_getch = _getch();
-						second_buffer[1][second_getch] = true;
+
+						if (second_getch >= 0 && second_getch < TUI_GETCH_RANGE)
+						{
+							second_buffer[1][second_getch] = true;
+						}
 					}
 #endif
 				}
