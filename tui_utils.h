@@ -190,8 +190,20 @@ namespace tui
 				m_console_string[i].setColor(str[i].getColor());
 			}
 		}
-		//console_string(std::string str) : console_string(std::wstring(str.begin(), str.end())) {} //string need to be ascii
-		console_string(std::string str) 
+		console_string(console_char ch)
+		{
+			m_console_string.resize(1);
+			m_console_string[0] = ch;
+		}
+
+		console_string(char ch)
+		{
+			m_console_string.resize(1);
+			m_console_string[0] = ch;
+		}
+		console_string(const char* str) : console_string(std::string(str)) {}
+		console_string(std::string str) : console_string(str, console_color()) {}
+		console_string(std::string str, console_color color) 
 		{
 			std::wstring wstr = converter.from_bytes(str);
 
@@ -200,11 +212,11 @@ namespace tui
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
 				m_console_string[i].setChar(wstr[i]);
-				m_console_string[i].setColor(console_color());
+				m_console_string[i].setColor(color);
 			}
 		}
+		
 		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
-		console_string(const char* str) : console_string(std::string(str)) {}
 		console_string(std::wstring wstr) : console_string(wstr, console_color()) {}
 		console_string(std::wstring wstr, console_color color)
 		{
@@ -258,28 +270,9 @@ namespace tui
 			assignString(string);
 		}
 
-		void operator= (const wchar_t* str)
-		{
-			std::wstring string(str);
-
-			assignString(str);
-		}
-
-		void operator= (console_char con_char)
-		{
-			m_console_string.resize(0);
-
-			m_console_string.push_back(con_char);
-		}
-
 		void operator+=(console_string string)
 		{
 			appendString(string);
-		}
-
-		void operator+=(console_char con_char)
-		{
-			m_console_string.push_back(con_char);
 		}
 
 		std::wstring getStdString()
