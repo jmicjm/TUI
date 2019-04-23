@@ -104,7 +104,7 @@ namespace tui
 					m_was_next_pressed = true;
 				}
 
-				if (m_time_limit.isEnd())
+				if (m_time_limit.isEnd(true))
 				{
 					
 
@@ -451,6 +451,11 @@ namespace tui
 		{
 			updateSize();
 			clear_buf();
+		}
+
+		bool isTimeToDisplay()
+		{
+			return m_fps_control.isEnd(false);
 		}
 
 		void display()
