@@ -1,5 +1,7 @@
 #pragma once
 
+#include "tui_config.h"
+
 #include "tui_enums.h"
 
 #include <string>
@@ -339,11 +341,14 @@ namespace tui
 			m_frame_time = frame_time;
 		}
 
-		bool isEnd()
+		bool isEnd(bool restart_clock)
 		{
 			if (std::chrono::steady_clock::now() - m_frame_start_point >= m_frame_time)
 			{
-				restart();
+				if (restart_clock == true)
+				{
+					restart();
+				}
 				return true; 
 			}
 			else { return false; }
@@ -358,7 +363,7 @@ namespace tui
 	};
 
 
-	inline bool isPunctuation(char symbol)
+	inline bool isPunctuation(wchar_t symbol)
 	{
 		if (symbol == '.'
 			|| symbol == ','
