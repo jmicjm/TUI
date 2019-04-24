@@ -137,33 +137,79 @@ namespace tui
 			//operator int() { return getRGBIColor(); }
 	};
 
-	struct console_char
+	inline std::u32string Utf8ToUtf32(std::string str)
+	{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
+		auto conv = converter.from_bytes(str);
+
+		return std::u32string(reinterpret_cast<char32_t const*>(conv.data()), conv.length());
+#endif
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+
+		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+		return converter.from_bytes(str);
+#endif
+	}
+	inline std::string Utf32ToUtf8(std::u32string str)
+	{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
+		auto conv = reinterpret_cast<const int32_t*>(str.data());
+		return converter.to_bytes(conv, conv + str.size()); 
+#endif
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+
+		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+		return converter.to_bytes(str);
+#endif
+	}
+
+	inline size_t GetUtf8StrLength(std::string str)
+	{
+		return Utf8ToUtf32(str).size();
+	}
+
+	struct symbol
 	{
 		private:
-			wchar_t m_character = ' ';
+			std::string m_character = " ";
 			console_color m_color;
 		public:
-			console_char() : console_char(' ', console_color()) {}
-			console_char(wchar_t character) : console_char(character, console_color()) {}
-			console_char(wchar_t character, console_color color)
+			symbol() : symbol(" ", console_color()) {}
+			symbol(char character)
 			{
-				setChar(character);
+				m_character.resize(1);
+				m_character[0] = character;
+			}
+			symbol(const char* character) : symbol(std::string(character)) {}
+			symbol(std::string character) : symbol(character, console_color()) {}
+			symbol(std::string character, console_color color)
+			{
+				setSymbol(character);
 				setColor(color);
 			}
 
-			void setChar(wchar_t character) { m_character = character; }
+			void setSymbol(std::string character) { m_character = character; }
 			void setColor(console_color color) { m_color = color; }
-			wchar_t getChar() { return m_character; }
+			std::string getSymbol() { return m_character; }
 			console_color getColor() { return m_color; }
-			operator wchar_t() { return m_character; }
+			operator std::string() { return m_character; }
 
-			bool operator==(console_char c)
+			int getStrLen()
+			{
+				return GetUtf8StrLength(m_character);
+			}
+
+			bool operator==(symbol c)
 			{
 				if(m_character == c.m_character && m_color == c.m_color)
 				{ return true; }
 				else { return false; }
 			}
-			bool operator!=(console_char c)
+			bool operator!=(symbol c)
 			{
 				if (m_character != c.m_character || m_color != c.m_color)
 				{ return true; }
@@ -171,12 +217,14 @@ namespace tui
 			}
 	};
 
+	
+
 	struct console_string
 	{
 	private:
-		std::vector<console_char> m_console_string;
+		std::vector<symbol> m_console_string;
 		console_color m_selected_color;
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 		
 	public:
 		console_string(){}
@@ -186,49 +234,40 @@ namespace tui
 
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
-				m_console_string[i].setChar(str[i]);
+				m_console_string[i].setSymbol(str[i]);
 				m_console_string[i].setColor(str[i].getColor());
 			}
 		}
-		console_string(console_char ch)
+		console_string(symbol Symbol)
 		{
 			m_console_string.resize(1);
-			m_console_string[0] = ch;
+			m_console_string[0] = Symbol;
 		}
 
-		console_string(char ch)
-		{
-			m_console_string.resize(1);
-			m_console_string[0] = ch;
-		}
 		console_string(const char* str) : console_string(std::string(str)) {}
 		console_string(std::string str) : console_string(str, console_color()) {}
 		console_string(std::string str, console_color color) 
 		{
-			std::wstring wstr = converter.from_bytes(str);
 
-			m_console_string.resize(wstr.size());
+			m_console_string.resize(GetUtf8StrLength(str));
 
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
-				m_console_string[i].setChar(wstr[i]);
+				std::u32string utf32_str = Utf8ToUtf32(str);
+
+				std::u32string utf32_char;
+				utf32_char.resize(1);
+				utf32_char[0] = utf32_str[i];
+
+				std::string character = Utf32ToUtf8(utf32_char);
+
+
+				m_console_string[i].setSymbol(character);
 				m_console_string[i].setColor(color);
 			}
 		}
 		
-		console_string(const wchar_t* str) : console_string(std::wstring(str)) {}
-		console_string(std::wstring wstr) : console_string(wstr, console_color()) {}
-		console_string(std::wstring wstr, console_color color)
-		{
-			m_console_string.resize(wstr.size());
-
-			for (int i = 0; i < m_console_string.size(); i++)
-			{
-				m_console_string[i].setChar(wstr[i]);
-				m_console_string[i].setColor(color);
-			}
-		}
-
+		
 		void appendString(console_string string)
 		{
 			for (int i = 0; i < string.size(); i++)
@@ -243,11 +282,11 @@ namespace tui
 			appendString(string);
 		}
 
-		console_char &operator[] (int i)
+		symbol &operator[] (int i)
 		{
 			return m_console_string[i];
 		}
-		console_char operator[] (int i) const
+		symbol operator[] (int i) const
 		{
 			return m_console_string[i];
 		}
@@ -261,7 +300,7 @@ namespace tui
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
-				m_console_string.push_back(console_char(string[i], m_selected_color));
+				m_console_string.push_back(symbol(string[i], m_selected_color));
 			}
 		}
 
@@ -275,24 +314,11 @@ namespace tui
 			appendString(string);
 		}
 
-		std::wstring getStdString()
+		
+
+		void push_back(symbol Symbol)
 		{
-			std::wstring string;
-			string.resize(m_console_string.size());
-
-			for (int i = 0; i < string.size(); i++)
-			{
-				string[i] = m_console_string[i];
-			}
-
-			return string;
-		}
-
-		operator std::wstring() { return getStdString(); }
-
-		void push_back(console_char con_char)
-		{
-			m_console_string.push_back(con_char);
+			m_console_string.push_back(Symbol);
 		}
 
 		int size() { return m_console_string.size(); }
@@ -356,39 +382,20 @@ namespace tui
 	};
 
 
-	inline bool isPunctuation(wchar_t symbol)
+	inline bool isPunctuation(symbol Symbol)
 	{
-		if (symbol == '.'
-			|| symbol == ','
-			|| symbol == ':'
-			|| symbol == ';'
-			|| symbol == '!'
-			|| symbol == '?')
+		if (Symbol == "."
+			|| Symbol == ","
+			|| Symbol == ":"
+			|| Symbol == ";"
+			|| Symbol == "!"
+			|| Symbol == "?")
 		{
 			return true;
 		}
 		else { return false; }
 	}
 
-	inline std::u32string Utf8ToUtf32(std::string str)
-	{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
-		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
-		auto conv = converter.from_bytes(str);
-
-		return std::u32string(reinterpret_cast<char32_t const*>(conv.data()), conv.length());
-#endif
-
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-
-		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-		return converter.from_bytes(str);
-#endif
-	}
-
-	inline size_t GetUtf8StrLength(std::string str)
-	{
-		return Utf8ToUtf32(str).size();
-	}
+	
 
 }

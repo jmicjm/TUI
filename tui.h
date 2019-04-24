@@ -17,7 +17,7 @@ namespace tui
 	struct rectangle : surface, active_element
 	{
 		private:
-			console_char m_character;
+			symbol m_character;
 
 			void fill()
 			{
@@ -25,12 +25,12 @@ namespace tui
 				for (int i = 0; i < getSize().x; i++)
 				{
 					for (int j = 0; j < getSize().y; j++) {
-						surface::setChar(m_character, vec2i(i, j));
+						surface::setSymbolAt(m_character, vec2i(i, j));
 					}
 				}
 			}
 		public:
-			void setChar(console_char character)
+			void setChar(symbol character)
 			{
 				m_character = character;	
 				fill();
@@ -52,25 +52,25 @@ namespace tui
 	struct box : surface
 	{
 		private:
-			console_char horizontal_line;
-			console_char vertical_line;
-			console_char top_left;
-			console_char top_right;
-			console_char bottom_left;
-			console_char bottom_right;
+			symbol horizontal_line;
+			symbol vertical_line;
+			symbol top_left;
+			symbol top_right;
+			symbol bottom_left;
+			symbol bottom_right;
 
 			void fillChars()
 			{
-				surface::setChar(top_left, vec2i(0, 0));
-				surface::setChar(top_right, vec2i(getSize().x - 1, 0));
-				surface::setChar(bottom_left, vec2i(0, getSize().y - 1));
-				surface::setChar(bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
+				surface::setSymbolAt(top_left, vec2i(0, 0));
+				surface::setSymbolAt(top_right, vec2i(getSize().x - 1, 0));
+				surface::setSymbolAt(bottom_left, vec2i(0, getSize().y - 1));
+				surface::setSymbolAt(bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
 
-				for(int i = 1; i < getSize().x-1; i++) { surface::setChar(horizontal_line, vec2i(i, 0)); }
-				for(int i = 1; i < getSize().x-1; i++) { surface::setChar(horizontal_line, vec2i(i, getSize().y - 1)); }
+				for(int i = 1; i < getSize().x-1; i++) { surface::setSymbolAt(horizontal_line, vec2i(i, 0)); }
+				for(int i = 1; i < getSize().x-1; i++) { surface::setSymbolAt(horizontal_line, vec2i(i, getSize().y - 1)); }
 
-				for (int i = 1; i < getSize().y-1; i++) { surface::setChar(vertical_line, vec2i(0, i)); }
-				for (int i = 1; i < getSize().y-1; i++) { surface::setChar(vertical_line, vec2i(getSize().x - 1, i)); }
+				for (int i = 1; i < getSize().y-1; i++) { surface::setSymbolAt(vertical_line, vec2i(0, i)); }
+				for (int i = 1; i < getSize().y-1; i++) { surface::setSymbolAt(vertical_line, vec2i(getSize().x - 1, i)); }
 			}
 		public:
 			box(surface_size size, int thickness)
@@ -79,17 +79,17 @@ namespace tui
 				switch (thickness)
 				{
 					case THICKNESS::THIN:
-						setChars(console_char(L'\x2500'), console_char(L'\x2502'), console_char(L'\x250C'), console_char(L'\x2510'), console_char(L'\x2514'), console_char(L'\x2518'));
+						setChars(symbol(u8"\u2500"), symbol(u8"\u2502"), symbol(u8"\u250C"), symbol(u8"\u2510"), symbol(u8"\u2514"), symbol(u8"\u2518"));
 						break;
 					case THICKNESS::MEDIUM:
-						setChars(console_char(L'\x2550'), console_char(L'\x2551'), console_char(L'\x2554'), console_char(L'\x2557'), console_char(L'\x255A'), console_char(L'\x255D'));
+						setChars(symbol(u8"\u2550"), symbol(u8"\u2551"), symbol(u8"\u2554"), symbol(u8"\u2557"), symbol(u8"\u255A"), symbol(u8"\u255D"));
 						break;
 					case THICKNESS::THICK:
-						setChars(console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'), console_char(L'\x2558'));
+						setChars(symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"));
 						break;
 				}
 			}
-			box(surface_size size, console_char h_line, console_char v_line, console_char top_l, console_char top_r, console_char bottom_l, console_char bottom_r)
+			box(surface_size size, symbol h_line, symbol v_line, symbol top_l, symbol top_r, symbol bottom_l, symbol bottom_r)
 			{
 				setSize(size);
 				setChars(h_line, v_line, top_l, top_r, bottom_l, bottom_r);	
@@ -106,7 +106,7 @@ namespace tui
 
 				fillChars();
 			}
-			void setChars(console_char h_line, console_char v_line, console_char t_l, console_char t_r, console_char b_l, console_char b_r)
+			void setChars(symbol h_line, symbol v_line, symbol t_l, symbol t_r, symbol b_l, symbol b_r)
 			{
 				horizontal_line = h_line;
 				vertical_line = v_line;
@@ -126,8 +126,8 @@ namespace tui
 	struct scroll : surface
 	{
 		private:
-			console_char m_slider; //handle
-			console_char m_line;
+			symbol m_slider; //handle
+			symbol m_line;
 			int m_lenght = 0;
 			int m_handle_position = 0;
 			int m_handle_lenght = 0;
@@ -151,10 +151,10 @@ namespace tui
 					switch (direction)
 					{
 					case DIRECTION::HORIZONTAL:
-						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(i, 0)); }
+						for (int i = 0; i < getSurfaceSize(); i++) { setSymbolAt(m_line, vec2i(i, 0)); }
 						break;
 					case DIRECTION::VERTICAL:
-						for (int i = 0; i < getSurfaceSize(); i++) { setChar(m_line, vec2i(0, i)); }
+						for (int i = 0; i < getSurfaceSize(); i++) { setSymbolAt(m_line, vec2i(0, i)); }
 						break;
 					}
 	
@@ -168,10 +168,10 @@ namespace tui
 					switch (direction)
 					{
 					case DIRECTION::HORIZONTAL:
-						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(i + handle_position, 0)); }		
+						for (int i = 0; i < m_handle_lenght; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
 						break;
 					case DIRECTION::VERTICAL:
-						for (int i = 0; i < m_handle_lenght; i++) { setChar(m_slider, vec2i(0, i + handle_position)); }
+						for (int i = 0; i < m_handle_lenght; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
 						break;
 					}				
 				}
@@ -186,19 +186,19 @@ namespace tui
 				switch (direction)
 				{
 				case DIRECTION::HORIZONTAL:
-					m_slider = L'\x2550';
-					m_line = L'\x2500';
+					m_slider = u8"\u2550";
+					m_line = u8"\u2500";
 					break;
 				case DIRECTION::VERTICAL:
-					m_slider = L'\x2551';
-					m_line = L'\x2502';
+					m_slider = u8"\u2551";
+					m_line = u8"\u2502";
 					break;
 				}
 
 				setSize(size);
 			}
 
-			void setChars(console_char slider, console_char line)
+			void setChars(symbol slider, symbol line)
 			{
 				m_slider = slider;
 				m_line = line;
@@ -286,7 +286,7 @@ namespace tui
 					{
 						if (i*getSize().x + j >= m_text.size()) { break; } 
 
-						setChar(m_text[i*getSize().x + j], vec2i(j, i));
+						setSymbolAt(m_text[i*getSize().x + j], vec2i(j, i));
 					}
 				}
 			}
@@ -354,20 +354,20 @@ namespace tui
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
 							&& !isPunctuation(m_unprepared_text[pos])
-							&& m_unprepared_text[pos].getChar() != (' ')	
+							&& m_unprepared_text[pos].getSymbol() != (" ")	
 							&& !isPunctuation(m_unprepared_text[pos + 1])
-							&& m_unprepared_text[pos + 1].getChar() != (' ')
+							&& m_unprepared_text[pos + 1].getSymbol() != (" ")
 							)
 						{
-							if (m_unprepared_text[pos - 1].getChar() != ' ') {
+							if (m_unprepared_text[pos - 1].getSymbol() != " ") {
 								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << L"-";
+								prepared << u8"-";
 							}
-							else { prepared += ' '; }
+							else { prepared += " "; }
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos].getChar() == ' ' && pos !=0) { pos++; }// ommit space at start of line
+							if (j == 0 && m_unprepared_text[pos].getSymbol() == " " && pos !=0) { pos++; }// ommit space at start of line
 							if (pos < m_unprepared_text.size())
 							{
 								prepared += m_unprepared_text[pos++];
@@ -386,7 +386,7 @@ namespace tui
 	public:
 		text(surface_size size, console_string txt)
 			: m_scroll({{1,0},{0,100}})
-			, m_text({{-1,0}, {100,100}}, L" ")
+			, m_text({{-1,0}, {100,100}}, u8" ")
 			{
 				setSize(size);
 
@@ -487,9 +487,9 @@ namespace tui
 		int m_length;
 		int m_max_length;
 
-		console_char m_bar;
-		console_char m_start;
-		console_char m_end;
+		symbol m_bar;
+		symbol m_start;
+		symbol m_end;
 
 		void fill()
 		{

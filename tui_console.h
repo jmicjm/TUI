@@ -140,7 +140,7 @@ namespace tui
 		friend class group;
 
 		private:		
-			std::vector<std::vector<console_char>> m_chars;
+			std::vector<std::vector<symbol>> m_symbols;
 			position m_position;
 			//vec2i percentageSize;
 			surface_size size_info;
@@ -160,10 +160,10 @@ namespace tui
 						new_size.y = 1;
 					}
 					
-						m_chars.resize(new_size.x);
-						for (int i = 0; i < m_chars.size(); i++)
+						m_symbols.resize(new_size.x);
+						for (int i = 0; i < m_symbols.size(); i++)
 						{
-							m_chars[i].resize(new_size.y);
+							m_symbols[i].resize(new_size.y);
 						}
 					
 					makeTransparent();
@@ -176,16 +176,16 @@ namespace tui
 		public:	
 			surface()
 			{
-				m_chars.resize(1);
-				m_chars[0].resize(1);
+				m_symbols.resize(1);
+				m_symbols[0].resize(1);
 			}
 
 			virtual void draw_action() {}
 
 			//void setSizeType(int type) { sizeType = type; }
 
-			void setChar(console_char character, vec2i position) { m_chars[position.x][position.y] = character; }
-			console_char getchar(vec2i position) { return m_chars[position.x][position.y]; }
+			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.x][position.y] = character; }
+			symbol getSymbolAt(vec2i position) { return m_symbols[position.x][position.y]; }
 			void setPosition(position pos) { m_position = pos; }
 
 			void move(vec2i offset)
@@ -271,9 +271,9 @@ namespace tui
 							&& y_origin + j < getSize().y
 							&& x_origin + i >= 0
 							&& y_origin + j >= 0
-							&& obj.getChar(vec2i(i, j)).getChar() != TRANSPARENT)
+							&& obj.getSymbolAt(vec2i(i, j)).getSymbol() != "")
 						{
-							m_chars[x_origin + i][y_origin + j] = obj.getChar(vec2i(i, j));
+							m_symbols[x_origin + i][y_origin + j] = obj.getSymbolAt(vec2i(i, j));
 						}
 					}
 				}
@@ -285,7 +285,7 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().y; j++)
 					{
-						m_chars[i][j] = TRANSPARENT;
+						m_symbols[i][j] = "";
 					}
 				}
 			}
@@ -295,19 +295,15 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().y; j++)
 					{
-						m_chars[i][j] = BLANKSYMBOL;
+						m_symbols[i][j] = BLANKSYMBOL;
 					}
 				}
 			}
 
-//int getSizeType() { return sizeType; }
-	//		vec2i getPercentageSize() { return percentageSize; }
 			position getPosition() { return m_position; }
-			vec2i getSize() { return vec2i(m_chars.size(), m_chars[0].size()); }
+			vec2i getSize() { return vec2i(m_symbols.size(), m_symbols[0].size()); }
 			surface_size getSizeInfo() { return size_info; }
-			console_char getChar(vec2i position) { return m_chars[position.x][position.y]; }
-			
-		
+	
 	};
 
 	struct group : surface
@@ -378,7 +374,7 @@ namespace tui
 			{
 				for (int j = 0; j < m_buffer.getSize().y; j++)
 				{
-					m_last_buffer.setChar(m_buffer.getChar({ i,j }), { i,j });
+					m_last_buffer.setSymbolAt(m_buffer.getSymbolAt({ i,j }), { i,j });
 				}
 			}
 		}
@@ -393,7 +389,7 @@ namespace tui
 			{
 				for (int j = 0; j < m_buffer.getSize().y; j++)
 				{
-					if (m_buffer.getChar({ i,j }) != m_last_buffer.getChar({ i,j }))
+					if (m_buffer.getSymbolAt({ i,j }) != m_last_buffer.getSymbolAt({ i,j }))
 					{
 						return true;
 					}
@@ -405,7 +401,7 @@ namespace tui
 	public:
 		vec2i getSize() { return m_buffer.getSize(); }
 
-		console_char getChar(vec2i position) { return m_buffer.getChar(position); }
+		symbol getSymbolAt(vec2i position) { return m_buffer.getSymbolAt(position); }
 
 		void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
@@ -471,6 +467,8 @@ namespace tui
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
 
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 			std::vector<WORD> temp_attr;
 			std::vector<wchar_t> temp_char;
 
@@ -480,8 +478,10 @@ namespace tui
 				{
 					if (j < getSize().x)
 					{
-						temp_attr.push_back(m_buffer.getChar(vec2i(j, i)).getColor().getRGBIColor());
-						temp_char.push_back(m_buffer.getChar(vec2i(j, i)).getChar());
+						temp_attr.push_back(m_buffer.getSymbolAt(vec2i(j, i)).getColor().getRGBIColor());
+						std::wstring wstr = converter.from_bytes(m_buffer.getSymbolAt(vec2i(j, i)).getSymbol());
+
+						temp_char.push_back(wstr[0]);
 					}
 					else
 					{
@@ -503,21 +503,21 @@ namespace tui
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
 			
-			std::wstring w_str;
 			std::string str;
-
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 			for (int i = 0; i < getSize().y; i++)
 			{
 				for (int j = 0; j < getSize().x; j++)
 				{
-					//w_str += m_buffer.getChar({ j, i });
-					str += m_buffer.getChar({ j, i }).getColor().getEscapeCode();
-					str+= converter.to_bytes(m_buffer.getChar({ j, i }));
+					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
+					str += m_buffer.getSymbolAt({ j, i });
 				}	
 			}
-			std::cout << str << "\033[H";
+
+			/* if not doubled last few characters will be displayed after
+			some delay. I dont know why this happen*/
+			std::cout << str << "\033[H" << str << "\033[H";
+			
 
 #endif
 			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
