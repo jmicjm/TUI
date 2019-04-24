@@ -92,16 +92,16 @@ namespace tui
 
 
 	//4bit RGBI
-	struct console_color
+	struct color
 	{
 		private:
 
 			int m_foreground;
 			int m_background;
 		public:
-			console_color() : console_color(tui::COLOR::WHITE, tui::COLOR::BLACK) {}
-			console_color(int foreground) : console_color(foreground, tui::COLOR::BLACK) {}
-			console_color(int foreground, int background) { setColor(foreground, background); }
+			color() : color(tui::COLOR::WHITE, tui::COLOR::BLACK) {}
+			color(int foreground) : color(foreground, tui::COLOR::BLACK) {}
+			color(int foreground, int background) { setColor(foreground, background); }
 			void setColor(int foreground, int background)
 			{
 				m_background = background;
@@ -122,13 +122,13 @@ namespace tui
 
 				return esc_c;
 			}
-			bool operator==(console_color c)
+			bool operator==(color c)
 			{
 				if (c.m_background == m_background && c.m_foreground == m_foreground)
 				{ return true; }
 				else { return false; }
 			}
-			bool operator!=(console_color c)
+			bool operator!=(color c)
 			{
 				if (c.m_background != m_background || c.m_foreground != m_foreground)
 				{ return true; }
@@ -176,26 +176,26 @@ namespace tui
 	{
 		private:
 			std::string m_character = " ";
-			console_color m_color;
+			color m_color;
 		public:
-			symbol() : symbol(" ", console_color()) {}
+			symbol() : symbol(" ", color()) {}
 			symbol(char character)
 			{
 				m_character.resize(1);
 				m_character[0] = character;
 			}
 			symbol(const char* character) : symbol(std::string(character)) {}
-			symbol(std::string character) : symbol(character, console_color()) {}
-			symbol(std::string character, console_color color)
+			symbol(std::string character) : symbol(character, color()) {}
+			symbol(std::string character, color color)
 			{
 				setSymbol(character);
 				setColor(color);
 			}
 
 			void setSymbol(std::string character) { m_character = character; }
-			void setColor(console_color color) { m_color = color; }
+			void setColor(color color) { m_color = color; }
 			std::string getSymbol() { return m_character; }
-			console_color getColor() { return m_color; }
+			color getColor() { return m_color; }
 			operator std::string() { return m_character; }
 
 			int getStrLen()
@@ -223,7 +223,7 @@ namespace tui
 	{
 	private:
 		std::vector<symbol> m_console_string;
-		console_color m_selected_color;
+		color m_selected_color;
 
 		
 	public:
@@ -245,8 +245,8 @@ namespace tui
 		}
 
 		console_string(const char* str) : console_string(std::string(str)) {}
-		console_string(std::string str) : console_string(str, console_color()) {}
-		console_string(std::string str, console_color color) 
+		console_string(std::string str) : console_string(str, color()) {}
+		console_string(std::string str, color color) 
 		{
 
 			m_console_string.resize(GetUtf8StrLength(str));
@@ -291,7 +291,7 @@ namespace tui
 			return m_console_string[i];
 		}
 
-		void operator<< (console_color color)
+		void operator<< (color color)
 		{
 			m_selected_color = color;
 		}

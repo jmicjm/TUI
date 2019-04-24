@@ -95,14 +95,14 @@ namespace tui
 				setChars(h_line, v_line, top_l, top_r, bottom_l, bottom_r);	
 			}
 
-			void setColor(console_color color)
+			void setColor(color Color)
 			{
-				horizontal_line.setColor(color);
-				vertical_line.setColor(color);
-				top_left.setColor(color);
-				top_right.setColor(color);
-				bottom_left.setColor(color);
-				bottom_right.setColor(color);
+				horizontal_line.setColor(Color);
+				vertical_line.setColor(Color);
+				top_left.setColor(Color);
+				top_right.setColor(Color);
+				bottom_left.setColor(Color);
+				bottom_right.setColor(Color);
 
 				fillChars();
 			}
@@ -204,7 +204,7 @@ namespace tui
 				m_line = line;
 				fill();
 			}
-			void setColors(console_color slider, console_color line)
+			void setColors(color slider, color line)
 			{
 				m_slider.setColor(slider);
 				m_line.setColor(line);

@@ -485,7 +485,7 @@ namespace tui
 					}
 					else
 					{
-						temp_attr.push_back(console_color().getRGBIColor());
+						temp_attr.push_back(color().getRGBIColor());
 						temp_char.push_back(wchar_t());
 					}
 				}
@@ -520,7 +520,7 @@ namespace tui
 			
 
 #endif
-			setGlobalColor(console_color(COLOR::WHITE, COLOR::BLACK));
+			setGlobalColor(color(COLOR::WHITE, COLOR::BLACK));
 			//hidePrompt();
 			updateLastBuffer();
 		}
@@ -563,7 +563,7 @@ namespace tui
 			m_last_size = console_size;
 		}
 
-		void setGlobalColor(console_color color) 
+		void setGlobalColor(color color) 
 		{
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
 			SetConsoleTextAttribute(m_console_handle, color.getRGBIColor()); 
