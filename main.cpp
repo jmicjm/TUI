@@ -1,5 +1,6 @@
-#define TUI_TARGET_SYSTEM_WINDOWS
+
 #include "tui.h"
+
 
 
 #include <iostream>
@@ -19,7 +20,7 @@ int main()
 	tui::rectangle rect;
 	rect.setSize({{ -2,-2 }, { 20,20 }});
 	rect.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-	rect.setChar(tui::console_char(L'\x2588', tui::console_color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
+	rect.setChar(tui::symbol(u8"\u2588", tui::color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
 
 	tui::box mainBox({ {0,0}, { 100, 100 } }, tui::THICKNESS::MEDIUM);
 	
@@ -31,16 +32,17 @@ int main()
 	//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
 	tui::console_string ipsum;
-	ipsum << tui::COLOR::CYAN;
-	ipsum << "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
-	ipsum << tui::COLOR::MAGENTA;
-	ipsum << L"Vestibulum feugiat egestas urna non euismod. ";
-	ipsum << tui::console_color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
-	ipsum << L"Maecenas ";
-	ipsum << tui::COLOR::MAGENTA;
-	ipsum << L"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
-
-	tui::text text({ {3,0}, {0, 50} }, ipsum);
+	ipsum << tui::color(tui::COLOR::CYAN);
+	//ipsum << u8"\u2588";
+	ipsum << u8"Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+	ipsum << tui::color(tui::COLOR::MAGENTA);
+	ipsum << u8"Vestibulum feugiat egestas urna non euismod. ";
+	ipsum << tui::color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
+	ipsum << u8"Maecenas ";
+	ipsum << tui::color(tui::COLOR::MAGENTA);
+	ipsum += u8"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+	ipsum.push_back("x");
+	tui::text text({ {18,0}, {0, 50} }, ipsum);
 	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
 	text.activate();
@@ -49,7 +51,7 @@ int main()
 	
 
 
-	tui::text input_text({ {0,0}, {50, 30} }, L"xxxxx ");
+	tui::text input_text({ {0,0}, {20, 20} }, u8"xxxxx ");
 		input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
 
 		
@@ -76,14 +78,14 @@ int main()
 
 		//grp.removeSurface(bx1);
 
-		bx0.setColor(tui::console_color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
+		bx0.setColor(tui::color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
 		*/
 		std::string t_s;
 
-		tui::console_string con_str(L"test");
+		tui::console_string con_str(u8"test");
 
 		//con_str << tui::COLOR::BLUE;
-		con_str = L"test";
+		con_str = u8"test";
 
 		/*tui::rectangle r0;
 		r0.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
