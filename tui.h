@@ -359,11 +359,16 @@ namespace tui
 							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
 							)
 						{
-							if (m_unprepared_text[pos - 1].getSymbol() != ' ') {
+							if (m_unprepared_text[pos - 1].getSymbol() != ' ') 
+							{
 								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << u8"-";
+								prepared << "-";
 							}
-							else { prepared += " "; }
+							else 
+							{ 
+								prepared << m_unprepared_text[pos - 1].getColor();
+								prepared << " "; 
+							}
 						}
 						else
 						{
