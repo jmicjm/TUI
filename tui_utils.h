@@ -140,7 +140,7 @@ namespace tui
 	inline std::u32string Utf8ToUtf32(std::string str)
 	{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
 		auto conv = converter.from_bytes(str);
 
 		return std::u32string(reinterpret_cast<char32_t const*>(conv.data()), conv.length());
@@ -148,23 +148,33 @@ namespace tui
 
 #ifdef  TUI_TARGET_SYSTEM_LINUX
 
-		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
 		return converter.from_bytes(str);
 #endif
 	}
 	inline std::string Utf32ToUtf8(std::u32string str)
 	{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-		std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
 		auto conv = reinterpret_cast<const int32_t*>(str.data());
+
 		return converter.to_bytes(conv, conv + str.size()); 
 #endif
 
 #ifdef  TUI_TARGET_SYSTEM_LINUX
 
-		std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
 		return converter.to_bytes(str);
 #endif
+	}
+
+	inline std::string Char32ToUtf8(char32_t character)
+	{
+		std::u32string str;
+		str.resize(0);
+		str[0] = character;
+
+		return Utf32ToUtf8(str);
 	}
 
 	inline size_t GetUtf8StrLength(std::string str)
@@ -179,10 +189,9 @@ namespace tui
 			color m_color;
 		public:
 			symbol() : symbol(" ", color()) {}
-			symbol(char character)
+			symbol(char32_t character)
 			{
-				m_character.resize(1);
-				m_character[0] = character;
+					m_character = Char32ToUtf8(character);
 			}
 			symbol(const char* character) : symbol(std::string(character)) {}
 			symbol(std::string character) : symbol(character, color()) {}
