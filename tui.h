@@ -79,13 +79,13 @@ namespace tui
 				switch (thickness)
 				{
 					case THICKNESS::THIN:
-						setChars(symbol(u8"\u2500"), symbol(u8"\u2502"), symbol(u8"\u250C"), symbol(u8"\u2510"), symbol(u8"\u2514"), symbol(u8"\u2518"));
+						setChars(symbol(U'\x2500'), symbol(U'\x2502'), symbol(U'\x250C'), symbol(U'\x2510'), symbol(U'\x2514'), symbol(U'\x2518'));
 						break;
 					case THICKNESS::MEDIUM:
-						setChars(symbol(u8"\u2550"), symbol(u8"\u2551"), symbol(u8"\u2554"), symbol(u8"\u2557"), symbol(u8"\u255A"), symbol(u8"\u255D"));
+						setChars(symbol(U'\x2550'), symbol(U'\x2551'), symbol(U'\x2554'), symbol(U'\x2557'), symbol(U'\x255A'), symbol(U'\x255D'));
 						break;
 					case THICKNESS::THICK:
-						setChars(symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"), symbol(u8"\u2558"));
+						setChars(symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\u2558'));
 						break;
 				}
 			}
@@ -186,12 +186,12 @@ namespace tui
 				switch (direction)
 				{
 				case DIRECTION::HORIZONTAL:
-					m_slider = u8"\u2550";
-					m_line = u8"\u2500";
+					m_slider = U'\x2550';
+					m_line = U'\x2500';
 					break;
 				case DIRECTION::VERTICAL:
-					m_slider = u8"\u2551";
-					m_line = u8"\u2502";
+					m_slider = U'\x2551';
+					m_line = U'\x2502';
 					break;
 				}
 
@@ -354,12 +354,12 @@ namespace tui
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
 							&& !isPunctuation(m_unprepared_text[pos])
-							&& m_unprepared_text[pos].getSymbol() != (" ")	
+							&& m_unprepared_text[pos].getSymbol() != (' ')	
 							&& !isPunctuation(m_unprepared_text[pos + 1])
-							&& m_unprepared_text[pos + 1].getSymbol() != (" ")
+							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
 							)
 						{
-							if (m_unprepared_text[pos - 1].getSymbol() != " ") {
+							if (m_unprepared_text[pos - 1].getSymbol() != ' ') {
 								prepared << m_unprepared_text[pos - 1].getColor();
 								prepared << u8"-";
 							}
@@ -367,7 +367,7 @@ namespace tui
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos].getSymbol() == " " && pos !=0) { pos++; }// ommit space at start of line
+							if (j == 0 && m_unprepared_text[pos].getSymbol() == ' ' && pos !=0) { pos++; }// ommit space at start of line
 							if (pos < m_unprepared_text.size())
 							{
 								prepared += m_unprepared_text[pos++];

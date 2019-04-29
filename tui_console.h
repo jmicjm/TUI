@@ -271,7 +271,7 @@ namespace tui
 							&& y_origin + j < getSize().y
 							&& x_origin + i >= 0
 							&& y_origin + j >= 0
-							&& obj.getSymbolAt(vec2i(i, j)).getSymbol() != "")
+							&& obj.getSymbolAt(vec2i(i, j)).getSymbol() != 0)
 						{
 							m_symbols[x_origin + i][y_origin + j] = obj.getSymbolAt(vec2i(i, j));
 						}
@@ -285,7 +285,7 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().y; j++)
 					{
-						m_symbols[i][j] = "";
+						m_symbols[i][j] = 0;
 					}
 				}
 			}
@@ -467,7 +467,7 @@ namespace tui
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
 
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 			std::vector<WORD> temp_attr;
 			std::vector<wchar_t> temp_char;
@@ -479,9 +479,17 @@ namespace tui
 					if (j < getSize().x)
 					{
 						temp_attr.push_back(m_buffer.getSymbolAt(vec2i(j, i)).getColor().getRGBIColor());
-						std::wstring wstr = converter.from_bytes(m_buffer.getSymbolAt(vec2i(j, i)).getSymbol());
 
-						temp_char.push_back(wstr[0]);
+						//truncate utf32 to utf16 range (Windows console doesnt support anything above ucs2)
+						wchar_t wstr;
+
+						if (m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() < pow(2, (sizeof(wchar_t) * 8)))
+						{
+							wstr = m_buffer.getSymbolAt(vec2i(j, i)).getSymbol();
+						}
+						else { wstr = '?'; }
+
+						temp_char.push_back(wstr);
 					}
 					else
 					{
@@ -510,7 +518,7 @@ namespace tui
 				for (int j = 0; j < getSize().x; j++)
 				{
 					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
-					str += m_buffer.getSymbolAt({ j, i });
+					str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i })); //untested
 				}	
 			}
 

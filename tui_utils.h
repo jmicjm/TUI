@@ -194,17 +194,17 @@ namespace tui
 	struct symbol
 	{
 		private:
-			std::string m_character = " ";
+			char32_t m_character = ' ';
 			color m_color;
 		public:
-			symbol() : symbol(" ", color()) {}
+			symbol() : symbol(' ', color()) {}
 			symbol(char32_t character)
 			{
-					m_character = Char32ToUtf8(character);
+					m_character = character;
 			}
-			symbol(const char* character) : symbol(std::string(character)) {}
-			symbol(std::string character) : symbol(character, color()) {}
-			symbol(std::string character, color color)
+			//symbol(const char* character) : symbol(std::string(character)) {}
+			//symbol(std::string character) : symbol(character, color()) {}
+			symbol(char32_t character, color color)
 			{
 				setSymbol(character);
 				setColor(color);
@@ -215,16 +215,18 @@ namespace tui
 				m_color.invert();
 			}
 
-			void setSymbol(std::string character) { m_character = character; }
+			void setSymbol(char32_t character) { m_character = character; }
 			void setColor(color color) { m_color = color; }
-			std::string getSymbol() { return m_character; }
+			char32_t getSymbol() { return m_character; }
 			color getColor() { return m_color; }
-			operator std::string() { return m_character; }
+			//operator std::string() { return m_character; }
 
-			int getStrLen()
+			//explicit operator char32_t() { return m_character; }
+
+		/*	int getStrLen()
 			{
 				return GetUtf8StrLength(m_character);
-			}
+			}*/
 
 			bool operator==(symbol c)
 			{
@@ -257,7 +259,7 @@ namespace tui
 
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
-				m_console_string[i].setSymbol(str[i]);
+				m_console_string[i].setSymbol(str[i].getSymbol());
 				m_console_string[i].setColor(str[i].getColor());
 			}
 		}
@@ -282,10 +284,10 @@ namespace tui
 				utf32_char.resize(1);
 				utf32_char[0] = utf32_str[i];
 
-				std::string character = Utf32ToUtf8(utf32_char);
+				//std::string character = Utf32ToUtf8(utf32_char);
 
 
-				m_console_string[i].setSymbol(character);
+				m_console_string[i].setSymbol(utf32_char[0]);
 				m_console_string[i].setColor(color);
 			}
 		}
@@ -323,7 +325,7 @@ namespace tui
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
-				m_console_string.push_back(symbol(string[i], m_selected_color));
+				m_console_string.push_back(symbol(string[i].getSymbol(), m_selected_color));
 			}
 		}
 
@@ -415,12 +417,12 @@ namespace tui
 
 	inline bool isPunctuation(symbol Symbol)
 	{
-		if (Symbol == "."
-			|| Symbol == ","
-			|| Symbol == ":"
-			|| Symbol == ";"
-			|| Symbol == "!"
-			|| Symbol == "?")
+		if (Symbol == '.'
+			|| Symbol == ','
+			|| Symbol == ':'
+			|| Symbol == ';'
+			|| Symbol == '!'
+			|| Symbol == '?')
 		{
 			return true;
 		}
