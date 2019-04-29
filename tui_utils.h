@@ -198,22 +198,14 @@ namespace tui
 			color m_color;
 		public:
 			symbol() : symbol(' ', color()) {}
-			symbol(char32_t character)
-			{
-					m_character = character;
-			}
-			//symbol(const char* character) : symbol(std::string(character)) {}
-			//symbol(std::string character) : symbol(character, color()) {}
+			symbol(char32_t character) : symbol(character, color()) {}
 			symbol(char32_t character, color color)
 			{
 				setSymbol(character);
 				setColor(color);
 			}
 
-			void invert()
-			{
-				m_color.invert();
-			}
+			void invert() { m_color.invert(); }
 
 			void setSymbol(char32_t character) { m_character = character; }
 			void setColor(color color) { m_color = color; }
@@ -267,6 +259,19 @@ namespace tui
 		{
 			m_console_string.resize(1);
 			m_console_string[0] = Symbol;
+		}
+
+		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
+		console_string(std::u32string str) : console_string(str, color()) {}
+		console_string(std::u32string str, color color)
+		{
+			m_console_string.resize(str.size());
+
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].setSymbol(str[i]);
+				m_console_string[i].setColor(color);
+			}
 		}
 
 		console_string(const char* str) : console_string(std::string(str)) {}
@@ -354,6 +359,14 @@ namespace tui
 			for (int i = 0; i < m_console_string.size(); i++)
 			{
 				m_console_string[i].invert();
+			}
+		}
+
+		void setColor(color Color)
+		{
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].setColor(Color);
 			}
 		}
 
