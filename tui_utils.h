@@ -107,6 +107,15 @@ namespace tui
 				m_background = background;
 				m_foreground = foreground;
 			}
+
+			//swaps foreground color with background color
+			void invert()
+			{
+				int foreground = m_foreground;
+				m_foreground = m_background;
+				m_background = foreground;
+			}
+
 			int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
 			int getForegroundColor() { return m_foreground; }
 			int getBackgroundColor() { return m_background; }
@@ -199,6 +208,11 @@ namespace tui
 			{
 				setSymbol(character);
 				setColor(color);
+			}
+
+			void invert()
+			{
+				m_color.invert();
 			}
 
 			void setSymbol(std::string character) { m_character = character; }
@@ -332,6 +346,14 @@ namespace tui
 
 		int size() { return m_console_string.size(); }
 		int size() const { return m_console_string.size(); }
+
+		void invert()
+		{
+			for (int i = 0; i < m_console_string.size(); i++)
+			{
+				m_console_string[i].invert();
+			}
+		}
 
 	};
 
