@@ -483,7 +483,7 @@ namespace tui
 						//truncate utf32 to utf16 range (Windows console doesnt support anything above ucs2)
 						wchar_t wstr;
 
-						if (m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() < pow(2, (sizeof(wchar_t) * 8)))
+						if (m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() < pow(2, (sizeof(wchar_t) * 8)) && m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() >= 32)
 						{
 							wstr = m_buffer.getSymbolAt(vec2i(j, i)).getSymbol();
 						}
@@ -518,7 +518,15 @@ namespace tui
 				for (int j = 0; j < getSize().x; j++)
 				{
 					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
-					str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i })); //untested
+
+					if (Char32ToUtf8(m_buffer.getSymbolAt({ j, i })) >= 32)
+					{
+						str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i })); //untested
+					}
+					else
+					{
+						str += "?";
+					}
 				}	
 			}
 
