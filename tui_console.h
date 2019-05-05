@@ -178,6 +178,8 @@ namespace tui
 			{
 				m_symbols.resize(1);
 				m_symbols[0].resize(1);
+
+				setSize({ {1,1},{0,0} });
 			}
 
 			virtual void draw_action() {}
