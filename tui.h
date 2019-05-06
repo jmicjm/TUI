@@ -181,7 +181,7 @@ namespace tui
 				}
 			}
 		public:
-			scroll(surface_size size)
+			scroll(int absolute_length, int percentage_length)
 			{
 				switch (direction)
 				{
@@ -195,8 +195,26 @@ namespace tui
 					break;
 				}
 
-				setSize(size);
+				setSize(absolute_length, percentage_length);
 			}
+
+			void setSize(int absolute_length, int percentage_length)
+			{
+				surface_size size;
+
+				switch (direction)
+				{
+				case DIRECTION::HORIZONTAL:
+					size = { {absolute_length, 1}, {percentage_length, 1} };
+					break;
+				case DIRECTION::VERTICAL:
+					size = { {1, absolute_length}, {1, percentage_length} };
+					break;
+				}
+
+				surface::setSize(size);
+			}
+
 
 			void setChars(symbol slider, symbol line)
 			{
@@ -390,7 +408,7 @@ namespace tui
 		}
 	public:
 		text(surface_size size, console_string txt)
-			: m_scroll({{1,0},{0,100}})
+			: m_scroll(0, 100)
 			, m_text({{-1,0}, {100,100}}, u8" ")
 			{
 				setSize(size);
