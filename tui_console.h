@@ -182,6 +182,26 @@ namespace tui
 				setSize({ {1,1},{0,0} });
 			}
 
+			struct surface_proxy
+			{
+				friend class surface;
+			private:
+				std::vector<symbol>* temp;
+			public:
+				symbol& operator[](int i)
+				{
+					return (*temp)[i];
+				}
+			};
+
+			surface_proxy operator[](int i)
+			{
+				surface_proxy proxy;
+				proxy.temp = &m_symbols[i];
+
+				return proxy;
+			}
+
 			virtual void draw_action() {}
 
 			//void setSizeType(int type) { sizeType = type; }
