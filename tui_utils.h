@@ -180,7 +180,7 @@ namespace tui
 	inline std::string Char32ToUtf8(char32_t character)
 	{
 		std::u32string str;
-		str.resize(0);
+		str.resize(1);
 		str[0] = character;
 
 		return Utf32ToUtf8(str);
