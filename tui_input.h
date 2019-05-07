@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <cmath>
 
 #include "tui_config.h"
 
@@ -70,7 +71,7 @@ namespace tui
 		};
 #endif
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+//#ifdef  TUI_TARGET_SYSTEM_LINUX
 		struct key_seq_pair
 		{
 			std::string name;
@@ -87,38 +88,111 @@ namespace tui
 			ESC = 27,
 			TAB = 9,
 
-			PGUP = TUI_BUFFER_OFFSET + 2,
-			PGDN = TUI_BUFFER_OFFSET + 3,
+			PGUP = TUI_BUFFER_OFFSET,
+			PGDN = TUI_BUFFER_OFFSET + 1,
 
-			DEL = TUI_BUFFER_OFFSET + 4,
-			INS = TUI_BUFFER_OFFSET + 5,
-			END = TUI_BUFFER_OFFSET + 6,
-			HOME = TUI_BUFFER_OFFSET + 7,
+			DEL = TUI_BUFFER_OFFSET + 2,
+			INS = TUI_BUFFER_OFFSET + 3,
+			END = TUI_BUFFER_OFFSET + 4,
+			HOME = TUI_BUFFER_OFFSET + 5,
 
-			F1 = TUI_BUFFER_OFFSET + 8,
-			F2 = TUI_BUFFER_OFFSET + 9,
-			F3 = TUI_BUFFER_OFFSET + 10,
-			F4 = TUI_BUFFER_OFFSET + 11,
-			F5 = TUI_BUFFER_OFFSET + 12,
-			F6 = TUI_BUFFER_OFFSET + 13,
-			F7 = TUI_BUFFER_OFFSET + 14,
-			F8 = TUI_BUFFER_OFFSET + 15,
-			F9 = TUI_BUFFER_OFFSET + 16,
-			F10 = TUI_BUFFER_OFFSET + 17,
-			F11 = TUI_BUFFER_OFFSET + 18,
-			F12 = TUI_BUFFER_OFFSET + 19,
+			F1 = TUI_BUFFER_OFFSET + 6,
+			F2 = TUI_BUFFER_OFFSET + 7,
+			F3 = TUI_BUFFER_OFFSET + 8,
+			F4 = TUI_BUFFER_OFFSET + 9,
+			F5 = TUI_BUFFER_OFFSET + 10,
+			F6 = TUI_BUFFER_OFFSET + 11,
+			F7 = TUI_BUFFER_OFFSET + 12,
+			F8 = TUI_BUFFER_OFFSET + 13,
+			F9 = TUI_BUFFER_OFFSET + 14,
+			F10 = TUI_BUFFER_OFFSET + 15,
+			F11 = TUI_BUFFER_OFFSET + 16,
+			F12 = TUI_BUFFER_OFFSET + 17,
 
-			UP = TUI_BUFFER_OFFSET + 20,
-			DOWN = TUI_BUFFER_OFFSET + 21,
-			LEFT = TUI_BUFFER_OFFSET + 22,
-			RIGHT = TUI_BUFFER_OFFSET + 23
+			UP = TUI_BUFFER_OFFSET + 18,
+			DOWN = TUI_BUFFER_OFFSET + 19,
+			LEFT = TUI_BUFFER_OFFSET + 20,
+			RIGHT = TUI_BUFFER_OFFSET + 21
 		};
 
 		struct terminal_info
 		{
 			terminal_info()
 			{
-				//parse terminfo
+				std::array<char, 128> buffer;
+				std::string infocmp;
+				FILE* pipe = popen("infocmp", "r");
+				if (pipe) 
+				{
+					while (fgets(buffer.data(), buffer.size(), pipe) != NULL) {
+						infocmp += buffer.data();
+					}
+				}
+				pclose(pipe);
+
+				int longest = 0;
+				int shortest = pow(2, sizeof(int)*8) - 1;
+
+				for (int i = 0; i < sequences.size(); i++)
+				{		
+					if (infocmp.find(sequences[i].name) != std::string::npos)
+					{
+						int s = infocmp.find(sequences[i].name);
+						s += sequences[i].name.size();
+						s += 3; // =\E
+						
+						sequences[i].seq = { 27 }; //ESC
+
+						while (infocmp[s] != ',')
+						{
+							sequences[i].seq.push_back(infocmp[s]);
+							s++;
+						}
+					}
+					else
+					{
+						sequences[i].seq = { -2 };
+					}
+
+					if (sequences[i].seq.size() > longest)
+					{
+						longest = sequences[i].seq.size();
+					}
+					if (sequences[i].seq.size() < shortest)
+					{
+						shortest = sequences[i].seq.size();
+					}
+				}
+
+				longest_seq = longest;
+				shortest_seq = shortest;
+				
+
+				if (infocmp.find("smkx") != std::string::npos)
+				{
+					int s = infocmp.find("smkx");
+					s += 7; //smkx=\E
+					smkx = '\033';
+
+					while (infocmp[s] != ',')
+					{
+						smkx += infocmp[s];
+						s++;
+					}
+				}
+				if (infocmp.find("rmkx") != std::string::npos)
+				{
+					int s = infocmp.find("rmkx");
+					s += 7; //rmkx=\E
+					rmkx = '\033';
+
+					while (infocmp[s] != ',')
+					{
+						rmkx += infocmp[s];
+						s++;
+					}
+				}
+
 			}
 
 			std::vector<key_seq_pair> sequences =
@@ -174,7 +248,7 @@ namespace tui
 		extern terminal_info term_info;
 
 
-#endif
+//#endif
 		
 		
 		struct keyboard_buffer
