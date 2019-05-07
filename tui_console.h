@@ -541,9 +541,9 @@ namespace tui
 				{
 					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
 
-					if (Char32ToUtf8(m_buffer.getSymbolAt({ j, i })) >= 32)
+					if (m_buffer.getSymbolAt({ j, i }).getSymbol() >= 32)
 					{
-						str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i })); //untested
+						str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i }).getSymbol()); //untested
 					}
 					else
 					{
@@ -559,7 +559,7 @@ namespace tui
 
 #endif
 			setGlobalColor(color(COLOR::WHITE, COLOR::BLACK));
-			//hidePrompt();
+			hidePrompt();
 			updateLastBuffer();
 		}
 
