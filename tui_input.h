@@ -4,6 +4,7 @@
 #include <chrono>
 #include <vector>
 #include <cmath>
+#include <cstdio>
 
 #include "tui_config.h"
 
@@ -293,6 +294,8 @@ namespace tui
 				nonblocking_settings.c_cc[VTIME] = 0;
 
 				tcsetattr(0, TCSANOW, &noncanon_settings);
+
+				system("tput smkx");
 #endif
 
 
@@ -339,6 +342,87 @@ namespace tui
 							second_buffer[1][second_getch] = true;
 						}
 					}
+#endif
+#ifdef TUI_TARGET_SYSTEM_LINUX
+					int pressed = getchar();
+
+					if (pressed == 3)
+					{
+						CTRLC_handler();
+					}
+
+					if (pressed != 27)
+					{
+						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
+						{
+							buffer[1][pressed] = true;
+
+							if (pressed >= 32 && pressed != 127)
+							{
+								string_buffer[1] += (char)pressed;
+							}
+						}
+					}
+					else
+					{
+						tcsetattr(0, TCSANOW, &nonblocking_settings);
+						std::vector<int> buf = { 27 };
+
+						auto copyToBuffer = [&]()
+						{
+							for (int j = 0; j < buf.size(); j++)
+							{
+								if (buf[j] >= 0 && buf[j] < TUI_GETCH_RANGE)
+								{
+									buffer[1][buf[j]] = true;
+
+									if (buf[j] >= 32 && buf[j] != 127)
+									{
+										string_buffer[1] += (char)buf[j];
+									}
+								}
+							}
+						};
+
+						
+						for (int i = 0; i < term_info.longest_seq; i++)
+						{
+							int input = getchar();
+							if (input == -1)
+							{
+								copyToBuffer();
+
+								tcsetattr(0, TCSANOW, &noncanon_settings);
+								break;
+							}
+							else
+							{
+								buf.push_back(input);
+							}
+
+							if (term_info.getSeqNumber(buf) >= 0)
+							{
+								second_buffer[1][term_info.getSeqNumber(buf)] = true;
+
+								tcsetattr(0, TCSANOW, &noncanon_settings);
+								break;
+							}
+
+							if (i == term_info.longest_seq - 1)
+							{
+								copyToBuffer();
+
+								tcsetattr(0, TCSANOW, &noncanon_settings);
+								break;
+							}
+								
+
+
+						}
+
+
+					}
+
 #endif
 				}
 			}
