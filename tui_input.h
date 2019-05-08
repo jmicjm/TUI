@@ -71,7 +71,7 @@ namespace tui
 		};
 #endif
 
-//#ifdef  TUI_TARGET_SYSTEM_LINUX
+#ifdef  TUI_TARGET_SYSTEM_LINUX
 		struct key_seq_pair
 		{
 			std::string name;
@@ -248,7 +248,7 @@ namespace tui
 		extern terminal_info term_info;
 
 
-//#endif
+#endif
 		
 		
 		struct keyboard_buffer
@@ -323,7 +323,7 @@ namespace tui
 						{
 							buffer[1][pressed] = true;
 
-							if (pressed >= 32)
+							if (pressed >= 32 && pressed != 127)
 							{
 								string_buffer[1] += (char)pressed;
 							}
