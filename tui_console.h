@@ -174,8 +174,8 @@ namespace tui
 		public:	
 			surface()
 			{
-				m_symbols.resize(1);
-				m_symbols[0].resize(1);
+				//m_symbols.resize(1);
+				//m_symbols[0].resize(1);
 
 				setSize({ {1,1},{0,0} });
 			}
@@ -215,14 +215,7 @@ namespace tui
 			void setSize(surface_size size)
 			{
 				size_info = size;
-
-				vec2i perc_size =size.getPercentagesize();
-				vec2i int_size = size.getIntegerSize();
-
-				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
-				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
-
-				resize({x,y });
+				resize(size.getIntegerSize());
 			}
 
 			void updateSurfaceSize(surface &obj)
