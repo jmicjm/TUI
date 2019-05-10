@@ -142,9 +142,7 @@ namespace tui
 		private:		
 			std::vector<std::vector<symbol>> m_symbols;
 			position m_position;
-			//vec2i percentageSize;
 			surface_size size_info;
-			//int sizeType;
 
 			void resize(vec2i size)
 			{
@@ -204,8 +202,6 @@ namespace tui
 
 			virtual void draw_action() {}
 
-			//void setSizeType(int type) { sizeType = type; }
-
 			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.x][position.y] = character; }
 			symbol getSymbolAt(vec2i position) { return m_symbols[position.x][position.y]; }
 			void setPosition(position pos) { m_position = pos; }
@@ -215,19 +211,10 @@ namespace tui
 				vec2i act_pos = getPosition().getOffset();			
 				m_position.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
 			}
-
-			/*void modifySize(vec2i size)
-			{
-				percentageSize = size;
-
-				resize(size);
-			}*/
 			
 			void setSize(surface_size size)
 			{
 				size_info = size;
-
-				//resize(size.getIntegerSize());
 
 				vec2i perc_size =size.getPercentagesize();
 				vec2i int_size = size.getIntegerSize();
@@ -235,11 +222,7 @@ namespace tui
 				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
 				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
 
-				//if (x < 1) { x = 1; }
-				//if (y < 1) { y = 1; }
-
-				resize({ x,y });
-
+				resize({x,y });
 			}
 
 			void updateSurfaceSize(surface &obj)
@@ -251,23 +234,6 @@ namespace tui
 				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
 
 				obj.resize({x,y});
-
-				/*vec2i perc_size = obj.getPercentageSize();
-				switch (obj.getSizeType())
-				{
-				case SIZE::CONSTANT:
-					//	obj.resize(obj.getSize());
-					break;
-				case SIZE::PERCENTAGE:
-					obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, (perc_size.y / 100.f) * getSize().y));
-					break;
-				case SIZE::PERCENTAGE_X:
-					obj.resize(vec2i((perc_size.x / 100.f) * getSize().x, obj.getSize().y));
-					break;
-				case SIZE::PERCENTAGE_Y:
-					obj.resize(vec2i(obj.getSize().x, (perc_size.y / 100.f) * getSize().y));
-					break;
-				}*/
 			}
 
 			void insertSurface(surface &obj)
@@ -488,8 +454,6 @@ namespace tui
 			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
-
-			//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 			std::vector<WORD> temp_attr;
 			std::vector<wchar_t> temp_char;
