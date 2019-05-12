@@ -128,9 +128,9 @@ namespace tui
 		private:
 			symbol m_slider; //handle
 			symbol m_line;
-			int m_lenght = 0;
+			int m_content_length = 0;
 			int m_handle_position = 0;
-			int m_handle_lenght = 0;
+			int m_handle_length = 0;
 
 			int getSurfaceSize() {
 				switch (direction)
@@ -158,20 +158,20 @@ namespace tui
 						break;
 					}
 	
-					m_handle_lenght = ((getSurfaceSize() * 1.f) / m_lenght)* getSurfaceSize();
-					if (m_handle_lenght < 1) { m_handle_lenght = 1; }
+					m_handle_length = ((getSurfaceSize() * 1.f) / m_content_length)* getSurfaceSize();
+					if (m_handle_length < 1) { m_handle_length = 1; }
 
-					float handle_pos_perc = m_handle_position * 1.f / (m_lenght*1.f - getSurfaceSize());
+					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - getSurfaceSize());
 
-					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_lenght * (handle_pos_perc));
+					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
 					switch (direction)
 					{
 					case DIRECTION::HORIZONTAL:
-						for (int i = 0; i < m_handle_lenght; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
+						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
 						break;
 					case DIRECTION::VERTICAL:
-						for (int i = 0; i < m_handle_lenght; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
+						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
 						break;
 					}				
 				}
@@ -230,35 +230,35 @@ namespace tui
 
 			bool isNeeded()
 			{
-				if (m_lenght <= getSurfaceSize()) { return false; }
+				if (m_content_length <= getSurfaceSize()) { return false; }
 				else { return true; }
 			};
 
-			void adjustHandlePositionRespectLenght()
+			void adjustHandlePositionRespectLength()
 			{
 				if (!isNeeded())
 				{
 					m_handle_position = 0;
 				}
-				else if (m_handle_position > m_lenght - getSurfaceSize())
+				else if (m_handle_position > m_content_length - getSurfaceSize())
 				{
-					m_handle_position = m_lenght - getSurfaceSize();
+					m_handle_position = m_content_length - getSurfaceSize();
 				}
 			}
 
 			void adjustHandlePositionRespectBounds()
 			{
-				adjustHandlePositionRespectLenght();
+				adjustHandlePositionRespectLength();
 
 				if (m_handle_position < 0) { m_handle_position = 0; }
 			}
 
-			void setLenght(int lenght) 
+			void setContentLength(int length) 
 			{
-				if (lenght >= 0) { m_lenght = lenght; }
-				else { m_lenght = 0; }
+				if (length >= 0) { m_content_length = length; }
+				else { m_content_length = 0; }
 
-				adjustHandlePositionRespectLenght();
+				adjustHandlePositionRespectLength();
 				fill();
 			}
 
@@ -270,7 +270,7 @@ namespace tui
 				fill();
 			}
 
-			int getLenght() { return m_lenght; }
+			int getContentLength() { return m_content_length; }
 			int getHandlePosition() { return m_handle_position; }
 
 			
@@ -282,7 +282,7 @@ namespace tui
 			void draw_action() { fill(); }
 			void resize_action() 
 			{
-				adjustHandlePositionRespectLenght();
+				adjustHandlePositionRespectLength();
 				fill();
 			}
 
@@ -422,13 +422,13 @@ namespace tui
 				m_text.setSize({ {0,0}, {100,100} });
 				updateSurfaceSize(m_text);
 				prepareText();
-				m_scroll.setLenght(getNumberOfLines());
+				m_scroll.setContentLength(getNumberOfLines());
 				if (m_scroll.isNeeded())
 				{
 					m_text.setSize({ {-1,0}, {100,100} });
 					updateSurfaceSize(m_text);
 					prepareText();
-					m_scroll.setLenght(getNumberOfLines());
+					m_scroll.setContentLength(getNumberOfLines());
 				}
 			}
 
