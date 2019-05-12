@@ -166,21 +166,23 @@ namespace tui
 					}
 	
 					m_handle_length = ((getSurfaceSize() * 1.f) / m_content_length)* getSurfaceSize();
-					if (m_handle_length < 1) { m_handle_length = 1; }
+					if (m_handle_length < 1) { m_handle_length = 1; }			
 
 					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - visibleContentLength());
 
 					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
-					switch (direction)
-					{
-					case DIRECTION::HORIZONTAL:
-						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
-						break;
-					case DIRECTION::VERTICAL:
-						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
-						break;
-					}				
+					if (m_content_length > visibleContentLength()) {
+						switch (direction)
+						{
+						case DIRECTION::HORIZONTAL:
+							for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
+							break;
+						case DIRECTION::VERTICAL:
+							for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
+							break;
+						}
+					}
 				}
 				else
 				{
@@ -422,10 +424,9 @@ namespace tui
 	public:
 		text(surface_size size, console_string txt)
 			: m_scroll(0, 100)
-			, m_text({{-1,0}, {100,100}}, u8" ")
+			, m_text({{-1,0}, {100,100}}, u8"")
 			{
 				setSize(size);
-
 
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 				setText(txt);		
@@ -436,14 +437,13 @@ namespace tui
 				m_text.setSize({ {0,0}, {100,100} });
 				updateSurfaceSize(m_text);
 				prepareText();
-				m_scroll.setContentLength(getNumberOfLines());
-				if (m_scroll.isNeeded())
+				if (getNumberOfLines() > m_text.getSize().y)
 				{
 					m_text.setSize({ {-1,0}, {100,100} });
 					updateSurfaceSize(m_text);
-					prepareText();
-					m_scroll.setContentLength(getNumberOfLines());
+					prepareText();	
 				}
+				m_scroll.setContentLength(getNumberOfLines());
 			}
 
 			void setText(console_string txt)
