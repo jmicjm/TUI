@@ -129,6 +129,7 @@ namespace tui
 			symbol m_slider; //handle
 			symbol m_line;
 			int m_content_length = 0;
+			int m_visible_content_length = -1;
 			int m_handle_position = 0;
 			int m_handle_length = 0;
 
@@ -142,6 +143,12 @@ namespace tui
 					return getSize().y;
 					break;
 				}
+			}
+
+			int visibleContentLength()
+			{
+				if (m_visible_content_length < 0) { return getSurfaceSize(); }
+				else { return m_visible_content_length; }
 			}
 
 			void fill()
@@ -161,7 +168,7 @@ namespace tui
 					m_handle_length = ((getSurfaceSize() * 1.f) / m_content_length)* getSurfaceSize();
 					if (m_handle_length < 1) { m_handle_length = 1; }
 
-					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - getSurfaceSize());
+					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - visibleContentLength());
 
 					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
@@ -230,7 +237,7 @@ namespace tui
 
 			bool isNeeded()
 			{
-				if (m_content_length <= getSurfaceSize()) { return false; }
+				if (m_content_length <= visibleContentLength()) { return false; }
 				else { return true; }
 			};
 
@@ -240,9 +247,9 @@ namespace tui
 				{
 					m_handle_position = 0;
 				}
-				else if (m_handle_position > m_content_length - getSurfaceSize())
+				else if (m_handle_position > m_content_length - visibleContentLength())
 				{
-					m_handle_position = m_content_length - getSurfaceSize();
+					m_handle_position = m_content_length - visibleContentLength();
 				}
 			}
 
@@ -261,6 +268,12 @@ namespace tui
 				adjustHandlePositionRespectLength();
 				fill();
 			}
+			void setVisibleContentLength(int length)
+			{
+				m_visible_content_length = length;
+				fill();
+			}
+			void getVisibleContentLength() { return m_visible_content_length; }
 
 			void setHandlePosition(int handle_position) 
 			{
@@ -413,6 +426,7 @@ namespace tui
 			{
 				setSize(size);
 
+
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 				setText(txt);		
 			}
@@ -486,6 +500,7 @@ namespace tui
 			}
 			void resize_action()
 			{
+				//m_scroll.setVisibleContentLength(getSize().y);
 				updateSurfaceSize(m_scroll);
 				adjustSizes();
 				fill();
