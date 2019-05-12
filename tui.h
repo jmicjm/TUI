@@ -181,7 +181,7 @@ namespace tui
 				}
 			}
 		public:
-			scroll(int absolute_length, int percentage_length)
+			scroll(int fixed_length, int percentage_length)
 			{
 				switch (direction)
 				{
@@ -195,20 +195,20 @@ namespace tui
 					break;
 				}
 
-				setSize(absolute_length, percentage_length);
+				setSize(fixed_length, percentage_length);
 			}
 
-			void setSize(int absolute_length, int percentage_length)
+			void setSize(int fixed_length, int percentage_length)
 			{
 				surface_size size;
 
 				switch (direction)
 				{
 				case DIRECTION::HORIZONTAL:
-					size = { {absolute_length, 1}, {percentage_length, 1} };
+					size = { {fixed_length, 1}, {percentage_length, 1} };
 					break;
 				case DIRECTION::VERTICAL:
-					size = { {1, absolute_length}, {1, percentage_length} };
+					size = { {1, fixed_length}, {1, percentage_length} };
 					break;
 				}
 
