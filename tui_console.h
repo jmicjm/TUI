@@ -144,6 +144,8 @@ namespace tui
 			position m_position;
 			surface_size size_info;
 
+			bool m_resized;
+
 			void resize(vec2i size)
 			{
 				if (size.x != getSize().x || size.y != getSize().y)
@@ -166,6 +168,12 @@ namespace tui
 					
 					makeTransparent();
 					resize_action();
+
+					m_resized = true;
+				}
+				else
+				{
+					m_resized = false;
 				}
 			}
 			
@@ -178,6 +186,11 @@ namespace tui
 				//m_symbols[0].resize(1);
 
 				setSize({ {1,1},{0,0} });
+			}
+
+			bool isResized()
+			{
+				return m_resized;
 			}
 
 			struct surface_proxy
@@ -386,6 +399,8 @@ namespace tui
 
 		void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
+		void updateSurfaceSize(surface &surf) {	m_buffer.updateSurfaceSize(surf); }
+
 		void clear_buf() { m_buffer.makeBlank(); }
 	};
 
@@ -417,7 +432,7 @@ namespace tui
 		}
 
 
-		bool was_resized() { return m_resized; }
+		bool isResized() { return m_resized; }
 
 		void setFPSlimit(int fps)
 		{
@@ -429,6 +444,8 @@ namespace tui
 			updateSize();
 			clear_buf();
 		}
+
+		
 
 		bool isTimeToDisplay()
 		{
