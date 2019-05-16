@@ -275,7 +275,7 @@ namespace tui
 				m_visible_content_length = length;
 				fill();
 			}
-			void getVisibleContentLength() { return m_visible_content_length; }
+			int getVisibleContentLength() { return m_visible_content_length; }
 
 			void setHandlePosition(int handle_position) 
 			{
