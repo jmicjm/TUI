@@ -295,7 +295,17 @@ namespace tui
 			}
 
 			position getPosition() { return m_position; }
-			vec2i getSize() { return vec2i(m_symbols.size(), m_symbols[0].size()); }
+			vec2i getSize() 
+			{
+				if (m_symbols.size() > 0)
+				{
+					return vec2i(m_symbols.size(), m_symbols[0].size());
+				}
+				else
+				{
+					return vec2i(0, 0);
+				}
+			}
 			surface_size getSizeInfo() { return size_info; }
 	
 	};
