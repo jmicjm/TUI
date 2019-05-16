@@ -261,12 +261,12 @@ namespace tui
 			termios nonblocking_settings;
 #endif
 
-			std::vector<bool> buffer[2];
-			std::vector<bool> second_buffer[2]; //buffer for "characters" that needs to return more than one time
+			std::vector<int> buffer[2];
+			std::vector<int> second_buffer[2]; //buffer for "characters" that needs to return more than one time
 
 			std::string string_buffer[2];
 		public:
-			bool operator[](int i) 
+			int operator[](int i) 
 			{
 				if (i < TUI_BUFFER_OFFSET)
 				{
@@ -324,7 +324,7 @@ namespace tui
 					{
 						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
 						{
-							buffer[1][pressed] = true;
+							buffer[1][pressed]++;
 
 							if (pressed >= 32 && pressed != 127)
 							{
@@ -339,7 +339,7 @@ namespace tui
 
 						if (second_getch >= 0 && second_getch < TUI_GETCH_RANGE)
 						{
-							second_buffer[1][second_getch] = true;
+							second_buffer[1][second_getch]++;
 						}
 					}
 #endif
@@ -355,7 +355,7 @@ namespace tui
 					{
 						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
 						{
-							buffer[1][pressed] = true;
+							buffer[1][pressed]++;
 
 							if (pressed >= 32 && pressed != 127)
 							{
@@ -374,7 +374,7 @@ namespace tui
 							{
 								if (buf[j] >= 0 && buf[j] < TUI_GETCH_RANGE)
 								{
-									buffer[1][buf[j]] = true;
+									buffer[1][buf[j]]++;
 
 									if (buf[j] >= 32 && buf[j] != 127)
 									{
@@ -402,7 +402,7 @@ namespace tui
 
 							if (term_info.getSeqNumber(buf) >= 0)
 							{
-								second_buffer[1][term_info.getSeqNumber(buf)] = true;
+								second_buffer[1][term_info.getSeqNumber(buf)]++;
 
 								tcsetattr(0, TCSANOW, &noncanon_settings);
 								break;
@@ -444,8 +444,8 @@ namespace tui
 		};
 		extern keyboard_buffer buffer;
 
-		//return true if key was pressed in iteration before last clear
-		inline bool isKeyPressed(int key)
+		//return amount of key press in iteration before last clear
+		inline int isKeyPressed(int key)
 		{
 			return buffer[key];
 		}
