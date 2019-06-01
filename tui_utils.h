@@ -191,6 +191,37 @@ namespace tui
 		return Utf8ToUtf32(str).size();
 	}
 
+
+	int getGraphemeType(char32_t grapheme)
+	{
+		struct grapheme_range_info { int r_s, r_e, r_t; };
+
+		static const std::vector<grapheme_range_info> ranges =
+		{
+			#include "grapheme_ranges.h"
+		};
+
+		int s = -1;
+		int e = ranges.size();
+
+		while (s != e - 1)
+		{
+			if (ranges[(s + e) / 2].r_s > grapheme)
+			{
+				e = (s + e) / 2;
+			}
+			else if (ranges[(s + e) / 2].r_e < grapheme)
+			{
+				s = (s + e) / 2;
+			}
+			else
+			{
+				return ranges[(s + e) / 2].r_t;
+			}
+		}
+		return GRAPHEME_TYPE::OTHER;
+	}
+
 	struct symbol
 	{
 		private:

@@ -120,4 +120,25 @@ namespace tui
 			};
 		}
 	}
+
+	namespace GRAPHEME_TYPE
+	{
+		enum GRAPHEME_TYPE
+		{
+			OTHER,
+			CONTROL,
+			LF,
+			CR,
+			EXTEND,
+			PREPEND,
+			SPACINGMARK,
+			REGIONAL_INDICATOR,
+			L,
+			V,
+			T,
+			LV,
+			LVT,
+			ZWJ
+		};
+	}
 }
