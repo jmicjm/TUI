@@ -192,7 +192,7 @@ namespace tui
 	}
 
 
-	int getGraphemeType(char32_t grapheme)
+	int GetGraphemeType(char32_t grapheme)
 	{
 		struct grapheme_range_info { int r_s, r_e, r_t; };
 
@@ -220,6 +220,87 @@ namespace tui
 			}
 		}
 		return GRAPHEME_TYPE::OTHER;
+	}
+
+	bool IsBreakBetween(char32_t l, char32_t r)
+	{
+		int l_t = GetGraphemeType(l);
+		int r_t = GetGraphemeType(r);
+
+		/*
+		http://www.unicode.org/reports/tr29/
+		This is not complete implementation of above(Regional_indicator is ommited)
+		*/
+
+		//GB3
+		if (l_t == GRAPHEME_TYPE::CR
+			&&
+			r_t == GRAPHEME_TYPE::LF)
+		{
+			return false;
+		}
+		//GB4
+		if (l_t == GRAPHEME_TYPE::CONTROL
+			|| l_t == GRAPHEME_TYPE::CR
+			|| l_t == GRAPHEME_TYPE::LF)
+		{
+			return true;
+		}
+		//GB5
+		if (r_t == GRAPHEME_TYPE::CONTROL
+			|| r_t == GRAPHEME_TYPE::CR
+			|| r_t == GRAPHEME_TYPE::LF)
+		{
+			return true;
+		}
+		//GB6
+		if (l_t == GRAPHEME_TYPE::L
+			&&
+			(r_t == GRAPHEME_TYPE::L
+				|| r_t == GRAPHEME_TYPE::V
+				|| r_t == GRAPHEME_TYPE::LV
+				|| r_t == GRAPHEME_TYPE::LVT)
+			)
+		{
+			return false;
+		}
+		//GB7
+		if ((l_t == GRAPHEME_TYPE::LV
+			|| l_t == GRAPHEME_TYPE::V)
+			&&
+			(r_t == GRAPHEME_TYPE::V
+				|| r_t == GRAPHEME_TYPE::T)
+			)
+		{
+			return false;
+		}
+		//GB8
+		if ((l_t == GRAPHEME_TYPE::LVT
+			|| l_t == GRAPHEME_TYPE::T)
+			&&
+			r_t == GRAPHEME_TYPE::T
+			)
+		{
+			return false;
+		}
+		//GB9
+		if (r_t == GRAPHEME_TYPE::EXTEND
+			|| r_t == GRAPHEME_TYPE::ZWJ)
+		{
+			return false;
+		}
+		//GB9a
+		if (r_t == GRAPHEME_TYPE::SPACINGMARK)
+		{
+			return false;
+		}
+		//GB9b
+		if (l_t == GRAPHEME_TYPE::PREPEND)
+		{
+			return false;
+		}
+		//GB999
+		return true;
 	}
 
 	struct symbol
