@@ -16,6 +16,7 @@
 #endif
 
 #include "tui_utils.h"
+#include "tui_text_utils.h"
 #include "tui_enums.h"
 
 #include <iostream>

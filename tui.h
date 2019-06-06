@@ -386,9 +386,9 @@ namespace tui
 						if (pos >= m_unprepared_text.size()) { break; }
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
-							&& !isPunctuation(m_unprepared_text[pos])
+							&& !IsPunctuation(m_unprepared_text[pos])
 							&& m_unprepared_text[pos].getSymbol() != (' ')	
-							&& !isPunctuation(m_unprepared_text[pos + 1])
+							&& !IsPunctuation(m_unprepared_text[pos + 1])
 							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
 							)
 						{
