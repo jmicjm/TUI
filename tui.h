@@ -407,6 +407,7 @@ namespace tui
 							&& m_unprepared_text[pos].getSymbol() != (' ')	
 							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos + 1]) : true)
 							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
+							&& m_unprepared_text[pos + 1].getSymbol() >= 32
 							)
 						{
 							if (m_unprepared_text[pos - 1].getSymbol() != ' ') 
