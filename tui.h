@@ -385,6 +385,26 @@ namespace tui
 					for (int j = 0; j < m_text.getSize().x; j++)
 					{		
 						if (pos >= m_unprepared_text.size()) { break; }
+
+						//omit control code unless equal to '\n' 
+						if (m_unprepared_text[pos].getSymbol() < 32 && m_unprepared_text[pos].getSymbol() != '\n')
+						{
+							pos++;
+							continue;
+						}
+						else if (m_unprepared_text[pos].getSymbol() == '\n')
+						{
+							pos++;
+
+							for (int i = 0; i < (m_text.getSize().x - j); i++)
+							{
+								prepared += " ";
+							}
+							
+							j = m_text.getSize().x;
+							continue;
+						}
+
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
 							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos]) : true)
@@ -406,7 +426,7 @@ namespace tui
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos].getSymbol() == ' ' && pos !=0) { pos++; }// ommit space at start of line
+							if (j == 0 && m_unprepared_text[pos].getSymbol() == ' ' && pos !=0) { pos++; }//omit space at start of line
 							if (pos < m_unprepared_text.size())
 							{
 								prepared += m_unprepared_text[pos++];
