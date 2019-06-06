@@ -350,6 +350,7 @@ namespace tui
 		console_string m_unprepared_text;
 		console_string m_prepared_text;
 
+		bool m_use_prepared_text = true;
 		bool m_use_dense_punctuation = false;
 
 		//int keyUp = KEYBOARD::KEY::UP;
@@ -378,7 +379,7 @@ namespace tui
 			console_string prepared;
 			int pos = 0;
 
-			if (getSize().x > 2 && getSize().y >= 1)
+			if (getSize().x > 2 && getSize().y >= 1 && m_use_prepared_text)
 			{
 				while (pos < m_unprepared_text.size())
 				{
@@ -400,9 +401,8 @@ namespace tui
 							{
 								prepared += " ";
 							}
-							
-							j = m_text.getSize().x;
-							continue;
+
+							break;
 						}
 
 						if (j == m_text.getSize().x - 1
@@ -439,7 +439,7 @@ namespace tui
 			{
 				prepared = m_unprepared_text;
 			}
-			//prepared += ' ';
+
 			m_prepared_text = prepared;
 		}
 	public:
@@ -501,6 +501,14 @@ namespace tui
 			int getUpKey() { return keyUp; }
 			void setDownKey(int key) { keyDown = key; }
 			int getDownKey() { return keyDown; }
+
+			void usePreparedText(bool use)
+			{
+				m_use_prepared_text = use;
+				adjustSizes();
+				fill();
+			}
+			bool isUsingPreparedText() { return m_use_prepared_text; }
 
 			void useDensePunctuation(bool use)
 			{
