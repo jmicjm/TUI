@@ -350,6 +350,8 @@ namespace tui
 		console_string m_unprepared_text;
 		console_string m_prepared_text;
 
+		bool m_use_dense_punctuation = false;
+
 		//int keyUp = KEYBOARD::KEY::UP;
 		//int keyDown = KEYBOARD::KEY::DOWN;
 		int keyUp = 0;
@@ -381,14 +383,13 @@ namespace tui
 				while (pos < m_unprepared_text.size())
 				{
 					for (int j = 0; j < m_text.getSize().x; j++)
-					{
-						
+					{		
 						if (pos >= m_unprepared_text.size()) { break; }
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
-							&& !IsPunctuation(m_unprepared_text[pos])
+							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos]) : true)
 							&& m_unprepared_text[pos].getSymbol() != (' ')	
-							&& !IsPunctuation(m_unprepared_text[pos + 1])
+							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos + 1]) : true)
 							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
 							)
 						{
@@ -480,6 +481,14 @@ namespace tui
 			int getUpKey() { return keyUp; }
 			void setDownKey(int key) { keyDown = key; }
 			int getDownKey() { return keyDown; }
+
+			void useDensePunctuation(bool use)
+			{
+				m_use_dense_punctuation = use;
+				adjustSizes();
+				fill();
+			}
+			bool isUsingDensePunctuation() { return m_use_dense_punctuation; }
 
 			void update()
 			{
