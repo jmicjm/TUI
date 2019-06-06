@@ -353,10 +353,6 @@ namespace tui
 		bool m_use_prepared_text = true;
 		bool m_use_dense_punctuation = false;
 
-		//int keyUp = KEYBOARD::KEY::UP;
-		//int keyDown = KEYBOARD::KEY::DOWN;
-		int keyUp = 0;
-		int keyDown = 0;
 
 		void fill()
 		{
@@ -443,6 +439,11 @@ namespace tui
 			m_prepared_text = prepared;
 		}
 	public:
+		int keyUp = KEYBOARD::KEY::UP;
+		int keyDown = KEYBOARD::KEY::DOWN;
+		int keyPageUp = KEYBOARD::KEY::PGUP;
+		int keyPageDown = KEYBOARD::KEY::PGDN;
+
 		text(surface_size size, console_string txt)
 			: m_scroll(0, 100)
 			, m_text({{-1,0}, {100,100}}, u8"")
@@ -496,11 +497,16 @@ namespace tui
 				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
 				fill();
 			}
-
-			void setUpKey(int key) { keyUp = key; }
-			int getUpKey() { return keyUp; }
-			void setDownKey(int key) { keyDown = key; }
-			int getDownKey() { return keyDown; }
+			void pageUp()
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - getSize().y);
+				fill();
+			}
+			void pageDown()
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + getSize().y);
+				fill();
+			}
 
 			void usePreparedText(bool use)
 			{
@@ -521,11 +527,17 @@ namespace tui
 			void update()
 			{
 				if (isActive()) {
-					if (KEYBOARD::isKeyPressed(tui::KEYBOARD::KEY::UP)) {
+					if (KEYBOARD::isKeyPressed(keyUp)) {
 						lineUp();
 					}
-					if (KEYBOARD::isKeyPressed(tui::KEYBOARD::KEY::DOWN)) {
+					if (KEYBOARD::isKeyPressed(keyDown)) {
 						lineDown();
+					}
+					if (KEYBOARD::isKeyPressed(keyPageUp)) {
+						pageUp();
+					}
+					if (KEYBOARD::isKeyPressed(keyPageDown)) {
+						pageDown();
 					}
 				}
 			}
