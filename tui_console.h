@@ -266,7 +266,7 @@ namespace tui
 							&& y_origin + j < getSize().y
 							&& x_origin + i >= 0
 							&& y_origin + j >= 0
-							&& obj.getSymbolAt(vec2i(i, j)).getSymbol() != 0)
+							&& obj.getSymbolAt(vec2i(i, j)).getFirstChar() != 0)
 						{
 							m_symbols[x_origin + i][y_origin + j] = obj.getSymbolAt(vec2i(i, j));
 						}
@@ -280,7 +280,7 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().y; j++)
 					{
-						m_symbols[i][j] = 0;
+						m_symbols[i][j] = (char32_t)0;
 					}
 				}
 			}
@@ -490,9 +490,9 @@ namespace tui
 						//truncate utf32 to utf16 range (Windows console doesnt support anything above ucs2)
 						wchar_t wstr;
 
-						if (m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() < pow(2, (sizeof(wchar_t) * 8)) && m_buffer.getSymbolAt(vec2i(j, i)).getSymbol() >= 32)
+						if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() >= 32)
 						{
-							wstr = m_buffer.getSymbolAt(vec2i(j, i)).getSymbol();
+							wstr = m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
 						}
 						else { wstr = '?'; }
 
@@ -526,9 +526,10 @@ namespace tui
 				{
 					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
 
-					if (m_buffer.getSymbolAt({ j, i }).getSymbol() >= 32)
+					if (m_buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 					{
-						str += Char32ToUtf8(m_buffer.getSymbolAt({ j, i }).getSymbol()); //untested
+						//std::u32string u32s = 
+						str += Utf32ToUtf8(m_buffer.getSymbolAt({ j, i }).getSymbol());
 					}
 					else
 					{

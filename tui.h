@@ -384,12 +384,12 @@ namespace tui
 						if (pos >= m_unprepared_text.size()) { break; }
 
 						//omit control code unless equal to '\n' 
-						if (m_unprepared_text[pos].getSymbol() < 32 && m_unprepared_text[pos].getSymbol() != '\n')
+						if (m_unprepared_text[pos].getFirstChar() < 32 && m_unprepared_text[pos].getFirstChar() != '\n')
 						{
 							pos++;
 							continue;
 						}
-						else if (m_unprepared_text[pos].getSymbol() == '\n')
+						else if (m_unprepared_text[pos].getFirstChar() == '\n')
 						{
 							pos++;
 
@@ -404,13 +404,13 @@ namespace tui
 						if (j == m_text.getSize().x - 1
 							&& pos +1 < m_unprepared_text.size()
 							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos]) : true)
-							&& m_unprepared_text[pos].getSymbol() != (' ')	
+							&& m_unprepared_text[pos].getSymbol() != (U" ")	
 							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos + 1]) : true)
-							&& m_unprepared_text[pos + 1].getSymbol() != (' ')
-							&& m_unprepared_text[pos + 1].getSymbol() >= 32
+							&& m_unprepared_text[pos + 1].getSymbol() != (U" ")
+							&& m_unprepared_text[pos + 1].getFirstChar() >= 32
 							)
 						{
-							if (m_unprepared_text[pos - 1].getSymbol() != ' ') 
+							if (m_unprepared_text[pos - 1].getSymbol() != U" ") 
 							{
 								prepared << m_unprepared_text[pos - 1].getColor();
 								prepared << "-";
@@ -423,7 +423,7 @@ namespace tui
 						}
 						else
 						{
-							if (j == 0 && m_unprepared_text[pos].getSymbol() == ' ' && pos !=0) { pos++; }//omit space at start of line
+							if (j == 0 && m_unprepared_text[pos].getSymbol() == U" " && pos !=0) { pos++; }//omit space at start of line
 							if (pos < m_unprepared_text.size())
 							{
 								prepared += m_unprepared_text[pos++];
@@ -447,7 +447,7 @@ namespace tui
 
 		text(surface_size size, console_string txt)
 			: m_scroll(0, 100)
-			, m_text({{-1,0}, {100,100}}, u8"")
+			, m_text({{-1,0}, {100,100}}, U" ")
 			{
 				setSize(size);
 

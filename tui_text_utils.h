@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+
+#include <iostream>
+
 namespace tui
 {
 	std::u32string Utf8ToUtf32(std::string str);
@@ -83,35 +86,53 @@ namespace tui
 	struct symbol
 	{
 	private:
-		char32_t m_character = ' ';
+		std::u32string m_grapheme_cluster = U" ";
 		color m_color;
 	public:
-		symbol() : symbol(' ', color()) {}
+		symbol() : symbol(U" ", color()) {}
+		symbol(const char32_t* Symbol) : symbol(std::u32string(Symbol), color()) {}
+		symbol(const char32_t* Symbol, color color) : symbol(std::u32string(Symbol), color) {}
+		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
+		symbol(std::u32string Symbol, color color)
+		{
+			setSymbol(Symbol);
+			setColor(color);
+		}
 		symbol(char32_t character) : symbol(character, color()) {}
 		symbol(char32_t character, color color)
 		{
-			setSymbol(character);
+			m_grapheme_cluster.resize(1);
+			m_grapheme_cluster[0] = character;
 			setColor(color);
+		}
+
+		void setSymbol(std::u32string symbol) 
+		{
+			std::u32string temp;
+			temp += symbol[0];
+
+			for (int i = 0; i < symbol.size()-1; i++)
+			{	
+				if (!IsBreakBetween(symbol[i], symbol[i + 1]))
+				{
+					temp += symbol[i + 1];
+				}
+				else { break; }
+			}
+			m_grapheme_cluster = temp;
 		}
 
 		void invert() { m_color.invert(); }
 
-		void setSymbol(char32_t character) { m_character = character; }
+
+		char32_t getFirstChar() { return m_grapheme_cluster[0]; }
 		void setColor(color color) { m_color = color; }
-		char32_t getSymbol() { return m_character; }
+		std::u32string getSymbol() { return m_grapheme_cluster; }
 		color getColor() { return m_color; }
-		//operator std::string() { return m_character; }
-
-		//explicit operator char32_t() { return m_character; }
-
-	/*	int getStrLen()
-		{
-			return GetUtf8StrLength(m_character);
-		}*/
 
 		bool operator==(symbol c)
 		{
-			if (m_character == c.m_character && m_color == c.m_color)
+			if (m_grapheme_cluster == c.m_grapheme_cluster && m_color == c.m_color)
 			{
 				return true;
 			}
@@ -119,7 +140,7 @@ namespace tui
 		}
 		bool operator!=(symbol c)
 		{
-			if (m_character != c.m_character || m_color != c.m_color)
+			if (m_grapheme_cluster != c.m_grapheme_cluster || m_color != c.m_color)
 			{
 				return true;
 			}
@@ -133,19 +154,8 @@ namespace tui
 		std::vector<symbol> m_console_string;
 		color m_selected_color;
 
-
 	public:
 		console_string() {}
-		console_string(const console_string& str)
-		{
-			m_console_string.resize(str.size());
-
-			for (int i = 0; i < m_console_string.size(); i++)
-			{
-				m_console_string[i].setSymbol(str[i].getSymbol());
-				m_console_string[i].setColor(str[i].getColor());
-			}
-		}
 		console_string(symbol Symbol)
 		{
 			m_console_string.resize(1);
@@ -156,36 +166,58 @@ namespace tui
 		console_string(std::u32string str) : console_string(str, color()) {}
 		console_string(std::u32string str, color color)
 		{
-			m_console_string.resize(str.size());
+			std::vector<symbol> temp_vec;
 
-			for (int i = 0; i < m_console_string.size(); i++)
+			if (str.size() > 0)
 			{
-				m_console_string[i].setSymbol(str[i]);
-				m_console_string[i].setColor(color);
+				int i = 0;
+				while (i < str.size())
+				{
+					std::u32string temp;
+					temp += str[i];
+
+					
+						for (; (i<str.size()-1 && !IsBreakBetween(str[i], str[i + 1])); i++)
+						{
+							temp += str[i + 1];
+						}
+					
+					i++;
+
+					temp_vec.push_back(symbol(temp, color));
+				}
 			}
+
+			m_console_string = temp_vec;
 		}
 
 		console_string(const char* str) : console_string(std::string(str)) {}
 		console_string(std::string str) : console_string(str, color()) {}
 		console_string(std::string str, color color)
 		{
+			std::u32string utf32_str = Utf8ToUtf32(str);
 
-			m_console_string.resize(GetUtf8StrLength(str));
+			std::vector<symbol> temp_vec;
 
-			for (int i = 0; i < m_console_string.size(); i++)
+			if (str.size() > 0)
 			{
-				std::u32string utf32_str = Utf8ToUtf32(str);
+				int i = 0;
+				while (i < utf32_str.size())
+				{
+					std::u32string temp;
+					temp += utf32_str[i];
 
-				std::u32string utf32_char;
-				utf32_char.resize(1);
-				utf32_char[0] = utf32_str[i];
+						for (; (i < utf32_str.size()-1 && !IsBreakBetween(utf32_str[i], utf32_str[i + 1])); i++)
+						{
+							temp += utf32_str[i + 1];
+						}
+					i++;
 
-				//std::string character = Utf32ToUtf8(utf32_char);
-
-
-				m_console_string[i].setSymbol(utf32_char[0]);
-				m_console_string[i].setColor(color);
+					temp_vec.push_back(symbol(temp, color));
+				}
 			}
+
+			m_console_string = temp_vec;
 		}
 
 
@@ -204,10 +236,6 @@ namespace tui
 		}
 
 		symbol& operator[] (int i)
-		{
-			return m_console_string[i];
-		}
-		symbol operator[] (int i) const
 		{
 			return m_console_string[i];
 		}
@@ -425,12 +453,12 @@ namespace tui
 
 	inline bool IsPunctuation(symbol Symbol)
 	{
-		if (   Symbol == '.'
-			|| Symbol == ','
-			|| Symbol == ':'
-			|| Symbol == ';'
-			|| Symbol == '!'
-			|| Symbol == '?')
+		if (   Symbol == U"."
+			|| Symbol == U","
+			|| Symbol == U":"
+			|| Symbol == U";"
+			|| Symbol == U"!"
+			|| Symbol == U"?")
 		{
 			return true;
 		}
