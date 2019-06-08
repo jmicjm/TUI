@@ -352,7 +352,7 @@ namespace tui
 
 		bool m_use_prepared_text = true;
 		bool m_use_dense_punctuation = false;
-
+		bool m_use_control_characters = true;
 
 		void fill()
 		{
@@ -383,22 +383,25 @@ namespace tui
 					{		
 						if (pos >= m_unprepared_text.size()) { break; }
 
-						//omit control code unless equal to '\n' 
-						if (m_unprepared_text[pos].getFirstChar() < 32 && m_unprepared_text[pos].getFirstChar() != '\n')
+						if (m_use_control_characters)
 						{
-							pos++;
-							continue;
-						}
-						else if (m_unprepared_text[pos].getFirstChar() == '\n')
-						{
-							pos++;
-
-							for (int i = 0; i < (m_text.getSize().x - j); i++)
+							//omit control code unless equal to '\n' 
+							if (m_unprepared_text[pos].getFirstChar() < 32 && m_unprepared_text[pos].getFirstChar() != '\n')
 							{
-								prepared += " ";
+								pos++;
+								continue;
 							}
+							else if (m_unprepared_text[pos].getFirstChar() == '\n')
+							{
+								pos++;
 
-							break;
+								for (int i = 0; i < (m_text.getSize().x - j); i++)
+								{
+									prepared += " ";
+								}
+
+								break;
+							}
 						}
 
 						if (j == m_text.getSize().x - 1
@@ -434,7 +437,29 @@ namespace tui
 			}
 			else
 			{
-				prepared = m_unprepared_text;
+				int pos = 0;
+				for (int i = 0; i < m_unprepared_text.size(); i++)
+				{
+					if (m_use_control_characters)
+					{
+						if (m_unprepared_text[i].getFirstChar() < 32 && m_unprepared_text[i].getFirstChar() != '\n')
+						{
+							continue;
+						}
+						else if (m_unprepared_text[i].getFirstChar() == '\n')
+						{
+							for (int j = 0; j < m_text.getSize().x - pos % m_text.getSize().x; j++)
+							{
+								prepared += " ";
+							}
+							pos += m_text.getSize().x - pos % m_text.getSize().x;
+							continue;
+						}
+					}
+					prepared += m_unprepared_text[i];
+					pos++;
+				}
+
 			}
 
 			m_prepared_text = prepared;
@@ -524,6 +549,14 @@ namespace tui
 				fill();
 			}
 			bool isUsingDensePunctuation() { return m_use_dense_punctuation; }
+
+			void useControlCharacters(bool use)
+			{
+				m_use_control_characters = use;
+				adjustSizes();
+				fill();
+			}
+			bool isUsingControlCharacters() { return m_use_control_characters; }
 
 			void update()
 			{
