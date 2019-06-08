@@ -161,9 +161,11 @@ namespace tui
 			m_console_string.resize(1);
 			m_console_string[0] = Symbol;
 		}
-
+		console_string(const char* str) : console_string(Utf8ToUtf32(str)) {}
 		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
+		console_string(std::string str) : console_string(Utf8ToUtf32(str), color()) {}
 		console_string(std::u32string str) : console_string(str, color()) {}
+		console_string(std::string str, color color) : console_string(Utf8ToUtf32(str), color) {}	
 		console_string(std::u32string str, color color)
 		{
 			std::vector<symbol> temp_vec;
@@ -176,50 +178,16 @@ namespace tui
 					std::u32string temp;
 					temp += str[i];
 
-					
-						for (; (i<str.size()-1 && !IsBreakBetween(str[i], str[i + 1])); i++)
-						{
-							temp += str[i + 1];
-						}
-					
-					i++;
-
+					for (; (i<str.size()-1 && !IsBreakBetween(str[i], str[i + 1])); i++)
+					{
+						temp += str[i + 1];
+					}			
 					temp_vec.push_back(symbol(temp, color));
+					i++;
 				}
 			}
-
 			m_console_string = temp_vec;
 		}
-
-		console_string(const char* str) : console_string(std::string(str)) {}
-		console_string(std::string str) : console_string(str, color()) {}
-		console_string(std::string str, color color)
-		{
-			std::u32string utf32_str = Utf8ToUtf32(str);
-
-			std::vector<symbol> temp_vec;
-
-			if (str.size() > 0)
-			{
-				int i = 0;
-				while (i < utf32_str.size())
-				{
-					std::u32string temp;
-					temp += utf32_str[i];
-
-						for (; (i < utf32_str.size()-1 && !IsBreakBetween(utf32_str[i], utf32_str[i + 1])); i++)
-						{
-							temp += utf32_str[i + 1];
-						}
-					i++;
-
-					temp_vec.push_back(symbol(temp, color));
-				}
-			}
-
-			m_console_string = temp_vec;
-		}
-
 
 		void appendString(console_string string)
 		{
@@ -263,15 +231,12 @@ namespace tui
 			appendString(string);
 		}
 
-
-
 		void push_back(symbol Symbol)
 		{
 			m_console_string.push_back(Symbol);
 		}
 
 		int size() { return m_console_string.size(); }
-		int size() const { return m_console_string.size(); }
 
 		void invert()
 		{
