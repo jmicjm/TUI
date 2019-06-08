@@ -86,7 +86,7 @@ namespace tui
 	struct symbol
 	{
 	private:
-		std::u32string m_grapheme_cluster = U" ";
+		std::u32string m_grapheme_cluster;
 		color m_color;
 	public:
 		symbol() : symbol(U" ", color()) {}
@@ -95,7 +95,8 @@ namespace tui
 		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::u32string Symbol, color color)
 		{
-			setSymbol(Symbol);
+			if (Symbol.size() > 0) { setSymbol(Symbol); }
+			else { m_grapheme_cluster = U" "; }
 			setColor(color);
 		}
 		symbol(char32_t character) : symbol(character, color()) {}
