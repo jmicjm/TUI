@@ -95,8 +95,7 @@ namespace tui
 		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::u32string Symbol, color color)
 		{
-			if (Symbol.size() > 0) { setSymbol(Symbol); }
-			else { m_grapheme_cluster = U" "; }
+			setSymbol(Symbol); 
 			setColor(color);
 		}
 		symbol(char32_t character) : symbol(character, color()) {}
@@ -109,18 +108,22 @@ namespace tui
 
 		void setSymbol(std::u32string symbol) 
 		{
-			std::u32string temp;
-			temp += symbol[0];
+			if (symbol.size() == 0) { m_grapheme_cluster = U" "; }
+			else
+			{
+				std::u32string temp;
+				temp += symbol[0];
 
-			for (int i = 0; i < symbol.size()-1; i++)
-			{	
-				if (!IsBreakBetween(symbol[i], symbol[i + 1]))
+				for (int i = 0; i < symbol.size() - 1; i++)
 				{
-					temp += symbol[i + 1];
+					if (!IsBreakBetween(symbol[i], symbol[i + 1]))
+					{
+						temp += symbol[i + 1];
+					}
+					else { break; }
 				}
-				else { break; }
+				m_grapheme_cluster = temp;
 			}
-			m_grapheme_cluster = temp;
 		}
 
 		void invert() { m_color.invert(); }
