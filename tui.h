@@ -373,97 +373,66 @@ namespace tui
 		void prepareText()
 		{
 			console_string prepared;
+			
+			auto isControl = [](char32_t ch)
+			{
+				return GetGraphemeType(ch) == GRAPHEME_TYPE::CONTROL 
+					|| GetGraphemeType(ch) == GRAPHEME_TYPE::CR 
+					|| GetGraphemeType(ch) == GRAPHEME_TYPE::LF;
+			};
+			auto usePrepared = [&]()
+			{
+				return m_use_prepared_text && getSize().x > 2;
+			};
+
 			int pos = 0;
+			for (int i=0;i < m_unprepared_text.size();i++)
+			{	
+				int pos_in_line = pos % m_text.getSize().x;
 
-			if (getSize().x > 2 && getSize().y >= 1 && m_use_prepared_text)
-			{
-				while (pos < m_unprepared_text.size())
-				{
-					for (int j = 0; j < m_text.getSize().x; j++)
-					{		
-						if (pos >= m_unprepared_text.size()) { break; }
-
-						if (m_use_control_characters)
-						{
-							//omit control code unless equal to '\n' 
-							if (m_unprepared_text[pos].getFirstChar() < 32 && m_unprepared_text[pos].getFirstChar() != '\n')
-							{
-								pos++;
-								continue;
-							}
-							else if (m_unprepared_text[pos].getFirstChar() == '\n')
-							{
-								pos++;
-
-								for (int i = 0; i < (m_text.getSize().x - j); i++)
-								{
-									prepared += " ";
-								}
-
-								break;
-							}
-						}
-
-						if (j == m_text.getSize().x - 1
-							&& pos +1 < m_unprepared_text.size()
-							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos]) : true)
-							&& m_unprepared_text[pos].getSymbol() != (U" ")	
-							&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[pos + 1]) : true)
-							&& m_unprepared_text[pos + 1].getSymbol() != (U" ")
-							&& m_unprepared_text[pos + 1].getFirstChar() >= 32
-							)
-						{
-							if (m_unprepared_text[pos - 1].getSymbol() != U" ") 
-							{
-								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << "-";
-							}
-							else 
-							{ 
-								prepared << m_unprepared_text[pos - 1].getColor();
-								prepared << " "; 
-							}
-						}
-						else
-						{
-							if (j == 0 && m_unprepared_text[pos].getSymbol() == U" " && pos !=0) { pos++; }//omit space at start of line
-							if (pos < m_unprepared_text.size())
-							{
-								prepared += m_unprepared_text[pos++];
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				int pos = 0;
-				for (int i = 0; i < m_unprepared_text.size(); i++)
+				if (isControl(m_unprepared_text[i].getFirstChar()))
 				{
 					if (m_use_control_characters)
 					{
-						if (m_unprepared_text[i].getFirstChar() < 32 && m_unprepared_text[i].getFirstChar() != '\n')
+						if (m_unprepared_text[i].getFirstChar() == '\n')
 						{
-							continue;
-						}
-						else if (m_unprepared_text[i].getFirstChar() == '\n')
-						{
-							for (int j = 0; j < m_text.getSize().x - pos % m_text.getSize().x; j++)
+							for (int i = 0; i < (m_text.getSize().x - pos_in_line); i++)
 							{
 								prepared += " ";
 							}
-							pos += m_text.getSize().x - pos % m_text.getSize().x;
-							continue;
+							pos += m_text.getSize().x - pos_in_line;	
 						}
 					}
-					prepared += m_unprepared_text[i];
-					pos++;
+					continue;
 				}
 
+				if (   usePrepared()
+					&& pos_in_line == m_text.getSize().x - 1
+					&& i+1 < m_unprepared_text.size()
+					&& m_unprepared_text[i].getSymbol() != (U" ")	
+					&& m_unprepared_text[i + 1].getSymbol() != (U" ")
+					&& !isControl(m_unprepared_text[i + 1].getFirstChar())
+					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i]) : true)
+					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i + 1]) : true)
+					)
+				{
+					prepared << m_unprepared_text[i - 1].getColor();
+					if (m_unprepared_text[i - 1].getSymbol() != U" ") 
+					{
+						prepared << "-";	
+					}
+					else { prepared << " "; }
+					pos++;
+				}
+				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i].getSymbol() == U" ") { continue; }//omit space at start of line
+
+				prepared += m_unprepared_text[i];
+				pos++;	
 			}
 
 			m_prepared_text = prepared;
 		}
+
 	public:
 		int keyUp = KEYBOARD::KEY::UP;
 		int keyDown = KEYBOARD::KEY::DOWN;
