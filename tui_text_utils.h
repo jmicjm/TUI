@@ -90,9 +90,13 @@ namespace tui
 		color m_color;
 	public:
 		symbol() : symbol(U" ", color()) {}
+		symbol(const char* Symbol) : symbol(std::string(Symbol), color()) {}
 		symbol(const char32_t* Symbol) : symbol(std::u32string(Symbol), color()) {}
+		symbol(const char* Symbol, color color) : symbol(std::string(Symbol), color) {}
 		symbol(const char32_t* Symbol, color color) : symbol(std::u32string(Symbol), color) {}
+		symbol(std::string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
+		symbol(std::string Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
 		symbol(std::u32string Symbol, color color)
 		{
 			setSymbol(Symbol); 
