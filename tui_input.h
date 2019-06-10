@@ -319,6 +319,14 @@ namespace tui
 					{
 						CTRLC_handler();
 					}
+					if (pressed == 127)//backspace could be 8 or 127
+					{
+						buffer[1][BACKSPACE]++;
+					}
+					if (pressed == 10)//enter could be 10 or 13
+					{
+						buffer[1][ENTER]++;
+					}
 
 					if (pressed != 0 && pressed != 224)
 					{
@@ -349,6 +357,15 @@ namespace tui
 					if (pressed == 3)
 					{
 						CTRLC_handler();
+					}
+
+					if (pressed == 8)//backspace could be 8 or 127
+					{
+						buffer[1][BACKSPACE]++;
+					}
+					if (pressed == 10)//enter could be 10 or 13
+					{
+						buffer[1][ENTER]++;
 					}
 
 					if (pressed != 27)
