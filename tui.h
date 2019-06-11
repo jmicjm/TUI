@@ -353,6 +353,7 @@ namespace tui
 		bool m_use_prepared_text = true;
 		bool m_use_dense_punctuation = false;
 		bool m_use_control_characters = true;
+		bool m_display_scroll = true;
 
 		void fill()
 		{
@@ -368,7 +369,7 @@ namespace tui
 
 			makeTransparent();
 			insertSurface(m_text);
-			if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
 		}
 		void prepareText()
 		{
@@ -454,11 +455,14 @@ namespace tui
 				m_text.setSize({ {0,0}, {100,100} });
 				updateSurfaceSize(m_text);
 				prepareText();
-				if (getNumberOfLines() > m_text.getSize().y)
+				if (m_display_scroll)
 				{
-					m_text.setSize({ {-1,0}, {100,100} });
-					updateSurfaceSize(m_text);
-					prepareText();	
+					if (getNumberOfLines() > m_text.getSize().y)
+					{
+						m_text.setSize({ {-1,0}, {100,100} });
+						updateSurfaceSize(m_text);
+						prepareText();
+					}
 				}
 				m_scroll.setContentLength(getNumberOfLines());
 			}
@@ -526,6 +530,14 @@ namespace tui
 				fill();
 			}
 			bool isUsingControlCharacters() { return m_use_control_characters; }
+
+			void displayScroll(bool display)
+			{
+				m_display_scroll = display;
+				adjustSizes();
+				fill();
+			}
+			bool isDisplayingScroll() { return m_display_scroll; }
 
 			void update()
 			{
