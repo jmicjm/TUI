@@ -344,7 +344,7 @@ namespace tui
 	struct text : surface, active_element
 	{
 	private:
-		basic_text m_text;
+		surface m_text;
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		console_string m_unprepared_text;
@@ -357,15 +357,18 @@ namespace tui
 
 		void fill()
 		{
-			console_string final_string;
-			for (int i = 0; i < m_text.getSize().x * m_text.getSize().y; i++)
+			m_text.makeTransparent();
+
+			for (int i = 0; i < m_text.getSize().x; i++)
 			{
-				if (m_text.getSize().x * m_scroll.getHandlePosition() + i < m_prepared_text.size())
+				for (int j = 0; j < m_text.getSize().y; j++)
 				{
-					final_string.push_back(m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + i]);
+					if (m_text.getSize().x * m_scroll.getHandlePosition() + j * m_text.getSize().x + i < m_prepared_text.size())
+					{
+						m_text[i][j] = m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + j * m_text.getSize().x + i];
+					}
 				}
 			}
-			m_text.setText(final_string);
 
 			makeTransparent();
 			insertSurface(m_text);
@@ -440,11 +443,10 @@ namespace tui
 		int keyPageUp = KEYBOARD::KEY::PGUP;
 		int keyPageDown = KEYBOARD::KEY::PGDN;
 
-		text(surface_size size, console_string txt)
-			: m_scroll(0, 100)
-			, m_text({{-1,0}, {100,100}}, U" ")
+		text(surface_size size, console_string txt) : m_scroll(0, 100)
 			{
 				setSize(size);
+				m_text.setSize({ {-1,0}, {100,100} });
 
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 				setText(txt);		
