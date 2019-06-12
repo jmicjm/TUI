@@ -304,43 +304,6 @@ namespace tui
 
 	};
 
-	struct basic_text : surface
-	{
-		private:
-			console_string m_text;
-
-			void fill()
-			{
-				makeTransparent();
-
-				for (int i = 0; i < getSize().y; i++)	
-				{
-					for (int j = 0; j < getSize().x; j++)
-					{
-						if (i*getSize().x + j >= m_text.size()) { break; } 
-
-						setSymbolAt(m_text[i*getSize().x + j], vec2i(j, i));
-					}
-				}
-			}
-		public:
-			basic_text(surface_size size, console_string txt)
-			{
-				setSize(size);
-				setText(txt);
-			}
-			void setText(console_string txt)
-			{
-				m_text = txt;
-				fill();
-			}
-			console_string getText() { return m_text; }
-
-			//void draw_action() { fill(); }
-
-			void resize_action() { fill(); }
-	};
-
 	struct text : surface, active_element
 	{
 	private:
