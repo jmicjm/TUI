@@ -311,6 +311,75 @@ namespace tui
 	
 	};
 
+	template<int direction>
+	struct surface1D : surface
+	{
+		void setSize(surface1D_size size)
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				surface::setSize({ {size.fixed_size, 1},{size.percentage_size, 0} });
+				break;
+			case tui::DIRECTION::VERTICAL:
+				surface::setSize({ {1, size.fixed_size},{0, size.percentage_size} });
+				break;
+			}
+		}
+		int getSize() 
+		{
+				switch (direction)
+				{
+				case tui::DIRECTION::HORIZONTAL:
+					return surface::getSize().x;
+				case tui::DIRECTION::VERTICAL:
+					return surface::getSize().y;
+				}
+		}
+		void setSymbolAt(symbol character, int position)
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				surface::setSymbolAt(character, { position, 0 });
+				break;
+			case tui::DIRECTION::VERTICAL:
+				surface::setSymbolAt(character, { 0, position });
+				break;
+			}
+		}
+		symbol getSymbolAt(int position)
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				return surface::getSymbolAt({ position, 0 });
+			case tui::DIRECTION::VERTICAL:
+				return surface::getSymbolAt({ 0, position });
+			}
+		}
+		symbol& operator[](int i)
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				return surface::operator[](i)[0];
+			case tui::DIRECTION::VERTICAL:
+				return surface::operator[](0)[i];
+			}
+		}
+		surface1D_size getSizeInfo()
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				return surface1D_size(surface::getSizeInfo().getFixedSize().x, surface::getSizeInfo().getPercentageSize().x);
+			case tui::DIRECTION::VERTICAL:
+				return surface1D_size(surface::getSizeInfo().getFixedSize().y, surface::getSizeInfo().getPercentageSize().y);;
+			}
+		}
+	};
+
 	struct group : surface
 	{
 		std::vector<surface*> m_surfaces;

@@ -64,6 +64,17 @@ namespace tui
 
 	};
 
+	struct surface1D_size
+	{
+		int fixed_size;
+		int percentage_size;
+
+		surface1D_size() : surface1D_size(0,0) {}
+		surface1D_size(int fixed) : surface1D_size(fixed, 0) {}
+		surface1D_size(int fixed, int percentage) : fixed_size(fixed), percentage_size(percentage) {}
+
+	};
+
 	struct position
 	{
 		private:
