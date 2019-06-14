@@ -123,7 +123,7 @@ namespace tui
 
 
 	template<int direction>
-	struct scroll : surface
+	struct scroll : surface1D<direction>
 	{
 		private:
 			symbol m_slider; //handle
@@ -133,21 +133,9 @@ namespace tui
 			int m_handle_position = 0;
 			int m_handle_length = 0;
 
-			int getSurfaceSize() {
-				switch (direction)
-				{
-				case DIRECTION::HORIZONTAL:
-					return getSize().x;
-					break; 
-				case DIRECTION::VERTICAL:
-					return getSize().y;
-					break;
-				}
-			}
-
 			int visibleContentLength()
 			{
-				if (m_visible_content_length < 0) { return getSurfaceSize(); }
+				if (m_visible_content_length < 0) { return getSize(); }
 				else { return m_visible_content_length; }
 			}
 
@@ -155,33 +143,19 @@ namespace tui
 			{
 				if (isNeeded())
 				{
-					switch (direction)
-					{
-					case DIRECTION::HORIZONTAL:
-						for (int i = 0; i < getSurfaceSize(); i++) { setSymbolAt(m_line, vec2i(i, 0)); }
-						break;
-					case DIRECTION::VERTICAL:
-						for (int i = 0; i < getSurfaceSize(); i++) { setSymbolAt(m_line, vec2i(0, i)); }
-						break;
-					}
+					for (int i = 0; i < getSize(); i++) { setSymbolAt(m_line, i); }
+				
 	
-					m_handle_length = ((getSurfaceSize() * 1.f) / m_content_length)* getSurfaceSize();
+					m_handle_length = ((getSize() * 1.f) / m_content_length)* getSize();
 					if (m_handle_length < 1) { m_handle_length = 1; }			
 
 					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - visibleContentLength());
 
-					int handle_position = round(getSurfaceSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
+					int handle_position = round(getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
-					if (m_content_length > visibleContentLength()) {
-						switch (direction)
-						{
-						case DIRECTION::HORIZONTAL:
-							for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(i + handle_position, 0)); }
-							break;
-						case DIRECTION::VERTICAL:
-							for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, vec2i(0, i + handle_position)); }
-							break;
-						}
+					if (m_content_length > visibleContentLength()) 
+					{
+						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, i + handle_position); }	
 					}
 				}
 				else
@@ -190,7 +164,7 @@ namespace tui
 				}
 			}
 		public:
-			scroll(int fixed_length, int percentage_length)
+			scroll(surface1D_size size)
 			{
 				switch (direction)
 				{
@@ -204,26 +178,8 @@ namespace tui
 					break;
 				}
 
-				setSize(fixed_length, percentage_length);
+				setSize({size.fixed_size, size.percentage_size});
 			}
-
-			void setSize(int fixed_length, int percentage_length)
-			{
-				surface_size size;
-
-				switch (direction)
-				{
-				case DIRECTION::HORIZONTAL:
-					size = { {fixed_length, 1}, {percentage_length, 1} };
-					break;
-				case DIRECTION::VERTICAL:
-					size = { {1, fixed_length}, {1, percentage_length} };
-					break;
-				}
-
-				surface::setSize(size);
-			}
-
 
 			void setChars(symbol slider, symbol line)
 			{
@@ -406,7 +362,7 @@ namespace tui
 		int keyPageUp = KEYBOARD::KEY::PGUP;
 		int keyPageDown = KEYBOARD::KEY::PGDN;
 
-		text(surface_size size, console_string txt) : m_scroll(0, 100)
+		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
 			{
 				setSize(size);
 				m_text.setSize({ {-1,0}, {100,100} });
