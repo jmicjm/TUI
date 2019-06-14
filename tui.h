@@ -460,6 +460,51 @@ namespace tui
 			}
 			bool isDisplayingScroll() { return m_display_scroll; }
 
+			void resizeToText(int max_width)
+			{
+				if (max_width <= 0)
+				{
+					m_use_control_characters = false;//temporarily disable control characters
+
+					setSize({ {m_unprepared_text.size(), 1} });
+					adjustSizes();
+					/*
+					with control characters disabled one line prepared text could be shorter than unprepared text
+					e.g. space at start of line will be removed and all control characters will be removed
+					*/
+					setSize({ {m_prepared_text.size(), 1} });
+
+					m_use_control_characters = true;
+				}
+				else
+				{
+					int height = m_unprepared_text.size() / max_width;
+
+					setSize({ {max_width, height} });
+					adjustSizes();
+
+					if (!m_scroll.isNeeded())//sometimes prepared text may be shorter
+					{
+						while (!m_scroll.isNeeded())
+						{
+							setSize({ {max_width, --height} });
+							adjustSizes();
+						}
+						setSize({ {max_width, ++height} });
+						adjustSizes();
+					}
+					else
+					{
+						while (m_scroll.isNeeded())
+						{
+							setSize({ {max_width, ++height} });
+							adjustSizes();
+						}
+					}
+				}
+			}
+			void resizeToText() { resizeToText(0); }
+
 			void update()
 			{
 				if (isActive()) {
