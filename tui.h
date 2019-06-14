@@ -478,29 +478,15 @@ namespace tui
 				}
 				else
 				{
-					int height = m_unprepared_text.size() / max_width;
+					m_display_scroll = false;
 
-					setSize({ {max_width, height} });
-					adjustSizes();
+					setSize({ {max_width, 1} });
+					prepareText();
 
-					if (!m_scroll.isNeeded())//sometimes prepared text may be shorter
-					{
-						while (!m_scroll.isNeeded())
-						{
-							setSize({ {max_width, --height} });
-							adjustSizes();
-						}
-						setSize({ {max_width, ++height} });
-						adjustSizes();
-					}
-					else
-					{
-						while (m_scroll.isNeeded())
-						{
-							setSize({ {max_width, ++height} });
-							adjustSizes();
-						}
-					}
+					setSize({ {max_width, (int)ceil( 1.f * m_prepared_text.size()/max_width)} });
+					fill();
+
+					m_display_scroll = true;
 				}
 			}
 			void resizeToText() { resizeToText(0); }
