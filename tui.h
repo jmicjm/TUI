@@ -14,39 +14,55 @@
 
 namespace tui 
 {
-	struct rectangle : surface, active_element
+	struct appearance
+	{
+	protected:
+		virtual void setAppearance_action() {}
+	public:
+		virtual void setColor(color Color) = 0;
+	};
+
+	struct rectangle_appearance : appearance
+	{
+	protected:
+		symbol m_filling;
+	public:
+		rectangle_appearance() : rectangle_appearance(U'\x2588') {}
+		rectangle_appearance(symbol filling) : m_filling(filling) {}
+
+		void setColor(color Color) override { m_filling.setColor(Color); }
+
+		void setAppearance(rectangle_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		rectangle_appearance getAppearance() { return *this; }
+
+		void setFilling(symbol filling)
+		{
+			m_filling = filling;
+			setAppearance_action();
+		}
+		symbol getFilling() { return m_filling; }
+	};
+
+	struct rectangle : surface, rectangle_appearance
 	{
 		private:
-			symbol m_character;
-
 			void fill()
 			{
-
 				for (int i = 0; i < getSize().x; i++)
 				{
-					for (int j = 0; j < getSize().y; j++) {
-						surface::setSymbolAt(m_character, vec2i(i, j));
+					for (int j = 0; j < getSize().y; j++) 
+					{
+						setSymbolAt(m_filling, vec2i(i, j));
 					}
 				}
 			}
 		public:
-			void setChar(symbol character)
-			{
-				m_character = character;	
-				fill();
-			}
-			void resize_action() { fill(); }
-			void activation_action()
-			{
-				m_character.setColor(COLOR::GREEN);
-				fill();
-				
-			}
-			void disactivation_action()
-			{
-				m_character.setColor(COLOR::RED);
-				fill();
-			}
+			void resize_action() override { fill(); }
+			void setAppearance_action() override { fill(); }
 	};
 	
 	struct box : surface
