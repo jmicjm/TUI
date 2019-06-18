@@ -30,7 +30,11 @@ namespace tui
 		rectangle_appearance() : rectangle_appearance(U'\x2588') {}
 		rectangle_appearance(symbol filling) : m_filling(filling) {}
 
-		void setColor(color Color) override { m_filling.setColor(Color); }
+		void setColor(color Color) override 
+		{ 
+			m_filling.setColor(Color);
+			setAppearance_action();
+		}
 
 		void setAppearance(rectangle_appearance appearance)
 		{
@@ -64,76 +68,105 @@ namespace tui
 			void resize_action() override { fill(); }
 			void setAppearance_action() override { fill(); }
 	};
+
+	struct box_appearance : appearance
+	{
+	protected:
+		symbol m_horizontal_line;
+		symbol m_vertical_line;
+		symbol m_top_left;
+		symbol m_top_right;
+		symbol m_bottom_left;
+		symbol m_bottom_right;
+	public:
+		box_appearance() : box_appearance(U'\x2550', U'\x2551', U'\x2554', U'\x2557', U'\x255A', U'\x255D') {}
+		box_appearance(symbol Symbol) : box_appearance(Symbol, Symbol, Symbol, Symbol, Symbol, Symbol) {}
+		box_appearance(symbol h_line, symbol v_line, symbol top_l, symbol top_r, symbol bottom_l, symbol bottom_r) 
+			: m_horizontal_line(h_line), m_vertical_line(v_line), m_top_left(top_l),
+			m_top_right(top_r), m_bottom_left(bottom_l), m_bottom_right(bottom_r) {}
+
+		void setColor(color Color) override
+		{
+			m_horizontal_line.setColor(Color);
+			m_vertical_line.setColor(Color);
+			m_top_left.setColor(Color);
+			m_top_right.setColor(Color);
+			m_bottom_left.setColor(Color);
+			m_bottom_right.setColor(Color);
+			setAppearance_action();
+		}
+
+		void setAppearance(box_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		box_appearance getAppearance() { return *this; }
+		
+		void setHorizontalLine(symbol line)
+		{
+			m_horizontal_line = line;
+			setAppearance_action();
+		}
+		symbol getHorizontalLine() { return m_horizontal_line; }
+		void setVerticalLine(symbol line)
+		{
+			m_vertical_line = line;
+			setAppearance_action();
+		}
+		symbol getVerticalLine() { return m_vertical_line; }
+		void setTopLeft(symbol top_l)
+		{
+			m_top_left = top_l;
+			setAppearance_action();
+		}
+		symbol getTopLeft() { return m_top_left; }
+		void setTopRight(symbol top_r)
+		{
+			m_top_right = top_r;
+			setAppearance_action();
+		}
+		symbol getTopRight() { return m_top_right; }
+		void setBottomLeft(symbol bottom_l)
+		{
+			m_bottom_left = bottom_l;
+			setAppearance_action();
+		}
+		symbol getBottomLeft() { return m_bottom_left; }
+		void setBottomRight(symbol bottom_r)
+		{
+			m_bottom_right = bottom_r;
+			setAppearance_action();
+		}
+		symbol getBottomRight() { return m_bottom_right; }
+
+	};
 	
-	struct box : surface
+	struct box : surface, box_appearance
 	{
 		private:
-			symbol horizontal_line;
-			symbol vertical_line;
-			symbol top_left;
-			symbol top_right;
-			symbol bottom_left;
-			symbol bottom_right;
-
-			void fillChars()
+			void fill()
 			{
-				surface::setSymbolAt(top_left, vec2i(0, 0));
-				surface::setSymbolAt(top_right, vec2i(getSize().x - 1, 0));
-				surface::setSymbolAt(bottom_left, vec2i(0, getSize().y - 1));
-				surface::setSymbolAt(bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
+				setSymbolAt(m_top_left, vec2i(0, 0));
+				setSymbolAt(m_top_right, vec2i(getSize().x - 1, 0));
+				setSymbolAt(m_bottom_left, vec2i(0, getSize().y - 1));
+				setSymbolAt(m_bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
 
-				for(int i = 1; i < getSize().x-1; i++) { surface::setSymbolAt(horizontal_line, vec2i(i, 0)); }
-				for(int i = 1; i < getSize().x-1; i++) { surface::setSymbolAt(horizontal_line, vec2i(i, getSize().y - 1)); }
+				for(int i = 1; i < getSize().x-1; i++) { setSymbolAt(m_horizontal_line, vec2i(i, 0)); }
+				for(int i = 1; i < getSize().x-1; i++) { setSymbolAt(m_horizontal_line, vec2i(i, getSize().y - 1)); }
 
-				for (int i = 1; i < getSize().y-1; i++) { surface::setSymbolAt(vertical_line, vec2i(0, i)); }
-				for (int i = 1; i < getSize().y-1; i++) { surface::setSymbolAt(vertical_line, vec2i(getSize().x - 1, i)); }
+				for (int i = 1; i < getSize().y-1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
+				for (int i = 1; i < getSize().y-1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
 			}
 		public:
-			box(surface_size size, int thickness)
+			box(surface_size size)
 			{
 				setSize(size);
-				switch (thickness)
-				{
-					case THICKNESS::THIN:
-						setChars(symbol(U'\x2500'), symbol(U'\x2502'), symbol(U'\x250C'), symbol(U'\x2510'), symbol(U'\x2514'), symbol(U'\x2518'));
-						break;
-					case THICKNESS::MEDIUM:
-						setChars(symbol(U'\x2550'), symbol(U'\x2551'), symbol(U'\x2554'), symbol(U'\x2557'), symbol(U'\x255A'), symbol(U'\x255D'));
-						break;
-					case THICKNESS::THICK:
-						setChars(symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\x2558'), symbol(U'\u2558'));
-						break;
-				}
-			}
-			box(surface_size size, symbol h_line, symbol v_line, symbol top_l, symbol top_r, symbol bottom_l, symbol bottom_r)
-			{
-				setSize(size);
-				setChars(h_line, v_line, top_l, top_r, bottom_l, bottom_r);	
+				fill();
 			}
 
-			void setColor(color Color)
-			{
-				horizontal_line.setColor(Color);
-				vertical_line.setColor(Color);
-				top_left.setColor(Color);
-				top_right.setColor(Color);
-				bottom_left.setColor(Color);
-				bottom_right.setColor(Color);
-
-				fillChars();
-			}
-			void setChars(symbol h_line, symbol v_line, symbol t_l, symbol t_r, symbol b_l, symbol b_r)
-			{
-				horizontal_line = h_line;
-				vertical_line = v_line;
-				top_left = t_l;
-				top_right = t_r;
-				bottom_left = b_l;
-				bottom_right = b_r;
-
-				fillChars();
-			}
-			void resize_action() { fillChars(); }	
+			void resize_action() override { fill(); }	
+			void setAppearance_action() override { fill(); }
 	};
 
 
