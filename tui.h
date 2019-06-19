@@ -170,13 +170,46 @@ namespace tui
 	};
 
 
+	struct scroll_appearance : appearance
+	{
+	protected:
+		symbol m_slider; //handle
+		symbol m_line;
+	public:
+		scroll_appearance() : scroll_appearance(U'\x2551', U'\x2502') {}
+		scroll_appearance(symbol slider, symbol line) : m_slider(slider), m_line(line) {}
+
+		void setColor(color Color) override
+		{
+			m_slider.setColor(Color);
+			m_line.setColor(Color);
+			setAppearance_action();
+		}
+
+		void setAppearance(scroll_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		scroll_appearance getAppearance() { return *this; }
+		
+		void setSlider(symbol slider)
+		{
+			m_slider = slider;
+			setAppearance_action();
+		}
+		symbol getSlider() { return m_slider; }
+		void setLine(symbol line)
+		{
+			m_line = line;
+			setAppearance_action();
+		}
+	};
 
 	template<int direction>
-	struct scroll : surface1D<direction>
+	struct scroll : surface1D<direction>, scroll_appearance
 	{
 		private:
-			symbol m_slider; //handle
-			symbol m_line;
 			int m_content_length = 0;
 			int m_visible_content_length = -1;
 			int m_handle_position = 0;
@@ -194,18 +227,15 @@ namespace tui
 				{
 					for (int i = 0; i < getSize(); i++) { setSymbolAt(m_line, i); }
 				
-	
 					m_handle_length = ((getSize() * 1.f) / m_content_length)* getSize();
+
 					if (m_handle_length < 1) { m_handle_length = 1; }			
 
 					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - visibleContentLength());
 
 					int handle_position = round(getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
-					if (m_content_length > visibleContentLength()) 
-					{
-						for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, i + handle_position); }	
-					}
+					for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, i + handle_position); }		
 				}
 				else
 				{
@@ -244,8 +274,7 @@ namespace tui
 
 			bool isNeeded()
 			{
-				if (m_content_length <= visibleContentLength()) { return false; }
-				else { return true; }
+				return m_content_length > visibleContentLength();
 			};
 
 			void adjustHandlePositionRespectLength()
@@ -299,13 +328,13 @@ namespace tui
 				//fill(); 
 			}
 
-			void draw_action() { fill(); }
-			void resize_action() 
+			void draw_action() override { fill(); }
+			void resize_action() override
 			{
 				adjustHandlePositionRespectLength();
 				fill();
 			}
-
+			void setAppearance_action() override { fill(); }
 
 	};
 
