@@ -217,7 +217,7 @@ namespace tui
 
 			int visibleContentLength()
 			{
-				if (m_visible_content_length < 0) { return getSize(); }
+				if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
 				else { return m_visible_content_length; }
 			}
 
@@ -225,21 +225,21 @@ namespace tui
 			{
 				if (isNeeded())
 				{
-					for (int i = 0; i < getSize(); i++) { setSymbolAt(m_line, i); }
+					for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(m_line, i); }
 				
-					m_handle_length = ((getSize() * 1.f) / m_content_length)* getSize();
+					m_handle_length = ((surface1D<direction>::getSize() * 1.f) / m_content_length)* surface1D<direction>::getSize();
 
 					if (m_handle_length < 1) { m_handle_length = 1; }			
 
 					float handle_pos_perc = m_handle_position * 1.f / (m_content_length*1.f - visibleContentLength());
 
-					int handle_position = round(getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
+					int handle_position = round(surface1D<direction>::getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
-					for (int i = 0; i < m_handle_length; i++) { setSymbolAt(m_slider, i + handle_position); }		
+					for (int i = 0; i < m_handle_length; i++) { surface1D<direction>::setSymbolAt(m_slider, i + handle_position); }
 				}
 				else
 				{
-					makeTransparent();
+					surface::makeTransparent();
 				}
 			}
 		public:
@@ -257,10 +257,10 @@ namespace tui
 					break;
 				}
 
-				setSize({size.fixed_size, size.percentage_size});
+				surface1D<direction>::setSize({size.fixed_size, size.percentage_size});
 			}
 
-			void setChars(symbol slider, symbol line)
+			/*void setChars(symbol slider, symbol line)
 			{
 				m_slider = slider;
 				m_line = line;
@@ -270,7 +270,7 @@ namespace tui
 			{
 				m_slider.setColor(slider);
 				m_line.setColor(line);
-			}
+			}*/
 
 			bool isNeeded()
 			{
@@ -338,7 +338,45 @@ namespace tui
 
 	};
 
-	struct text : surface, active_element
+	struct text_appearance : appearance
+	{
+	protected:
+		scroll_appearance m_active_scroll;
+		scroll_appearance m_inactive_scroll;
+	public:
+		text_appearance() : text_appearance({ { U'\x2551', COLOR::WHITE }, { U'\x2502', COLOR::WHITE } },
+											{ { U'\x2551', COLOR::DARKGRAY }, { U'\x2502', COLOR::DARKGRAY } }) {}
+		text_appearance(scroll_appearance active, scroll_appearance inactive) : m_active_scroll(active), m_inactive_scroll(inactive) {}
+
+		void setColor(color Color) override
+		{
+			m_active_scroll.setColor(Color);
+			m_inactive_scroll.setColor(Color);
+			setAppearance_action();
+		}
+
+		void setAppearance(text_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		text_appearance getAppearance() { return *this; }
+
+		void setActiveScroll(scroll_appearance active)
+		{
+			m_active_scroll = active;
+			setAppearance_action();
+		}
+		scroll_appearance getActiveScroll() { return m_active_scroll; }
+		void setInactiveScroll(scroll_appearance inactive)
+		{
+			m_inactive_scroll = inactive;
+			setAppearance_action();
+		}
+		scroll_appearance getInactiveScroll() { return m_inactive_scroll; }
+	};
+
+	struct text : surface, text_appearance, active_element
 	{
 	private:
 		surface m_text;
@@ -446,7 +484,9 @@ namespace tui
 				m_text.setSize({ {-1,0}, {100,100} });
 
 				m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
-				setText(txt);		
+				setText(txt);	
+
+				setAppearance_action();
 			}
 
 			void adjustSizes()
@@ -602,14 +642,21 @@ namespace tui
 
 			void activation_action() 
 			{
-				m_scroll.setColors({COLOR::WHITE}, {COLOR::WHITE});
-				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
+				m_scroll.setAppearance(m_active_scroll);
+				if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
 			void disactivation_action() 
 			{
-				m_scroll.setColors({COLOR::DARKGRAY}, {COLOR::DARKGRAY});
-				if (m_scroll.isNeeded()) { insertSurface(m_scroll); }
+				m_scroll.setAppearance(m_inactive_scroll);
+				if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
 			}
+			void setAppearance_action() override
+			{
+				if(isActive()){ m_scroll.setAppearance(m_active_scroll); }
+				else { m_scroll.setAppearance(m_inactive_scroll); }
+				if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			}
+
 	};
 
 	template<int direction>

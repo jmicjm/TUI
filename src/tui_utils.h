@@ -60,7 +60,7 @@ namespace tui
 			m_percentage_size = percentage;
 		}
 		vec2i getFixedSize() { return m_fixed_size; }
-		vec2i getPercentagesize() { return m_percentage_size; }
+		vec2i getPercentageSize() { return m_percentage_size; }
 
 	};
 

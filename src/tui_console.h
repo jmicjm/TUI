@@ -234,7 +234,7 @@ namespace tui
 
 			void updateSurfaceSize(surface &obj)
 			{
-				vec2i perc_size = obj.getSizeInfo().getPercentagesize();
+				vec2i perc_size = obj.getSizeInfo().getPercentageSize();
 				vec2i int_size = obj.getSizeInfo().getFixedSize();
 
 				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
