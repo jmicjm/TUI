@@ -464,7 +464,8 @@ namespace tui
 		//return amount of key press in iteration before last clear
 		inline int isKeyPressed(int key)
 		{
-			return buffer[key];
+			if (key >= 0) { return buffer[key]; }
+			else { return false; }
 		}
 
 		//return string that consist of characters pressed in iteration before last clear
