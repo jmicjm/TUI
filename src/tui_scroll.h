@@ -7,44 +7,71 @@
 
 namespace tui
 {
+	struct scroll_appearance_a
+	{
+		symbol slider; //handle
+		symbol line;
+
+		scroll_appearance_a() : scroll_appearance_a(U'\x2551', U'\x2502') {}
+		scroll_appearance_a(symbol slider, symbol line) : slider(slider), line(line) {}
+
+		void setColor(color Color)
+		{
+			slider.setColor(Color);
+			line.setColor(Color);
+		}
+
+		void setAppearance(scroll_appearance_a appearance)
+		{
+			*this = appearance;
+		}
+		scroll_appearance_a getAppearance() { return *this; }
+
+		void setSlider(symbol Slider)
+		{
+			slider = Slider;
+		}
+		symbol getSlider() { return slider; }
+		void setLine(symbol Line)
+		{
+			line = Line;
+		}
+		symbol getLine() { return line; }
+	};
+
 	struct scroll_appearance : appearance
 	{
 	protected:
-		symbol m_slider; //handle
-		symbol m_line;
+		scroll_appearance_a m_active_appearance;
+		scroll_appearance_a m_inactive_appearance;
 	public:
-		scroll_appearance() : scroll_appearance(U'\x2551', U'\x2502') {}
-		scroll_appearance(symbol slider, symbol line) : m_slider(slider), m_line(line) {}
+		scroll_appearance() : scroll_appearance({ { U'\x2551', COLOR::WHITE }, { U'\x2502', COLOR::WHITE } },
+												{ { U'\x2551', COLOR::DARKGRAY }, { U'\x2502', COLOR::DARKGRAY } }) {}
+		scroll_appearance(scroll_appearance_a active, scroll_appearance_a inactive) : m_active_appearance(active), m_inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
 		{
-			m_slider.setColor(Color);
-			m_line.setColor(Color);
+			m_active_appearance.setColor(Color);
+			m_inactive_appearance.setColor(Color);
 			setAppearance_action();
 		}
 
-		void setAppearance(scroll_appearance appearance)
+		void setActiveAppearance(scroll_appearance_a active)
 		{
-			*this = appearance;
+			m_active_appearance = active;
 			setAppearance_action();
 		}
-		scroll_appearance getAppearance() { return *this; }
-
-		void setSlider(symbol slider)
+		scroll_appearance_a getActiveAppearance() { return m_active_appearance; }
+		void setInactiveAppearance(scroll_appearance_a inactive)
 		{
-			m_slider = slider;
+			m_inactive_appearance = inactive;
 			setAppearance_action();
 		}
-		symbol getSlider() { return m_slider; }
-		void setLine(symbol line)
-		{
-			m_line = line;
-			setAppearance_action();
-		}
+		scroll_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
 
 	template<int direction>
-	struct scroll : surface1D<direction>, scroll_appearance
+	struct scroll : surface1D<direction>, scroll_appearance, active_element
 	{
 	private:
 		int m_content_length = 0;
@@ -58,11 +85,17 @@ namespace tui
 			else { return m_visible_content_length; }
 		}
 
+		scroll_appearance_a getCurrentAppearance()
+		{
+			if (isActive()) { return m_active_appearance; }
+			else { return m_inactive_appearance; }
+		}
+
 		void fill()
 		{
 			if (isNeeded())
 			{
-				for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(m_line, i); }
+				for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
 
 				m_handle_length = ((surface1D<direction>::getSize() * 1.f) / m_content_length) * surface1D<direction>::getSize();
 
@@ -72,7 +105,7 @@ namespace tui
 
 				int handle_position = round(surface1D<direction>::getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
 
-				for (int i = 0; i < m_handle_length; i++) { surface1D<direction>::setSymbolAt(m_slider, i + handle_position); }
+				for (int i = 0; i < m_handle_length; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); }
 			}
 			else
 			{
@@ -80,34 +113,28 @@ namespace tui
 			}
 		}
 	public:
+		int keyUp = KEYBOARD::KEY::UP;
+		int keyDown = KEYBOARD::KEY::DOWN;
+		int keyPageUp = KEYBOARD::KEY::PGUP;
+		int keyPageDown = KEYBOARD::KEY::PGDN;
+
 		scroll(surface1D_size size)
 		{
 			switch (direction)
 			{
 			case DIRECTION::HORIZONTAL:
-				m_slider = U'\x2550';
-				m_line = U'\x2500';
+				m_active_appearance.slider = U'\x2550';
+				m_active_appearance.line = U'\x2500';
+
 				break;
 			case DIRECTION::VERTICAL:
-				m_slider = U'\x2551';
-				m_line = U'\x2502';
+				m_active_appearance.slider = U'\x2551';
+				m_active_appearance.line = U'\x2502';
 				break;
 			}
 
 			surface1D<direction>::setSize({ size.fixed_size, size.percentage_size });
 		}
-
-		/*void setChars(symbol slider, symbol line)
-		{
-			m_slider = slider;
-			m_line = line;
-			fill();
-		}
-		void setColors(color slider, color line)
-		{
-			m_slider.setColor(slider);
-			m_line.setColor(line);
-		}*/
 
 		bool isNeeded()
 		{
@@ -162,16 +189,36 @@ namespace tui
 
 		void update()
 		{
-			//fill(); 
+			if (isActive()) {
+				if (KEYBOARD::isKeyPressed(keyUp)) {
+					setHandlePosition(getHandlePosition() - 1);
+				}
+				if (KEYBOARD::isKeyPressed(keyDown)) {
+					setHandlePosition(getHandlePosition() + 1);
+				}
+				if (KEYBOARD::isKeyPressed(keyPageUp)) {
+					setHandlePosition(getHandlePosition() - visibleContentLength());
+				}
+				if (KEYBOARD::isKeyPressed(keyPageDown)) {
+					setHandlePosition(getHandlePosition() + visibleContentLength());
+				}
+			}
 		}
 
-		void draw_action() override { fill(); }
+		void draw_action() override 
+		{
+			update();
+			fill(); 
+		}
 		void resize_action() override
 		{
 			adjustHandlePositionRespectLength();
 			fill();
 		}
 		void setAppearance_action() override { fill(); }
+
+		void activation_action() override { fill(); }
+		void disactivation_action() override { fill(); }
 
 	};
 }

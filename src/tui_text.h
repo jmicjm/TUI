@@ -9,39 +9,13 @@ namespace tui
 	struct text_appearance : appearance
 	{
 	protected:
-		scroll_appearance m_active_scroll;
-		scroll_appearance m_inactive_scroll;
+		scroll_appearance text_scroll_appearance;
 	public:
-		text_appearance() : text_appearance({ { U'\x2551', COLOR::WHITE }, { U'\x2502', COLOR::WHITE } },
-											{ { U'\x2551', COLOR::DARKGRAY }, { U'\x2502', COLOR::DARKGRAY } }) {}
-		text_appearance(scroll_appearance active, scroll_appearance inactive) : m_active_scroll(active), m_inactive_scroll(inactive) {}
-
 		void setColor(color Color) override
 		{
-			m_active_scroll.setColor(Color);
-			m_inactive_scroll.setColor(Color);
+			text_scroll_appearance.setColor(Color);
 			setAppearance_action();
 		}
-
-		void setAppearance(text_appearance appearance)
-		{
-			*this = appearance;
-			setAppearance_action();
-		}
-		text_appearance getAppearance() { return *this; }
-
-		void setActiveScroll(scroll_appearance active)
-		{
-			m_active_scroll = active;
-			setAppearance_action();
-		}
-		scroll_appearance getActiveScroll() { return m_active_scroll; }
-		void setInactiveScroll(scroll_appearance inactive)
-		{
-			m_inactive_scroll = inactive;
-			setAppearance_action();
-		}
-		scroll_appearance getInactiveScroll() { return m_inactive_scroll; }
 	};
 
 	struct text : surface, text_appearance, active_element
@@ -279,20 +253,20 @@ namespace tui
 
 		void update()
 		{
-			if (isActive()) {
-				if (KEYBOARD::isKeyPressed(keyUp)) {
-					lineUp();
-				}
-				if (KEYBOARD::isKeyPressed(keyDown)) {
-					lineDown();
-				}
-				if (KEYBOARD::isKeyPressed(keyPageUp)) {
-					pageUp();
-				}
-				if (KEYBOARD::isKeyPressed(keyPageDown)) {
-					pageDown();
-				}
-			}
+			m_scroll.keyDown = keyDown;
+			m_scroll.keyUp = keyUp;
+			m_scroll.keyPageDown = keyPageDown;
+			m_scroll.keyPageUp = keyPageUp;
+
+			m_scroll.update();
+			
+			//immobilize scroll beacuse draw() function may be called outside this function
+			m_scroll.keyDown = -1;
+			m_scroll.keyUp = -1;
+			m_scroll.keyPageDown = -1;
+			m_scroll.keyPageUp = -1;
+
+			fill();
 		}
 
 
@@ -310,19 +284,15 @@ namespace tui
 
 		void activation_action()
 		{
-			m_scroll.setAppearance(m_active_scroll);
-			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			m_scroll.activate();
 		}
 		void disactivation_action()
 		{
-			m_scroll.setAppearance(m_inactive_scroll);
-			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			m_scroll.disactivate();
 		}
 		void setAppearance_action() override
 		{
-			if (isActive()) { m_scroll.setAppearance(m_active_scroll); }
-			else { m_scroll.setAppearance(m_inactive_scroll); }
-			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			fill();
 		}
 
 	};
