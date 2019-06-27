@@ -114,23 +114,6 @@ namespace tui
 			m_prepared_text = prepared;
 		}
 
-	public:
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		int keyPageUp = KEYBOARD::KEY::PGUP;
-		int keyPageDown = KEYBOARD::KEY::PGDN;
-
-		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
-		{
-			setSize(size);
-			m_text.setSize({ {-1,0}, {100,100} });
-
-			m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
-			setText(txt);
-
-			setAppearance_action();
-		}
-
 		void adjustSizes()
 		{
 			m_text.setSize({ {0,0}, {100,100} });
@@ -146,6 +129,42 @@ namespace tui
 				}
 			}
 			m_scroll.setContentLength(getNumberOfLines());
+		}
+
+		void immobilizeScroll(bool immobilize)
+		{
+			switch (immobilize)
+			{
+			case true:
+				m_scroll.keyDown = -1;
+				m_scroll.keyUp = -1;
+				m_scroll.keyPageDown = -1;
+				m_scroll.keyPageUp = -1;
+				break;
+			case false:
+				m_scroll.keyDown = keyDown;
+				m_scroll.keyUp = keyUp;
+				m_scroll.keyPageDown = keyPageDown;
+				m_scroll.keyPageUp = keyPageUp;
+				break;
+			}
+		}
+
+	public:
+		int keyUp = KEYBOARD::KEY::UP;
+		int keyDown = KEYBOARD::KEY::DOWN;
+		int keyPageUp = KEYBOARD::KEY::PGUP;
+		int keyPageDown = KEYBOARD::KEY::PGDN;
+
+		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
+		{
+			setSize(size);
+			m_text.setSize({ {-1,0}, {100,100} });
+
+			m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
+			setText(txt);
+
+			setAppearance_action();
 		}
 
 		void setText(console_string txt)
@@ -253,47 +272,29 @@ namespace tui
 
 		void update()
 		{
-			m_scroll.keyDown = keyDown;
-			m_scroll.keyUp = keyUp;
-			m_scroll.keyPageDown = keyPageDown;
-			m_scroll.keyPageUp = keyPageUp;
+			immobilizeScroll(false);
 
 			m_scroll.update();
 			
 			//immobilize scroll beacuse draw() function may be called outside this function
-			m_scroll.keyDown = -1;
-			m_scroll.keyUp = -1;
-			m_scroll.keyPageDown = -1;
-			m_scroll.keyPageUp = -1;
+			immobilizeScroll(true);
 
 			fill();
 		}
 
 
-		void draw_action()
+		void draw_action() override { update(); }
+		void resize_action() override
 		{
-			update();
-		}
-		void resize_action()
-		{
-			//m_scroll.setVisibleContentLength(getSize().y);
 			updateSurfaceSize(m_scroll);
 			adjustSizes();
 			fill();
 		}
 
-		void activation_action()
-		{
-			m_scroll.activate();
-		}
-		void disactivation_action()
-		{
-			m_scroll.disactivate();
-		}
-		void setAppearance_action() override
-		{
-			fill();
-		}
+		void activation_action() override { m_scroll.activate(); }
+		void disactivation_action() override { m_scroll.disactivate(); }
+
+		void setAppearance_action() override { fill(); }
 
 	};
 }
