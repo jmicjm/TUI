@@ -19,24 +19,16 @@ namespace tui
 	struct vec2i
 	{
 		int x, y;
-		vec2i() {}
-		vec2i(int X, int Y)
-		{
-			x = X;
-			y = Y;
-		}
+		vec2i() : vec2i(0,0) {}
+		vec2i(int X, int Y) : x(X), y(Y) {}
 
 		bool operator==(vec2i r)
 		{
-			if (x == r.x && y == r.y)
-			{ return true; }
-			else { return false; }
+			return (x == r.x && y == r.y);
 		}
 		bool operator!=(vec2i r)
 		{
-			if (x != r.x || y != r.y)
-			{ return true; }
-			else { return false; }
+			return (x != r.x || y != r.y);
 		}
 	};
 
