@@ -6,3 +6,4 @@
 #include "tui_box.h"
 #include "tui_scroll.h"
 #include "tui_text.h"
+#include "tui_bar.h"
