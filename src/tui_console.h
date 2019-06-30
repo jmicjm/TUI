@@ -183,10 +183,11 @@ namespace tui
 		public:	
 			surface()
 			{
-				//m_symbols.resize(1);
-				//m_symbols[0].resize(1);
-
 				setSize({ {1,1},{0,0} });
+			}
+			surface(surface_size size)
+			{
+				setSize(size);
 			}
 
 			bool isResized()
