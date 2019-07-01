@@ -17,10 +17,22 @@ namespace tui
 		void setColor(color Color) override
 		{
 			full.setColor(Color);
-			full.setColor(Color);
+			empty.setColor(Color);
 			setAppearance_action();
 		}
 
+		void setFullSymbol(symbol Full)
+		{
+			full = Full;
+			setAppearance_action();
+		}
+		symbol getFullSymbol() { return full; }
+		void setEmptySymbol(symbol Empty)
+		{
+			empty = Empty;
+			setAppearance_action();
+		}
+		symbol getEmptySymbol() { return empty; }
 	};
 
 	template <int direction>
@@ -37,7 +49,7 @@ namespace tui
 			float value_len = abs(m_min - m_value);
 
 			float perc = value_len / bar_len;
-			int f_l = perc * surface1D<direction>::getSize();
+			int f_l = round(perc * surface1D<direction>::getSize());
 
 			surface::makeTransparent();
 
