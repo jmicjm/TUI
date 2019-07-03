@@ -181,10 +181,7 @@ namespace tui
 		protected:
 			virtual void resize_action() {}
 		public:	
-			surface()
-			{
-				setSize({ {1,1},{0,0} });
-			}
+			surface() : surface({ {1,1},{0,0} }) {}
 			surface(surface_size size)
 			{
 				setSize(size);
@@ -269,32 +266,25 @@ namespace tui
 							&& y_origin + j >= 0
 							&& obj.getSymbolAt(vec2i(i, j)).getFirstChar() != 0)
 						{
-							m_symbols[x_origin + i][y_origin + j] = obj.getSymbolAt(vec2i(i, j));
+							setSymbolAt(obj.getSymbolAt({ i, j }), { x_origin + i, y_origin + j });
 						}
 					}
 				}
 			}
 
-			void makeTransparent()
+			void fill(symbol Symbol)
 			{
 				for (int i = 0; i < getSize().x; i++)
 				{
 					for (int j = 0; j < getSize().y; j++)
 					{
-						m_symbols[i][j] = (char32_t)0;
+						setSymbolAt(Symbol, { i,j });
 					}
 				}
 			}
-			void makeBlank()
-			{
-				for (int i = 0; i < getSize().x; i++)
-				{
-					for (int j = 0; j < getSize().y; j++)
-					{
-						m_symbols[i][j] = BLANKSYMBOL;
-					}
-				}
-			}
+
+			void makeTransparent() { fill((char32_t)0); }
+			void makeBlank() { fill(BLANKSYMBOL); }
 
 			position getPosition() { return m_position; }
 			vec2i getSize() 
@@ -535,11 +525,11 @@ namespace tui
 
 		void display()
 		{
-			m_fps_control.sleepUntilEnd();
+			//m_fps_control.sleepUntilEnd();
 
 			KEYBOARD::buffer.clear();
 
-			if (!changed()) { return; }
+			//if (!changed()) { return; }
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			std::vector<CHAR_INFO> temp;
@@ -577,6 +567,8 @@ namespace tui
 			WriteConsoleOutputW(m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, srect);
 
 			delete srect;	
+
+			SetConsoleCursorPosition(m_console_handle, { 0,0 });
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
 			
