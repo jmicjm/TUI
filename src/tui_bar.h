@@ -60,19 +60,25 @@ namespace tui
 			}
 		}
 	public:
-		bar(surface1D_size size, float min, float max, float value) : m_min(min), m_max(max), m_value(value)
+		bar(surface1D_size size, float min, float max, float value) : m_min(0), m_max(0), m_value(0)
 		{
+			setMinValue(min);
+			setMaxValue(max);
+			setValue(value);
+
 			surface1D<direction>::setSize(size);
 		}
 
 		void setMaxValue(float max)
 		{
+			if (max < m_min) { max = m_min; }
 			m_max = max;
 			fill();
 		}
 		float getMaxValue() { return m_max; }
 		void setMinValue(float min)
 		{
+			if (min > m_max) { min = m_max; }
 			m_min = min;
 			fill();
 		}
