@@ -542,49 +542,41 @@ namespace tui
 			if (!changed()) { return; }
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-			CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-			GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
-			vec2i console_size(buffer_info.dwSize.X, buffer_info.dwSize.Y);
-
-			std::vector<WORD> temp_attr;
-			std::vector<wchar_t> temp_char;
+			std::vector<CHAR_INFO> temp;
 
 			for (int i = 0; i < getSize().y; i++)
 			{
-				for (int j = 0; j < console_size.x; j++)
+				for (int j = 0; j < getSize().x; j++)
 				{
-					if (j < getSize().x)
+					CHAR_INFO ch_info;
+
+					auto isControl = [](char32_t ch)
 					{
-						temp_attr.push_back(m_buffer.getSymbolAt(vec2i(j, i)).getColor().getRGBIColor());
+						return GetGraphemeType(ch) == GRAPHEME_TYPE::CONTROL
+							|| GetGraphemeType(ch) == GRAPHEME_TYPE::CR
+							|| GetGraphemeType(ch) == GRAPHEME_TYPE::LF;
+					};
 
-						//truncate utf32 to utf16 range (Windows console doesnt support anything above ucs2)
-						wchar_t wstr;
-
-						if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() >= 32)
-						{
-							wstr = m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
-						}
-						else { wstr = '?'; }
-
-						temp_char.push_back(wstr);
-					}
-					else
+					if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !isControl(m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
 					{
-						temp_attr.push_back(color().getRGBIColor());
-						temp_char.push_back(wchar_t());
+						ch_info.Char.UnicodeChar = m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
 					}
+					else { ch_info.Char.UnicodeChar = '?'; }
+
+					ch_info.Attributes = m_buffer.getSymbolAt({ j,i }).getColor().getRGBIColor();
+
+					temp.push_back(ch_info);
 				}
 			}
-			COORD coord = { 0, 0 };
-			DWORD useless = 0;
-			SetConsoleCursorPosition(m_console_handle, coord); // w/o 10x slower
 
-			WriteConsoleOutputAttribute(m_console_handle, temp_attr.data(), console_size.x*getSize().y, coord, &useless);
-			WriteConsoleOutputCharacterW(m_console_handle, temp_char.data(), console_size.x*getSize().y, coord, &useless);
+			SMALL_RECT* srect = new SMALL_RECT;
+			*srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
 
+			SetConsoleCursorPosition(m_console_handle, { 0,0 });//without this output may be misplaced after console resize if "wrap text on resize" was selected in console options
 
-		
-			SetConsoleCursorPosition(m_console_handle, coord);
+			WriteConsoleOutputW(m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, srect);
+
+			delete srect;	
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
 			
