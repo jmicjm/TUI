@@ -47,8 +47,15 @@ namespace tui
 				}
 			}
 		}
-	public:
 		void resize_action() override { fill(); }
 		void setAppearance_action() override { fill(); }
+	public:
+		rectangle() : rectangle({{ 1,1 }}) {}
+		rectangle(surface_size size) : rectangle(size, rectangle_appearance()) {}
+		rectangle(surface_size size, rectangle_appearance appearance)
+		{
+			setSize(size);
+			setAppearance(appearance);
+		}
 	};
 }
