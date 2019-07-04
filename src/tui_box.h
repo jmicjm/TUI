@@ -95,14 +95,15 @@ namespace tui
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
 		}
-	public:
-		box(surface_size size)
-		{
-			setSize(size);
-			fill();
-		}
-
 		void resize_action() override { fill(); }
 		void setAppearance_action() override { fill(); }
+	public:
+		box() : box({ {3,3} }) {}
+		box(surface_size size) : box(size, box_appearance()) {}
+		box(surface_size size, box_appearance appearance)
+		{
+			setSize(size);
+			setAppearance(appearance);
+		}
 	};
 }
