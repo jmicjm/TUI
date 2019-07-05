@@ -23,6 +23,8 @@ namespace tui
 
 	bool IsBreakBetween(char32_t l, char32_t r);
 
+	bool isControl(char32_t ch);
+
 
 
 	struct color
@@ -436,5 +438,14 @@ namespace tui
 			return true;
 		}
 		else { return false; }
+	}
+
+	bool isControl(char32_t ch)
+	{
+		int g_type = GetGraphemeType(ch);
+
+		return g_type == GRAPHEME_TYPE::CONTROL
+			|| g_type == GRAPHEME_TYPE::CR
+			|| g_type == GRAPHEME_TYPE::LF;
 	}
 }

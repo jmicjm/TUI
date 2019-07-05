@@ -55,12 +55,6 @@ namespace tui
 		{
 			console_string prepared;
 
-			auto isControl = [](char32_t ch)
-			{
-				return GetGraphemeType(ch) == GRAPHEME_TYPE::CONTROL
-					|| GetGraphemeType(ch) == GRAPHEME_TYPE::CR
-					|| GetGraphemeType(ch) == GRAPHEME_TYPE::LF;
-			};
 			auto usePrepared = [&]()
 			{
 				return m_use_prepared_text && getSize().x > 2;

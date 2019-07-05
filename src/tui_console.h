@@ -540,13 +540,6 @@ namespace tui
 				{
 					CHAR_INFO ch_info;
 
-					auto isControl = [](char32_t ch)
-					{
-						return GetGraphemeType(ch) == GRAPHEME_TYPE::CONTROL
-							|| GetGraphemeType(ch) == GRAPHEME_TYPE::CR
-							|| GetGraphemeType(ch) == GRAPHEME_TYPE::LF;
-					};
-
 					if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !isControl(m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
 					{
 						ch_info.Char.UnicodeChar = m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
