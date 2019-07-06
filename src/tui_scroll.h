@@ -112,6 +112,42 @@ namespace tui
 				surface::makeTransparent();
 			}
 		}
+
+		void adjustHandlePositionRespectLength()
+		{
+			if (!isNeeded())
+			{
+				m_handle_position = 0;
+			}
+			else if (m_handle_position > m_content_length - visibleContentLength())
+			{
+				m_handle_position = m_content_length - visibleContentLength();
+			}
+		}
+
+		void adjustHandlePositionRespectBounds()
+		{
+			adjustHandlePositionRespectLength();
+
+			if (m_handle_position < 0) { m_handle_position = 0; }
+		}
+
+		void draw_action() override
+		{
+			update();
+			fill();
+		}
+		void resize_action() override
+		{
+			adjustHandlePositionRespectLength();
+			fill();
+		}
+
+		void setAppearance_action() override { fill(); }
+
+		void activation_action() override { fill(); }
+		void disactivation_action() override { fill(); }
+
 	public:
 		int keyUp = KEYBOARD::KEY::UP;
 		int keyDown = KEYBOARD::KEY::DOWN;
@@ -140,25 +176,6 @@ namespace tui
 		{
 			return m_content_length > visibleContentLength();
 		};
-
-		void adjustHandlePositionRespectLength()
-		{
-			if (!isNeeded())
-			{
-				m_handle_position = 0;
-			}
-			else if (m_handle_position > m_content_length - visibleContentLength())
-			{
-				m_handle_position = m_content_length - visibleContentLength();
-			}
-		}
-
-		void adjustHandlePositionRespectBounds()
-		{
-			adjustHandlePositionRespectLength();
-
-			if (m_handle_position < 0) { m_handle_position = 0; }
-		}
 
 		void setContentLength(int length)
 		{
@@ -204,21 +221,6 @@ namespace tui
 				}
 			}
 		}
-
-		void draw_action() override 
-		{
-			update();
-			fill(); 
-		}
-		void resize_action() override
-		{
-			adjustHandlePositionRespectLength();
-			fill();
-		}
-		void setAppearance_action() override { fill(); }
-
-		void activation_action() override { fill(); }
-		void disactivation_action() override { fill(); }
 
 	};
 }
