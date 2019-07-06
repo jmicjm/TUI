@@ -149,7 +149,9 @@ namespace tui
 		int keyDown = KEYBOARD::KEY::DOWN;
 		int keyPageUp = KEYBOARD::KEY::PGUP;
 		int keyPageDown = KEYBOARD::KEY::PGDN;
-
+		
+		text() : text({ {1,1} }) {}
+		text(surface_size size) : text(size, U"") {}
 		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
 		{
 			setSize(size);
