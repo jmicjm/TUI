@@ -158,18 +158,16 @@ namespace tui
 		}
 	};
 
-	struct console_string
+	struct console_string : std::vector<symbol>
 	{
 	private:
-		std::vector<symbol> m_console_string;
 		color m_selected_color;
-
 	public:
 		console_string() {}
 		console_string(symbol Symbol)
 		{
-			m_console_string.resize(1);
-			m_console_string[0] = Symbol;
+			this->resize(1);
+			(*this)[0] = Symbol;
 		}
 		console_string(const char* str) : console_string(Utf8ToUtf32(str)) {}
 		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
@@ -196,26 +194,8 @@ namespace tui
 					i++;
 				}
 			}
-			m_console_string = temp_vec;
-		}
 
-		void appendString(console_string string)
-		{
-			for (int i = 0; i < string.size(); i++)
-			{
-				m_console_string.push_back(string[i]);
-			}
-		}
-		void assignString(console_string string)
-		{
-			m_console_string.resize(0);
-
-			appendString(string);
-		}
-
-		symbol& operator[] (int i)
-		{
-			return m_console_string[i];
+			(*(std::vector<symbol>*)this) = temp_vec;
 		}
 
 		void operator<< (color color)
@@ -227,43 +207,33 @@ namespace tui
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
-				m_console_string.push_back(symbol(string[i].getSymbol(), m_selected_color));
+				this->push_back(symbol(string[i].getSymbol(), m_selected_color));
 			}
 		}
 
-		void operator= (console_string string)
+		void operator+=(console_string str)
 		{
-			assignString(string);
+			for (int i = 0; i < str.size(); i++)
+			{
+				this->push_back(str[i]);
+			}
 		}
-
-		void operator+=(console_string string)
-		{
-			appendString(string);
-		}
-
-		void push_back(symbol Symbol)
-		{
-			m_console_string.push_back(Symbol);
-		}
-
-		int size() { return m_console_string.size(); }
 
 		void invert()
 		{
-			for (int i = 0; i < m_console_string.size(); i++)
+			for (int i = 0; i < size(); i++)
 			{
-				m_console_string[i].invert();
+				(*this)[i].invert();
 			}
 		}
 
 		void setColor(color Color)
 		{
-			for (int i = 0; i < m_console_string.size(); i++)
+			for (int i = 0; i < size(); i++)
 			{
-				m_console_string[i].setColor(Color);
+				this->setColor(Color);
 			}
 		}
-
 	};
 
 

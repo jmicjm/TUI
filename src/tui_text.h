@@ -239,13 +239,13 @@ namespace tui
 			{
 				m_use_control_characters = false;//temporarily disable control characters
 
-				setSize({ {m_unprepared_text.size(), 1} });
+				setSize({ {(int)m_unprepared_text.size(), 1} });
 				adjustSizes();
 				/*
 				with control characters disabled one line prepared text could be shorter than unprepared text
 				e.g. space at start of line will be removed and all control characters will be removed
 				*/
-				setSize({ {m_prepared_text.size(), 1} });
+				setSize({ {(int)m_prepared_text.size(), 1} });
 
 				m_use_control_characters = true;
 			}
