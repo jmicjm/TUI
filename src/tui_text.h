@@ -227,13 +227,17 @@ namespace tui
 		}
 		bool isUsingControlCharacters() { return m_use_control_characters; }
 
-		void displayScroll(bool display)
+		void useScroll(bool display)
 		{
 			m_display_scroll = display;
 			adjustSizes();
 			fill();
 		}
-		bool isDisplayingScroll() { return m_display_scroll; }
+		//is displaying scroll if needed
+		bool isUsingScroll() { return m_display_scroll; }
+
+		//is displaying scroll currently
+		bool isDisplayingScroll() { return m_display_scroll && m_scroll.isNeeded(); }
 
 		void resizeToText(int max_width)
 		{
