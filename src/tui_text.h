@@ -27,6 +27,8 @@ namespace tui
 		console_string m_unprepared_text;
 		console_string m_prepared_text;
 
+		std::vector<vec2i> m_symbolPos;
+
 		bool m_use_prepared_text = true;
 		bool m_use_dense_punctuation = false;
 		bool m_use_control_characters = true;
@@ -55,6 +57,8 @@ namespace tui
 		{
 			console_string prepared;
 
+			m_symbolPos.resize(m_unprepared_text.size());
+
 			auto usePrepared = [&]()
 			{
 				return m_use_prepared_text && getSize().x > 2;
@@ -64,6 +68,8 @@ namespace tui
 			for (int i = 0; i < m_unprepared_text.size(); i++)
 			{
 				int pos_in_line = pos % m_text.getSize().x;
+
+				m_symbolPos[i] = { pos_in_line, (int)floor((float)pos / m_text.getSize().x) };
 
 				if (isControl(m_unprepared_text[i].getFirstChar()))
 				{
@@ -161,6 +167,11 @@ namespace tui
 			setText(txt);
 
 			setAppearance_action();
+		}
+
+		vec2i getSymbolPos(int i)
+		{
+			return m_symbolPos[i];
 		}
 
 		void setText(console_string txt)
