@@ -7,3 +7,4 @@
 #include "tui_scroll.h"
 #include "tui_text.h"
 #include "tui_bar.h"
+#include "tui_input_text.h"
