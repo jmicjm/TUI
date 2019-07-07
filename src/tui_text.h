@@ -285,12 +285,14 @@ namespace tui
 		{
 			immobilizeScroll(false);
 
+			int pos = m_scroll.getHandlePosition();
+
 			m_scroll.update();
 			
 			//immobilize scroll beacuse draw() function may be called outside this function
 			immobilizeScroll(true);
 
-			fill();
+			if (pos != m_scroll.getHandlePosition()) { fill(); }
 		}
 
 
