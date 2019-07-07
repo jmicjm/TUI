@@ -327,6 +327,7 @@ namespace tui
 					{
 						buffer[1][ENTER]++;
 					}
+					if (pressed == 10 || pressed == 13) { string_buffer[1] += '\n'; }
 
 					if (pressed != 0 && pressed != 224)
 					{
@@ -367,6 +368,7 @@ namespace tui
 					{
 						buffer[1][ENTER]++;
 					}
+					if (pressed == 10 || pressed == 13) { string_buffer[1] += '\n'; }
 
 					if (pressed != 27)
 					{
