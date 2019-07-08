@@ -42,7 +42,30 @@ namespace tui
 		{
 			if (m_text.getText().size() > 0)
 			{
-				m_cursor_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+				auto setPos = [&]()
+				{
+					m_cursor_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+					m_cursor_pos.y -= m_text.getLine();
+				};
+
+				setPos();
+
+				if (m_cursor_pos.y >= getSize().y)
+				{
+					int c = m_cursor_pos.y - (getSize().y-1);
+
+					m_text.goToLine(m_text.getLine()+c);
+					setPos();
+				}
+				else if (m_cursor_pos.y < 0)
+				{
+					int c = m_cursor_pos.y * -1;
+
+					m_text.goToLine(m_text.getLine()-c);
+					setPos();
+				}
+
 			}
 			else { m_cursor_pos = { 0,0 }; }
 		}
