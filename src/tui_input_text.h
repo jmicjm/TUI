@@ -123,7 +123,7 @@ namespace tui
 
 				for (int l_pos = m_cursor_pos_in_txt; l_pos <= m_str.size(); ++l_pos)
 				{
-					if (m_text.getSymbolPos(l_pos).y == c_pos.y + 1 && m_text.getSymbolPos(l_pos).x == c_pos.x)
+					if (m_text.getSymbolPos(l_pos).y == c_pos.y + 1 && (m_text.getSymbolPos(l_pos).x == c_pos.x || l_pos == m_str.size()))
 					{
 						m_cursor_pos_in_txt = l_pos;
 						break;
