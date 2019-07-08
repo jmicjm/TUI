@@ -193,6 +193,9 @@ namespace tui
 			fill();
 		}
 
+		//return current line number
+		int getLine() { return m_scroll.getHandlePosition(); }
+
 		void lineUp()
 		{
 			m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
