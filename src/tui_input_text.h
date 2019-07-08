@@ -96,6 +96,49 @@ namespace tui
 			updateCursorPos();
 		}
 
+		void moveCursorUp()
+		{
+			if (m_str.size() > 0)
+			{
+				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+				for (int l_pos = m_cursor_pos_in_txt; l_pos >= 0; --l_pos)
+				{
+					if (m_text.getSymbolPos(l_pos).y == c_pos.y - 1 && m_text.getSymbolPos(l_pos).x <= c_pos.x)
+					{
+						m_cursor_pos_in_txt = l_pos;
+						break;
+					}
+				}
+
+				updateCursorPos();
+			}
+		}
+
+		void moveCursorDown()
+		{
+			if (m_str.size() > 0)
+			{
+				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+				for (int l_pos = m_cursor_pos_in_txt; l_pos <= m_str.size(); ++l_pos)
+				{
+					if (m_text.getSymbolPos(l_pos).y == c_pos.y + 1 && m_text.getSymbolPos(l_pos).x == c_pos.x)
+					{
+						m_cursor_pos_in_txt = l_pos;
+						break;
+					}
+					else if (m_text.getSymbolPos(l_pos).y > c_pos.y + 1) 
+					{
+						m_cursor_pos_in_txt = l_pos - 1;
+						break; 
+					}
+				}
+
+				updateCursorPos();
+			}
+		}
+
 		int getTextWidth()
 		{
 			int w = m_text.getSize().x;
@@ -133,6 +176,7 @@ namespace tui
 			m_text.setSize({ {0,0},{100,100} });
 			m_text.useDensePunctuation(false);
 			m_text.usePreparedText(false);
+
 		}
 
 		void update()
@@ -170,7 +214,16 @@ namespace tui
 				redraw_needed = true;
 				moveCursorRight(false); 
 			}
-
+			if (KEYBOARD::isKeyPressed(keyUp))
+			{
+				redraw_needed = true;
+				moveCursorUp();
+			}
+			if (KEYBOARD::isKeyPressed(keyDown))
+			{
+				redraw_needed = true;
+				moveCursorDown();
+			}
 
 			if (update_text) { updateText(); }
 		
