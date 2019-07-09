@@ -38,13 +38,13 @@ namespace tui
 		{
 			m_text.makeTransparent();
 
-			for (int i = 0; i < m_text.getSize().x; i++)
+			for (int y = 0; y < m_text.getSize().y; y++)
 			{
-				for (int j = 0; j < m_text.getSize().y; j++)
+				for (int x = 0; x < m_text.getSize().x; x++)
 				{
-					if (m_text.getSize().x * m_scroll.getHandlePosition() + j * m_text.getSize().x + i < m_prepared_text.size())
+					if (m_text.getSize().x * m_scroll.getHandlePosition() + y * m_text.getSize().x + x < m_prepared_text.size())
 					{
-						m_text[i][j] = m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + j * m_text.getSize().x + i];
+						m_text[x][y] = m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + y * m_text.getSize().x + x];
 					}
 				}
 			}

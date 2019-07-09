@@ -39,11 +39,11 @@ namespace tui
 	private:
 		void fill()
 		{
-			for (int i = 0; i < getSize().x; i++)
+			for (int y = 0; y < getSize().y; y++)
 			{
-				for (int j = 0; j < getSize().y; j++)
+				for (int x = 0; x < getSize().x; x++)
 				{
-					setSymbolAt(m_filling, vec2i(i, j));
+					setSymbolAt(m_filling, vec2i(x,y));
 				}
 			}
 		}

@@ -161,10 +161,10 @@ namespace tui
 						new_size.y = 1;
 					}
 					
-						m_symbols.resize(new_size.x);
+						m_symbols.resize(new_size.y);
 						for (int i = 0; i < m_symbols.size(); i++)
 						{
-							m_symbols[i].resize(new_size.y);
+							m_symbols[i].resize(new_size.x);
 						}
 					
 					makeTransparent();
@@ -196,26 +196,28 @@ namespace tui
 			{
 				friend class surface;
 			private:
-				std::vector<symbol>* temp;
+				int x;
+				std::vector<std::vector<symbol>>* temp;
 			public:
-				symbol& operator[](int i)
+				symbol& operator[](int y)
 				{
-					return (*temp)[i];
+					return (*temp)[y][x];
 				}
 			};
 
-			surface_proxy operator[](int i)
+			surface_proxy operator[](int x)
 			{
 				surface_proxy proxy;
-				proxy.temp = &m_symbols[i];
+				proxy.temp = &m_symbols;
+				proxy.x = x;
 
 				return proxy;
 			}
 
 			virtual void draw_action() {}
 
-			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.x][position.y] = character; }
-			symbol getSymbolAt(vec2i position) { return m_symbols[position.x][position.y]; }
+			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y][position.x] = character; }
+			symbol getSymbolAt(vec2i position) { return m_symbols[position.y][position.x]; }
 			void setPosition(position pos) { m_position = pos; }
 
 			void move(vec2i offset)
@@ -256,17 +258,17 @@ namespace tui
 				y_origin += obj.getPosition().getOffset().y;
 				y_origin += obj.getPosition().getPercentageOffset().y * getSize().y /100.f;
 
-				for (int i = 0; i < obj.getSize().x; i++)
+				for (int y = 0; y < obj.getSize().y; y++)
 				{
-					for (int j = 0; j < obj.getSize().y; j++)
+					for (int x = 0; x < obj.getSize().x; x++)
 					{
-						if (x_origin + i < getSize().x
-							&& y_origin + j < getSize().y
-							&& x_origin + i >= 0
-							&& y_origin + j >= 0
-							&& obj.getSymbolAt(vec2i(i, j)).getFirstChar() != 0)
+						if (x_origin + x < getSize().x
+							&& y_origin + y < getSize().y
+							&& x_origin + x >= 0
+							&& y_origin + y >= 0
+							&& obj.getSymbolAt(vec2i(x, y)).getFirstChar() != 0)
 						{
-							setSymbolAt(obj.getSymbolAt({ i, j }), { x_origin + i, y_origin + j });
+							setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
 						}
 					}
 				}
@@ -274,11 +276,11 @@ namespace tui
 
 			void fill(symbol Symbol)
 			{
-				for (int i = 0; i < getSize().x; i++)
+				for (int y = 0; y < getSize().y; y++)
 				{
-					for (int j = 0; j < getSize().y; j++)
+					for (int x = 0; x < getSize().x; x++)
 					{
-						setSymbolAt(Symbol, { i,j });
+						setSymbolAt(Symbol, { x,y });
 					}
 				}
 			}
@@ -291,7 +293,7 @@ namespace tui
 			{
 				if (m_symbols.size() > 0)
 				{
-					return vec2i(m_symbols.size(), m_symbols[0].size());
+					return vec2i(m_symbols[0].size(), m_symbols.size());
 				}
 				else
 				{
@@ -435,11 +437,11 @@ namespace tui
 				m_last_buffer.setSize(m_buffer.getSize());
 			}
 
-			for (int i = 0; i < m_buffer.getSize().x; i++)
+			for (int y = 0; y < m_buffer.getSize().y; y++)
 			{
-				for (int j = 0; j < m_buffer.getSize().y; j++)
+				for (int x = 0; x < m_buffer.getSize().x; x++)
 				{
-					m_last_buffer.setSymbolAt(m_buffer.getSymbolAt({ i,j }), { i,j });
+					m_last_buffer.setSymbolAt(m_buffer.getSymbolAt({ x,y }), { x,y });
 				}
 			}
 		}
@@ -450,11 +452,11 @@ namespace tui
 				return true;
 			}
 
-			for (int i = 0; i < m_buffer.getSize().x; i++)
+			for (int y = 0; y < m_buffer.getSize().y; y++)
 			{
-				for (int j = 0; j < m_buffer.getSize().y; j++)
+				for (int x = 0; x < m_buffer.getSize().x; x++)
 				{
-					if (m_buffer.getSymbolAt({ i,j }) != m_last_buffer.getSymbolAt({ i,j }))
+					if (m_buffer.getSymbolAt({ x,y }) != m_last_buffer.getSymbolAt({ x,y }))
 					{
 						return true;
 					}
@@ -525,11 +527,11 @@ namespace tui
 
 		void display()
 		{
-			//m_fps_control.sleepUntilEnd();
+			m_fps_control.sleepUntilEnd();
 
 			KEYBOARD::buffer.clear();
 
-			//if (!changed()) { return; }
+			if (!changed()) { return; }
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			std::vector<CHAR_INFO> temp;
