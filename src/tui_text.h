@@ -257,6 +257,7 @@ namespace tui
 		{
 			if (max_width <= 0)
 			{
+				bool use_c_char = m_use_control_characters;
 				m_use_control_characters = false;//temporarily disable control characters
 
 				setSize({ {(int)m_unprepared_text.size(), 1} });
@@ -267,10 +268,11 @@ namespace tui
 				*/
 				setSize({ {(int)m_prepared_text.size(), 1} });
 
-				m_use_control_characters = true;
+				m_use_control_characters = use_c_char;
 			}
 			else
 			{
+				bool display_scroll = m_display_scroll;
 				m_display_scroll = false;
 
 				setSize({ {max_width, 1} });
@@ -279,7 +281,7 @@ namespace tui
 				setSize({ {max_width, (int)ceil(1.f * m_prepared_text.size() / max_width)} });
 				fill();
 
-				m_display_scroll = true;
+				m_display_scroll = display_scroll;
 			}
 		}
 		void resizeToText() { resizeToText(0); }
