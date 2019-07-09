@@ -56,6 +56,13 @@ namespace tui
 			setAppearance_action();
 		}
 
+		void setAppearance(scroll_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		scroll_appearance getAppearance() { return *this; }
+
 		void setActiveAppearance(scroll_appearance_a active)
 		{
 			m_active_appearance = active;

@@ -11,11 +11,26 @@ namespace tui
 	protected:
 		scroll_appearance text_scroll_appearance;
 	public:
+		text_appearance() : text_appearance(scroll_appearance()) {}
+		text_appearance(scroll_appearance scroll) : text_scroll_appearance(scroll) {}
 		void setColor(color Color) override
 		{
 			text_scroll_appearance.setColor(Color);
 			setAppearance_action();
 		}
+		void setAppearance(text_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		text_appearance getAppearance() { return *this; }
+
+		void setScrollAppearance(scroll_appearance scroll)
+		{
+			text_scroll_appearance = scroll;
+			setAppearance_action();
+		}
+		scroll_appearance getScrollAppearance() { return text_scroll_appearance; }
 	};
 
 	struct text : surface, text_appearance, active_element
@@ -312,7 +327,11 @@ namespace tui
 		void activation_action() override { m_scroll.activate(); }
 		void disactivation_action() override { m_scroll.disactivate(); }
 
-		void setAppearance_action() override { fill(); }
+		void setAppearance_action() override 
+		{ 
+			m_scroll.setAppearance(text_scroll_appearance);
+			fill();
+		}
 
 	};
 }

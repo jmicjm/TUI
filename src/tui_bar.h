@@ -21,6 +21,13 @@ namespace tui
 			setAppearance_action();
 		}
 
+		void setAppearance(bar_appearance appearance)
+		{
+			*this = appearance;
+			setAppearance_action();
+		}
+		bar_appearance getAppearance() { return *this; }
+
 		void setFullSymbol(symbol Full)
 		{
 			full = Full;
