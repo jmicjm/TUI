@@ -102,7 +102,7 @@ namespace tui
 
 		void moveCursorLeft(unsigned int n)
 		{
-			if (m_cursor_pos_in_txt - n >= 0) 
+			if (m_cursor_pos_in_txt - (int)n >= 0) //without casting "n" to signed "m_cursor_pos_in_txt" is implicitly casted to unsigned and condition is always true 
 			{ 
 				m_cursor_pos_in_txt -= n; 
 				m_redraw_needed = true;
