@@ -115,50 +115,70 @@ namespace tui
 		}
 		void moveCursorLeft() { moveCursorLeft(1); }
 
-		void moveCursorUp()
+		void moveCursorUp(unsigned int n)
 		{
 			if (m_str.size() > 0)
 			{
 				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
 
-				for (int l_pos = m_cursor_pos_in_txt-1; l_pos >= 0; --l_pos)
+				if (c_pos.y > 0)
 				{
-					if (m_text.getSymbolPos(l_pos).y == c_pos.y - 1 && m_text.getSymbolPos(l_pos).x <= c_pos.x)
+					if (c_pos.y < n)
 					{
-						m_cursor_pos_in_txt = l_pos;
-						m_redraw_needed = true;
-						break;
+						n = c_pos.y;
+					}
+
+					for (int l_pos = m_cursor_pos_in_txt - 1; l_pos >= 0; --l_pos)
+					{
+						if (m_text.getSymbolPos(l_pos).y == c_pos.y - n && m_text.getSymbolPos(l_pos).x <= c_pos.x)
+						{
+							m_cursor_pos_in_txt = l_pos;
+							m_redraw_needed = true;
+							break;
+						}
 					}
 				}
 			}
 		}
+		void moveCursorUp() { moveCursorUp(1); }
 
-		void moveCursorDown()
+		void moveCursorDown(unsigned int n)
 		{
 			if (m_str.size() > 0)
 			{
 				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
 
-				for (int l_pos = m_cursor_pos_in_txt+1; l_pos <= m_str.size(); ++l_pos)
+				if (c_pos.y < m_text.getNumberOfLines()-1)
 				{
-					if (m_text.getSymbolPos(l_pos).y == c_pos.y + 1 && (m_text.getSymbolPos(l_pos).x == c_pos.x || l_pos == m_str.size()))
+					if (c_pos.y >= m_text.getNumberOfLines() - n)
 					{
-						m_cursor_pos_in_txt = l_pos;
-						m_redraw_needed = true;
-						break;
+						n = m_text.getNumberOfLines() - c_pos.y - 1;
 					}
-					else if (m_text.getSymbolPos(l_pos).y > c_pos.y + 1) 
+
+					for (int l_pos = m_cursor_pos_in_txt + 1; l_pos <= m_str.size(); ++l_pos)
 					{
-						m_cursor_pos_in_txt = l_pos - 1;
-						m_redraw_needed = true;
-						break; 
+						if (m_text.getSymbolPos(l_pos).y == c_pos.y + n && (m_text.getSymbolPos(l_pos).x == c_pos.x || l_pos == m_str.size()))
+						{
+							m_cursor_pos_in_txt = l_pos;
+							m_redraw_needed = true;
+							break;
+						}
+						else if (m_text.getSymbolPos(l_pos).y > c_pos.y + n)
+						{
+							m_cursor_pos_in_txt = l_pos - 1;
+							m_redraw_needed = true;
+							break;
+						}
 					}
 				}
 			}
 		}
+		void moveCursorDown() { moveCursorDown(1); }
 
 		void fill()
 		{
+			updateCursorPos();
+
 			if (m_redraw_needed)
 			{
 				makeTransparent();
@@ -171,7 +191,7 @@ namespace tui
 		
 			if (blink)
 			{
-				updateCursorPos();
+				
 				setSymbolAt(m_cursor, m_cursor_pos);
 			}
 		}
