@@ -235,10 +235,10 @@ namespace tui
 				updateText();	
 			}
 
-			if (KEYBOARD::isKeyPressed(keyLeft)) { moveCursorLeft(); }
-			if (KEYBOARD::isKeyPressed(keyRight)) { moveCursorRight(); }
-			if (KEYBOARD::isKeyPressed(keyUp)) { moveCursorUp(); }
-			if (KEYBOARD::isKeyPressed(keyDown)) { moveCursorDown(); }
+			if (KEYBOARD::isKeyPressed(keyLeft)) { moveCursorLeft(KEYBOARD::isKeyPressed(keyLeft)); }
+			if (KEYBOARD::isKeyPressed(keyRight)) { moveCursorRight(KEYBOARD::isKeyPressed(keyRight)); }
+			if (KEYBOARD::isKeyPressed(keyUp)) { moveCursorUp(KEYBOARD::isKeyPressed(keyUp)); }
+			if (KEYBOARD::isKeyPressed(keyDown)) { moveCursorDown(KEYBOARD::isKeyPressed(keyDown)); }
 		}
 
 		console_string getText() { return m_str; }
