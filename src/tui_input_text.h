@@ -189,9 +189,8 @@ namespace tui
 
 			if (m_cursor_blink.isEnd(true)) { blink = !blink; }
 		
-			if (blink)
+			if (isActive() && blink)
 			{
-				
 				setSymbolAt(m_cursor, m_cursor_pos);
 			}
 		}
@@ -211,34 +210,37 @@ namespace tui
 
 		void update()
 		{
-			std::string input = KEYBOARD::getInputAsString();
-			
-			if (input.size() > 0)
+			if (isActive())
 			{
-				for (int i = 0; i < input.size(); i++)
+				std::string input = KEYBOARD::getInputAsString();
+
+				if (input.size() > 0)
 				{
-					m_str.insert(m_str.begin() + m_cursor_pos_in_txt+i, input[i]);
+					for (int i = 0; i < input.size(); i++)
+					{
+						m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, input[i]);
+					}
+					moveCursorRight(input.size());
+					updateText();
 				}
-				moveCursorRight(input.size());
-				updateText();		
+
+
+				if (KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE))
+				{
+					int erase_c = KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE);
+					if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
+
+					m_str.erase(m_str.begin() + m_cursor_pos_in_txt - erase_c, m_str.begin() + m_cursor_pos_in_txt);
+
+					moveCursorLeft(erase_c);
+					updateText();
+				}
+
+				if (KEYBOARD::isKeyPressed(keyLeft)) { moveCursorLeft(KEYBOARD::isKeyPressed(keyLeft)); }
+				if (KEYBOARD::isKeyPressed(keyRight)) { moveCursorRight(KEYBOARD::isKeyPressed(keyRight)); }
+				if (KEYBOARD::isKeyPressed(keyUp)) { moveCursorUp(KEYBOARD::isKeyPressed(keyUp)); }
+				if (KEYBOARD::isKeyPressed(keyDown)) { moveCursorDown(KEYBOARD::isKeyPressed(keyDown)); }
 			}
-
-			
-			if (KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE))
-			{
-				int erase_c = KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE);
-				if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
-
-				m_str.erase(m_str.begin()+ m_cursor_pos_in_txt - erase_c, m_str.begin()+ m_cursor_pos_in_txt);
-
-				moveCursorLeft(erase_c);
-				updateText();	
-			}
-
-			if (KEYBOARD::isKeyPressed(keyLeft)) { moveCursorLeft(KEYBOARD::isKeyPressed(keyLeft)); }
-			if (KEYBOARD::isKeyPressed(keyRight)) { moveCursorRight(KEYBOARD::isKeyPressed(keyRight)); }
-			if (KEYBOARD::isKeyPressed(keyUp)) { moveCursorUp(KEYBOARD::isKeyPressed(keyUp)); }
-			if (KEYBOARD::isKeyPressed(keyDown)) { moveCursorDown(KEYBOARD::isKeyPressed(keyDown)); }
 		}
 
 		console_string getText() { return m_str; }
