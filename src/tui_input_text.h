@@ -13,6 +13,12 @@ namespace tui
 		input_text_appearance() : input_text_appearance('_') {}
 		input_text_appearance(symbol Cursor) : m_cursor(Cursor) {}
 
+		void setAppearance(input_text_appearance appearance)
+		{
+			*this = appearance;
+		}
+		input_text_appearance getAppearance() { return *this; }
+
 		void setColor(color Color) override
 		{
 			m_cursor.setColor(Color);
