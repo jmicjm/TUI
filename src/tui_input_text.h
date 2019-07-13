@@ -8,10 +8,11 @@ namespace tui
 	struct input_text_appearance : appearance
 	{
 	protected:
-		symbol m_cursor;
+		symbol m_insert_cursor;
+		symbol m_overtype_cursor;
 	public:
-		input_text_appearance() : input_text_appearance('_') {}
-		input_text_appearance(symbol Cursor) : m_cursor(Cursor) {}
+		input_text_appearance() : input_text_appearance('_', U'\x2584') {}
+		input_text_appearance(symbol insert_cursor, symbol overtype_cursor) : m_insert_cursor(insert_cursor), m_overtype_cursor(overtype_cursor){}
 
 		void setAppearance(input_text_appearance appearance)
 		{
@@ -21,16 +22,17 @@ namespace tui
 
 		void setColor(color Color) override
 		{
-			m_cursor.setColor(Color);
+			m_insert_cursor.setColor(Color);
+			m_overtype_cursor.setColor(Color);
 			setAppearance_action();
 		}
 
-		void setCursorSymbol(symbol Cursor)
+		void setInsertCursorSymbol(symbol Cursor)
 		{
-			m_cursor = Cursor;
+			m_insert_cursor = Cursor;
 			setAppearance_action();
 		}
-		symbol getCursorSymbol() { return m_cursor; }
+		symbol getInsertCursorSymbol() { return m_insert_cursor; }
 	};
 
 	struct input_text : surface, active_element, input_text_appearance
@@ -43,6 +45,7 @@ namespace tui
 		time_frame m_cursor_blink;
 
 		bool m_redraw_needed = true;
+		bool m_insert_mode = true;
 
 		void updateCursorPos()
 		{
@@ -197,7 +200,8 @@ namespace tui
 		
 			if (isActive() && blink)
 			{
-				setSymbolAt(m_cursor, m_cursor_pos);
+				if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
+				else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
 			}
 		}
 	public:
@@ -205,6 +209,7 @@ namespace tui
 		int keyDown = KEYBOARD::KEY::DOWN;
 		int keyLeft = KEYBOARD::KEY::LEFT;
 		int keyRight = KEYBOARD::KEY::RIGHT;
+		int keyInsert = KEYBOARD::KEY::INS;
 
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
@@ -222,9 +227,26 @@ namespace tui
 
 				if (input.size() > 0)
 				{
-					for (int i = 0; i < input.size(); i++)
+					if (m_insert_mode)
 					{
-						m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, input[i]);
+						for (int i = 0; i < input.size(); i++)
+						{
+							m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, input[i]);
+						}
+					}
+					else//overtype
+					{
+						for (int i = 0; i < input.size(); i++)
+						{
+							if (i + m_cursor_pos_in_txt < m_str.size())
+							{
+								m_str[i + m_cursor_pos_in_txt] = input[i];
+							}
+							else
+							{
+								m_str.push_back(input[i]);
+							}
+						}	
 					}
 					moveCursorRight(input.size());
 					updateText();
@@ -246,6 +268,8 @@ namespace tui
 				if (KEYBOARD::isKeyPressed(keyRight)) { moveCursorRight(KEYBOARD::isKeyPressed(keyRight)); }
 				if (KEYBOARD::isKeyPressed(keyUp)) { moveCursorUp(KEYBOARD::isKeyPressed(keyUp)); }
 				if (KEYBOARD::isKeyPressed(keyDown)) { moveCursorDown(KEYBOARD::isKeyPressed(keyDown)); }
+
+				if (KEYBOARD::isKeyPressed(keyInsert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
 
