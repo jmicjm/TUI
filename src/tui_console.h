@@ -266,7 +266,7 @@ namespace tui
 							&& y_origin + y < getSize().y
 							&& x_origin + x >= 0
 							&& y_origin + y >= 0
-							&& obj.getSymbolAt(vec2i(x, y)).getFirstChar() != 0)
+							&& obj[x][y].getFirstChar() != 0)
 						{
 							setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
 						}
@@ -441,7 +441,7 @@ namespace tui
 			{
 				for (int x = 0; x < m_buffer.getSize().x; x++)
 				{
-					m_last_buffer.setSymbolAt(m_buffer.getSymbolAt({ x,y }), { x,y });
+					m_last_buffer[x][y] = m_buffer[x][y];
 				}
 			}
 		}
@@ -456,7 +456,7 @@ namespace tui
 			{
 				for (int x = 0; x < m_buffer.getSize().x; x++)
 				{
-					if (m_buffer.getSymbolAt({ x,y }) != m_last_buffer.getSymbolAt({ x,y }))
+					if (m_buffer[x][y] != m_last_buffer[x][y])
 					{
 						return true;
 					}

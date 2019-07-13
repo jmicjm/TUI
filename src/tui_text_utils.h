@@ -112,6 +112,11 @@ namespace tui
 			setColor(color);
 		}
 
+		/*symbol(const symbol& sym)
+		{
+			//std::cout << "copy";
+		}*/
+
 		void setSymbol(std::u32string symbol) 
 		{
 			if (symbol.size() == 0) { m_grapheme_cluster = U" "; }
@@ -140,7 +145,7 @@ namespace tui
 		std::u32string getSymbol() { return m_grapheme_cluster; }
 		color getColor() { return m_color; }
 
-		bool operator==(symbol c)
+		bool operator==(const symbol& c)
 		{
 			if (m_grapheme_cluster == c.m_grapheme_cluster && m_color == c.m_color)
 			{
@@ -148,7 +153,7 @@ namespace tui
 			}
 			else { return false; }
 		}
-		bool operator!=(symbol c)
+		bool operator!=(const symbol& c)
 		{
 			if (m_grapheme_cluster != c.m_grapheme_cluster || m_color != c.m_color)
 			{
