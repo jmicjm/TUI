@@ -195,14 +195,26 @@ namespace tui
 			}
 
 			static bool blink = true;
+			static symbol sym_c;
 
-			if (m_cursor_blink.isEnd(true)) { blink = !blink; }
-		
-			if (isActive() && blink)
+			if (isActive() && m_cursor_blink.isEnd(true))
 			{
-				if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
-				else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
+				if (blink)
+				{
+					sym_c = getSymbolAt(m_cursor_pos);
+
+					if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
+					else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
+				}
+				else
+				{
+					setSymbolAt(sym_c, m_cursor_pos);
+				}
+
+				blink = !blink;
 			}
+
+			m_redraw_needed = false;
 		}
 	public:
 		int keyUp = KEYBOARD::KEY::UP;
