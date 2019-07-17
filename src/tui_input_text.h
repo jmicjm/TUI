@@ -10,9 +10,12 @@ namespace tui
 	protected:
 		symbol m_insert_cursor;
 		symbol m_overtype_cursor;
+
+		text_appearance m_text_appearance;
 	public:
-		input_text_appearance() : input_text_appearance('_', U'\x2584') {}
-		input_text_appearance(symbol insert_cursor, symbol overtype_cursor) : m_insert_cursor(insert_cursor), m_overtype_cursor(overtype_cursor){}
+		input_text_appearance() : input_text_appearance('_', U'\x2584', text_appearance()) {}
+		input_text_appearance(symbol insert_cursor, symbol overtype_cursor, text_appearance txt_appearance) 
+			: m_insert_cursor(insert_cursor), m_overtype_cursor(overtype_cursor), m_text_appearance(txt_appearance){}
 
 		void setAppearance(input_text_appearance appearance)
 		{
@@ -24,6 +27,7 @@ namespace tui
 		{
 			m_insert_cursor.setColor(Color);
 			m_overtype_cursor.setColor(Color);
+			m_text_appearance.setColor(Color);
 			setAppearance_action();
 		}
 
@@ -33,6 +37,20 @@ namespace tui
 			setAppearance_action();
 		}
 		symbol getInsertCursorSymbol() { return m_insert_cursor; }
+
+		void setOvertypeCursorSymbol(symbol Cursor)
+		{
+			m_overtype_cursor = Cursor;
+			setAppearance_action();
+		}
+		symbol getOvertypeCursorSymbol() { return m_overtype_cursor; }
+
+		void setTextAppearance(text_appearance appearance)
+		{
+			m_text_appearance = appearance;
+			setAppearance_action();
+		}
+		text_appearance getTextAppearance() { return m_text_appearance; }
 	};
 
 	struct input_text : surface, active_element, input_text_appearance
@@ -46,6 +64,9 @@ namespace tui
 
 		bool m_redraw_needed = true;
 		bool m_insert_mode = true;
+
+		bool blink = true;
+		symbol sym_c;
 
 		void updateCursorPos()
 		{
@@ -184,9 +205,11 @@ namespace tui
 		}
 		void moveCursorDown() { moveCursorDown(1); }
 
+		vec2i old_pos;
 		void fill()
-		{
+		{		
 			updateCursorPos();
+			vec2i new_pos = m_cursor_pos;
 
 			if (m_redraw_needed)
 			{
@@ -194,19 +217,17 @@ namespace tui
 				insertSurface(m_text);
 			}
 
-			static bool blink = true;
-			static symbol sym_c;
-
 			if (isActive() && m_cursor_blink.isEnd(true))
 			{
 				if (blink)
 				{
-					sym_c = getSymbolAt(m_cursor_pos);
+					old_pos = m_cursor_pos;
+					sym_c = getSymbolAt(m_cursor_pos); 
 
 					if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
 					else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
 				}
-				else
+				else if(new_pos == old_pos)
 				{
 					setSymbolAt(sym_c, m_cursor_pos);
 				}
@@ -228,7 +249,7 @@ namespace tui
 			m_text.setSize({ {0,0},{100,100} });
 			m_text.useDensePunctuation(false);
 			m_text.usePreparedText(false);
-
+			m_text.setAppearance(m_text_appearance);
 		}
 
 		void update()
@@ -305,7 +326,11 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
-		void setAppearance_action() override { m_redraw_needed = true; }
+		void setAppearance_action() override 
+		{
+			m_text.setAppearance(m_text_appearance);
+			m_redraw_needed = true; 
+		}
 
 	};
 
