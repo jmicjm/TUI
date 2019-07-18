@@ -66,7 +66,6 @@ namespace tui
 		bool m_insert_mode = true;
 
 		bool blink = true;
-		symbol sym_c;
 
 		void updateCursorPos()
 		{
@@ -205,11 +204,10 @@ namespace tui
 		}
 		void moveCursorDown() { moveCursorDown(1); }
 
-		vec2i old_pos;
+
 		void fill()
 		{		
 			updateCursorPos();
-			vec2i new_pos = m_cursor_pos;
 
 			if (m_redraw_needed)
 			{
@@ -217,22 +215,19 @@ namespace tui
 				insertSurface(m_text);
 			}
 
-			if (isActive() && m_cursor_blink.isEnd(true))
+			if (isActive() && (m_cursor_blink.isEnd(false) || m_redraw_needed))
 			{
 				if (blink)
 				{
-					old_pos = m_cursor_pos;
-					sym_c = getSymbolAt(m_cursor_pos); 
-
 					if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
 					else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
 				}
-				else if(new_pos == old_pos)
+				else
 				{
-					setSymbolAt(sym_c, m_cursor_pos);
+					setSymbolAt(m_text.getSymbolAt(m_cursor_pos), m_cursor_pos);
 				}
 
-				blink = !blink;
+				if (m_cursor_blink.isEnd(true)) { blink = !blink; }
 			}
 
 			m_redraw_needed = false;
