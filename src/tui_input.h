@@ -6,8 +6,6 @@
 #include <cmath>
 #include <cstdio>
 
-#include "tui_config.h"
-
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include <conio.h>

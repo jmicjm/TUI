@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tui_config.h"
-
 #include "tui_enums.h"
 
 #include <string>

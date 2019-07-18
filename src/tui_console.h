@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tui_config.h"
-
 #include <vector>
 
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
