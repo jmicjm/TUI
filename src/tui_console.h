@@ -141,7 +141,8 @@ namespace tui
 		friend class group;
 
 		private:		
-			std::vector<std::vector<symbol>> m_symbols;
+			std::vector<symbol> m_symbols;
+			unsigned int m_width = 0;
 			position m_position;
 			surface_size size_info;
 
@@ -160,12 +161,9 @@ namespace tui
 					{
 						new_size.y = 1;
 					}
-					
-						m_symbols.resize(new_size.y);
-						for (int i = 0; i < m_symbols.size(); i++)
-						{
-							m_symbols[i].resize(new_size.x);
-						}
+
+					m_symbols.resize(new_size.x * new_size.y);
+					m_width = new_size.x;
 					
 					makeTransparent();
 					resize_action();
@@ -196,19 +194,19 @@ namespace tui
 			{
 				friend class surface;
 			private:
+				surface* surf;
 				int x;
-				std::vector<std::vector<symbol>>* temp;
 			public:
 				symbol& operator[](int y)
 				{
-					return (*temp)[y][x];
+					return surf->m_symbols[surf->m_width * y + x];
 				}
 			};
 
 			surface_proxy operator[](int x)
 			{
 				surface_proxy proxy;
-				proxy.temp = &m_symbols;
+				proxy.surf = this;
 				proxy.x = x;
 
 				return proxy;
@@ -216,8 +214,8 @@ namespace tui
 
 			virtual void draw_action() {}
 
-			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y][position.x] = character; }
-			symbol getSymbolAt(vec2i position) { return m_symbols[position.y][position.x]; }
+			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
+			symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
 			void setPosition(position pos) { m_position = pos; }
 
 			void move(vec2i offset)
@@ -289,17 +287,7 @@ namespace tui
 			void makeBlank() { fill(BLANKSYMBOL); }
 
 			position getPosition() { return m_position; }
-			vec2i getSize() 
-			{
-				if (m_symbols.size() > 0)
-				{
-					return vec2i(m_symbols[0].size(), m_symbols.size());
-				}
-				else
-				{
-					return vec2i(0, 0);
-				}
-			}
+			vec2i getSize() { return vec2i(m_width, m_symbols.size() / m_width); }
 			surface_size getSizeInfo() { return size_info; }
 	
 	};
