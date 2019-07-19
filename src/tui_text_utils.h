@@ -30,14 +30,13 @@ namespace tui
 	struct color
 	{
 	private:
-
-		int m_foreground;
-		int m_background;
+		uint8_t m_foreground :4;
+		uint8_t m_background :4;
 	public:
 		color() : color(tui::COLOR::WHITE, tui::COLOR::BLACK) {}
-		color(int foreground) : color(foreground, tui::COLOR::BLACK) {}
-		color(int foreground, int background) { setColor(foreground, background); }
-		void setColor(int foreground, int background)
+		color(uint8_t foreground) : color(foreground, tui::COLOR::BLACK) {}
+		color(uint8_t foreground, uint8_t background) { setColor(foreground, background); }
+		void setColor(uint8_t foreground, uint8_t background)
 		{
 			m_background = background;
 			m_foreground = foreground;
@@ -46,14 +45,14 @@ namespace tui
 		//swaps foreground color with background color
 		void invert()
 		{
-			int foreground = m_foreground;
+			uint8_t foreground = m_foreground;
 			m_foreground = m_background;
 			m_background = foreground;
 		}
 
 		int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
-		int getForegroundColor() { return m_foreground; }
-		int getBackgroundColor() { return m_background; }
+		uint8_t getForegroundColor() { return m_foreground; }
+		uint8_t getBackgroundColor() { return m_background; }
 		std::string getForegroundColorLinux() { return linuxFG[m_foreground]; }
 		std::string getBackgroundColorLinux() { return linuxBG[m_background]; }
 		std::string getEscapeCode()
