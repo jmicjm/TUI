@@ -402,7 +402,14 @@ namespace tui
 
 	inline int GetGraphemeType(char32_t grapheme)
 	{
-		struct grapheme_range_info { int r_s, r_e, r_t; };
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(push,1)
+#endif
+		struct grapheme_range_info { unsigned int r_s, r_e; uint8_t r_t; };
+
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(pop)
+#endif
 
 		static const std::vector<grapheme_range_info> ranges =
 		{
