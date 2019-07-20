@@ -84,11 +84,40 @@ namespace tui
 		//operator int() { return getRGBIColor(); }
 	};
 
+
+
 	struct symbol
 	{
 	private:
-		std::u32string m_grapheme_cluster;
+		union grapheme_cluster
+		{
+			char32_t single_cp;
+			char32_t* multiple_cp;
+		} m_cluster;
+
+		
+
+		uint8_t m_multiple_cp_size :7;
+		bool m_is_multiple_cp : 1;
+
 		color m_color;
+
+		
+
+
+		void setSingleCp(char32_t cp)
+		{
+			if (m_is_multiple_cp)
+			{
+				delete[] m_cluster.multiple_cp;
+			}
+
+			m_cluster.single_cp = cp;
+			m_is_multiple_cp = false;
+			m_multiple_cp_size = 0;
+		}
+
+		
 	public:
 		symbol() : symbol(U" ", color()) {}
 		symbol(const char* Symbol) : symbol(std::string(Symbol), color()) {}
@@ -98,27 +127,64 @@ namespace tui
 		symbol(std::string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::string Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
-		symbol(std::u32string Symbol, color color)
+		symbol(std::u32string Symbol, color color) : m_is_multiple_cp(false), m_multiple_cp_size(0)
 		{
 			setSymbol(Symbol); 
 			setColor(color);
 		}
 		symbol(char32_t character) : symbol(character, color()) {}
-		symbol(char32_t character, color color)
+		symbol(char32_t character, color color) : m_is_multiple_cp(false), m_multiple_cp_size(0)
 		{
-			m_grapheme_cluster.resize(1);
-			m_grapheme_cluster[0] = character;
+			setSingleCp(character);
 			setColor(color);
 		}
 
-		/*symbol(const symbol& sym)
+		symbol(const symbol& sym) : m_is_multiple_cp(false), m_multiple_cp_size(0)
 		{
-			//std::cout << "copy";
-		}*/
+			operator=(sym);
+		}
+
+		~symbol()
+		{
+			if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+		}
+
+		symbol& operator=(const symbol& sym)
+		{
+			if (!sym.m_is_multiple_cp)
+			{
+				setSingleCp(sym.m_cluster.single_cp);
+			}
+			else
+			{
+				if (m_multiple_cp_size != sym.m_multiple_cp_size || !m_is_multiple_cp)
+				{
+					if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+
+					m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
+				}
+				m_multiple_cp_size = sym.m_multiple_cp_size;
+				m_is_multiple_cp = true;
+
+				for (int i = 0; i < m_multiple_cp_size; i++)
+				{
+					m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
+				}
+			}
+
+			setColor(sym.getColor());
+
+			return *this;
+		}
+
+
+		void setSymbol(char32_t character) { setSingleCp(character); }
 
 		void setSymbol(std::u32string symbol) 
 		{
-			if (symbol.size() == 0) { m_grapheme_cluster = U" "; }
+
+			if (symbol.size() == 0) { setSingleCp(U' '); }
+			else if (symbol.size() == 1) { setSingleCp(symbol[0]); }
 			else
 			{
 				std::u32string temp;
@@ -132,21 +198,66 @@ namespace tui
 					}
 					else { break; }
 				}
-				m_grapheme_cluster = temp;
+
+				if (temp.size() > 1)
+				{
+					if (m_multiple_cp_size != temp.size() || !m_is_multiple_cp)
+					{
+						if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+
+						m_cluster.multiple_cp = new char32_t[temp.size()];
+					}
+					m_is_multiple_cp = true;
+					m_multiple_cp_size = temp.size();
+
+					for (int i = 0; i < temp.size(); i++)
+					{
+						m_cluster.multiple_cp[i] = temp[i];
+					}
+				}
+				else { setSingleCp(temp[0]); }
 			}
 		}
 
 		void invert() { m_color.invert(); }
 
 
-		char32_t getFirstChar() { return m_grapheme_cluster[0]; }
+		char32_t getFirstChar() const
+		{ 
+			switch (m_is_multiple_cp)
+			{
+			case true:
+				return m_cluster.multiple_cp[0];
+				break;
+			case false:
+				return m_cluster.single_cp;
+			}
+		}
 		void setColor(color color) { m_color = color; }
-		std::u32string getSymbol() { return m_grapheme_cluster; }
-		color getColor() { return m_color; }
+		std::u32string getSymbol() const
+		{
+			std::u32string temp;
+			if (!m_is_multiple_cp)
+			{
+				temp.resize(1);
+				temp[0] = m_cluster.single_cp;
+			}
+			else
+			{
+				temp.resize(m_multiple_cp_size);
+				for (int i = 0; i < m_multiple_cp_size; i++)
+				{
+					temp[i] = m_cluster.multiple_cp[i];
+				}
+			}
+
+			return temp;
+		}
+		color getColor() const { return m_color; }
 
 		bool operator==(const symbol& c)
 		{
-			if (m_grapheme_cluster == c.m_grapheme_cluster && m_color == c.m_color)
+			if (getSymbol() == c.getSymbol() && m_color == c.m_color)
 			{
 				return true;
 			}
@@ -154,7 +265,7 @@ namespace tui
 		}
 		bool operator!=(const symbol& c)
 		{
-			if (m_grapheme_cluster != c.m_grapheme_cluster || m_color != c.m_color)
+			if (getSymbol() != c.getSymbol() || m_color != c.m_color)
 			{
 				return true;
 			}
