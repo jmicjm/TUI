@@ -84,26 +84,26 @@ namespace tui
 		//operator int() { return getRGBIColor(); }
 	};
 
-
-
 	struct symbol
 	{
 	private:
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(push,1)
+#endif
 		union grapheme_cluster
 		{
 			char32_t single_cp;
 			char32_t* multiple_cp;
 		} m_cluster;
 
-		
-
 		uint8_t m_multiple_cp_size :7;
-		bool m_is_multiple_cp : 1;
+		bool m_is_multiple_cp :1;
 
 		color m_color;
 
-		
-
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(pop)
+#endif
 
 		void setSingleCp(char32_t cp)
 		{
@@ -272,6 +272,7 @@ namespace tui
 			else { return false; }
 		}
 	};
+
 
 	struct console_string : std::vector<symbol>
 	{
