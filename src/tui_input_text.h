@@ -256,7 +256,7 @@ namespace tui
 		{
 			if (isActive())
 			{
-				std::string input = KEYBOARD::getInputAsString();
+				console_string input = KEYBOARD::getInputAsString();
 
 				if (input.size() > 0)
 				{
