@@ -168,28 +168,31 @@ namespace tui
 
 		symbol& operator=(const symbol& sym)
 		{
-			if (!sym.m_is_multiple_cp)
+			if (this != &sym)
 			{
-				setSingleCp(sym.m_cluster.single_cp);
-			}
-			else
-			{
-				if (m_multiple_cp_size != sym.m_multiple_cp_size || !m_is_multiple_cp)
+				switch (sym.m_is_multiple_cp)
 				{
-					if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+				case false:
+					setSingleCp(sym.m_cluster.single_cp);
+					break;
+				case true:
+					if (m_multiple_cp_size != sym.m_multiple_cp_size || !m_is_multiple_cp)
+					{
+						if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
 
-					m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
-				}
-				m_multiple_cp_size = sym.m_multiple_cp_size;
-				m_is_multiple_cp = true;
+						m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
+					}
+					m_multiple_cp_size = sym.m_multiple_cp_size;
+					m_is_multiple_cp = true;
 
-				for (int i = 0; i < m_multiple_cp_size; i++)
-				{
-					m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
+					for (int i = 0; i < m_multiple_cp_size; i++)
+					{
+						m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
+					}		
 				}
+
+				m_color = sym.m_color;
 			}
-
-			setColor(sym.getColor());
 
 			return *this;
 		}
