@@ -139,9 +139,26 @@ namespace tui
 			setColor(color);
 		}
 
-		symbol(const symbol& sym) : m_is_multiple_cp(false), m_multiple_cp_size(0)
+		symbol(const symbol& sym)
 		{
-			operator=(sym);
+			switch (sym.m_is_multiple_cp)
+			{
+			case false:
+				m_is_multiple_cp = false;
+				m_cluster.single_cp = sym.m_cluster.single_cp;
+				m_multiple_cp_size = 0;
+				break;
+			case true:
+				m_is_multiple_cp = true;
+				m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
+				for (int i = 0; i < sym.m_multiple_cp_size; i++)
+				{
+					m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
+				}
+				m_multiple_cp_size = sym.m_multiple_cp_size;
+			}
+
+			m_color = sym.m_color;
 		}
 
 		~symbol()
