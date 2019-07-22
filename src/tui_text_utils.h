@@ -275,22 +275,25 @@ namespace tui
 		}
 		color getColor() const { return m_color; }
 
-		bool operator==(const symbol& c)
+		bool operator==(const symbol& sym)
 		{
-			if (getSymbol() == c.getSymbol() && m_color == c.m_color)
+			switch (sym.m_is_multiple_cp)
 			{
-				return true;
+			case false:
+				return m_cluster.single_cp == sym.m_cluster.single_cp && m_color == sym.m_color;
+			case true:
+				if (m_multiple_cp_size != sym.m_multiple_cp_size) { return false; }
+				else
+				{
+					for (int i = 0; i < m_multiple_cp_size; i++)
+					{
+						if (m_cluster.multiple_cp[i] != sym.m_cluster.multiple_cp[i]) { return false; }
+					}
+				}
+				return m_color == sym.m_color;
 			}
-			else { return false; }
 		}
-		bool operator!=(const symbol& c)
-		{
-			if (getSymbol() != c.getSymbol() || m_color != c.m_color)
-			{
-				return true;
-			}
-			else { return false; }
-		}
+		bool operator!=(const symbol& sym) { return !operator==(sym); }
 	};
 
 
