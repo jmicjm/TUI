@@ -96,8 +96,7 @@ namespace tui
 			char32_t* multiple_cp;
 		} m_cluster;
 
-		uint8_t m_multiple_cp_size :7;
-		bool m_is_multiple_cp :1;
+		uint8_t m_multiple_cp_size;
 
 		color m_color;
 
@@ -107,15 +106,16 @@ namespace tui
 
 		void setSingleCp(char32_t cp)
 		{
-			if (m_is_multiple_cp)
+			if (isMultipleCP())
 			{
 				delete[] m_cluster.multiple_cp;
 			}
 
 			m_cluster.single_cp = cp;
-			m_is_multiple_cp = false;
 			m_multiple_cp_size = 0;
 		}
+
+		bool isMultipleCP() const { return m_multiple_cp_size > 0; }
 
 		
 	public:
@@ -127,13 +127,13 @@ namespace tui
 		symbol(std::string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
 		symbol(std::string Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
-		symbol(std::u32string Symbol, color color) : m_is_multiple_cp(false), m_multiple_cp_size(0)
+		symbol(std::u32string Symbol, color color) : m_multiple_cp_size(0)
 		{
 			setSymbol(Symbol); 
 			setColor(color);
 		}
 		symbol(char32_t character) : symbol(character, color()) {}
-		symbol(char32_t character, color color) : m_is_multiple_cp(false), m_multiple_cp_size(0)
+		symbol(char32_t character, color color) : m_multiple_cp_size(0)
 		{
 			setSingleCp(character);
 			setColor(color);
@@ -141,15 +141,13 @@ namespace tui
 
 		symbol(const symbol& sym)
 		{
-			switch (sym.m_is_multiple_cp)
+			switch (sym.isMultipleCP())
 			{
 			case false:
-				m_is_multiple_cp = false;
 				m_cluster.single_cp = sym.m_cluster.single_cp;
 				m_multiple_cp_size = 0;
 				break;
 			case true:
-				m_is_multiple_cp = true;
 				m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
 				for (int i = 0; i < sym.m_multiple_cp_size; i++)
 				{
@@ -163,27 +161,26 @@ namespace tui
 
 		~symbol()
 		{
-			if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+			if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
 		}
 
 		symbol& operator=(const symbol& sym)
 		{
 			if (this != &sym)
 			{
-				switch (sym.m_is_multiple_cp)
+				switch (sym.isMultipleCP())
 				{
 				case false:
 					setSingleCp(sym.m_cluster.single_cp);
 					break;
 				case true:
-					if (m_multiple_cp_size != sym.m_multiple_cp_size || !m_is_multiple_cp)
+					if (m_multiple_cp_size != sym.m_multiple_cp_size)
 					{
-						if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+						if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
 
 						m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
 					}
 					m_multiple_cp_size = sym.m_multiple_cp_size;
-					m_is_multiple_cp = true;
 
 					for (int i = 0; i < m_multiple_cp_size; i++)
 					{
@@ -221,13 +218,12 @@ namespace tui
 
 				if (temp.size() > 1)
 				{
-					if (m_multiple_cp_size != temp.size() || !m_is_multiple_cp)
+					if (m_multiple_cp_size != temp.size())
 					{
-						if (m_is_multiple_cp) { delete[] m_cluster.multiple_cp; }
+						if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
 
 						m_cluster.multiple_cp = new char32_t[temp.size()];
 					}
-					m_is_multiple_cp = true;
 					m_multiple_cp_size = temp.size();
 
 					for (int i = 0; i < temp.size(); i++)
@@ -244,7 +240,7 @@ namespace tui
 
 		char32_t getFirstChar() const
 		{ 
-			switch (m_is_multiple_cp)
+			switch (isMultipleCP())
 			{
 			case true:
 				return m_cluster.multiple_cp[0];
@@ -257,7 +253,7 @@ namespace tui
 		std::u32string getSymbol() const
 		{
 			std::u32string temp;
-			if (!m_is_multiple_cp)
+			if (!isMultipleCP())
 			{
 				temp.resize(1);
 				temp[0] = m_cluster.single_cp;
@@ -277,7 +273,7 @@ namespace tui
 
 		bool operator==(const symbol& sym)
 		{
-			switch (sym.m_is_multiple_cp)
+			switch (sym.isMultipleCP())
 			{
 			case false:
 				return m_cluster.single_cp == sym.m_cluster.single_cp && m_color == sym.m_color;
