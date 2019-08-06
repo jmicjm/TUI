@@ -115,6 +115,22 @@ namespace tui
 			m_multiple_cp_size = 0;
 		}
 
+		void setMultipleCP(const char32_t* cp, size_t size)
+		{
+			if (m_multiple_cp_size != size)
+			{
+				if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
+
+				m_cluster.multiple_cp = new char32_t[size];
+			}
+			m_multiple_cp_size = size;
+
+			for (int i = 0; i < m_multiple_cp_size; i++)
+			{
+				m_cluster.multiple_cp[i] = cp[i];
+			}
+		}
+
 		bool isMultipleCP() const { return m_multiple_cp_size > 0; }
 
 		
@@ -174,18 +190,7 @@ namespace tui
 					setSingleCp(sym.m_cluster.single_cp);
 					break;
 				case true:
-					if (m_multiple_cp_size != sym.m_multiple_cp_size)
-					{
-						if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
-
-						m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
-					}
-					m_multiple_cp_size = sym.m_multiple_cp_size;
-
-					for (int i = 0; i < m_multiple_cp_size; i++)
-					{
-						m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
-					}		
+					setMultipleCP(sym.m_cluster.multiple_cp, sym.m_multiple_cp_size);
 				}
 
 				m_color = sym.m_color;
@@ -218,18 +223,7 @@ namespace tui
 
 				if (temp.size() > 1)
 				{
-					if (m_multiple_cp_size != temp.size())
-					{
-						if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
-
-						m_cluster.multiple_cp = new char32_t[temp.size()];
-					}
-					m_multiple_cp_size = temp.size();
-
-					for (int i = 0; i < temp.size(); i++)
-					{
-						m_cluster.multiple_cp[i] = temp[i];
-					}
+					setMultipleCP(temp.data(), temp.size());
 				}
 				else { setSingleCp(temp[0]); }
 			}
