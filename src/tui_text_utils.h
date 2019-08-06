@@ -135,7 +135,7 @@ namespace tui
 
 		
 	public:
-		symbol() : symbol(U" ", color()) {}
+		symbol() : symbol(U' ', color()) {}
 		symbol(const char* Symbol) : symbol(std::string(Symbol), color()) {}
 		symbol(const char32_t* Symbol) : symbol(std::u32string(Symbol), color()) {}
 		symbol(const char* Symbol, color color) : symbol(std::string(Symbol), color) {}
