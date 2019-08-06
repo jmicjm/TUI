@@ -285,7 +285,11 @@ namespace tui
 			void makeBlank() { fill(BLANKSYMBOL); }
 
 			position getPosition() { return m_position; }
-			vec2i getSize() { return vec2i(m_width, m_symbols.size() / m_width); }
+			vec2i getSize() 
+			{ 
+				if (m_width > 0) { return vec2i(m_width, m_symbols.size() / m_width); }
+				else { return vec2i(0, 0); }
+			}
 			surface_size getSizeInfo() { return size_info; }
 	
 	};
