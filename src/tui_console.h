@@ -281,6 +281,11 @@ namespace tui
 				}
 			}
 
+			void invert()
+			{
+				for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].invert(); }
+			}
+
 			void makeTransparent() { fill((char32_t)0); }
 			void makeBlank() { fill(BLANKSYMBOL); }
 
