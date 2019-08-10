@@ -62,25 +62,57 @@ namespace tui
 	struct button : surface1D<direction>, button_appearance, active_element
 	{
 	private:
-		console_string m_active_text;
-		console_string m_inactive_text;
+		console_string m_selected_text;
+		console_string m_deselected_text;
+
+		bool selected = false;
 
 		button_appearance_a getCurrentAppearance()
 		{
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
 		}
+		const console_string& getCurrentText()
+		{
+			if (isSelected()) { return m_selected_text; }
+			else { return m_deselected_text; }
+		}
 
 		void fill()
 		{
-			//surface1D<direction>::setSymbol(getCurrentAppearance().first, 0);
+			surface::makeBlank();
+
+			surface1D<direction>::setSymbolAt(getCurrentAppearance().first, 0);
+			for (int i = 1;i<surface1D<direction>::getSize() && i - 1 < getCurrentText().size(); i++)
+			{
+				surface1D<direction>::setSymbolAt(getCurrentText()[i-1], i);
+			}
+			surface1D<direction>::setSymbolAt(getCurrentAppearance().last, surface1D<direction>::getSize()-1);
+
+			if (isSelected()) { surface::invert(); }
 		}
 
 	public:
+		int keySelect = KEYBOARD::KEY::ENTER;
 
+		button(surface1D_size size, console_string selected, console_string deselected) : m_selected_text(selected), m_deselected_text(deselected)
+		{
+			surface1D<direction>::setSize(size);
+		}
+	
+		bool isSelected() { return selected; }
 
+		void update()
+		{
+			if (KEYBOARD::isKeyPressed(keySelect))
+			{
+				selected = !selected;
+				//fill();
+			}
+			fill();
+		}
 
-		void draw_action() override { fill(); }
+		void draw_action() override { update(); }
 	};
 
 }
