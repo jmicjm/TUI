@@ -65,7 +65,9 @@ namespace tui
 		console_string m_selected_text;
 		console_string m_deselected_text;
 
-		bool selected = false;
+		bool m_selected = false;
+
+		bool m_redraw_needed = true;
 
 		button_appearance_a getCurrentAppearance()
 		{
@@ -100,19 +102,32 @@ namespace tui
 			surface1D<direction>::setSize(size);
 		}
 	
-		bool isSelected() { return selected; }
+		bool isSelected() { return m_selected; }
 
 		void update()
 		{
-			if (KEYBOARD::isKeyPressed(keySelect))
+			if (isActive())
 			{
-				selected = !selected;
-				//fill();
+				if (KEYBOARD::isKeyPressed(keySelect))
+				{
+					m_selected = !m_selected;
+					m_redraw_needed = true;
+				}
 			}
-			fill();
 		}
 
-		void draw_action() override { update(); }
+		void draw_action() override 
+		{ 
+			update(); 
+			if (m_redraw_needed)
+			{
+				fill();
+				m_redraw_needed = false;
+			}
+		}
+
+		void resize_action() override { m_redraw_needed = true; }
+		void setAppearance_action() override { m_redraw_needed = true; }
 	};
 
 }
