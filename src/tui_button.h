@@ -57,8 +57,12 @@ namespace tui
 		}
 		button_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
+	namespace BUTTON_TYPE
+	{
+		enum BUTTON_TYPE {SWITCH, PUSH};
+	}
 
-	template<int direction>
+	template<int direction, int button_type>
 	struct button : surface1D<direction>, button_appearance, active_element
 	{
 	private:
@@ -129,14 +133,19 @@ namespace tui
 
 		void update()
 		{
+			bool last_state = isSelected();
+
+			if (button_type == BUTTON_TYPE::PUSH) { m_selected = false; }
+
 			if (isActive())
 			{
 				if (KEYBOARD::isKeyPressed(keySelect))
 				{
 					m_selected = !m_selected;
-					m_redraw_needed = true;
 				}
 			}
+
+			if (last_state != isSelected()) { m_redraw_needed = true; }
 		}
 
 		void draw_action() override 
