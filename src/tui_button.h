@@ -121,6 +121,12 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
+		void resizeToText()
+		{
+			unsigned int longest = m_selected_text.size() > m_deselected_text.size() ? m_selected_text.size() : m_deselected_text.size();
+			surface1D<direction>::setSize(longest+2);
+		}
+
 		void update()
 		{
 			if (isActive())
