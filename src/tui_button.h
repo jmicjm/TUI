@@ -104,6 +104,23 @@ namespace tui
 	
 		bool isSelected() { return m_selected; }
 
+		void setSelectedText(console_string text)
+		{
+			m_selected_text = text;
+			if (isSelected()) { m_redraw_needed = true; }
+		}
+		void setDeselectedText(console_string text)
+		{
+			m_deselected_text = text;
+			if (!isSelected()) { m_redraw_needed = true; }
+		}
+		void setText(console_string text)
+		{
+			m_selected_text = text;
+			m_deselected_text = text;
+			m_redraw_needed = true;
+		}
+
 		void update()
 		{
 			if (isActive())
