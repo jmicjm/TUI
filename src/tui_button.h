@@ -101,9 +101,13 @@ namespace tui
 	public:
 		int keySelect = KEYBOARD::KEY::ENTER;
 
-		button(surface1D_size size, console_string selected, console_string deselected) : m_selected_text(selected), m_deselected_text(deselected)
+		button() : button({3}, ' ') {}
+		button(surface1D_size size, console_string text) : button(size, text, text) {}
+		button(surface1D_size size, console_string selected, console_string deselected) : button(size, selected, deselected, button_appearance()) {}
+		button(surface1D_size size, console_string selected, console_string deselected, button_appearance appearance) : m_selected_text(selected), m_deselected_text(deselected)
 		{
 			surface1D<direction>::setSize(size);
+			setAppearance(appearance);
 		}
 	
 		bool isSelected() { return m_selected; }
