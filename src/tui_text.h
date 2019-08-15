@@ -94,7 +94,7 @@ namespace tui
 						{
 							for (int i = 0; i < (m_text.getSize().x - pos_in_line); i++)
 							{
-								prepared += " ";
+								prepared.push_back(' ');
 							}
 							pos += m_text.getSize().x - pos_in_line;
 						}
@@ -105,24 +105,24 @@ namespace tui
 				if (usePrepared()
 					&& pos_in_line == m_text.getSize().x - 1
 					&& i + 1 < m_unprepared_text.size()
-					&& m_unprepared_text[i].getSymbol() != (U" ")
-					&& m_unprepared_text[i + 1].getSymbol() != (U" ")
+					&& m_unprepared_text[i].getFirstChar() != (U' ')
+					&& m_unprepared_text[i + 1].getFirstChar() != (U' ')
 					&& !isControl(m_unprepared_text[i + 1].getFirstChar())
 					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i]) : true)
 					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i + 1]) : true)
 					)
 				{
 					prepared << m_unprepared_text[i - 1].getColor();
-					if (m_unprepared_text[i - 1].getSymbol() != U" ")
+					if (m_unprepared_text[i - 1].getFirstChar() != U' ')
 					{
 						prepared << "-";
 					}
 					else { prepared << " "; }
 					pos++;
 				}
-				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i].getSymbol() == U" ") { continue; }//omit space at start of line
+				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i].getFirstChar() == U' ') { continue; }//omit space at start of line
 
-				prepared += m_unprepared_text[i];
+				prepared.push_back(m_unprepared_text[i]);
 				pos++;
 			}
 
