@@ -9,3 +9,4 @@
 #include "tui_bar.h"
 #include "tui_input_text.h"
 #include "tui_button.h"
+#include "tui_image.h"
