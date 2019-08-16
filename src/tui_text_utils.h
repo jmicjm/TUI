@@ -332,15 +332,16 @@ namespace tui
 			m_selected_color = color;
 		}
 
-		void operator<< (console_string string)
+		void operator<< (const console_string &string)
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
-				this->push_back(symbol(string[i].getSymbol(), m_selected_color));
+				this->push_back(string[i]);
+				(*this)[this->size()-1].setColor(m_selected_color);
 			}
 		}
 
-		void operator+=(console_string str)
+		void operator+=(const console_string &str)
 		{
 			for (int i = 0; i < str.size(); i++)
 			{
@@ -360,7 +361,7 @@ namespace tui
 		{
 			for (int i = 0; i < size(); i++)
 			{
-				this->setColor(Color);
+				(*this)[i].setColor(Color);
 			}
 		}
 	};
