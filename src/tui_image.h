@@ -81,5 +81,32 @@ namespace tui
 			}
 			setImage(temp, width);
 		}
+
+		void loadFromFileColorOnly(std::string file, unsigned int width)
+		{
+			std::vector<COLOR> temp;
+
+			std::ifstream input(file);
+
+			std::string input_str;
+
+			for (std::string line; std::getline(input, line);)
+			{
+				input_str += line;
+			}
+			input.close();
+
+			for (int i = 0; i < input_str.size(); i++)
+			{
+				std::string val;
+				val.resize(1);
+				if (input_str[i] != ' ' && !isControl(input_str[i]))
+				{
+					val[0] = input_str[i];
+					temp.push_back((COLOR)std::stoi(val, nullptr, 16));
+				}
+			}
+			setImageColorOnly(temp, width);
+		}
 	};
 }
