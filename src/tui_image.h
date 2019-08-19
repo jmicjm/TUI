@@ -2,6 +2,8 @@
 #include "tui_console.h"
 #include "tui_text_utils.h"
 
+#include <fstream>
+
 namespace tui
 {
 	struct image : surface
@@ -10,7 +12,7 @@ namespace tui
 		{
 			if (width == 0) { return; }
 
-			setSize({ { (int)width, (int)ceil(image.size() / width) } });
+			setSize({ { (int)width, (int)ceil(image.size() / (float)width) } });
 
 			for (int i = 0; i < image.size(); i++)
 			{
@@ -31,10 +33,53 @@ namespace tui
 			setImage(temp, width);
 		}
 
-		void loadFromFile(std::string file)
+		void loadFromFile(std::string file, unsigned int width)
 		{
+			std::vector<symbol> temp;
 
+			std::ifstream input(file);
+
+			std::string input_str;
+
+			for (std::string line; std::getline(input, line);)
+			{
+				input_str += line;
+			}
+			input.close();
+
+			std::vector<int> symbol_vals;
+			std::string val;
+			for (int i = 0; i < input_str.size(); i++)
+			{
+				auto isValidChar = [&]()
+				{
+					return input_str[i] != ' ' && !isControl(input_str[i]) && input_str[i] != ',';
+				};
+
+				if (isValidChar())
+				{
+					val += input_str[i];
+				}
+				if ((!isValidChar() && val.size() > 0) || i == input_str.size() -1)
+				{
+					symbol_vals.push_back(std::stoi(val, nullptr, 16));
+					val.clear();
+				}
+
+				if (input_str[i] == ',' || i == input_str.size() - 1)
+				{
+					if (symbol_vals.size() == 3)
+					{
+						temp.push_back(symbol(symbol_vals[0], { (uint8_t)symbol_vals[1], (uint8_t)symbol_vals[2] }));
+					}
+					else
+					{
+						temp.push_back(symbol('?', color()));
+					}
+					symbol_vals.clear();
+				}
+			}
+			setImage(temp, width);
 		}
-
 	};
 }
