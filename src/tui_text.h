@@ -86,7 +86,7 @@ namespace tui
 
 				m_symbolPos[i] = { pos_in_line, (int)floor((float)pos / m_text.getSize().x) };
 
-				if (isControl(m_unprepared_text[i].getFirstChar()))
+				if (IsControl(m_unprepared_text[i].getFirstChar()))
 				{
 					if (m_use_control_characters)
 					{
@@ -107,7 +107,7 @@ namespace tui
 					&& i + 1 < m_unprepared_text.size()
 					&& m_unprepared_text[i].getFirstChar() != (U' ')
 					&& m_unprepared_text[i + 1].getFirstChar() != (U' ')
-					&& !isControl(m_unprepared_text[i + 1].getFirstChar())
+					&& !IsControl(m_unprepared_text[i + 1].getFirstChar())
 					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i]) : true)
 					&& (m_use_dense_punctuation ? !IsPunctuation(m_unprepared_text[i + 1]) : true)
 					)

@@ -23,7 +23,7 @@ namespace tui
 
 	bool IsBreakBetween(char32_t l, char32_t r);
 
-	bool isControl(char32_t ch);
+	bool IsControl(char32_t ch);
 
 
 
@@ -547,7 +547,7 @@ namespace tui
 		else { return false; }
 	}
 
-	bool isControl(char32_t ch)
+	inline bool IsControl(char32_t ch)
 	{
 		int g_type = GetGraphemeType(ch);
 

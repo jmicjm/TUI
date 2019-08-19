@@ -53,7 +53,7 @@ namespace tui
 			{
 				auto isValidChar = [&]()
 				{
-					return input_str[i] != ' ' && !isControl(input_str[i]) && input_str[i] != ',';
+					return input_str[i] != ' ' && !IsControl(input_str[i]) && input_str[i] != ',';
 				};
 
 				if (isValidChar())
@@ -100,7 +100,7 @@ namespace tui
 			{
 				std::string val;
 				val.resize(1);
-				if (input_str[i] != ' ' && !isControl(input_str[i]))
+				if (input_str[i] != ' ' && !IsControl(input_str[i]))
 				{
 					val[0] = input_str[i];
 					temp.push_back((COLOR)std::stoi(val, nullptr, 16));

@@ -537,7 +537,7 @@ namespace tui
 				{
 					CHAR_INFO ch_info;
 
-					if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !isControl(m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
+					if (m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !IsControl(m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
 					{
 						ch_info.Char.UnicodeChar = m_buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
 					}
