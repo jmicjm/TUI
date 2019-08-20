@@ -84,7 +84,7 @@ namespace tui
 
 		void loadFromFileColorOnly(std::string file, unsigned int width)
 		{
-			std::vector<COLOR> temp;
+			std::vector<symbol> temp;
 
 			std::ifstream input(file);
 
@@ -102,11 +102,16 @@ namespace tui
 				val.resize(1);
 				if (input_str[i] != ' ' && !IsControl(input_str[i]))
 				{
+					if (input_str[i] == '-')
+					{
+						temp.push_back(symbol((char32_t)0));
+						continue;
+					}
 					val[0] = input_str[i];
-					temp.push_back((COLOR)std::stoi(val, nullptr, 16));
+					temp.push_back(symbol(' ', {tui::COLOR::BLACK, (uint8_t)std::stoi(val, nullptr, 16)}));
 				}
 			}
-			setImageColorOnly(temp, width);
+			setImage(temp, width);
 		}
 	};
 }
