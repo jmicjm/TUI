@@ -20,13 +20,18 @@ namespace tui
 			}
 		}
 		
-		void setImageColorOnly(std::vector<COLOR> image, unsigned int width)
+		void setImageColorOnly(std::vector<int> image, unsigned int width)
 		{
 			std::vector<symbol> temp;
 			temp.resize(image.size());
 
 			for (int i = 0; i < temp.size(); i++)
 			{
+				if (image[i] == -1)
+				{
+					temp[i] = symbol((char32_t)0);
+					continue;
+				}
 				temp[i] = symbol(' ', color(COLOR::BLACK, image[i]));
 			}
 
