@@ -151,14 +151,8 @@ namespace tui
 				if (size.x != getSize().x || size.y != getSize().y)
 				{
 					vec2i new_size = size;
-					if (size.x < 1)
-					{
-						new_size.x = 1;
-					}
-					if (size.y < 1)
-					{
-						new_size.y = 1;
-					}
+					if (size.x < 1) { new_size.x = 1; }
+					if (size.y < 1) { new_size.y = 1; }
 
 					m_symbols.resize(new_size.x * new_size.y);
 					m_width = new_size.x;
@@ -176,6 +170,7 @@ namespace tui
 			
 		protected:
 			virtual void resize_action() {}
+			virtual void draw_action() {}
 		public:	
 			surface() : surface({ {1,1},{0,0} }) {}
 			surface(surface_size size)
@@ -209,8 +204,6 @@ namespace tui
 
 				return proxy;
 			}
-
-			virtual void draw_action() {}
 
 			void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
 			symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
@@ -272,13 +265,7 @@ namespace tui
 
 			void fill(symbol Symbol)
 			{
-				for (int y = 0; y < getSize().y; y++)
-				{
-					for (int x = 0; x < getSize().x; x++)
-					{
-						setSymbolAt(Symbol, { x,y });
-					}
-				}
+				for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i] = Symbol; }
 			}
 
 			void invert()
