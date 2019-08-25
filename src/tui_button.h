@@ -69,6 +69,9 @@ namespace tui
 		console_string m_selected_text;
 		console_string m_deselected_text;
 
+		void (*m_selection_function_ptr)(void) = nullptr;
+		void (*m_deselection_function_ptr)(void) = nullptr;
+
 		bool m_selected = false;
 
 		bool m_redraw_needed = true;
@@ -146,10 +149,34 @@ namespace tui
 				if (KEYBOARD::isKeyPressed(keySelect))
 				{
 					m_selected = !m_selected;
+
+					auto launchFunc = [](void (*func_ptr)(void))
+					{
+						if (func_ptr != nullptr) { (*func_ptr)(); }
+					};
+
+					switch (isSelected())
+					{
+					case true:
+						launchFunc(m_selection_function_ptr);
+						break;
+					case false:
+						launchFunc(m_deselection_function_ptr);
+					}
 				}
 			}
 
 			if (last_state != isSelected()) { m_redraw_needed = true; }
+		}
+
+		void setSelectionFunction(void (*func_ptr)(void))
+		{
+			m_selection_function_ptr = *func_ptr;
+		}
+
+		void setDeselectionFunction(void (*func_ptr)(void))
+		{
+			m_deselection_function_ptr = *func_ptr;
 		}
 
 		void draw_action() override 
