@@ -11,9 +11,9 @@
 
 namespace tui
 {
-	std::u32string Utf8ToUtf32(std::string str);
+	std::u32string Utf8ToUtf32(const std::string& utf8_str);
 
-	std::string Utf32ToUtf8(std::u32string str);
+	std::string Utf32ToUtf8(const std::u32string& utf32_str);
 
 	std::string Char32ToUtf8(char32_t character);
 
@@ -367,36 +367,130 @@ namespace tui
 	};
 
 
-	inline std::u32string Utf8ToUtf32(std::string str)
+	inline std::u32string Utf8ToUtf32(const std::string& utf8_str)
 	{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
-		static std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
-		auto conv = converter.from_bytes(str);
+		std::u32string utf32_str;
+		utf32_str.reserve(utf8_str.size() / 2);
 
-		return std::u32string(reinterpret_cast<char32_t const*>(conv.data()), conv.length());
-#endif
+		char32_t utf32_char = 0;
+		int bytec = 0;
+		int bitc = 0;
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+		auto setBc = [&](int bc)
+		{
+			bytec = bc;
+			bitc = (bytec - 1) * 6;
+	};
 
-		static std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-		return converter.from_bytes(str);
-#endif
+		auto push = [&](int i)
+		{
+			if (i > 0)
+			{
+				if (bytec == 0 && !(utf32_char >= 0xD800 && utf32_char <= 0xDFFF) && utf32_char <= 0x10FFFF)
+				{
+					utf32_str.push_back(utf32_char);
+				}
+				else { utf32_str.push_back(U'\xFFFD'); }
+			}
+		};
+
+		for (int i = 0; i < utf8_str.size(); i++, bytec--)
+		{
+			if ((utf8_str[i] & 0x10000000) == 0b00000000)
+			{
+				push(i);
+				setBc(1);
+				utf32_char = utf8_str[i];
+			}
+			else if ((utf8_str[i] & 0b11000000) == 0b10000000)
+			{
+				bitc -= 6;
+				utf32_char |= (utf8_str[i] & 0b00111111) << bitc;
+			}
+			else if ((utf8_str[i] & 0b11100000) == 0b11000000)
+			{
+				push(i);
+				setBc(2);
+				utf32_char = (utf8_str[i] & 0b000111111) << bitc;
+			}
+			else if ((utf8_str[i] & 0b11110000) == 0b11100000)
+			{
+				push(i);
+				setBc(3);
+				utf32_char = (utf8_str[i] & 0b00001111) << bitc;
+			}
+			else if ((utf8_str[i] & 0b11111000) == 0b11110000)
+			{
+				push(i);
+				setBc(4);
+				utf32_char = (utf8_str[i] & 0b00000111) << bitc;
+			}
+			else
+			{
+				push(i);
+				setBc(-1);
+			}
+		}
+
+		if (utf8_str.size() > 0) { push(true); }
+
+		utf32_str.shrink_to_fit();
+		return utf32_str;
 	}
 
-	inline std::string Utf32ToUtf8(std::u32string str)
+	inline std::string Utf32ToUtf8(const std::u32string& utf32_str)
 	{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
-		static std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> converter;
-		auto conv = reinterpret_cast<const int32_t*>(str.data());
+		std::string utf8_str;
+		utf8_str.reserve(utf32_str.size() * 2);
 
-		return converter.to_bytes(conv, conv + str.size());
-#endif
+		char utf8_buf[4] = { 0, 0, 0, 0 };
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+		auto push = [&](size_t len)
+		{
+			utf8_str.append((char*)utf8_buf, len);
+			((char32_t*)utf8_buf)[0] = 0;
+		};
 
-		static std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-		return converter.to_bytes(str);
-#endif
+		for (int i = 0; i < utf32_str.size(); i++)
+		{
+			if (!(utf32_str[i] >= 0xD800 && utf32_str[i] <= 0xDFFF) && utf32_str[i] <= 0x10FFFF)
+			{
+				if (utf32_str[i] < (1 << 7))
+				{
+					utf8_buf[0] = utf32_str[i];
+					push(1);
+				}
+				else if (utf32_str[i] < (1 << 11))
+				{
+					utf8_buf[0] = (utf32_str[i] >> 6) | 0b11000000;
+					utf8_buf[1] = (utf32_str[i] & 0b00111111) | 0b10000000;
+					push(2);
+				}
+				else if (utf32_str[i] < (1 << 16))
+				{
+					utf8_buf[0] = (utf32_str[i] >> 12) | 0b11100000;
+					utf8_buf[1] = ((utf32_str[i] >> 6) & 0b00111111) | 0b10000000;
+					utf8_buf[2] = (utf32_str[i] & 0b00111111) | 0b10000000;
+					push(3);
+				}
+				else
+				{
+					utf8_buf[0] = (utf32_str[i] >> 18) | 0b11110000;
+					utf8_buf[1] = ((utf32_str[i] >> 12) & 0b00111111) | 0b10000000;
+					utf8_buf[2] = ((utf32_str[i] >> 6) & 0b00111111) | 0b10000000;
+					utf8_buf[3] = (utf32_str[i] & 0b00111111) | 0b10000000;
+					push(4);
+				}
+			}
+			else
+			{
+				utf8_str.append("\xEF\xBF\xBD");
+			}
+
+		}
+
+		utf8_str.shrink_to_fit();
+		return utf8_str;
 	}
 
 	inline std::string Char32ToUtf8(char32_t character)
