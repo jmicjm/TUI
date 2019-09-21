@@ -10,9 +10,10 @@ namespace tui
 	protected:
 		symbol full;
 		symbol empty;
+		symbol half;
 	public:
-		bar_appearance() : bar_appearance({ U'\x2588', COLOR::WHITE },{ U'\x2588', COLOR::DARKGRAY }) {}
-		bar_appearance(symbol Full, symbol Empty) : full(Full), empty(Empty) {}
+		bar_appearance() : bar_appearance({ U'\x2588', COLOR::WHITE }, { U'\x2588', COLOR::DARKGRAY }, { U'\x258C', {COLOR::WHITE, COLOR::DARKGRAY} }) {}
+		bar_appearance(symbol Full, symbol Empty, symbol Half) : full(Full), empty(Empty), half(Half) {}
 
 		void setColor(color Color) override
 		{
@@ -56,14 +57,25 @@ namespace tui
 			float value_len = abs(m_min - m_value);
 
 			float perc = value_len / bar_len;
-			int f_l = round(perc * surface1D<direction>::getSize());
+			float lenght = perc * surface1D<direction>::getSize();
+			int f_l = round(lenght);
+			
 
 			surface::makeTransparent();
 
 			for (int i = 0; i < surface1D<direction>::getSize(); i++)
-			{
-				if (i < f_l) { surface1D<direction>::setSymbolAt(full, i); }
+			{	
+				if (i < f_l) 
+				{
+					surface1D<direction>::setSymbolAt(full, i); 
+				}
 				else { surface1D<direction>::setSymbolAt(empty, i); }
+			}
+
+			if (lenght > floor(lenght) + 0.25
+			 && lenght < floor(lenght) + 0.75)
+			{
+				surface1D<direction>::setSymbolAt(half, floor(lenght));
 			}
 		}
 	public:
