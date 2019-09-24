@@ -73,7 +73,7 @@ namespace tui
 
 			for (int i = 0; i < surface1D<direction>::getSize(); i++)
 			{	
-				if (i < f_l) 
+				if (i < f_l && direction == tui::DIRECTION::HORIZONTAL || i >= f_l && direction == tui::DIRECTION::VERTICAL) 
 				{
 					surface1D<direction>::setSymbolAt(full, i); 
 				}
