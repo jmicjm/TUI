@@ -13,6 +13,7 @@ namespace tui
 		symbol half;
 	public:
 		bar_appearance() : bar_appearance({ U'\x2588', COLOR::WHITE }, { U'\x2588', COLOR::DARKGRAY }, { U'\x258C', {COLOR::WHITE, COLOR::DARKGRAY} }) {}
+		bar_appearance(symbol Full, symbol Empty) : bar_appearance(Full, Empty, Full) {}
 		bar_appearance(symbol Full, symbol Empty, symbol Half) : full(Full), empty(Empty), half(Half) {}
 
 		void setColor(color Color) override
@@ -41,6 +42,13 @@ namespace tui
 			setAppearance_action();
 		}
 		symbol getEmptySymbol() { return empty; }
+		void setHalfSymbol(symbol Half)
+		{
+			half = Half;
+			setAppearance_action();
+		}
+		symbol getHalfSymbol() { return half; }
+
 	};
 
 	template <int direction>
@@ -79,6 +87,8 @@ namespace tui
 			}
 		}
 	public:
+		bar() : bar(1) {}
+		bar(surface1D_size size) : bar(size, 0,0,0) {}
 		bar(surface1D_size size, float min, float max, float value) : m_min(0), m_max(0), m_value(0)
 		{
 			setMinValue(min);
