@@ -73,11 +73,11 @@ namespace tui
 
 			if (tui::KEYBOARD::isKeyPressed(key_right))
 			{
-				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + m_distance);
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
 			}
 			if (tui::KEYBOARD::isKeyPressed(key_left))
 			{
-				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - m_distance);
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
 			}
 
 			auto getHeight = [&]()
@@ -99,12 +99,14 @@ namespace tui
 					zero_offset = (min / distance) * getHeight();
 				}
 
-				int i_val = m_scroll.getHandlePosition() / m_distance;
-				for (int i = 0; (i_val < m_values.size() && i*m_distance < getSize().x); i++, i_val++)
+				int h_pos = m_scroll.getHandlePosition();
+				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
+
+				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < getSize().x); i++, x += m_distance)
 				{
-					for (int j = 0; j < floor(fabs(m_values[i_val]) / distance * getHeight()); j++)
+					for (int j = 0; j < round(fabs(m_values[i]) / distance * getHeight()); j++)
 					{
-						surface::setSymbolAt(full, { i * m_distance, m_values[i_val] < 0 ? getHeight() + zero_offset + j : getHeight() - 1 - j + zero_offset });
+						surface::setSymbolAt(full, { x, m_values[i] < 0 ? getHeight() + zero_offset + j : getHeight() - 1 - j + zero_offset });
 					}
 				}
 			}
