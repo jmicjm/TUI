@@ -28,7 +28,7 @@ namespace tui
 	struct chart : surface, chart_appearance
 	{
 	private:
-		std::vector<float> m_values = { 5, 3, -2, 5, 6, -6, 4, -3, 1, -2,5,3 };
+		std::vector<float> m_values;
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
 		int m_distance = 3;
 
@@ -120,7 +120,12 @@ namespace tui
 			m_scroll.activate();
 		}
 
-
+		void setValues(std::vector<float> values) 
+		{ 
+			m_values = values;
+			fill();
+		}
+		std::vector<float> getValues() { return m_values; }
 
 
 		void draw_action() override { fill(); }
