@@ -28,8 +28,9 @@ namespace tui
 	struct chart : surface, chart_appearance
 	{
 	private:
-		std::vector<float> m_values = { 5, 3, -2, 5, 6, -6 };
+		std::vector<float> m_values = { 5, 3, -2, 5, 6, -6, 4, -3, 1, -2,5,3 };
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
+		int m_distance = 3;
 
 		void fill()
 		{
@@ -68,7 +69,24 @@ namespace tui
 			float min = getMin();
 			float max = getMax();
 
-			int distance = ceil(abs(min - max));
+			m_scroll.setContentLength(m_values.size() * m_distance);
+
+			if (tui::KEYBOARD::isKeyPressed(key_right))
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + m_distance);
+			}
+			if (tui::KEYBOARD::isKeyPressed(key_left))
+			{
+				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - m_distance);
+			}
+
+			auto getHeight = [&]()
+			{
+				if (m_scroll.isNeeded()) { return getSize().y - 1; }
+				else { return getSize().y; }
+			};
+
+			int distance = ceil(fabs(min - max));
 			if (distance > 0)
 			{
 				if (min > 0)
@@ -78,24 +96,29 @@ namespace tui
 				int zero_offset = 0;
 				if (min < 0)
 				{
-					zero_offset = (min / distance) * getSize().y;
+					zero_offset = (min / distance) * getHeight();
 				}
 
-				for (int i = 0; i < m_values.size() && i < getSize().x; i++)
+				int i_val = m_scroll.getHandlePosition() / m_distance;
+				for (int i = 0; (i_val < m_values.size() && i*m_distance < getSize().x); i++, i_val++)
 				{
-					
-						for (int j = 0; j < floor(abs(m_values[i]) / distance * getSize().y); j++)
-						{
-							surface::setSymbolAt(full, { i * 2, m_values[i] < 0 ? getSize().y + zero_offset + j : getSize().y - 1 - j + zero_offset });
-						}
-					
-	
+					for (int j = 0; j < floor(fabs(m_values[i_val]) / distance * getHeight()); j++)
+					{
+						surface::setSymbolAt(full, { i * m_distance, m_values[i_val] < 0 ? getHeight() + zero_offset + j : getHeight() - 1 - j + zero_offset });
+					}
 				}
 			}
+			insertSurface(m_scroll);
 		}
 
 	public:
-		chart() : m_scroll(1) {}
+		int key_left = tui::KEYBOARD::KEY::LEFT;
+		int key_right = tui::KEYBOARD::KEY::RIGHT;
+		chart() : m_scroll({0,100}) 
+		{
+			m_scroll.setPosition({ { 0,-1 }, { 0,100 } });
+			m_scroll.activate();
+		}
 
 
 
