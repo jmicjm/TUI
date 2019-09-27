@@ -33,10 +33,10 @@ namespace tui
 	{
 	private:
 		bool active = false;
-	public:
+	protected:
 		virtual void activation_action() {}
 		virtual void disactivation_action() {}
-
+	public:
 		void activate() 
 		{ 
 			active = true; 
