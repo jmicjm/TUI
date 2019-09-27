@@ -25,7 +25,7 @@ namespace tui
 
 
 
-	struct chart : surface, chart_appearance
+	struct chart : surface, chart_appearance, active_element
 	{
 	private:
 		std::vector<float> m_values;
@@ -71,15 +71,6 @@ namespace tui
 
 			m_scroll.setContentLength(m_values.size() * m_distance);
 
-			if (tui::KEYBOARD::isKeyPressed(key_right))
-			{
-				m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
-			}
-			if (tui::KEYBOARD::isKeyPressed(key_left))
-			{
-				m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
-			}
-
 			auto getHeight = [&]()
 			{
 				if (m_scroll.isNeeded()) { return getSize().y - 1; }
@@ -119,7 +110,6 @@ namespace tui
 		chart() : m_scroll({0,100}) 
 		{
 			m_scroll.setPosition({ { 0,-1 }, { 0,100 } });
-			m_scroll.activate();
 		}
 
 		void setValues(std::vector<float> values) 
@@ -131,6 +121,9 @@ namespace tui
 
 
 		void draw_action() override { fill(); }
+
+		void activation_action() override { m_scroll.activate(); }
+		void disactivation_action() override { m_scroll.disactivate(); }
 
 	};
 
