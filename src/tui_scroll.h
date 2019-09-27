@@ -161,19 +161,15 @@ namespace tui
 		int keyPageUp = KEYBOARD::KEY::PGUP;
 		int keyPageDown = KEYBOARD::KEY::PGDN;
 
+		scroll() : scroll(1) {}
 		scroll(surface1D_size size)
 		{
-			switch (direction)
-			{
-			case DIRECTION::HORIZONTAL:
-				m_active_appearance.slider = U'\x2550';
-				m_active_appearance.line = U'\x2500';
-
-				break;
-			case DIRECTION::VERTICAL:
-				m_active_appearance.slider = U'\x2551';
-				m_active_appearance.line = U'\x2502';
-				break;
+			if(direction == DIRECTION::HORIZONTAL)
+			{ 
+				setAppearance({ { { U'\x2550', COLOR::WHITE }, { U'\x2500', COLOR::WHITE } },
+								{ { U'\x2550', COLOR::DARKGRAY }, { U'\x2500', COLOR::DARKGRAY } } });
+				keyUp = KEYBOARD::KEY::RIGHT;
+				keyDown = KEYBOARD::KEY::LEFT;
 			}
 
 			surface1D<direction>::setSize({ size.fixed_size, size.percentage_size });
