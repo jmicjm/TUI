@@ -80,42 +80,52 @@ namespace tui
 			};
 
 			int distance = ceil(fabs(min - max));
+			if (min > 0) { distance += min; }
+			if (max < 0) { distance += fabs(max); }
+
 			if (distance > 0)
 			{
-				if (min > 0)
-				{
-					distance += min;
-				}
-				int zero_offset = 0;
-				if (min < 0)
-				{
-					zero_offset = round(min / distance * getHeight());
-				}
+				int halves = getSize().y * 2;
+				int p_halves = max / (float)distance * halves * (max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
 
 				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < getSize().x); i++, x += m_distance)
 				{
-					volatile float lenght = fabs(m_values[i]) / (float)distance * (getHeight()-1);
-					for (int j = 0; j < round(lenght); j++)
-					{
-						surface::setSymbolAt(full, { x, m_values[i] < 0 ? getHeight()  + zero_offset + j : getHeight() - 1 + zero_offset - j });
-					}
+					int h = round(fabs(m_values[i]) / (float)distance * halves);
+					std::vector<bool> blocks(halves, false);
 
-					if (lenght >= floor(lenght) + 0.25
-						&& lenght <= floor(lenght) + 0.75)
+					if (m_values[i] >= 0)
 					{
-						if (m_values[i] >= 0)
+						for (int j = 0; j < h; j++)
 						{
-							surface::setSymbolAt(positive_half, { x, m_values[i] < 0 ? getHeight() + zero_offset + (int)floor(lenght) : getHeight() - 1 + zero_offset - (int)floor(lenght) });
-						}
-						else
-						{
-							surface::setSymbolAt(negative_half, { x, m_values[i] < 0 ? getHeight() + zero_offset + (int)floor(lenght) : getHeight() - 1 + zero_offset - (int)floor(lenght) });
+							blocks[p_halves - 1 - j] = true;
 						}
 					}
-					
+					else
+					{
+						for (int j = 0; j < h; j++)
+						{
+							blocks[p_halves + j] = true;
+						}
+					}
+						
+					for (int j = 0; j < blocks.size(); j+=2)
+					{
+						if (blocks[j] && blocks[j + 1])
+						{
+							surface::setSymbolAt(full, { x, j / 2 });
+						}
+						if (blocks[j] && !blocks[j + 1])
+						{
+							surface::setSymbolAt(negative_half, { x, j / 2 });
+						}
+						if (!blocks[j] && blocks[j + 1])
+						{
+							surface::setSymbolAt(positive_half, { x, j / 2 });
+						}
+					}	
 				}
 			}
 			insertSurface(m_scroll);
