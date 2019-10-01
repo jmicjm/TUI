@@ -12,6 +12,8 @@ namespace tui
 	{
 	protected:
 		symbol full;
+		symbol positive_half = U'\x2584';
+		symbol negative_half = U'\x2580';
 	public:
 		chart_appearance() : chart_appearance({ U'\x2588', COLOR::WHITE }) {}
 		chart_appearance(symbol Full) : full(Full) {}
@@ -30,7 +32,7 @@ namespace tui
 	private:
 		std::vector<float> m_values;
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
-		int m_distance = 3;
+		unsigned int m_distance = 2;
 
 		void fill()
 		{
@@ -87,7 +89,7 @@ namespace tui
 				int zero_offset = 0;
 				if (min < 0)
 				{
-					zero_offset = (min / distance) * getHeight();
+					zero_offset = round(min / distance * getHeight());
 				}
 
 				int h_pos = m_scroll.getHandlePosition();
@@ -95,10 +97,25 @@ namespace tui
 
 				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < getSize().x); i++, x += m_distance)
 				{
-					for (int j = 0; j < round(fabs(m_values[i]) / distance * getHeight()); j++)
+					volatile float lenght = fabs(m_values[i]) / (float)distance * (getHeight()-1);
+					for (int j = 0; j < round(lenght); j++)
 					{
-						surface::setSymbolAt(full, { x, m_values[i] < 0 ? getHeight() + zero_offset + j : getHeight() - 1 - j + zero_offset });
+						surface::setSymbolAt(full, { x, m_values[i] < 0 ? getHeight()  + zero_offset + j : getHeight() - 1 + zero_offset - j });
 					}
+
+					if (lenght >= floor(lenght) + 0.25
+						&& lenght <= floor(lenght) + 0.75)
+					{
+						if (m_values[i] >= 0)
+						{
+							surface::setSymbolAt(positive_half, { x, m_values[i] < 0 ? getHeight() + zero_offset + (int)floor(lenght) : getHeight() - 1 + zero_offset - (int)floor(lenght) });
+						}
+						else
+						{
+							surface::setSymbolAt(negative_half, { x, m_values[i] < 0 ? getHeight() + zero_offset + (int)floor(lenght) : getHeight() - 1 + zero_offset - (int)floor(lenght) });
+						}
+					}
+					
 				}
 			}
 			insertSurface(m_scroll);
@@ -118,6 +135,13 @@ namespace tui
 			fill();
 		}
 		std::vector<float> getValues() { return m_values; }
+
+		void setDistance(unsigned int distance)
+		{
+			if (distance > 0) { m_distance = distance; }
+			else { m_distance = 1; }
+		}
+		unsigned int getDistance() { return m_distance; }
 
 
 		void draw_action() override { fill(); }
