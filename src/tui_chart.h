@@ -86,7 +86,7 @@ namespace tui
 			if (distance > 0)
 			{
 				int halves = getSize().y * 2;
-				int p_halves = max / (float)distance * halves * (max>=0);
+				int p_halves = round(max / (float)distance * halves) * (max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
@@ -96,18 +96,31 @@ namespace tui
 					int h = round(fabs(m_values[i]) / (float)distance * halves);
 					std::vector<bool> blocks(halves, false);
 
+					auto isFull = [&](bool positive, int y)
+					{
+						switch (positive)
+						{
+						case true:
+							if (y >= p_halves - h && y < p_halves) { return true; }
+							break;
+						case false:
+							if (y >= p_halves && y < p_halves + h) { return true; }
+						}
+						return false;
+					};
+
 					if (m_values[i] >= 0)
 					{
-						for (int j = 0; j < h; j++)
+						for (int j = p_halves - h; j < p_halves; j++)
 						{
-							blocks[p_halves - 1 - j] = true;
+							blocks[j] = true;
 						}
 					}
 					else
 					{
-						for (int j = 0; j < h; j++)
+						for (int j = p_halves; j < p_halves + h; j++)
 						{
-							blocks[p_halves + j] = true;
+							blocks[j] = true;
 						}
 					}
 						

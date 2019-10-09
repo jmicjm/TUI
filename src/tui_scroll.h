@@ -168,8 +168,8 @@ namespace tui
 			{ 
 				setAppearance({ { { U'\x2550', COLOR::WHITE }, { U'\x2500', COLOR::WHITE } },
 								{ { U'\x2550', COLOR::DARKGRAY }, { U'\x2500', COLOR::DARKGRAY } } });
-				keyUp = KEYBOARD::KEY::RIGHT;
-				keyDown = KEYBOARD::KEY::LEFT;
+				keyUp = KEYBOARD::KEY::LEFT;
+				keyDown = KEYBOARD::KEY::RIGHT;
 			}
 
 			surface1D<direction>::setSize({ size.fixed_size, size.percentage_size });
