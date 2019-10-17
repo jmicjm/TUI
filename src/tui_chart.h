@@ -71,7 +71,7 @@ namespace tui
 			float min = getMin();
 			float max = getMax();
 
-			m_scroll.setContentLength(m_values.size() * m_distance);
+			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
 
 			auto getHeight = [&]()
 			{
@@ -94,11 +94,10 @@ namespace tui
 				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < getSize().x); i++, x += m_distance)
 				{
 					int h = round(fabs(m_values[i]) / (float)distance * halves);
-					std::vector<bool> blocks(halves, false);
 
-					auto isFull = [&](bool positive, int y)
+					auto isFull = [&](int y)
 					{
-						switch (positive)
+						switch (m_values[i] >= 0)
 						{
 						case true:
 							if (y >= p_halves - h && y < p_halves) { return true; }
@@ -108,40 +107,25 @@ namespace tui
 						}
 						return false;
 					};
-
-					if (m_values[i] >= 0)
-					{
-						for (int j = p_halves - h; j < p_halves; j++)
-						{
-							blocks[j] = true;
-						}
-					}
-					else
-					{
-						for (int j = p_halves; j < p_halves + h; j++)
-						{
-							blocks[j] = true;
-						}
-					}
 						
-					for (int j = 0; j < blocks.size(); j+=2)
+					for (int j = 0; j < halves; j+=2)
 					{
-						if (blocks[j] && blocks[j + 1])
+						if (isFull(j) && isFull(j + 1))
 						{
 							surface::setSymbolAt(full, { x, j / 2 });
 						}
-						if (blocks[j] && !blocks[j + 1])
+						else if (isFull(j) && !isFull(j + 1))
 						{
 							surface::setSymbolAt(negative_half, { x, j / 2 });
 						}
-						if (!blocks[j] && blocks[j + 1])
+						else if (!isFull(j) && isFull(j + 1))
 						{
 							surface::setSymbolAt(positive_half, { x, j / 2 });
 						}
 					}	
 				}
 			}
-			insertSurface(m_scroll);
+			surface::insertSurface(m_scroll);
 		}
 
 	public:
