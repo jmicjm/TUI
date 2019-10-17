@@ -12,17 +12,41 @@ namespace tui
 	{
 	protected:
 		symbol full;
-		symbol positive_half = U'\x2584';
-		symbol negative_half = U'\x2580';
+		symbol lower_half;
+		symbol upper_half;
 	public:
-		chart_appearance() : chart_appearance({ U'\x2588', COLOR::WHITE }) {}
-		chart_appearance(symbol Full) : full(Full) {}
+		chart_appearance() : chart_appearance(U'\x2588', U'\x2584', U'\x2580') {}
+		chart_appearance(symbol Full, symbol Lower, symbol Upper) : full(Full), lower_half(Lower), upper_half(Upper) {}
 
 		void setColor(color Color) override
 		{
 			full.setColor(Color);
 			setAppearance_action();
 		}
+		void setAppearance(chart_appearance appearance) 
+		{
+			*this = appearance; 
+			setAppearance_action();
+		}
+		chart_appearance getAppearance() { return *this; }
+		void setFullSymbol(symbol Full) 
+		{
+			full = Full;
+			setAppearance_action();
+		}
+		symbol getFullSymbol() { return full; }
+		void setLowerHalfSymbol(symbol Lower)
+		{
+			lower_half = Lower;
+			setAppearance_action();
+		}
+		symbol getLowerHalfSymbol() { return lower_half; }
+		void setUpperHalfSymbol(symbol Upper)
+		{
+			upper_half = Upper;
+			setAppearance_action();
+		}
+		symbol getUpperHalfSymbol() { return upper_half; }
 	};
 
 
@@ -116,11 +140,11 @@ namespace tui
 						}
 						else if (isFull(j) && !isFull(j + 1))
 						{
-							surface::setSymbolAt(negative_half, { x, j / 2 });
+							surface::setSymbolAt(upper_half, { x, j / 2 });
 						}
 						else if (!isFull(j) && isFull(j + 1))
 						{
-							surface::setSymbolAt(positive_half, { x, j / 2 });
+							surface::setSymbolAt(lower_half, { x, j / 2 });
 						}
 					}	
 				}
@@ -150,12 +174,13 @@ namespace tui
 		}
 		unsigned int getDistance() { return m_distance; }
 
-
+		
 		void draw_action() override { fill(); }
 
 		void activation_action() override { m_scroll.activate(); }
 		void disactivation_action() override { m_scroll.disactivate(); }
 
+		void setAppearance_action() override { fill(); }
 	};
 
 
