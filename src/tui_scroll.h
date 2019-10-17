@@ -86,6 +86,8 @@ namespace tui
 		int m_handle_position = 0;
 		int m_handle_length = 0;
 
+		bool m_immobilized = false;
+
 		int visibleContentLength()
 		{
 			if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
@@ -206,10 +208,13 @@ namespace tui
 		int getContentLength() { return m_content_length; }
 		int getHandlePosition() { return m_handle_position; }
 
+		void immobilize(bool i) { m_immobilized = i; }
+		bool isImmobilized() { return m_immobilized; }
+
 
 		void update()
 		{
-			if (isActive()) {
+			if (isActive() && !isImmobilized()) {
 				if (KEYBOARD::isKeyPressed(keyUp)) {
 					setHandlePosition(getHandlePosition() - 1);
 				}
