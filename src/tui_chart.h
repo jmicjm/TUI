@@ -58,6 +58,8 @@ namespace tui
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
 		unsigned int m_distance = 2;
 
+		bool m_redraw_needed = true;
+
 		void fill()
 		{
 			surface::makeTransparent();
@@ -163,7 +165,7 @@ namespace tui
 		void setValues(std::vector<float> values) 
 		{ 
 			m_values = values;
-			fill();
+			m_redraw_needed = true;
 		}
 		std::vector<float> getValues() { return m_values; }
 
@@ -171,16 +173,46 @@ namespace tui
 		{
 			if (distance > 0) { m_distance = distance; }
 			else { m_distance = 1; }
+			m_redraw_needed = true;
 		}
 		unsigned int getDistance() { return m_distance; }
 
-		
-		void draw_action() override { fill(); }
+		void update()
+		{
+			int old_scroll_handle_pos = m_scroll.getHandlePosition();
+			m_scroll.immobilize(false);
+			m_scroll.update();
+			m_scroll.immobilize(true);
+			if (m_scroll.getHandlePosition() != old_scroll_handle_pos)
+			{
+				m_redraw_needed = true;
+			}
 
-		void activation_action() override { m_scroll.activate(); }
-		void disactivation_action() override { m_scroll.disactivate(); }
+		}
 
-		void setAppearance_action() override { fill(); }
+		void resize_action() override { m_redraw_needed = true; }
+		void draw_action() override 
+		{
+			update();
+			if (m_redraw_needed)
+			{
+				fill();
+				m_redraw_needed = false;
+			}
+		}
+
+		void activation_action() override 
+		{
+			m_scroll.activate(); 
+			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+		}
+		void disactivation_action() override 
+		{
+			m_scroll.disactivate(); 
+			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+		}
+
+		void setAppearance_action() override { m_redraw_needed = true; }
 	};
 
 
