@@ -191,6 +191,9 @@ namespace tui
 
 		void resizeAction() override { m_redraw_needed = true; }
 		void setAppearanceAction() override { m_redraw_needed = true; }
+
+		void activationAction() override { m_redraw_needed = true; }
+		void disactivationAction() override { m_redraw_needed = true; }
 	};
 
 }
