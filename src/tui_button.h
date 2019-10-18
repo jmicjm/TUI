@@ -179,9 +179,10 @@ namespace tui
 			m_deselection_function_ptr = *func_ptr;
 		}
 
+		void updateAction() override { update(); }
+
 		void drawAction() override 
 		{ 
-			update(); 
 			if (m_redraw_needed)
 			{
 				fill();

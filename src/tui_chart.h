@@ -151,7 +151,7 @@ namespace tui
 					}	
 				}
 			}
-			surface::insertSurface(m_scroll);
+			surface::insertSurface(m_scroll, false);
 		}
 
 	public:
@@ -177,12 +177,10 @@ namespace tui
 		}
 		unsigned int getDistance() { return m_distance; }
 
-		void update()
+		void updateAction() override
 		{
 			int old_scroll_handle_pos = m_scroll.getHandlePosition();
-			m_scroll.immobilize(false);
 			m_scroll.update();
-			m_scroll.immobilize(true);
 			if (m_scroll.getHandlePosition() != old_scroll_handle_pos)
 			{
 				m_redraw_needed = true;
@@ -193,7 +191,6 @@ namespace tui
 		void resizeAction() override { m_redraw_needed = true; }
 		void drawAction() override 
 		{
-			update();
 			if (m_redraw_needed)
 			{
 				fill();

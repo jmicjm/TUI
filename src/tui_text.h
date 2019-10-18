@@ -315,14 +315,13 @@ namespace tui
 			if (pos != m_scroll.getHandlePosition()) { fill(); }
 		}
 
-
-		void drawAction() override { update(); }
 		void resizeAction() override
 		{
 			updateSurfaceSize(m_scroll);
 			adjustSizes();
 			fill();
 		}
+		void updateAction() override { update(); }
 
 		void activationAction() override { m_scroll.activate(); }
 		void disactivationAction() override { m_scroll.disactivate(); }

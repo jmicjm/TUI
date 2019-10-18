@@ -141,11 +141,8 @@ namespace tui
 			if (m_handle_position < 0) { m_handle_position = 0; }
 		}
 
-		void drawAction() override
-		{
-			update();
-			fill();
-		}
+		void updateAction() override { update(); }
+		void drawAction() override { fill(); }
 		void resizeAction() override
 		{
 			adjustHandlePositionRespectLength();

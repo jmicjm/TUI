@@ -309,11 +309,8 @@ namespace tui
 		console_string getText() { return m_str; }
 
 		void resizeAction() override { m_redraw_needed = true; }
-		void drawAction() override 
-		{ 
-			update();
-			fill();
-		}
+		void updateAction() override { update(); }
+		void drawAction() override { fill(); }
 
 		void activationAction() override 
 		{

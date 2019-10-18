@@ -170,6 +170,7 @@ namespace tui
 			
 		protected:
 			virtual void resizeAction() {}
+			virtual void updateAction() {}
 			virtual void drawAction() {}
 		public:	
 			surface() : surface({ {1,1},{0,0} }) {}
@@ -232,10 +233,12 @@ namespace tui
 				obj.resize({x,y});
 			}
 
-			void insertSurface(surface &obj)
+			void insertSurface(surface &obj, bool update = true)
 			{
 				updateSurfaceSize(obj);
 				
+				if(update) { obj.updateAction(); }
+
 				obj.drawAction();
 
 
