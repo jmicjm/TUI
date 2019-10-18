@@ -146,31 +146,7 @@ namespace tui
 			m_scroll.setContentLength(getNumberOfLines());
 		}
 
-		void immobilizeScroll(bool immobilize)
-		{
-			switch (immobilize)
-			{
-			case true:
-				m_scroll.keyDown = -1;
-				m_scroll.keyUp = -1;
-				m_scroll.keyPageDown = -1;
-				m_scroll.keyPageUp = -1;
-				break;
-			case false:
-				m_scroll.keyDown = keyDown;
-				m_scroll.keyUp = keyUp;
-				m_scroll.keyPageDown = keyPageDown;
-				m_scroll.keyPageUp = keyPageUp;
-				break;
-			}
-		}
-
 	public:
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		int keyPageUp = KEYBOARD::KEY::PGUP;
-		int keyPageDown = KEYBOARD::KEY::PGDN;
-		
 		text() : text({ {1,1} }) {}
 		text(surface_size size) : text(size, U"") {}
 		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
@@ -301,16 +277,19 @@ namespace tui
 		}
 		void resizeToText() { resizeToText(0); }
 
+		void setKeys(scroll_keys keys) { m_scroll.setKeys(keys); }
+		scroll_keys getKeys() { return m_scroll.getKeys(); }
+
 		void update()
 		{
-			immobilizeScroll(false);
+			m_scroll.immobilize(false);
 
 			int pos = m_scroll.getHandlePosition();
 
 			m_scroll.update();
 			
 			//immobilize scroll beacuse draw() function may be called outside this function
-			immobilizeScroll(true);
+			m_scroll.immobilize(true);
 
 			if (pos != m_scroll.getHandlePosition()) { fill(); }
 		}

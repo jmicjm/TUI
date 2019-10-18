@@ -246,10 +246,7 @@ namespace tui
 			m_text.usePreparedText(false);
 			m_text.setAppearance(m_text_appearance);
 
-			m_text.keyUp = -1;
-			m_text.keyDown = -1;
-			m_text.keyPageUp = -1;
-			m_text.keyPageDown = -1;
+			m_text.setKeys({ -1,-1,-1,-1 });
 		}
 
 		void update()

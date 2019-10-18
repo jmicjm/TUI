@@ -49,8 +49,6 @@ namespace tui
 		symbol getUpperHalfSymbol() { return upper_half; }
 	};
 
-
-
 	struct chart : surface, chart_appearance, active_element
 	{
 	private:
@@ -154,6 +152,30 @@ namespace tui
 			surface::insertSurface(m_scroll, false);
 		}
 
+		void resizeAction() override { m_redraw_needed = true; }
+		void updateAction() override { update(); }
+		void drawAction() override
+		{
+			if (m_redraw_needed)
+			{
+				fill();
+				m_redraw_needed = false;
+			}
+		}
+
+		void activationAction() override
+		{
+			m_scroll.activate();
+			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+		}
+		void disactivationAction() override
+		{
+			m_scroll.disactivate();
+			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+		}
+
+		void setAppearanceAction() override { m_redraw_needed = true; }
+
 	public:
 		int key_left = tui::KEYBOARD::KEY::LEFT;
 		int key_right = tui::KEYBOARD::KEY::RIGHT;
@@ -177,7 +199,7 @@ namespace tui
 		}
 		unsigned int getDistance() { return m_distance; }
 
-		void updateAction() override
+		void update()
 		{
 			int old_scroll_handle_pos = m_scroll.getHandlePosition();
 			m_scroll.update();
@@ -185,32 +207,6 @@ namespace tui
 			{
 				m_redraw_needed = true;
 			}
-
 		}
-
-		void resizeAction() override { m_redraw_needed = true; }
-		void drawAction() override 
-		{
-			if (m_redraw_needed)
-			{
-				fill();
-				m_redraw_needed = false;
-			}
-		}
-
-		void activationAction() override 
-		{
-			m_scroll.activate(); 
-			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
-		}
-		void disactivationAction() override 
-		{
-			m_scroll.disactivate(); 
-			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
-		}
-
-		void setAppearanceAction() override { m_redraw_needed = true; }
 	};
-
-
 }

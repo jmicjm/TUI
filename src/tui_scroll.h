@@ -7,6 +7,14 @@
 
 namespace tui
 {
+	struct scroll_keys
+	{
+		int keyUp = KEYBOARD::KEY::UP;
+		int keyDown = KEYBOARD::KEY::DOWN;
+		int keyPageUp = KEYBOARD::KEY::PGUP;
+		int keyPageDown = KEYBOARD::KEY::PGDN;
+	};
+
 	struct scroll_appearance_a
 	{
 		symbol slider; //handle
@@ -88,6 +96,8 @@ namespace tui
 
 		bool m_immobilized = false;
 
+		scroll_keys keys;
+
 		int visibleContentLength()
 		{
 			if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
@@ -155,11 +165,6 @@ namespace tui
 		void disactivationAction() override { fill(); }
 
 	public:
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		int keyPageUp = KEYBOARD::KEY::PGUP;
-		int keyPageDown = KEYBOARD::KEY::PGDN;
-
 		scroll() : scroll(1) {}
 		scroll(surface1D_size size)
 		{
@@ -167,8 +172,8 @@ namespace tui
 			{ 
 				setAppearance({ { { U'\x2550', COLOR::WHITE }, { U'\x2500', COLOR::WHITE } },
 								{ { U'\x2550', COLOR::DARKGRAY }, { U'\x2500', COLOR::DARKGRAY } } });
-				keyUp = KEYBOARD::KEY::LEFT;
-				keyDown = KEYBOARD::KEY::RIGHT;
+				keys.keyUp = KEYBOARD::KEY::LEFT;
+				keys.keyDown = KEYBOARD::KEY::RIGHT;
 			}
 
 			surface1D<direction>::setSize({ size.fixed_size, size.percentage_size });
@@ -208,20 +213,22 @@ namespace tui
 		void immobilize(bool i) { m_immobilized = i; }
 		bool isImmobilized() { return m_immobilized; }
 
+		void setKeys(scroll_keys Keys) { keys = Keys; }
+		scroll_keys getKeys() { return keys; }
 
 		void update()
 		{
 			if (isActive() && !isImmobilized()) {
-				if (KEYBOARD::isKeyPressed(keyUp)) {
+				if (KEYBOARD::isKeyPressed(keys.keyUp)) {
 					setHandlePosition(getHandlePosition() - 1);
 				}
-				if (KEYBOARD::isKeyPressed(keyDown)) {
+				if (KEYBOARD::isKeyPressed(keys.keyDown)) {
 					setHandlePosition(getHandlePosition() + 1);
 				}
-				if (KEYBOARD::isKeyPressed(keyPageUp)) {
+				if (KEYBOARD::isKeyPressed(keys.keyPageUp)) {
 					setHandlePosition(getHandlePosition() - visibleContentLength());
 				}
-				if (KEYBOARD::isKeyPressed(keyPageDown)) {
+				if (KEYBOARD::isKeyPressed(keys.keyPageDown)) {
 					setHandlePosition(getHandlePosition() + visibleContentLength());
 				}
 			}
