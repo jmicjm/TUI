@@ -30,50 +30,50 @@ namespace tui
 			m_top_right.setColor(Color);
 			m_bottom_left.setColor(Color);
 			m_bottom_right.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setAppearance(box_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		box_appearance getAppearance() { return *this; }
 
 		void setHorizontalLine(symbol line)
 		{
 			m_horizontal_line = line;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getHorizontalLine() { return m_horizontal_line; }
 		void setVerticalLine(symbol line)
 		{
 			m_vertical_line = line;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getVerticalLine() { return m_vertical_line; }
 		void setTopLeft(symbol top_l)
 		{
 			m_top_left = top_l;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getTopLeft() { return m_top_left; }
 		void setTopRight(symbol top_r)
 		{
 			m_top_right = top_r;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getTopRight() { return m_top_right; }
 		void setBottomLeft(symbol bottom_l)
 		{
 			m_bottom_left = bottom_l;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getBottomLeft() { return m_bottom_left; }
 		void setBottomRight(symbol bottom_r)
 		{
 			m_bottom_right = bottom_r;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getBottomRight() { return m_bottom_right; }
 
@@ -95,8 +95,8 @@ namespace tui
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
 		}
-		void resize_action() override { fill(); }
-		void setAppearance_action() override { fill(); }
+		void resizeAction() override { fill(); }
+		void setAppearanceAction() override { fill(); }
 	public:
 		box() : box({ {3,3} }) {}
 		box(surface_size size) : box(size, box_appearance()) {}

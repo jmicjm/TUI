@@ -16,19 +16,19 @@ namespace tui
 		void setColor(color Color) override
 		{
 			text_scroll_appearance.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		void setAppearance(text_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		text_appearance getAppearance() { return *this; }
 
 		void setScrollAppearance(scroll_appearance scroll)
 		{
 			text_scroll_appearance = scroll;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		scroll_appearance getScrollAppearance() { return text_scroll_appearance; }
 	};
@@ -181,7 +181,7 @@ namespace tui
 			m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 			setText(txt);
 
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		vec2i getSymbolPos(int i)
@@ -316,18 +316,18 @@ namespace tui
 		}
 
 
-		void draw_action() override { update(); }
-		void resize_action() override
+		void drawAction() override { update(); }
+		void resizeAction() override
 		{
 			updateSurfaceSize(m_scroll);
 			adjustSizes();
 			fill();
 		}
 
-		void activation_action() override { m_scroll.activate(); }
-		void disactivation_action() override { m_scroll.disactivate(); }
+		void activationAction() override { m_scroll.activate(); }
+		void disactivationAction() override { m_scroll.disactivate(); }
 
-		void setAppearance_action() override 
+		void setAppearanceAction() override 
 		{ 
 			m_scroll.setAppearance(text_scroll_appearance);
 			fill();

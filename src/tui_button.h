@@ -33,27 +33,27 @@ namespace tui
 		{
 			m_active_appearance.setColor(Color);
 			m_inactive_appearance.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setAppearance(button_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		button_appearance getAppearance() { return *this; }
 
 		void setActiveAppearance(button_appearance_a active)
 		{
 			m_active_appearance = active;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		button_appearance_a getActiveAppearance() { return m_active_appearance; }
 
 		void setInactiveAppearance(button_appearance_a inactive)
 		{
 			m_inactive_appearance = inactive;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		button_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
@@ -179,7 +179,7 @@ namespace tui
 			m_deselection_function_ptr = *func_ptr;
 		}
 
-		void draw_action() override 
+		void drawAction() override 
 		{ 
 			update(); 
 			if (m_redraw_needed)
@@ -189,8 +189,8 @@ namespace tui
 			}
 		}
 
-		void resize_action() override { m_redraw_needed = true; }
-		void setAppearance_action() override { m_redraw_needed = true; }
+		void resizeAction() override { m_redraw_needed = true; }
+		void setAppearanceAction() override { m_redraw_needed = true; }
 	};
 
 }

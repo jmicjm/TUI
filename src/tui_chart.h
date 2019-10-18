@@ -21,30 +21,30 @@ namespace tui
 		void setColor(color Color) override
 		{
 			full.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		void setAppearance(chart_appearance appearance) 
 		{
 			*this = appearance; 
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		chart_appearance getAppearance() { return *this; }
 		void setFullSymbol(symbol Full) 
 		{
 			full = Full;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getFullSymbol() { return full; }
 		void setLowerHalfSymbol(symbol Lower)
 		{
 			lower_half = Lower;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getLowerHalfSymbol() { return lower_half; }
 		void setUpperHalfSymbol(symbol Upper)
 		{
 			upper_half = Upper;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getUpperHalfSymbol() { return upper_half; }
 	};
@@ -190,8 +190,8 @@ namespace tui
 
 		}
 
-		void resize_action() override { m_redraw_needed = true; }
-		void draw_action() override 
+		void resizeAction() override { m_redraw_needed = true; }
+		void drawAction() override 
 		{
 			update();
 			if (m_redraw_needed)
@@ -201,18 +201,18 @@ namespace tui
 			}
 		}
 
-		void activation_action() override 
+		void activationAction() override 
 		{
 			m_scroll.activate(); 
 			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
 		}
-		void disactivation_action() override 
+		void disactivationAction() override 
 		{
 			m_scroll.disactivate(); 
 			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
 		}
 
-		void setAppearance_action() override { m_redraw_needed = true; }
+		void setAppearanceAction() override { m_redraw_needed = true; }
 	};
 
 

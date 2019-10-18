@@ -53,26 +53,26 @@ namespace tui
 		{
 			m_active_appearance.setColor(Color);
 			m_inactive_appearance.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setAppearance(scroll_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		scroll_appearance getAppearance() { return *this; }
 
 		void setActiveAppearance(scroll_appearance_a active)
 		{
 			m_active_appearance = active;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		scroll_appearance_a getActiveAppearance() { return m_active_appearance; }
 		void setInactiveAppearance(scroll_appearance_a inactive)
 		{
 			m_inactive_appearance = inactive;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		scroll_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
@@ -141,21 +141,21 @@ namespace tui
 			if (m_handle_position < 0) { m_handle_position = 0; }
 		}
 
-		void draw_action() override
+		void drawAction() override
 		{
 			update();
 			fill();
 		}
-		void resize_action() override
+		void resizeAction() override
 		{
 			adjustHandlePositionRespectLength();
 			fill();
 		}
 
-		void setAppearance_action() override { fill(); }
+		void setAppearanceAction() override { fill(); }
 
-		void activation_action() override { fill(); }
-		void disactivation_action() override { fill(); }
+		void activationAction() override { fill(); }
+		void disactivationAction() override { fill(); }
 
 	public:
 		int keyUp = KEYBOARD::KEY::UP;

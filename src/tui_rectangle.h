@@ -16,20 +16,20 @@ namespace tui
 		void setColor(color Color) override
 		{
 			m_filling.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setAppearance(rectangle_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		rectangle_appearance getAppearance() { return *this; }
 
 		void setFilling(symbol filling)
 		{
 			m_filling = filling;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getFilling() { return m_filling; }
 	};
@@ -47,8 +47,8 @@ namespace tui
 				}
 			}
 		}
-		void resize_action() override { fill(); }
-		void setAppearance_action() override { fill(); }
+		void resizeAction() override { fill(); }
+		void setAppearanceAction() override { fill(); }
 	public:
 		rectangle() : rectangle({{ 1,1 }}) {}
 		rectangle(surface_size size) : rectangle(size, rectangle_appearance()) {}

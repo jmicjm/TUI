@@ -20,32 +20,32 @@ namespace tui
 		{
 			full.setColor(Color);
 			empty.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setAppearance(bar_appearance appearance)
 		{
 			*this = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		bar_appearance getAppearance() { return *this; }
 
 		void setFullSymbol(symbol Full)
 		{
 			full = Full;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getFullSymbol() { return full; }
 		void setEmptySymbol(symbol Empty)
 		{
 			empty = Empty;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getEmptySymbol() { return empty; }
 		void setHalfSymbol(symbol Half)
 		{
 			half = Half;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getHalfSymbol() { return half; }
 
@@ -122,9 +122,9 @@ namespace tui
 		}
 		float getValue() { return m_value; }
 
-		void draw_action() override {};
-		void resize_action() override { fill(); }
+		void drawAction() override {};
+		void resizeAction() override { fill(); }
 
-		void setAppearance_action() override { fill(); }
+		void setAppearanceAction() override { fill(); }
 	};
 }

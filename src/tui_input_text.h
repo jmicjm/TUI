@@ -28,27 +28,27 @@ namespace tui
 			m_insert_cursor.setColor(Color);
 			m_overtype_cursor.setColor(Color);
 			m_text_appearance.setColor(Color);
-			setAppearance_action();
+			setAppearanceAction();
 		}
 
 		void setInsertCursorSymbol(symbol Cursor)
 		{
 			m_insert_cursor = Cursor;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getInsertCursorSymbol() { return m_insert_cursor; }
 
 		void setOvertypeCursorSymbol(symbol Cursor)
 		{
 			m_overtype_cursor = Cursor;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		symbol getOvertypeCursorSymbol() { return m_overtype_cursor; }
 
 		void setTextAppearance(text_appearance appearance)
 		{
 			m_text_appearance = appearance;
-			setAppearance_action();
+			setAppearanceAction();
 		}
 		text_appearance getTextAppearance() { return m_text_appearance; }
 	};
@@ -308,25 +308,25 @@ namespace tui
 
 		console_string getText() { return m_str; }
 
-		void resize_action() override { m_redraw_needed = true; }
-		void draw_action() override 
+		void resizeAction() override { m_redraw_needed = true; }
+		void drawAction() override 
 		{ 
 			update();
 			fill();
 		}
 
-		void activation_action() override 
+		void activationAction() override 
 		{
 			m_text.activate();
 			m_redraw_needed = true;
 		}
-		void disactivation_action() override 
+		void disactivationAction() override 
 		{
 			m_text.disactivate();
 			m_redraw_needed = true;
 		}
 
-		void setAppearance_action() override 
+		void setAppearanceAction() override 
 		{
 			m_text.setAppearance(m_text_appearance);
 			m_redraw_needed = true; 

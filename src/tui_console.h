@@ -34,18 +34,18 @@ namespace tui
 	private:
 		bool active = false;
 	protected:
-		virtual void activation_action() {}
-		virtual void disactivation_action() {}
+		virtual void activationAction() {}
+		virtual void disactivationAction() {}
 	public:
 		void activate() 
 		{ 
 			active = true; 
-			activation_action();
+			activationAction();
 		}
 		void disactivate() 
 		{ 
 			active = false; 
-			disactivation_action();
+			disactivationAction();
 		}
 		bool isActive() { return active; }
 	};
@@ -158,7 +158,7 @@ namespace tui
 					m_width = new_size.x;
 					
 					makeTransparent();
-					resize_action();
+					resizeAction();
 
 					m_resized = true;
 				}
@@ -169,8 +169,8 @@ namespace tui
 			}
 			
 		protected:
-			virtual void resize_action() {}
-			virtual void draw_action() {}
+			virtual void resizeAction() {}
+			virtual void drawAction() {}
 		public:	
 			surface() : surface({ {1,1},{0,0} }) {}
 			surface(surface_size size)
@@ -236,7 +236,7 @@ namespace tui
 			{
 				updateSurfaceSize(obj);
 				
-				obj.draw_action();
+				obj.drawAction();
 
 
 				int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
