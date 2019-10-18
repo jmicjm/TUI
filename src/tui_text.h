@@ -66,7 +66,7 @@ namespace tui
 
 			makeTransparent();
 			insertSurface(m_text);
-			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll); }
+			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll, false); }
 		}
 		void prepareText()
 		{
@@ -282,15 +282,8 @@ namespace tui
 
 		void update()
 		{
-			m_scroll.immobilize(false);
-
 			int pos = m_scroll.getHandlePosition();
-
 			m_scroll.update();
-			
-			//immobilize scroll beacuse draw() function may be called outside this function
-			m_scroll.immobilize(true);
-
 			if (pos != m_scroll.getHandlePosition()) { fill(); }
 		}
 
