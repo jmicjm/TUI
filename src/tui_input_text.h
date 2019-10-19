@@ -73,8 +73,7 @@ namespace tui
 
 		bool m_redraw_needed = true;
 		bool m_insert_mode = true;
-
-		bool blink = true;
+		bool m_blink = true;
 
 		input_text_keys m_keys;
 
@@ -125,7 +124,7 @@ namespace tui
 			m_text.setText(s);
 		}
 		
-		void moveCursorRight(unsigned int n)
+		void moveCursorRight(unsigned int n = 1)
 		{
 			if (m_cursor_pos_in_txt + n <= m_str.size()) 
 			{ 
@@ -138,9 +137,7 @@ namespace tui
 				m_redraw_needed = true;
 			}
 		}
-		void moveCursorRight() { moveCursorRight(1); }
-
-		void moveCursorLeft(unsigned int n)
+		void moveCursorLeft(unsigned int n = 1)
 		{
 			if (m_cursor_pos_in_txt - (int)n >= 0) //without casting "n" to signed "m_cursor_pos_in_txt" is implicitly casted to unsigned and condition is always true 
 			{ 
@@ -153,9 +150,7 @@ namespace tui
 				m_redraw_needed = true;
 			}
 		}
-		void moveCursorLeft() { moveCursorLeft(1); }
-
-		void moveCursorUp(unsigned int n)
+		void moveCursorUp(unsigned int n = 1)
 		{
 			if (m_str.size() > 0)
 			{
@@ -180,9 +175,7 @@ namespace tui
 				}
 			}
 		}
-		void moveCursorUp() { moveCursorUp(1); }
-
-		void moveCursorDown(unsigned int n)
+		void moveCursorDown(unsigned int n = 1)
 		{
 			if (m_str.size() > 0)
 			{
@@ -213,8 +206,6 @@ namespace tui
 				}
 			}
 		}
-		void moveCursorDown() { moveCursorDown(1); }
-
 
 		void fill()
 		{		
@@ -228,7 +219,7 @@ namespace tui
 
 			if (isActive() && (m_cursor_blink.isEnd(false) || m_redraw_needed))
 			{
-				if (blink)
+				if (m_blink)
 				{
 					if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
 					else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
@@ -238,10 +229,31 @@ namespace tui
 					setSymbolAt(m_text.getSymbolAt(m_cursor_pos), m_cursor_pos);
 				}
 
-				if (m_cursor_blink.isEnd(true)) { blink = !blink; }
+				if (m_cursor_blink.isEnd(true)) { m_blink = !m_blink; }
 			}
 
 			m_redraw_needed = false;
+		}
+
+		void resizeAction() override { m_redraw_needed = true; }
+		void updateAction() override { update(); }
+		void drawAction() override { fill(); }
+
+		void activationAction() override
+		{
+			m_text.activate();
+			m_redraw_needed = true;
+		}
+		void disactivationAction() override
+		{
+			m_text.disactivate();
+			m_redraw_needed = true;
+		}
+
+		void setAppearanceAction() override
+		{
+			m_text.setAppearance(m_text_appearance);
+			m_redraw_needed = true;
 		}
 	public:
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
@@ -253,6 +265,8 @@ namespace tui
 
 			m_text.setKeys({ -1,-1,-1,-1 });
 		}
+
+		console_string getText() { return m_str; }
 
 		void setKeys(input_text_keys keys) { m_keys = keys; }
 		input_text_keys getKeys() { return m_keys; }
@@ -310,30 +324,5 @@ namespace tui
 				if (KEYBOARD::isKeyPressed(m_keys.keyInsert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
-
-		console_string getText() { return m_str; }
-
-		void resizeAction() override { m_redraw_needed = true; }
-		void updateAction() override { update(); }
-		void drawAction() override { fill(); }
-
-		void activationAction() override 
-		{
-			m_text.activate();
-			m_redraw_needed = true;
-		}
-		void disactivationAction() override 
-		{
-			m_text.disactivate();
-			m_redraw_needed = true;
-		}
-
-		void setAppearanceAction() override 
-		{
-			m_text.setAppearance(m_text_appearance);
-			m_redraw_needed = true; 
-		}
-
 	};
-
 }
