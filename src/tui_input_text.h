@@ -214,7 +214,7 @@ namespace tui
 			if (m_redraw_needed)
 			{
 				makeTransparent();
-				insertSurface(m_text);
+				insertSurface(m_text, false);
 			}
 
 			if (isActive() && (m_cursor_blink.isEnd(false) || m_redraw_needed))
@@ -262,8 +262,6 @@ namespace tui
 			m_text.useDensePunctuation(false);
 			m_text.usePreparedText(false);
 			m_text.setAppearance(m_text_appearance);
-
-			m_text.setKeys({ -1,-1,-1,-1 });
 		}
 
 		console_string getText() { return m_str; }
