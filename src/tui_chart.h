@@ -3,7 +3,6 @@
 #include "tui_appearance.h"
 #include "tui_text_utils.h"
 #include "tui_scroll.h"
-#include "tui_bar.h"
 #include <vector>
 
 namespace tui
@@ -96,6 +95,7 @@ namespace tui
 			float max = getMax();
 
 			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
+			surface::insertSurface(m_scroll, false);
 
 			auto getHeight = [&]()
 			{
@@ -109,7 +109,7 @@ namespace tui
 
 			if (distance > 0)
 			{
-				int halves = getSize().y * 2;
+				int halves = getHeight() * 2;
 				int p_halves = round(max / (float)distance * halves) * (max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
@@ -149,7 +149,6 @@ namespace tui
 					}	
 				}
 			}
-			surface::insertSurface(m_scroll, false);
 		}
 
 		void resizeAction() override { m_redraw_needed = true; }
@@ -177,8 +176,6 @@ namespace tui
 		void setAppearanceAction() override { m_redraw_needed = true; }
 
 	public:
-		int key_left = tui::KEYBOARD::KEY::LEFT;
-		int key_right = tui::KEYBOARD::KEY::RIGHT;
 		chart() : m_scroll({0,100}) 
 		{
 			m_scroll.setPosition({ { 0,-1 }, { 0,100 } });
