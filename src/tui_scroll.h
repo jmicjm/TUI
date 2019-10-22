@@ -92,7 +92,6 @@ namespace tui
 		int m_content_length = 0;
 		int m_visible_content_length = -1;
 		int m_handle_position = 0;
-		int m_handle_length = 0;
 
 		bool m_immobilized = false;
 
@@ -116,15 +115,15 @@ namespace tui
 			{
 				for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
 
-				m_handle_length = ((visibleContentLength() * 1.f) / m_content_length) * surface1D<direction>::getSize();
+				int handle_length = ((visibleContentLength() * 1.f) / m_content_length) * surface1D<direction>::getSize();
 
-				if (m_handle_length < 1) { m_handle_length = 1; }
+				if (handle_length < 1) { handle_length = 1; }
 
 				float handle_pos_perc = m_handle_position * 1.f / (m_content_length * 1.f - visibleContentLength());
 
-				int handle_position = round(surface1D<direction>::getSize() * (handle_pos_perc)-m_handle_length * (handle_pos_perc));
+				int handle_position = round(surface1D<direction>::getSize() * (handle_pos_perc)-handle_length * (handle_pos_perc));
 
-				for (int i = 0; i < m_handle_length; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); }
+				for (int i = 0; i < handle_length; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); }
 			}
 			else
 			{
