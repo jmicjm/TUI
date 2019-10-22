@@ -116,7 +116,7 @@ namespace tui
 			{
 				for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
 
-				m_handle_length = ((surface1D<direction>::getSize() * 1.f) / m_content_length) * surface1D<direction>::getSize();
+				m_handle_length = ((visibleContentLength() * 1.f) / m_content_length) * surface1D<direction>::getSize();
 
 				if (m_handle_length < 1) { m_handle_length = 1; }
 
@@ -195,6 +195,7 @@ namespace tui
 		void setVisibleContentLength(int length)
 		{
 			m_visible_content_length = length;
+			adjustHandlePositionRespectLength();
 			fill();
 		}
 		int getVisibleContentLength() { return m_visible_content_length; }
