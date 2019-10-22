@@ -53,13 +53,15 @@ namespace tui
 	private:
 		std::vector<float> m_values;
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
+		tui::surface m_chart;
 		unsigned int m_distance = 2;
+		bool m_display_value_labels = false;
 
 		bool m_redraw_needed = true;
 
 		void fill()
 		{
-			surface::makeTransparent();
+			makeTransparent();
 
 			auto getMin = [&]()
 			{
@@ -94,14 +96,29 @@ namespace tui
 			float min = getMin();
 			float max = getMax();
 
-			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
-			surface::insertSurface(m_scroll, false);
+			console_string max_str = std::to_string(max);
+			console_string min_str = std::to_string(min);
+			unsigned short range_width = m_display_value_labels * (max_str.size() > min_str.size() ? max_str.size() : min_str.size());
 
-			auto getHeight = [&]()
+			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
+			m_scroll.setVisibleContentLength(getSize().x - range_width);
+			insertSurface(m_scroll, false);
+
+			if (m_scroll.isNeeded()) { m_chart.setSize({ {range_width * -1,-1},{100,100} }); }
+			else { m_chart.setSize({ {range_width * -1,0},{100,100} }); }
+			updateSurfaceSize(m_chart);
+
+			if (m_display_value_labels)
 			{
-				if (m_scroll.isNeeded()) { return getSize().y - 1; }
-				else { return getSize().y; }
-			};
+				for (int i = 0; i < max_str.size(); i++)
+				{
+					setSymbolAt(max_str[i], { i,0 });
+				}
+				for (int i = 0; i < min_str.size(); i++)
+				{
+					setSymbolAt(min_str[i], { i,m_chart.getSize().y - 1 });
+				}
+			}
 
 			int distance = ceil(fabs(min - max));
 			if (min > 0) { distance += min; }
@@ -109,13 +126,13 @@ namespace tui
 
 			if (distance > 0)
 			{
-				int halves = getHeight() * 2;
+				int halves = m_chart.getSize().y * 2;
 				int p_halves = round(max / (float)distance * halves) * (max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
 
-				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < getSize().x); i++, x += m_distance)
+				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
 				{
 					int h = round(fabs(m_values[i]) / (float)distance * halves);
 
@@ -136,19 +153,20 @@ namespace tui
 					{
 						if (isFull(j) && isFull(j + 1))
 						{
-							surface::setSymbolAt(full, { x, j / 2 });
+							m_chart.setSymbolAt(full, { x, j / 2 });
 						}
 						else if (isFull(j) && !isFull(j + 1))
 						{
-							surface::setSymbolAt(upper_half, { x, j / 2 });
+							m_chart.setSymbolAt(upper_half, { x, j / 2 });
 						}
 						else if (!isFull(j) && isFull(j + 1))
 						{
-							surface::setSymbolAt(lower_half, { x, j / 2 });
+							m_chart.setSymbolAt(lower_half, { x, j / 2 });
 						}
 					}	
 				}
 			}
+			insertSurface(m_chart);
 		}
 
 		void resizeAction() override { m_redraw_needed = true; }
@@ -179,6 +197,7 @@ namespace tui
 		chart() : m_scroll({0,100}) 
 		{
 			m_scroll.setPosition({ { 0,-1 }, { 0,100 } });
+			m_chart.setPosition({ {0,0}, {0,0}, {tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP} });
 		}
 
 		void setValues(std::vector<float> values) 
@@ -195,6 +214,13 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		unsigned int getDistance() { return m_distance; }
+
+		void displayValueLabels(bool display)
+		{
+			m_display_value_labels = display;
+			m_redraw_needed = true;
+		}
+		bool isDisplayingValueLabels() { return m_display_value_labels; }
 
 		void update()
 		{
