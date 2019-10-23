@@ -4,6 +4,8 @@
 #include "tui_text_utils.h"
 #include "tui_scroll.h"
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 namespace tui
 {
@@ -56,6 +58,7 @@ namespace tui
 		tui::surface m_chart;
 		unsigned int m_distance = 2;
 		bool m_display_value_labels = false;
+		int m_value_labels_precision = -1;
 
 		bool m_redraw_needed = true;
 
@@ -96,8 +99,27 @@ namespace tui
 			float min = getMin();
 			float max = getMax();
 
-			console_string max_str = std::to_string(max);
-			console_string min_str = std::to_string(min);
+			auto to_string_p = [](float val, int precision)
+			{
+				std::stringstream ss_val;
+				if (precision >= 0)
+				{
+					ss_val << std::fixed << std::setprecision(precision);
+				}
+				ss_val << val;
+				std::string s_val = ss_val.str();
+
+				for (int i = s_val.size() - 1; i > 1; i--)
+				{
+					if (s_val[i] == '0') { s_val.pop_back(); }
+					else { break; }
+				}
+
+				return s_val;
+			};
+
+			console_string max_str = to_string_p(max, m_value_labels_precision);
+			console_string min_str = to_string_p(min, m_value_labels_precision);
 			unsigned short range_width = m_display_value_labels * (max_str.size() > min_str.size() ? max_str.size() : min_str.size());
 
 			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
@@ -221,6 +243,13 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		bool isDisplayingValueLabels() { return m_display_value_labels; }
+
+		void setValueLabelsPrecision(int precision)
+		{
+			m_value_labels_precision = precision;
+			m_redraw_needed = true;
+		}
+		int getValueLabelsPrecision() { return m_value_labels_precision; }
 
 		void update()
 		{
