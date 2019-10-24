@@ -109,9 +109,14 @@ namespace tui
 				ss_val << val;
 				std::string s_val = ss_val.str();
 
-				for (int i = s_val.size() - 1; i > 1; i--)
+				for (int i = s_val.size() - 1; i > 0; i--)
 				{
 					if (s_val[i] == '0') { s_val.pop_back(); }
+					else if (s_val[i] == '.') 
+					{
+						s_val.pop_back();
+						break;
+					}
 					else { break; }
 				}
 
@@ -142,21 +147,21 @@ namespace tui
 				}
 			}
 
-			int distance = ceil(fabs(min - max));
+			float distance = (fabs(min - max));
 			if (min > 0) { distance += min; }
 			if (max < 0) { distance += fabs(max); }
 
 			if (distance > 0)
 			{
 				int halves = m_chart.getSize().y * 2;
-				int p_halves = round(max / (float)distance * halves) * (max>=0);
+				int p_halves = round(max / distance * halves) * (max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
 
 				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
 				{
-					int h = round(fabs(m_values[i]) / (float)distance * halves);
+					int h = round(fabs(m_values[i]) / distance * halves);
 
 					auto isFull = [&](int y)
 					{
