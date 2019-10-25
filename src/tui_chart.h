@@ -60,72 +60,18 @@ namespace tui
 		bool m_display_value_labels = false;
 		int m_value_labels_precision = -1;
 
+		float m_min = 0;
+		float m_max = 0;
+		console_string m_min_str;
+		console_string m_max_str;
+
 		bool m_redraw_needed = true;
 
 		void fill()
 		{
 			makeTransparent();
 
-			auto getMin = [&]()
-			{
-				if (m_values.size() == 0) { return (float)0; }
-				else
-				{
-					float min = m_values[0];
-					{
-						for (int i = 0; i < m_values.size(); i++)
-						{
-							if (m_values[i] < min) { min = m_values[i]; }
-						}
-					}
-					return min;
-				}
-			};
-			auto getMax = [&]()
-			{
-				if (m_values.size() == 0) { return (float)0; }
-				else
-				{
-					float max = m_values[0];
-					{
-						for (int i = 0; i < m_values.size(); i++)
-						{
-							if (m_values[i] > max) { max = m_values[i]; }
-						}
-					}
-					return max;
-				}
-			};
-			float min = getMin();
-			float max = getMax();
-
-			auto to_string_p = [](float val, int precision)
-			{
-				std::stringstream ss_val;
-				if (precision >= 0)
-				{
-					ss_val << std::fixed << std::setprecision(precision);
-				}
-				ss_val << val;
-				std::string s_val = ss_val.str();
-
-				for (int i = s_val.size() - 1; i > 0; i--)
-				{
-					if (s_val[i] == '0') { s_val.pop_back(); }
-					else if (s_val[i] == '.') 
-					{
-						s_val.pop_back();
-						break;
-					}
-					else { break; }
-				}
-
-				return s_val;
-			};
-
-			console_string max_str = to_string_p(max, m_value_labels_precision);
-			console_string min_str = to_string_p(min, m_value_labels_precision);
-			unsigned short range_width = m_display_value_labels * (max_str.size() > min_str.size() ? max_str.size() : min_str.size());
+			unsigned short range_width = m_display_value_labels * (m_max_str.size() > m_min_str.size() ? m_max_str.size() : m_min_str.size());
 
 			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
 			m_scroll.setVisibleContentLength(getSize().x - range_width);
@@ -137,24 +83,24 @@ namespace tui
 
 			if (m_display_value_labels)
 			{
-				for (int i = 0; i < max_str.size(); i++)
+				for (int i = 0; i < m_max_str.size(); i++)
 				{
-					setSymbolAt(max_str[i], { i,0 });
+					setSymbolAt(m_max_str[i], { i,0 });
 				}
-				for (int i = 0; i < min_str.size(); i++)
+				for (int i = 0; i < m_min_str.size(); i++)
 				{
-					setSymbolAt(min_str[i], { i,m_chart.getSize().y - 1 });
+					setSymbolAt(m_min_str[i], { i,m_chart.getSize().y - 1 });
 				}
 			}
 
-			float distance = (fabs(min - max));
-			if (min > 0) { distance += min; }
-			if (max < 0) { distance += fabs(max); }
+			float distance = (fabs(m_min - m_max));
+			if (m_min > 0) { distance += m_min; }
+			if (m_max < 0) { distance += fabs(m_max); }
 
 			if (distance > 0)
 			{
 				int halves = m_chart.getSize().y * 2;
-				int p_halves = round(max / distance * halves) * (max>=0);
+				int p_halves = round(m_max / distance * halves) * (m_max>=0);
 
 				int h_pos = m_scroll.getHandlePosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
@@ -229,6 +175,66 @@ namespace tui
 
 		void setValues(std::vector<float> values) 
 		{ 
+			auto getMin = [&]()
+			{
+				if (values.size() == 0) { return (float)0; }
+				else
+				{
+					float min = values[0];
+					{
+						for (int i = 0; i < values.size(); i++)
+						{
+							if (values[i] < min) { min = values[i]; }
+						}
+					}
+					return min;
+				}
+			};
+			auto getMax = [&]()
+			{
+				if (values.size() == 0) { return (float)0; }
+				else
+				{
+					float max = values[0];
+					{
+						for (int i = 0; i < values.size(); i++)
+						{
+							if (values[i] > max) { max = values[i]; }
+						}
+					}
+					return max;
+				}
+			};
+			m_min = getMin();
+			m_max = getMax();
+
+			auto to_string_p = [](float val, int precision)
+			{
+				std::stringstream ss_val;
+				if (precision >= 0)
+				{
+					ss_val << std::fixed << std::setprecision(precision);
+				}
+				ss_val << val;
+				std::string s_val = ss_val.str();
+
+				for (int i = s_val.size() - 1; i > 0; i--)
+				{
+					if (s_val[i] == '0') { s_val.pop_back(); }
+					else if (s_val[i] == '.')
+					{
+						s_val.pop_back();
+						break;
+					}
+					else { break; }
+				}
+
+				return s_val;
+			};
+
+			m_max_str = to_string_p(m_max, m_value_labels_precision);
+			m_min_str = to_string_p(m_min, m_value_labels_precision);
+
 			m_values = values;
 			m_redraw_needed = true;
 		}
