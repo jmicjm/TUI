@@ -15,6 +15,7 @@ namespace tui
 		symbol full;
 		symbol lower_half;
 		symbol upper_half;
+		scroll_appearance chart_scroll_appearance;
 	public:
 		chart_appearance() : chart_appearance(U'\x2588', U'\x2584', U'\x2580') {}
 		chart_appearance(symbol Full, symbol Lower, symbol Upper) : full(Full), lower_half(Lower), upper_half(Upper) {}
@@ -48,6 +49,13 @@ namespace tui
 			setAppearanceAction();
 		}
 		symbol getUpperHalfSymbol() { return upper_half; }
+
+		void setScrollAppearance(scroll_appearance scroll)
+		{
+			chart_scroll_appearance = scroll;
+			setAppearanceAction();
+		}
+		scroll_appearance getScrollAppearance() { return chart_scroll_appearance; }
 	};
 
 	struct chart : surface, chart_appearance, active_element
@@ -164,7 +172,11 @@ namespace tui
 			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
 		}
 
-		void setAppearanceAction() override { m_redraw_needed = true; }
+		void setAppearanceAction() override 
+		{
+			m_scroll.setAppearance(chart_scroll_appearance);
+			m_redraw_needed = true; 
+		}
 
 	public:
 		chart() : m_scroll({0,100}) 
