@@ -10,7 +10,9 @@ namespace tui
 	private:
 		std::vector<symbol> m_symbols;
 		unsigned int m_width = 0;
-		position m_position;
+		position m_position_info;
+		vec2i m_position;
+		
 		surface_size size_info;
 
 		bool m_resized;
@@ -77,12 +79,12 @@ namespace tui
 
 		void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
 		symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
-		void setPosition(position pos) { m_position = pos; }
+		void setPosition(position pos) { m_position_info = pos; }
 
 		void move(vec2i offset)
 		{
-			vec2i act_pos = getPosition().getOffset();
-			m_position.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
+			vec2i act_pos = getPositionInfo().getOffset();
+			m_position_info.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
 		}
 
 		void setSize(surface_size size)
@@ -111,13 +113,15 @@ namespace tui
 			obj.drawAction();
 
 
-			int x_origin = getSize().x * (obj.getPosition().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPosition().getRelativePoint().x / 100.f);
-			x_origin += obj.getPosition().getOffset().x;
-			x_origin += obj.getPosition().getPercentageOffset().x * getSize().x / 100.f;
+			int x_origin = getSize().x * (obj.getPositionInfo().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPositionInfo().getRelativePoint().x / 100.f);
+			x_origin += obj.getPositionInfo().getOffset().x;
+			x_origin += obj.getPositionInfo().getPercentageOffset().x * getSize().x / 100.f;
 
-			int y_origin = getSize().y * (obj.getPosition().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPosition().getRelativePoint().y / 100.f);
-			y_origin += obj.getPosition().getOffset().y;
-			y_origin += obj.getPosition().getPercentageOffset().y * getSize().y / 100.f;
+			int y_origin = getSize().y * (obj.getPositionInfo().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPositionInfo().getRelativePoint().y / 100.f);
+			y_origin += obj.getPositionInfo().getOffset().y;
+			y_origin += obj.getPositionInfo().getPercentageOffset().y * getSize().y / 100.f;
+
+			m_position = { x_origin, y_origin };
 
 			for (int y = 0; y < obj.getSize().y; y++)
 			{
@@ -148,7 +152,8 @@ namespace tui
 		void makeTransparent() { fill((char32_t)0); }
 		void makeBlank() { fill(BLANKSYMBOL); }
 
-		position getPosition() { return m_position; }
+		vec2i getPosition() { return m_position; }
+		position getPositionInfo() { return m_position_info; }
 		vec2i getSize()
 		{
 			if (m_width > 0) { return vec2i(m_width, m_symbols.size() / m_width); }
