@@ -16,6 +16,7 @@ namespace tui
 		symbol lower_half;
 		symbol upper_half;
 		scroll_appearance chart_scroll_appearance;
+		color value_labels_color;
 	public:
 		chart_appearance() : chart_appearance(U'\x2588', U'\x2584', U'\x2580') {}
 		chart_appearance(symbol Full, symbol Lower, symbol Upper) : full(Full), lower_half(Lower), upper_half(Upper) {}
@@ -23,6 +24,9 @@ namespace tui
 		void setColor(color Color) override
 		{
 			full.setColor(Color);
+			lower_half.setColor(Color);
+			upper_half.setColor(Color);
+			value_labels_color = Color;
 			setAppearanceAction();
 		}
 		void setAppearance(chart_appearance appearance) 
@@ -56,6 +60,13 @@ namespace tui
 			setAppearanceAction();
 		}
 		scroll_appearance getScrollAppearance() { return chart_scroll_appearance; }
+
+		void setValueLabelsColor(color Color)
+		{
+			value_labels_color = Color;
+			setAppearanceAction();
+		}
+		color getValueLabelsColor() { return value_labels_color; }
 	};
 
 	struct chart : surface, chart_appearance, active_element
@@ -74,6 +85,36 @@ namespace tui
 		console_string m_max_str;
 
 		bool m_redraw_needed = true;
+
+		void updateMinMaxStr()
+		{
+			auto to_string_p = [](float val, int precision)
+			{
+				std::stringstream ss_val;
+				if (precision >= 0)
+				{
+					ss_val << std::fixed << std::setprecision(precision);
+				}
+				ss_val << val;
+				std::string s_val = ss_val.str();
+
+				for (int i = s_val.size() - 1; i > 0; i--)
+				{
+					if (s_val[i] == '0') { s_val.pop_back(); }
+					else if (s_val[i] == '.')
+					{
+						s_val.pop_back();
+						break;
+					}
+					else { break; }
+				}
+
+				return s_val;
+			};
+
+			m_max_str = { to_string_p(m_max, m_value_labels_precision), value_labels_color };
+			m_min_str = { to_string_p(m_min, m_value_labels_precision), value_labels_color };
+		}
 
 		void fill()
 		{
@@ -175,6 +216,7 @@ namespace tui
 		void setAppearanceAction() override 
 		{
 			m_scroll.setAppearance(chart_scroll_appearance);
+			updateMinMaxStr();
 			m_redraw_needed = true; 
 		}
 
@@ -185,8 +227,8 @@ namespace tui
 			m_chart.setPosition({ {0,0}, {0,0}, {tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP} });
 		}
 
-		void setValues(std::vector<float> values) 
-		{ 
+		void setValues(std::vector<float> values)
+		{
 			auto getMin = [&]()
 			{
 				if (values.size() == 0) { return (float)0; }
@@ -220,32 +262,7 @@ namespace tui
 			m_min = getMin();
 			m_max = getMax();
 
-			auto to_string_p = [](float val, int precision)
-			{
-				std::stringstream ss_val;
-				if (precision >= 0)
-				{
-					ss_val << std::fixed << std::setprecision(precision);
-				}
-				ss_val << val;
-				std::string s_val = ss_val.str();
-
-				for (int i = s_val.size() - 1; i > 0; i--)
-				{
-					if (s_val[i] == '0') { s_val.pop_back(); }
-					else if (s_val[i] == '.')
-					{
-						s_val.pop_back();
-						break;
-					}
-					else { break; }
-				}
-
-				return s_val;
-			};
-
-			m_max_str = to_string_p(m_max, m_value_labels_precision);
-			m_min_str = to_string_p(m_min, m_value_labels_precision);
+			updateMinMaxStr();
 
 			m_values = values;
 			m_redraw_needed = true;
