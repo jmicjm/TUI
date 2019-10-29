@@ -11,6 +11,14 @@ namespace tui
 {
 	struct chart_appearance : appearance
 	{
+	private:
+		template<typename T>
+		void appearance_set_element(T& elem_to_set, T elem)
+		{
+			elem_to_set = elem;
+			setAppearanceAction();
+		}
+
 	protected:
 		symbol full;
 		symbol lower_half;
@@ -35,37 +43,20 @@ namespace tui
 			setAppearanceAction();
 		}
 		chart_appearance getAppearance() { return *this; }
-		void setFullSymbol(symbol Full) 
-		{
-			full = Full;
-			setAppearanceAction();
-		}
+
+		void setFullSymbol(symbol Full) { appearance_set_element(full, Full); }
 		symbol getFullSymbol() { return full; }
-		void setLowerHalfSymbol(symbol Lower)
-		{
-			lower_half = Lower;
-			setAppearanceAction();
-		}
+
+		void setLowerHalfSymbol(symbol Lower) { appearance_set_element(lower_half, Lower); }
 		symbol getLowerHalfSymbol() { return lower_half; }
-		void setUpperHalfSymbol(symbol Upper)
-		{
-			upper_half = Upper;
-			setAppearanceAction();
-		}
+
+		void setUpperHalfSymbol(symbol Upper) { appearance_set_element(upper_half, Upper); }
 		symbol getUpperHalfSymbol() { return upper_half; }
 
-		void setScrollAppearance(scroll_appearance scroll)
-		{
-			chart_scroll_appearance = scroll;
-			setAppearanceAction();
-		}
+		void setScrollAppearance(scroll_appearance scroll) { appearance_set_element(chart_scroll_appearance, scroll); }
 		scroll_appearance getScrollAppearance() { return chart_scroll_appearance; }
 
-		void setValueLabelsColor(color Color)
-		{
-			value_labels_color = Color;
-			setAppearanceAction();
-		}
+		void setValueLabelsColor(color Color) { appearance_set_element(value_labels_color, Color); }
 		color getValueLabelsColor() { return value_labels_color; }
 	};
 
