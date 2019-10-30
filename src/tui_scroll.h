@@ -20,7 +20,20 @@ namespace tui
 		symbol slider; //handle
 		symbol line;
 
-		scroll_appearance_a() : scroll_appearance_a(U'\x2551', U'\x2502') {}
+		scroll_appearance_a(bool direction = tui::DIRECTION::VERTICAL)
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::VERTICAL:
+				slider = U'\x2551';
+				line = U'\x2502';
+				break;
+			case tui::DIRECTION::HORIZONTAL:
+				slider = U'\x2550';
+				line = U'\x2500';
+				break;
+			}
+		}
 		scroll_appearance_a(symbol slider, symbol line) : slider(slider), line(line) {}
 
 		void setColor(color Color)
@@ -53,8 +66,10 @@ namespace tui
 		scroll_appearance_a m_active_appearance;
 		scroll_appearance_a m_inactive_appearance;
 	public:
-		scroll_appearance() : scroll_appearance({ { U'\x2551', COLOR::WHITE }, { U'\x2502', COLOR::WHITE } },
-												{ { U'\x2551', COLOR::DARKGRAY }, { U'\x2502', COLOR::DARKGRAY } }) {}
+		scroll_appearance(bool direction = tui::DIRECTION::VERTICAL) : m_active_appearance(direction), m_inactive_appearance(direction)
+		{
+			m_inactive_appearance.setColor(tui::COLOR::DARKGRAY);
+		}
 		scroll_appearance(scroll_appearance_a active, scroll_appearance_a inactive) : m_active_appearance(active), m_inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
@@ -165,12 +180,10 @@ namespace tui
 
 	public:
 		scroll() : scroll(1) {}
-		scroll(surface1D_size size)
+		scroll(surface1D_size size) : scroll_appearance(direction)
 		{
 			if(direction == DIRECTION::HORIZONTAL)
-			{ 
-				setAppearance({ { { U'\x2550', COLOR::WHITE }, { U'\x2500', COLOR::WHITE } },
-								{ { U'\x2550', COLOR::DARKGRAY }, { U'\x2500', COLOR::DARKGRAY } } });
+			{
 				keys.keyUp = KEYBOARD::KEY::LEFT;
 				keys.keyDown = KEYBOARD::KEY::RIGHT;
 			}
