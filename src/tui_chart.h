@@ -19,7 +19,8 @@ namespace tui
 		color value_labels_color;
 	public:
 		chart_appearance() : chart_appearance(U'\x2588', U'\x2584', U'\x2580') {}
-		chart_appearance(symbol Full, symbol Lower, symbol Upper) : full(Full), lower_half(Lower), upper_half(Upper) {}
+		chart_appearance(symbol Full, symbol Lower, symbol Upper) 
+			: full(Full), lower_half(Lower), upper_half(Upper), chart_scroll_appearance(tui::DIRECTION::HORIZONTAL) {}
 
 		void setColor(color Color) override
 		{
