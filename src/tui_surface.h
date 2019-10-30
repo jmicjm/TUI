@@ -12,14 +12,15 @@ namespace tui
 		unsigned int m_width = 0;
 		position m_position_info;
 		vec2i m_position;
-		
 		surface_size size_info;
 
 		bool m_resized;
 
 		void resize(vec2i size)
 		{
-			if (size.x != getSize().x || size.y != getSize().y)
+			m_resized = size.x != getSize().x || size.y != getSize().y;
+
+			if (m_resized)
 			{
 				vec2i new_size = size;
 				if (size.x < 1) { new_size.x = 1; }
@@ -30,12 +31,6 @@ namespace tui
 
 				makeTransparent();
 				resizeAction();
-
-				m_resized = true;
-			}
-			else
-			{
-				m_resized = false;
 			}
 		}
 
@@ -50,25 +45,22 @@ namespace tui
 			setSize(size);
 		}
 
-		bool isResized()
-		{
-			return m_resized;
-		}
+		bool isResized() { return m_resized; }
 
 		struct surface_proxy
 		{
 			friend class surface;
 		private:
 			surface* surf;
-			int x;
+			size_t x;
 		public:
-			symbol& operator[](int y)
+			symbol& operator[](size_t y)
 			{
 				return surf->m_symbols[surf->m_width * y + x];
 			}
 		};
 
-		surface_proxy operator[](int x)
+		surface_proxy operator[](size_t x)
 		{
 			surface_proxy proxy;
 			proxy.surf = this;
@@ -143,24 +135,23 @@ namespace tui
 		{
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i] = Symbol; }
 		}
+		void makeTransparent() { fill((char32_t)0); }
+		void makeBlank() { fill(BLANKSYMBOL); }
 
 		void invert()
 		{
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].invert(); }
 		}
 
-		void makeTransparent() { fill((char32_t)0); }
-		void makeBlank() { fill(BLANKSYMBOL); }
-
 		vec2i getPosition() { return m_position; }
 		position getPositionInfo() { return m_position_info; }
+
 		vec2i getSize()
 		{
 			if (m_width > 0) { return vec2i(m_width, m_symbols.size() / m_width); }
 			else { return vec2i(0, 0); }
 		}
 		surface_size getSizeInfo() { return size_info; }
-
 	};
 
 	template<int direction>
