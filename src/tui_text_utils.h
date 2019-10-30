@@ -67,21 +67,9 @@ namespace tui
 		}
 		bool operator==(color c)
 		{
-			if (c.m_background == m_background && c.m_foreground == m_foreground)
-			{
-				return true;
-			}
-			else { return false; }
+			return c.m_background == m_background && c.m_foreground == m_foreground;
 		}
-		bool operator!=(color c)
-		{
-			if (c.m_background != m_background || c.m_foreground != m_foreground)
-			{
-				return true;
-			}
-			else { return false; }
-		}
-		//operator int() { return getRGBIColor(); }
+		bool operator!=(color c) { return !operator==(c); }
 	};
 
 	struct symbol
