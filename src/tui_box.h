@@ -33,48 +33,25 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		void setAppearance(box_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(box_appearance appearance) { setElement(*this, appearance); }
 		box_appearance getAppearance() { return *this; }
 
-		void setHorizontalLine(symbol line)
-		{
-			m_horizontal_line = line;
-			setAppearanceAction();
-		}
+		void setHorizontalLine(symbol h_line) { setElement(m_horizontal_line,h_line); }
 		symbol getHorizontalLine() { return m_horizontal_line; }
-		void setVerticalLine(symbol line)
-		{
-			m_vertical_line = line;
-			setAppearanceAction();
-		}
+
+		void setVerticalLine(symbol v_line) { setElement(m_vertical_line, v_line); }
 		symbol getVerticalLine() { return m_vertical_line; }
-		void setTopLeft(symbol top_l)
-		{
-			m_top_left = top_l;
-			setAppearanceAction();
-		}
+
+		void setTopLeft(symbol top_l) { setElement(m_top_left, top_l); }
 		symbol getTopLeft() { return m_top_left; }
-		void setTopRight(symbol top_r)
-		{
-			m_top_right = top_r;
-			setAppearanceAction();
-		}
+
+		void setTopRight(symbol top_r) { setElement(m_top_right, top_r); }
 		symbol getTopRight() { return m_top_right; }
-		void setBottomLeft(symbol bottom_l)
-		{
-			m_bottom_left = bottom_l;
-			setAppearanceAction();
-		}
+
+		void setBottomLeft(symbol bottom_l) { setElement(m_bottom_left, bottom_l); }
 		symbol getBottomLeft() { return m_bottom_left; }
-		void setBottomRight(symbol bottom_r)
-		{
-			m_bottom_right = bottom_r;
-			setAppearanceAction();
-		}
+
+		void setBottomRight(symbol bottom_r) { setElement(m_bottom_right, bottom_r); }
 		symbol getBottomRight() { return m_bottom_right; }
 
 	};

@@ -28,13 +28,10 @@ namespace tui
 			lower_half.setColor(Color);
 			upper_half.setColor(Color);
 			value_labels_color = Color;
+			chart_scroll_appearance.setColor(Color);
 			setAppearanceAction();
 		}
-		void setAppearance(chart_appearance appearance) 
-		{
-			*this = appearance; 
-			setAppearanceAction();
-		}
+		void setAppearance(chart_appearance appearance) { setElement(*this, appearance); }
 		chart_appearance getAppearance() { return *this; }
 
 		void setFullSymbol(symbol Full) { setElement(full, Full); }

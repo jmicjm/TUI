@@ -36,25 +36,13 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		void setAppearance(button_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(button_appearance appearance) { setElement(*this, appearance); }
 		button_appearance getAppearance() { return *this; }
 
-		void setActiveAppearance(button_appearance_a active)
-		{
-			m_active_appearance = active;
-			setAppearanceAction();
-		}
+		void setActiveAppearance(button_appearance_a active) { setElement(m_active_appearance, active); }
 		button_appearance_a getActiveAppearance() { return m_active_appearance; }
 
-		void setInactiveAppearance(button_appearance_a inactive)
-		{
-			m_inactive_appearance = inactive;
-			setAppearanceAction();
-		}
+		void setInactiveAppearance(button_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
 		button_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
 	namespace BUTTON_TYPE

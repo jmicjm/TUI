@@ -18,18 +18,10 @@ namespace tui
 			text_scroll_appearance.setColor(Color);
 			setAppearanceAction();
 		}
-		void setAppearance(text_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(text_appearance appearance) { setElement(*this, appearance); }
 		text_appearance getAppearance() { return *this; }
 
-		void setScrollAppearance(scroll_appearance scroll)
-		{
-			text_scroll_appearance = scroll;
-			setAppearanceAction();
-		}
+		void setScrollAppearance(scroll_appearance scroll) { setElement(text_scroll_appearance, scroll); }
 		scroll_appearance getScrollAppearance() { return text_scroll_appearance; }
 	};
 

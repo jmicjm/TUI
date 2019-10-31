@@ -17,12 +17,6 @@ namespace tui
 		input_text_appearance(symbol insert_cursor, symbol overtype_cursor, text_appearance txt_appearance) 
 			: m_insert_cursor(insert_cursor), m_overtype_cursor(overtype_cursor), m_text_appearance(txt_appearance){}
 
-		void setAppearance(input_text_appearance appearance)
-		{
-			*this = appearance;
-		}
-		input_text_appearance getAppearance() { return *this; }
-
 		void setColor(color Color) override
 		{
 			m_insert_cursor.setColor(Color);
@@ -31,25 +25,16 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		void setInsertCursorSymbol(symbol Cursor)
-		{
-			m_insert_cursor = Cursor;
-			setAppearanceAction();
-		}
+		void setAppearance(input_text_appearance appearance) { setElement(*this, appearance); }
+		input_text_appearance getAppearance() { return *this; }
+
+		void setInsertCursorSymbol(symbol Cursor) { setElement(m_insert_cursor,Cursor); }
 		symbol getInsertCursorSymbol() { return m_insert_cursor; }
 
-		void setOvertypeCursorSymbol(symbol Cursor)
-		{
-			m_overtype_cursor = Cursor;
-			setAppearanceAction();
-		}
+		void setOvertypeCursorSymbol(symbol Cursor) { setElement(m_overtype_cursor, Cursor); }
 		symbol getOvertypeCursorSymbol() { return m_overtype_cursor; }
 
-		void setTextAppearance(text_appearance appearance)
-		{
-			m_text_appearance = appearance;
-			setAppearanceAction();
-		}
+		void setTextAppearance(text_appearance appearance) { setElement(m_text_appearance, appearance); }
 		text_appearance getTextAppearance() { return m_text_appearance; }
 	};
 

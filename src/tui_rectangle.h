@@ -8,30 +8,22 @@ namespace tui
 	struct rectangle_appearance : appearance
 	{
 	protected:
-		symbol m_filling;
+		symbol filling;
 	public:
 		rectangle_appearance() : rectangle_appearance(U'\x2588') {}
-		rectangle_appearance(symbol filling) : m_filling(filling) {}
+		rectangle_appearance(symbol Filling) : filling(Filling) {}
 
 		void setColor(color Color) override
 		{
-			m_filling.setColor(Color);
+			filling.setColor(Color);
 			setAppearanceAction();
 		}
 
-		void setAppearance(rectangle_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(rectangle_appearance appearance) { setElement(*this, appearance); }
 		rectangle_appearance getAppearance() { return *this; }
 
-		void setFilling(symbol filling)
-		{
-			m_filling = filling;
-			setAppearanceAction();
-		}
-		symbol getFilling() { return m_filling; }
+		void setFilling(symbol Filling) { setElement(filling, Filling); }
+		symbol getFilling() { return filling; }
 	};
 
 	struct rectangle : surface, rectangle_appearance
@@ -43,7 +35,7 @@ namespace tui
 			{
 				for (int x = 0; x < getSize().x; x++)
 				{
-					setSymbolAt(m_filling, vec2i(x,y));
+					setSymbolAt(filling, vec2i(x,y));
 				}
 			}
 		}

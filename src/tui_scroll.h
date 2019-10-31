@@ -42,21 +42,13 @@ namespace tui
 			line.setColor(Color);
 		}
 
-		void setAppearance(scroll_appearance_a appearance)
-		{
-			*this = appearance;
-		}
+		void setAppearance(scroll_appearance_a appearance) { *this = appearance; }
 		scroll_appearance_a getAppearance() { return *this; }
 
-		void setSlider(symbol Slider)
-		{
-			slider = Slider;
-		}
+		void setSlider(symbol Slider) { slider = Slider; }
 		symbol getSlider() { return slider; }
-		void setLine(symbol Line)
-		{
-			line = Line;
-		}
+
+		void setLine(symbol Line) { line = Line; }
 		symbol getLine() { return line; }
 	};
 
@@ -79,24 +71,13 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		void setAppearance(scroll_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(scroll_appearance appearance) { setElement(*this, appearance); }
 		scroll_appearance getAppearance() { return *this; }
 
-		void setActiveAppearance(scroll_appearance_a active)
-		{
-			m_active_appearance = active;
-			setAppearanceAction();
-		}
+		void setActiveAppearance(scroll_appearance_a active) { setElement(m_active_appearance, active); }
 		scroll_appearance_a getActiveAppearance() { return m_active_appearance; }
-		void setInactiveAppearance(scroll_appearance_a inactive)
-		{
-			m_inactive_appearance = inactive;
-			setAppearanceAction();
-		}
+
+		void setInactiveAppearance(scroll_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
 		scroll_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
 

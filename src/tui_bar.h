@@ -20,33 +20,20 @@ namespace tui
 		{
 			full.setColor(Color);
 			empty.setColor(Color);
+			half.setColor(Color);
 			setAppearanceAction();
 		}
 
-		void setAppearance(bar_appearance appearance)
-		{
-			*this = appearance;
-			setAppearanceAction();
-		}
+		void setAppearance(bar_appearance appearance) { setElement(*this, appearance); }
 		bar_appearance getAppearance() { return *this; }
 
-		void setFullSymbol(symbol Full)
-		{
-			full = Full;
-			setAppearanceAction();
-		}
+		void setFullSymbol(symbol Full) { setElement(full, Full); }
 		symbol getFullSymbol() { return full; }
-		void setEmptySymbol(symbol Empty)
-		{
-			empty = Empty;
-			setAppearanceAction();
-		}
+
+		void setEmptySymbol(symbol Empty) { setElement(empty, Empty); }
 		symbol getEmptySymbol() { return empty; }
-		void setHalfSymbol(symbol Half)
-		{
-			half = Half;
-			setAppearanceAction();
-		}
+
+		void setHalfSymbol(symbol Half) { setElement(half, Half); }
 		symbol getHalfSymbol() { return half; }
 
 	};
