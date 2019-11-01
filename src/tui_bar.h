@@ -12,7 +12,18 @@ namespace tui
 		symbol empty;
 		symbol half;
 	public:
-		bar_appearance() : bar_appearance({ U'\x2588', COLOR::WHITE }, { U'\x2588', COLOR::DARKGRAY }, { U'\x258C', {COLOR::WHITE, COLOR::DARKGRAY} }) {}
+		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U'\x2588', COLOR::DARKGRAY }) 
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::VERTICAL:
+				half = { U'\x2584', {COLOR::WHITE, COLOR::DARKGRAY} };
+				break;
+			case tui::DIRECTION::HORIZONTAL:
+				half = { U'\x258C', {COLOR::WHITE, COLOR::DARKGRAY} };
+				break;
+			}
+		}
 		bar_appearance(symbol Full, symbol Empty) : bar_appearance(Full, Empty, Full) {}
 		bar_appearance(symbol Full, symbol Empty, symbol Half) : full(Full), empty(Empty), half(Half) {}
 
@@ -76,7 +87,7 @@ namespace tui
 	public:
 		bar() : bar(1) {}
 		bar(surface1D_size size) : bar(size, 0,0,0) {}
-		bar(surface1D_size size, float min, float max, float value) : m_min(0), m_max(0), m_value(0)
+		bar(surface1D_size size, float min, float max, float value) : m_min(0), m_max(0), m_value(0), bar_appearance(direction)
 		{
 			setMinValue(min);
 			setMaxValue(max);
