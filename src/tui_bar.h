@@ -59,35 +59,35 @@ namespace tui
 
 		void fill()
 		{
-			float bar_len = abs(m_min - m_max);
-			float value_len = abs(m_min - m_value);
-
-			float perc = value_len / bar_len;
-			float lenght = perc * surface1D<direction>::getSize();
-			int f_l = round(lenght);
-			
-
-			surface::makeTransparent();
-
-			for (int i = 0; i < surface1D<direction>::getSize(); i++)
-			{	
-				if (i < f_l && direction == tui::DIRECTION::HORIZONTAL || i >= f_l && direction == tui::DIRECTION::VERTICAL) 
-				{
-					surface1D<direction>::setSymbolAt(full, i); 
-				}
-				else { surface1D<direction>::setSymbolAt(empty, i); }
-			}
-
-			if (lenght > floor(lenght) + 0.25
-			 && lenght < floor(lenght) + 0.75)
+			float distance = fabs(m_min - m_max);
+			if (distance > 0)
 			{
-				surface1D<direction>::setSymbolAt(half, floor(lenght));
+				int halves = surface1D<direction>::getSize() * 2;
+				int h = round(fabs(m_min - m_value) / distance * halves);
+
+				int dir_c = (direction == tui::DIRECTION::HORIZONTAL ? 0 : surface1D<direction>::getSize() - 1);
+
+				for (int i = 0; i < halves; i += 2)
+				{
+					if (i < h && i + 1 < h)
+					{
+						surface1D<direction>::setSymbolAt(full, abs(dir_c - i / 2));
+					}
+					else if (i < h && i + 1 >= h)
+					{
+						surface1D<direction>::setSymbolAt(half, abs(dir_c - i / 2));
+					}
+					else
+					{
+						surface1D<direction>::setSymbolAt(empty, abs(dir_c - i / 2));
+					}
+				}
 			}
 		}
 	public:
 		bar() : bar(1) {}
 		bar(surface1D_size size) : bar(size, 0,0,0) {}
-		bar(surface1D_size size, float min, float max, float value) : m_min(0), m_max(0), m_value(0), bar_appearance(direction)
+		bar(surface1D_size size, float min, float max, float value) : m_min(min), m_max(max), m_value(0), bar_appearance(direction)
 		{
 			setMinValue(min);
 			setMaxValue(max);
