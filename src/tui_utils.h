@@ -28,6 +28,19 @@ namespace tui
 		{
 			return (x != r.x || y != r.y);
 		}
+
+		vec2i& operator+=(vec2i r)
+		{
+			x += r.x;
+			y += r.y;
+			return *this;
+		}
+		vec2i& operator-=(vec2i r)
+		{
+			x -= r.x;
+			y -= r.y;
+			return *this;
+		}
 	};
 
 	struct surface_size
