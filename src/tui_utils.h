@@ -41,6 +41,15 @@ namespace tui
 			y -= r.y;
 			return *this;
 		}
+
+		vec2i operator+(vec2i r)
+		{
+			return { x + r.x, y + r.y };
+		}
+		vec2i operator-(vec2i r)
+		{
+			return { x - r.x, y - r.y };
+		}
 	};
 
 	struct surface_size
