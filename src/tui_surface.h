@@ -12,6 +12,7 @@ namespace tui
 		unsigned int m_width = 0;
 		position m_position_info;
 		vec2i m_position;
+		vec2i m_global_position;
 		surface_size size_info;
 
 		bool m_resized;
@@ -113,7 +114,8 @@ namespace tui
 			y_origin += obj.getPositionInfo().getOffset().y;
 			y_origin += obj.getPositionInfo().getPercentageOffset().y * getSize().y / 100.f;
 
-			m_position = { x_origin, y_origin };
+			obj.m_position = { x_origin, y_origin };
+			obj.m_global_position = m_global_position + obj.m_position;
 
 			for (int y = 0; y < obj.getSize().y; y++)
 			{
@@ -144,6 +146,7 @@ namespace tui
 		}
 
 		vec2i getPosition() { return m_position; }
+		vec2i getGlobalPosition() { return m_global_position; }
 		position getPositionInfo() { return m_position_info; }
 
 		vec2i getSize()
