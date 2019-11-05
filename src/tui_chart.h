@@ -107,8 +107,8 @@ namespace tui
 			m_scroll.setVisibleContentLength(getSize().x - range_width);
 			insertSurface(m_scroll, false);
 
-			if (m_scroll.isNeeded()) { m_chart.setSize({ {range_width * -1,-1},{100,100} }); }
-			else { m_chart.setSize({ {range_width * -1,0},{100,100} }); }
+			if (m_scroll.isNeeded()) { m_chart.setSizeInfo({ {range_width * -1,-1},{100,100} }); }
+			else { m_chart.setSizeInfo({ {range_width * -1,0},{100,100} }); }
 			updateSurfaceSize(m_chart);
 
 			if (m_display_value_labels)
@@ -204,8 +204,8 @@ namespace tui
 	public:
 		chart() : m_scroll({0,100}) 
 		{
-			m_scroll.setPosition({ { 0,-1 }, { 0,100 } });
-			m_chart.setPosition({ {0,0}, {0,0}, {tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP} });
+			m_scroll.setPositionInfo({ { 0,-1 }, { 0,100 } });
+			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP} });
 		}
 
 		void setValues(std::vector<float> values)

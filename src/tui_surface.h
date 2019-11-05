@@ -43,7 +43,7 @@ namespace tui
 		surface() : surface({ {1,1},{0,0} }) {}
 		surface(surface_size size)
 		{
-			setSize(size);
+			setSizeInfo(size);
 		}
 
 		bool isResized() { return m_resized; }
@@ -72,7 +72,6 @@ namespace tui
 
 		void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
 		symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
-		void setPosition(position pos) { m_position_info = pos; }
 
 		void move(vec2i offset)
 		{
@@ -80,7 +79,9 @@ namespace tui
 			m_position_info.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
 		}
 
-		void setSize(surface_size size)
+		void setPositionInfo(position pos) { m_position_info = pos; }
+
+		void setSizeInfo(surface_size size)
 		{
 			size_info = size;
 			resize(size.getFixedSize());
@@ -165,10 +166,10 @@ namespace tui
 			switch (direction)
 			{
 			case tui::DIRECTION::HORIZONTAL:
-				surface::setSize({ {size.fixed_size, 1},{size.percentage_size, 0} });
+				surface::setSizeInfo({ {size.fixed_size, 1},{size.percentage_size, 0} });
 				break;
 			case tui::DIRECTION::VERTICAL:
-				surface::setSize({ {1, size.fixed_size},{0, size.percentage_size} });
+				surface::setSizeInfo({ {1, size.fixed_size},{0, size.percentage_size} });
 				break;
 			}
 		}

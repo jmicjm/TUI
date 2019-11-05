@@ -46,7 +46,7 @@ namespace tui
 		rectangle(surface_size size) : rectangle(size, rectangle_appearance()) {}
 		rectangle(surface_size size, rectangle_appearance appearance)
 		{
-			setSize(size);
+			setSizeInfo(size);
 			setAppearance(appearance);
 		}
 	};

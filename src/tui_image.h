@@ -12,7 +12,7 @@ namespace tui
 		{
 			if (width == 0) { return; }
 
-			setSize({ { (int)width, (int)ceil(image.size() / (float)width) } });
+			setSizeInfo({ { (int)width, (int)ceil(image.size() / (float)width) } });
 
 			for (int i = 0; i < image.size(); i++)
 			{

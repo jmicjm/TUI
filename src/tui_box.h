@@ -79,7 +79,7 @@ namespace tui
 		box(surface_size size) : box(size, box_appearance()) {}
 		box(surface_size size, box_appearance appearance)
 		{
-			setSize(size);
+			setSizeInfo(size);
 			setAppearance(appearance);
 		}
 	};

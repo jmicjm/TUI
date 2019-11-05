@@ -123,14 +123,14 @@ namespace tui
 
 		void adjustSizes()
 		{
-			m_text.setSize({ {0,0}, {100,100} });
+			m_text.setSizeInfo({ {0,0}, {100,100} });
 			updateSurfaceSize(m_text);
 			prepareText();
 			if (m_display_scroll)
 			{
 				if (getNumberOfLines() > m_text.getSize().y)
 				{
-					m_text.setSize({ {-1,0}, {100,100} });
+					m_text.setSizeInfo({ {-1,0}, {100,100} });
 					updateSurfaceSize(m_text);
 					prepareText();
 				}
@@ -143,10 +143,10 @@ namespace tui
 		text(surface_size size) : text(size, U"") {}
 		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
 		{
-			setSize(size);
-			m_text.setSize({ {-1,0}, {100,100} });
+			setSizeInfo(size);
+			m_text.setSizeInfo({ {-1,0}, {100,100} });
 
-			m_scroll.setPosition(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
+			m_scroll.setPositionInfo(position({ 0,0 }, { 0,0 }, { POSITION::HORIZONTAL::RIGHT, POSITION::VERTICAL::TOP }));
 			setText(txt);
 
 			setAppearanceAction();
@@ -243,13 +243,13 @@ namespace tui
 				bool use_c_char = m_use_control_characters;
 				m_use_control_characters = false;//temporarily disable control characters
 
-				setSize({ {(int)m_unprepared_text.size(), 1} });
+				setSizeInfo({ {(int)m_unprepared_text.size(), 1} });
 				adjustSizes();
 				/*
 				with control characters disabled one line prepared text could be shorter than unprepared text
 				e.g. space at start of line will be removed and all control characters will be removed
 				*/
-				setSize({ {(int)m_prepared_text.size(), 1} });
+				setSizeInfo({ {(int)m_prepared_text.size(), 1} });
 
 				m_use_control_characters = use_c_char;
 			}
@@ -258,10 +258,10 @@ namespace tui
 				bool display_scroll = m_display_scroll;
 				m_display_scroll = false;
 
-				setSize({ {max_width, 1} });
+				setSizeInfo({ {max_width, 1} });
 				prepareText();
 
-				setSize({ {max_width, (int)ceil(1.f * m_prepared_text.size() / max_width)} });
+				setSizeInfo({ {max_width, (int)ceil(1.f * m_prepared_text.size() / max_width)} });
 				fill();
 
 				m_display_scroll = display_scroll;

@@ -144,7 +144,7 @@ namespace tui
 
 		group(surface_size size)
 		{
-			setSize(size);
+			setSizeInfo(size);
 		}
 
 
@@ -192,13 +192,13 @@ namespace tui
 
 		console_buffer() {}
 
-		void resize(vec2i size) { m_buffer.setSize(size); }
+		void resize(vec2i size) { m_buffer.setSizeInfo(size); }
 
 		void updateLastBuffer()
 		{
 			if (m_last_buffer.getSize() != m_buffer.getSize())
 			{
-				m_last_buffer.setSize(m_buffer.getSize());
+				m_last_buffer.setSizeInfo(m_buffer.getSize());
 			}
 
 			for (int y = 0; y < m_buffer.getSize().y; y++)

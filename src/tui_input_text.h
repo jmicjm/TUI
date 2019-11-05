@@ -243,7 +243,7 @@ namespace tui
 	public:
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
-			m_text.setSize({ {0,0},{100,100} });
+			m_text.setSizeInfo({ {0,0},{100,100} });
 			m_text.useDensePunctuation(false);
 			m_text.usePreparedText(false);
 			m_text.setAppearance(m_text_appearance);
