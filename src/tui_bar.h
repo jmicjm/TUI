@@ -12,7 +12,7 @@ namespace tui
 		symbol empty;
 		symbol half;
 	public:
-		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U'\x2588', COLOR::DARKGRAY }) 
+		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', COLOR::DARKGRAY }) 
 		{
 			switch (direction)
 			{
