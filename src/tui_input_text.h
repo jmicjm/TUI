@@ -58,6 +58,7 @@ namespace tui
 
 		bool m_redraw_needed = true;
 		bool m_insert_mode = true;
+		bool m_confidential_mode = false;
 		bool m_blink = true;
 
 		input_text_keys m_keys;
@@ -101,7 +102,21 @@ namespace tui
 
 		void updateText()
 		{
-			console_string s = m_str;
+			console_string s;
+			
+			switch (m_confidential_mode)
+			{
+			case false:
+				s = m_str;
+				break;
+			case true:
+				s.resize(m_str.size());
+				for (int i = 0;i < s.size(); i++)
+				{
+					s[i] = '*';
+				}
+			}
+			
 			s += " ";
 
 			if (m_cursor_pos_in_txt > s.size()) { m_cursor_pos_in_txt = s.size(); }
@@ -253,6 +268,15 @@ namespace tui
 
 		void setKeys(input_text_keys keys) { m_keys = keys; }
 		input_text_keys getKeys() { return m_keys; }
+
+
+		void useConfidentialMode(bool use)
+		{
+			m_confidential_mode = use;
+			updateText();
+			m_redraw_needed = true;
+		}
+		bool isUsingConfidentialMode() { return m_confidential_mode; }
 
 		void update()
 		{
