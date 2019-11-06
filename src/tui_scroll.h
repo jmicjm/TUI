@@ -169,7 +169,7 @@ namespace tui
 				keys.keyDown = KEYBOARD::KEY::RIGHT;
 			}
 
-			surface1D<direction>::setSize({ size.fixed_size, size.percentage_size });
+			surface1D<direction>::setSize({ size.fixed, size.percentage });
 		}
 
 		bool isNeeded()

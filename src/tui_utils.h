@@ -54,36 +54,22 @@ namespace tui
 
 	struct surface_size
 	{
-	private:
-		vec2i m_fixed_size;
-		vec2i m_percentage_size;
+		vec2i fixed;
+		vec2i percentage;
 
-	public:
 		surface_size() : surface_size({ 0,0 }, { 0,0 }) {}
-		surface_size(vec2i size) : surface_size(size, { 0,0 }) {}
-		surface_size(vec2i fixed, vec2i percentage)
-		{
-			setSize(fixed, percentage);
-		}
-
-		void setSize(vec2i fixed, vec2i percentage)
-		{
-			m_fixed_size = fixed;
-			m_percentage_size = percentage;
-		}
-		vec2i getFixedSize() { return m_fixed_size; }
-		vec2i getPercentageSize() { return m_percentage_size; }
-
+		surface_size(vec2i Fixed) : surface_size(Fixed, { 0,0 }) {}
+		surface_size(vec2i Fixed, vec2i Percentage) : fixed(Fixed), percentage(Percentage) {}
 	};
 
 	struct surface1D_size
 	{
-		int fixed_size;
-		int percentage_size;
+		int fixed;
+		int percentage;
 
 		surface1D_size() : surface1D_size(0,0) {}
-		surface1D_size(int fixed) : surface1D_size(fixed, 0) {}
-		surface1D_size(int fixed, int percentage) : fixed_size(fixed), percentage_size(percentage) {}
+		surface1D_size(int Fixed) : surface1D_size(Fixed, 0) {}
+		surface1D_size(int Fixed, int Percentage) : fixed(Fixed), percentage(Percentage) {}
 
 	};
 

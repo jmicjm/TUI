@@ -84,13 +84,13 @@ namespace tui
 		void setSizeInfo(surface_size size)
 		{
 			size_info = size;
-			resize(size.getFixedSize());
+			resize(size.fixed);
 		}
 
 		void updateSurfaceSize(surface& obj)
 		{
-			vec2i perc_size = obj.getSizeInfo().getPercentageSize();
-			vec2i int_size = obj.getSizeInfo().getFixedSize();
+			vec2i perc_size = obj.getSizeInfo().percentage;
+			vec2i int_size = obj.getSizeInfo().fixed;
 
 			int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
 			int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
@@ -166,10 +166,10 @@ namespace tui
 			switch (direction)
 			{
 			case tui::DIRECTION::HORIZONTAL:
-				surface::setSizeInfo({ {size.fixed_size, 1},{size.percentage_size, 0} });
+				surface::setSizeInfo({ {size.fixed, 1},{size.percentage, 0} });
 				break;
 			case tui::DIRECTION::VERTICAL:
-				surface::setSizeInfo({ {1, size.fixed_size},{0, size.percentage_size} });
+				surface::setSizeInfo({ {1, size.fixed},{0, size.percentage} });
 				break;
 			}
 		}
