@@ -8,20 +8,18 @@ namespace tui
 {
 	struct group : surface
 	{
+	private:
 		std::vector<surface*> m_surfaces;
-
-
-		group(surface_size size)
+	public:
+		group(surface_size size = { {1,1},{0,0} })
 		{
 			setSizeInfo(size);
 		}
-
 
 		void addSurface(surface& surf)
 		{
 			m_surfaces.push_back(&surf);
 		}
-
 		void removeSurface(surface& surf)
 		{
 			for (int i = 0; i < m_surfaces.size(); i++)
@@ -33,7 +31,7 @@ namespace tui
 			}
 		}
 
-		void draw_action()
+		void drawAction() override
 		{
 			makeTransparent();
 
@@ -43,9 +41,5 @@ namespace tui
 			}
 		}
 
-		void resize_action()
-		{
-
-		}
 	};
 }
