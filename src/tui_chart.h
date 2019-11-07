@@ -2,6 +2,7 @@
 #include "tui_surface.h"
 #include "tui_appearance.h"
 #include "tui_text_utils.h"
+#include "tui_active_element.h"
 #include "tui_scroll.h"
 #include <vector>
 #include <sstream>
