@@ -102,24 +102,19 @@ namespace tui
 
 		void updateText()
 		{
-			console_string s;
+			console_string s = m_str;
 			
-			switch (m_confidential_mode)
+			if (m_confidential_mode)
 			{
-			case false:
-				s = m_str;
-				break;
-			case true:
-				s.resize(m_str.size());
-				for (int i = 0;i < s.size(); i++)
+				for (int i = 0; i < s.size(); i++)
 				{
-					s[i] = '*';
+					if (s[i] != '\n') { s[i] = '*'; }
 				}
 			}
 			
 			s += " ";
 
-			if (m_cursor_pos_in_txt > s.size()) { m_cursor_pos_in_txt = s.size(); }
+			if (m_cursor_pos_in_txt > m_str.size()) { m_cursor_pos_in_txt = m_str.size(); }
 
 			m_text.setText(s);
 		}
