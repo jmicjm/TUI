@@ -161,7 +161,7 @@ namespace tui
 	template<int direction>
 	struct surface1D : surface
 	{
-		void setSize(surface1D_size size)
+		void setSizeInfo(surface1D_size size)
 		{
 			switch (direction)
 			{

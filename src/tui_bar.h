@@ -12,7 +12,7 @@ namespace tui
 		symbol empty;
 		symbol half;
 	public:
-		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', COLOR::DARKGRAY }) 
+		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', {COLOR::DARKGRAY, COLOR::DARKGRAY} })
 		{
 			switch (direction)
 			{
@@ -93,7 +93,7 @@ namespace tui
 			setMaxValue(max);
 			setValue(value);
 
-			surface1D<direction>::setSize(size);
+			surface1D<direction>::setSizeInfo(size);
 		}
 
 		void setMaxValue(float max)
