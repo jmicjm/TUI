@@ -68,29 +68,28 @@ namespace tui
 		{
 			float distance = fabs(m_min - m_max);
 
-			console_string val_str; 
-			
-			if (isDisplayingLabels())
-			{
-				if (m_display_percentage_label) {val_str += ToStringP(abs(m_min - m_value)/distance * 100, m_labels_precison) + '%'; }
-				if (m_display_min_label) { val_str += ToStringP(m_min, m_labels_precison) + '/'; }
-				if (m_display_value_label) { val_str += ToStringP(m_value, m_labels_precison); }
-				if (m_display_max_label) { val_str += '/' + ToStringP(m_max, m_labels_precison); }
-			}
-
-			auto getBarSize = [&]()
-			{
-				int s = surface1D<direction>::getSize() - val_str.size();
-				return s >= 0 ? s : 0;
-			};
-
-			int bar_offset = val_str.size() * !m_display_labels_at_end;
-			int str_offset = getBarSize() * m_display_labels_at_end;
-
-
-			
 			if (distance > 0)
 			{
+				console_string val_str;
+
+				if (isDisplayingLabels())
+				{
+					if (m_display_percentage_label) { val_str += ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precison) + '%'; }
+					if (m_display_min_label) { val_str += ToStringP(m_min, m_labels_precison) + '/'; }
+					if (m_display_value_label) { val_str += ToStringP(m_value, m_labels_precison); }
+					if (m_display_max_label) { val_str += '/' + ToStringP(m_max, m_labels_precison); }
+				}
+
+				auto getBarSize = [&]()
+				{
+					int s = surface1D<direction>::getSize() - val_str.size();
+					return s >= 0 ? s : 0;
+				};
+
+				int bar_offset = val_str.size() * !m_display_labels_at_end;
+				int str_offset = getBarSize() * m_display_labels_at_end;
+
+
 				int halves = getBarSize() * 2;
 				int h = round(fabs(m_min - m_value) / distance * halves);
 
@@ -111,13 +110,20 @@ namespace tui
 						surface1D<direction>::setSymbolAt(empty, abs(dir_c - i / 2) + bar_offset);
 					}
 				}
-			}
 
-			if (isDisplayingLabels())
-			{
-				for (int i = 0; i < val_str.size() && i + str_offset < surface1D<direction>::getSize(); i++)
+				if (isDisplayingLabels())
 				{
-					surface1D<direction>::setSymbolAt(val_str[i], i + str_offset);
+					for (int i = 0; i < val_str.size() && i + str_offset < surface1D<direction>::getSize(); i++)
+					{
+						surface1D<direction>::setSymbolAt(val_str[i], i + str_offset);
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0;i < surface1D<direction>::getSize(); i++)
+				{
+					surface1D<direction>::setSymbolAt(empty, i);
 				}
 			}
 		}
