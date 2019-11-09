@@ -5,6 +5,8 @@
 #include <codecvt>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 
 #include <iostream>
@@ -650,15 +652,18 @@ namespace tui
 		ss_val << val;
 		std::string s_val = ss_val.str();
 
-		for (int i = s_val.size() - 1; i > 0; i--)
+		if (precision > 0)
 		{
-			if (s_val[i] == '0') { s_val.pop_back(); }
-			else if (s_val[i] == '.')
+			for (int i = s_val.size() - 1; i > 0; i--)
 			{
-				s_val.pop_back();
-				break;
+				if (s_val[i] == '0') { s_val.pop_back(); }
+				else if (s_val[i] == '.')
+				{
+					s_val.pop_back();
+					break;
+				}
+				else { break; }
 			}
-			else { break; }
 		}
 
 		return s_val;
