@@ -57,20 +57,24 @@ namespace tui
 		float m_max;
 		float m_value;
 
-		bool m_display_labels = false;
+		bool m_display_value_label = true;
 		bool m_display_min_label = true;
 		bool m_display_max_label = true;
+		bool m_display_percentage_label = false;
 		bool m_display_labels_at_end = false;
 		int m_labels_precison = -1;
 
 		void fill()
 		{
+			float distance = fabs(m_min - m_max);
+
 			console_string val_str; 
 			
-			if (m_display_labels)
+			if (isDisplayingLabels())
 			{
+				if (m_display_percentage_label) {val_str += ToStringP(abs(m_min - m_value)/distance * 100, m_labels_precison) + '%'; }
 				if (m_display_min_label) { val_str += ToStringP(m_min, m_labels_precison) + '/'; }
-				val_str += ToStringP(m_value, m_labels_precison); 
+				if (m_display_value_label) { val_str += ToStringP(m_value, m_labels_precison); }
 				if (m_display_max_label) { val_str += '/' + ToStringP(m_max, m_labels_precison); }
 			}
 
@@ -84,7 +88,7 @@ namespace tui
 			int str_offset = getBarSize() * m_display_labels_at_end;
 
 
-			float distance = fabs(m_min - m_max);
+			
 			if (distance > 0)
 			{
 				int halves = getBarSize() * 2;
@@ -109,7 +113,7 @@ namespace tui
 				}
 			}
 
-			if (m_display_labels)
+			if (isDisplayingLabels())
 			{
 				for (int i = 0; i < val_str.size() && i + str_offset < surface1D<direction>::getSize(); i++)
 				{
@@ -155,10 +159,23 @@ namespace tui
 
 		void displayLabels(bool display)
 		{
-			m_display_labels = display;
+			m_display_value_label = display;
+			m_display_min_label = display;
+			m_display_max_label = display;
+			m_display_percentage_label = display;
 			fill();
 		}
-		bool isDisplayingLabels() { return m_display_labels; }
+		bool isDisplayingLabels() 
+		{
+			return m_display_value_label || m_display_min_label || m_display_max_label || m_display_percentage_label;
+		}
+
+		void displayValueLabel(bool display)
+		{
+			m_display_value_label = display;
+			fill();
+		}
+		bool isDisplayingValueLabel() { return m_display_value_label; }
 
 		void displayMinLabel(bool display)
 		{
@@ -173,6 +190,13 @@ namespace tui
 			fill();
 		}
 		bool isDisplayingMaxLabel() { return m_display_max_label; }
+
+		void displayPercentageLabel(bool display)
+		{
+			m_display_percentage_label = display;
+			fill();
+		}
+		bool isDisplayingPercentageLabel() { return m_display_percentage_label; }
 
 		void displayLabelsAtEnd(bool display)
 		{
