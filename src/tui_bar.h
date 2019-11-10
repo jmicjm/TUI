@@ -11,6 +11,10 @@ namespace tui
 		symbol full;
 		symbol empty;
 		symbol half;
+		color value_color;
+		color min_color;
+		color max_color;
+		color percentage_color;
 	public:
 		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', {COLOR::DARKGRAY, COLOR::DARKGRAY} })
 		{
@@ -32,6 +36,11 @@ namespace tui
 			full.setColor(Color);
 			empty.setColor(Color);
 			half.setColor(Color);
+			value_color = Color;
+			min_color = Color;
+			max_color = Color;
+			percentage_color = Color;
+
 			setAppearanceAction();
 		}
 
@@ -47,6 +56,17 @@ namespace tui
 		void setHalfSymbol(symbol Half) { setElement(half, Half); }
 		symbol getHalfSymbol() { return half; }
 
+		void setValueColor(color Color) { setElement(value_color, Color); }
+		color getValueColor() { return value_color; }
+
+		void setMinColor(color Color) { setElement(min_color, Color); }
+		color getMinColor() { return min_color; }
+
+		void setMaxColor(color Color) { setElement(max_color, Color); }
+		color getMaxColor() { return max_color; }
+
+		void setPercentageColor(color Color) { setElement(percentage_color, Color); }
+		color getPercentageColor() { return percentage_color; }
 	};
 
 	template <int direction>
@@ -57,9 +77,9 @@ namespace tui
 		float m_max;
 		float m_value;
 
-		bool m_display_value_label = true;
-		bool m_display_min_label = true;
-		bool m_display_max_label = true;
+		bool m_display_value_label = false;
+		bool m_display_min_label = false;
+		bool m_display_max_label = false;
 		bool m_display_percentage_label = false;
 		bool m_display_labels_at_end = false;
 		int m_labels_precison = -1;
@@ -74,10 +94,10 @@ namespace tui
 
 				if (isDisplayingLabels())
 				{
-					if (m_display_percentage_label) { val_str += ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precison) + '%'; }
-					if (m_display_min_label) { val_str += ToStringP(m_min, m_labels_precison) + '/'; }
-					if (m_display_value_label) { val_str += ToStringP(m_value, m_labels_precison); }
-					if (m_display_max_label) { val_str += '/' + ToStringP(m_max, m_labels_precison); }
+					if (m_display_percentage_label) { val_str += {ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precison) + '%', percentage_color}; }
+					if (m_display_min_label) { val_str += {ToStringP(m_min, m_labels_precison) + '/', min_color}; }
+					if (m_display_value_label) { val_str += {ToStringP(m_value, m_labels_precison), value_color}; }
+					if (m_display_max_label) { val_str += {'/' + ToStringP(m_max, m_labels_precison), max_color}; }
 				}
 
 				auto getBarSize = [&]()
