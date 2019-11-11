@@ -13,8 +13,7 @@ namespace tui
 	private:
 		std::vector<active_element*> m_elements;
 		int m_selected = -1;
-		time_frame m_time_limit;
-
+		bool m_blocked = false;
 
 		void disactivateAll()
 		{
@@ -26,8 +25,7 @@ namespace tui
 
 	public:
 		int key_next = -1;
-
-		navigation_group() : m_time_limit(std::chrono::milliseconds(300)) {}
+		int key_block = -1;
 
 		void addElement(active_element& element)
 		{
@@ -38,7 +36,12 @@ namespace tui
 		{
 			if (isActive())
 			{
-				if (tui::KEYBOARD::isKeyPressed(key_next))
+				if (tui::KEYBOARD::isKeyPressed(key_block))
+				{
+					m_blocked = !m_blocked;
+				}
+
+				if (tui::KEYBOARD::isKeyPressed(key_next) && !m_blocked)
 				{
 					disactivateAll();
 
@@ -54,6 +57,7 @@ namespace tui
 		{
 			disactivateAll();
 			m_selected = 0;
+			m_blocked = false;
 			if (m_elements.size() > 0)
 			{
 				m_elements[m_selected]->activate();
