@@ -22,14 +22,36 @@ namespace tui
 				m_elements[i]->disactivate();
 			}
 		}
-
+		void disactivationAction() { disactivateAll(); }
+		void activationAction()
+		{
+			disactivateAll();
+			m_selected = 0;
+			m_blocked = false;
+			if (m_elements.size() > 0)
+			{
+				m_elements[m_selected]->activate();
+			}
+		}
 	public:
 		int key_next = -1;
+		int key_last = -1;
 		int key_block = -1;
 
 		void addElement(active_element& element)
 		{
 			m_elements.push_back(&element);
+		}
+
+		void removeElement(active_element& element)
+		{
+			for (int i = 0; i < m_elements.size(); i++)
+			{
+				if (m_elements[i] == &element)
+				{
+					m_elements.erase(m_elements.begin() + i);
+				}
+			}
 		}
 
 		void update()
@@ -49,20 +71,16 @@ namespace tui
 					else { m_selected = 0; }
 					m_elements[m_selected]->activate();
 				}
+
+				if (tui::KEYBOARD::isKeyPressed(key_last) && !m_blocked)
+				{
+					disactivateAll();
+
+					if (m_selected > 0) { m_selected--; }
+					else { m_selected = m_elements.size() - 1; }
+					m_elements[m_selected]->activate();
+				}
 			}
 		}
-
-		void disactivationAction() { disactivateAll(); }
-		void activationAction()
-		{
-			disactivateAll();
-			m_selected = 0;
-			m_blocked = false;
-			if (m_elements.size() > 0)
-			{
-				m_elements[m_selected]->activate();
-			}
-		}
-
 	};
 }
