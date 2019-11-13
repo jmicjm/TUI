@@ -75,8 +75,8 @@ namespace tui
 
 		void move(vec2i offset)
 		{
-			vec2i act_pos = getPositionInfo().getOffset();
-			m_position_info.setOffset(vec2i(act_pos.x + offset.x, act_pos.y + offset.y));
+			vec2i act_pos = getPositionInfo().offset;
+			m_position_info.offset = vec2i(act_pos.x + offset.x, act_pos.y + offset.y);
 		}
 
 		void setPositionInfo(position pos) { m_position_info = pos; }
@@ -107,13 +107,13 @@ namespace tui
 			obj.drawAction();
 
 
-			int x_origin = getSize().x * (obj.getPositionInfo().getRelativePoint().x / 100.f) - obj.getSize().x * (obj.getPositionInfo().getRelativePoint().x / 100.f);
-			x_origin += obj.getPositionInfo().getOffset().x;
-			x_origin += obj.getPositionInfo().getPercentageOffset().x * getSize().x / 100.f;
+			int x_origin = getSize().x * (obj.getPositionInfo().relative.x / 100.f) - obj.getSize().x * (obj.getPositionInfo().relative.x / 100.f);
+			x_origin += obj.getPositionInfo().offset.x;
+			x_origin += obj.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-			int y_origin = getSize().y * (obj.getPositionInfo().getRelativePoint().y / 100.f) - obj.getSize().y * (obj.getPositionInfo().getRelativePoint().y / 100.f);
-			y_origin += obj.getPositionInfo().getOffset().y;
-			y_origin += obj.getPositionInfo().getPercentageOffset().y * getSize().y / 100.f;
+			int y_origin = getSize().y * (obj.getPositionInfo().relative.y / 100.f) - obj.getSize().y * (obj.getPositionInfo().relative.y / 100.f);
+			y_origin += obj.getPositionInfo().offset.y;
+			y_origin += obj.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
 
 			obj.m_position = { x_origin, y_origin };
 			obj.m_global_position = m_global_position + obj.m_position;
