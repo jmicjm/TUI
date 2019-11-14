@@ -30,6 +30,25 @@ namespace tui
 	std::string ToStringP(float val, int precision);
 
 
+	enum COLOR
+	{
+		BLACK = 0,
+		BLUE = 1,
+		GREEN,
+		CYAN,
+		RED,
+		MAGENTA,
+		BROWN,
+		LIGHTGRAY,
+		DARKGRAY,
+		LIGHTBLUE,
+		LIGHTGREEN,
+		LIGHTCYAN,
+		LIGHTRED,
+		LIGHTMAGENTA,
+		YELLOW,
+		WHITE
+	};
 
 	struct color
 	{
@@ -499,6 +518,27 @@ namespace tui
 		return Utf8ToUtf32(str).size();
 	}
 
+
+	namespace GRAPHEME_TYPE
+	{
+		enum GRAPHEME_TYPE
+		{
+			OTHER,
+			CONTROL,
+			LF,
+			CR,
+			EXTEND,
+			PREPEND,
+			SPACINGMARK,
+			REGIONAL_INDICATOR,
+			L,
+			V,
+			T,
+			LV,
+			LVT,
+			ZWJ
+		};
+	}
 
 	inline int GetGraphemeType(char32_t grapheme)
 	{

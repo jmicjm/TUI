@@ -158,6 +158,15 @@ namespace tui
 		surface_size getSizeInfo() { return size_info; }
 	};
 
+	namespace DIRECTION
+	{
+		enum DIRECTION
+		{
+			HORIZONTAL = 0,
+			VERTICAL
+		};
+	}
+
 	template<int direction>
 	struct surface1D : surface
 	{

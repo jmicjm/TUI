@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tui_enums.h"
-
 #include <string>
 #include <vector>
 #include <array>
@@ -72,6 +70,24 @@ namespace tui
 		surface1D_size(int Fixed, int Percentage) : fixed(Fixed), percentage(Percentage) {}
 
 	};
+
+	namespace POSITION
+	{
+		namespace VERTICAL
+		{
+			enum VERTICAL
+			{
+				TOP = 0, CENTER = 50, BOTTOM = 100
+			};
+		}
+		namespace HORIZONTAL
+		{
+			enum HORIZONTAL
+			{
+				LEFT = 0, CENTER = 50, RIGHT = 100
+			};
+		}
+	}
 
 	struct position
 	{
