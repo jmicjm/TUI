@@ -101,35 +101,32 @@ namespace tui
 		{
 			m_frame_end_point = std::chrono::steady_clock::now();
 		}
+	public:
+		time_frame(std::chrono::milliseconds frame_time = std::chrono::milliseconds(100))
+		{
+			setFrameTime(frame_time);
+			start();
+		}
+
 		void restart()
 		{
 			stop();
 			start();
 		}
 
-	public:
-		time_frame(std::chrono::milliseconds frame_time)
-		{
-			setFrameTime(frame_time);
-			start();
-		}
-
 		void setFrameTime(std::chrono::milliseconds frame_time)
 		{
 			m_frame_time = frame_time;
+			restart();
 		}
 
-		bool isEnd(bool restart_clock)
+		bool isEnd(bool restart_clock = false)
 		{
-			if (std::chrono::steady_clock::now() - m_frame_start_point >= m_frame_time)
-			{
-				if (restart_clock == true)
-				{
-					restart();
-				}
-				return true; 
-			}
-			else { return false; }
+			bool is_end = std::chrono::steady_clock::now() - m_frame_start_point >= m_frame_time;
+
+			if (is_end && restart_clock) { restart(); }
+
+			return is_end;
 		}
 
 		void sleepUntilEnd()
@@ -137,7 +134,6 @@ namespace tui
 			std::this_thread::sleep_until(m_frame_start_point + m_frame_time);
 			restart();
 		}
-
 	};
 
 }
