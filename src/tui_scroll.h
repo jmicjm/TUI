@@ -211,21 +211,30 @@ namespace tui
 		void setKeys(scroll_keys Keys) { keys = Keys; }
 		scroll_keys getKeys() { return keys; }
 
+		void up(unsigned int n = 1)
+		{
+			setHandlePosition(getHandlePosition() - n);
+		}
+		void down(unsigned int n = 1)
+		{
+			setHandlePosition(getHandlePosition() + n);
+		}
+		void pageUp(unsigned int n = 1)
+		{
+			setHandlePosition(getHandlePosition() - n * visibleContentLength());
+		}
+		void pageDown(unsigned int n = 1)
+		{
+			setHandlePosition(getHandlePosition() + n * visibleContentLength());
+		}
+
 		void update()
 		{
 			if (isActive() && !isImmobilized()) {
-				if (KEYBOARD::isKeyPressed(keys.keyUp)) {
-					setHandlePosition(getHandlePosition() - 1);
-				}
-				if (KEYBOARD::isKeyPressed(keys.keyDown)) {
-					setHandlePosition(getHandlePosition() + 1);
-				}
-				if (KEYBOARD::isKeyPressed(keys.keyPageUp)) {
-					setHandlePosition(getHandlePosition() - visibleContentLength());
-				}
-				if (KEYBOARD::isKeyPressed(keys.keyPageDown)) {
-					setHandlePosition(getHandlePosition() + visibleContentLength());
-				}
+				if (KEYBOARD::isKeyPressed(keys.keyUp)) { up(); }
+				if (KEYBOARD::isKeyPressed(keys.keyDown)) { down(); }
+				if (KEYBOARD::isKeyPressed(keys.keyPageUp)) { pageUp(); }
+				if (KEYBOARD::isKeyPressed(keys.keyPageDown)) { pageDown(); }
 			}
 		}
 
