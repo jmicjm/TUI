@@ -82,7 +82,9 @@ namespace tui
 		bool m_display_max_label = false;
 		bool m_display_percentage_label = false;
 		bool m_display_labels_at_end = false;
-		int m_labels_precison = -1;
+		int m_labels_precision = -1;
+
+		bool m_redraw_needed = true;
 
 		void fill()
 		{
@@ -94,10 +96,10 @@ namespace tui
 
 				if (isDisplayingLabels())
 				{
-					if (m_display_percentage_label) { val_str += {ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precison) + '%', percentage_color}; }
-					if (m_display_min_label) { val_str += {ToStringP(m_min, m_labels_precison) + '/', min_color}; }
-					if (m_display_value_label) { val_str += {ToStringP(m_value, m_labels_precison), value_color}; }
-					if (m_display_max_label) { val_str += {'/' + ToStringP(m_max, m_labels_precison), max_color}; }
+					if (m_display_percentage_label) { val_str += {ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precision) + '%', percentage_color}; }
+					if (m_display_min_label) { val_str += {ToStringP(m_min, m_labels_precision) + '/', min_color}; }
+					if (m_display_value_label) { val_str += {ToStringP(m_value, m_labels_precision), value_color}; }
+					if (m_display_max_label) { val_str += {'/' + ToStringP(m_max, m_labels_precision), max_color}; }
 				}
 
 				auto getBarSize = [&]()
@@ -147,6 +149,25 @@ namespace tui
 				}
 			}
 		}
+
+		template<typename T>
+		void setProperty(T& elem_to_set, T elem)
+		{
+			elem_to_set = elem;
+			m_redraw_needed = true;
+		}
+
+		void drawAction() override 
+		{
+			if (m_redraw_needed)
+			{
+				fill();
+				m_redraw_needed = false;
+			}
+		};
+		void resizeAction() override { m_redraw_needed = true; }
+
+		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
 		bar() : bar(1) {}
 		bar(surface1D_size size) : bar(size, 0,0,0) {}
@@ -162,24 +183,22 @@ namespace tui
 		void setMaxValue(float max)
 		{
 			if (max < m_min) { max = m_min; }
-			m_max = max;
-			fill();
+			setProperty(m_max, max);
 		}
 		float getMaxValue() { return m_max; }
+
 		void setMinValue(float min)
 		{
 			if (min > m_max) { min = m_max; }
-			m_min = min;
-			fill();
+			setProperty(m_min, min);
 		}
 		float getMinValue() { return m_min; }
+
 		void setValue(float value)
 		{
 			if (value < m_min) { value = m_min; }
 			if (value > m_max) { value = m_max; }
-
-			m_value = value;
-			fill();
+			setProperty(m_value, value);
 		}
 		float getValue() { return m_value; }
 
@@ -189,58 +208,31 @@ namespace tui
 			m_display_min_label = display;
 			m_display_max_label = display;
 			m_display_percentage_label = display;
-			fill();
+
+			m_redraw_needed = true;
 		}
 		bool isDisplayingLabels() 
 		{
-			return m_display_value_label || m_display_min_label || m_display_max_label || m_display_percentage_label;
+			return m_display_value_label || m_display_min_label 
+				  || m_display_max_label || m_display_percentage_label;
 		}
 
-		void displayValueLabel(bool display)
-		{
-			m_display_value_label = display;
-			fill();
-		}
+		void displayValueLabel(bool display) { setProperty(m_display_value_label, display); }
 		bool isDisplayingValueLabel() { return m_display_value_label; }
 
-		void displayMinLabel(bool display)
-		{
-			m_display_min_label = display;
-			fill();
-		}
+		void displayMinLabel(bool display) { setProperty(m_display_min_label, display); }
 		bool isDisplayingMinLabel() { return m_display_min_label; }
 
-		void displayMaxLabel(bool display)
-		{
-			m_display_max_label = display;
-			fill();
-		}
+		void displayMaxLabel(bool display) { setProperty(m_display_max_label, display); }
 		bool isDisplayingMaxLabel() { return m_display_max_label; }
 
-		void displayPercentageLabel(bool display)
-		{
-			m_display_percentage_label = display;
-			fill();
-		}
+		void displayPercentageLabel(bool display) { setProperty(m_display_percentage_label, display); }
 		bool isDisplayingPercentageLabel() { return m_display_percentage_label; }
 
-		void displayLabelsAtEnd(bool display)
-		{
-			m_display_labels_at_end = display;
-			fill();
-		}
+		void displayLabelsAtEnd(bool display) { setProperty(m_display_labels_at_end, display); }
 		bool isDisplayingLabelsAtEnd() { return m_display_labels_at_end; }
 
-		void setLabelsPrecision(int precision)
-		{
-			m_labels_precision = precision;
-			fill();
-		}
+		void setLabelsPrecision(int precision) { setProperty(m_labels_precision, precision); }
 		int getLabelsPrecision() { return m_labels_precision; }
-
-		void drawAction() override {};
-		void resizeAction() override { fill(); }
-
-		void setAppearanceAction() override { fill(); }
 	};
 }
