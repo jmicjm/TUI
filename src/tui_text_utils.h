@@ -324,26 +324,35 @@ namespace tui
 			(*(std::vector<symbol>*)this) = temp_vec;
 		}
 
-		void operator<< (color color)
+		console_string& operator<< (color color)
 		{
 			m_selected_color = color;
+			return *this;
 		}
 
-		void operator<< (const console_string &string)
+		console_string& operator<< (const console_string& string)
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
 				this->push_back(string[i]);
 				(*this)[this->size()-1].setColor(m_selected_color);
 			}
+			return *this;
 		}
 
-		void operator+=(const console_string &str)
+		console_string& operator+=(const console_string& str)
 		{
 			for (int i = 0; i < str.size(); i++)
 			{
 				this->push_back(str[i]);
 			}
+			return *this;
+		}
+
+		console_string operator+(const console_string& str)
+		{
+			console_string tmp = *this;
+			return tmp += str;
 		}
 
 		void invert()
