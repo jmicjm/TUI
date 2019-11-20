@@ -40,10 +40,19 @@ namespace tui
 		virtual void updateAction() {}
 		virtual void drawAction() {}
 	public:
-		surface() : surface({ {1,1},{0,0} }) {}
-		surface(surface_size size)
+		surface(surface_size size = {{ 1,1 }, { 0,0 }})
 		{
 			setSizeInfo(size);
+		}
+		surface(const symbol& sym) : surface(console_string(sym)) {}
+		surface(const console_string& str)
+		{
+			setSizeInfo({ {(int)str.size(),1},{0,0} });
+
+			for (int i = 0; i < getSize().x; i++)
+			{
+				setSymbolAt(str[i], { i,0 });
+			}
 		}
 
 		bool isResized() { return m_resized; }
