@@ -20,6 +20,8 @@ namespace tui
 	{
 		symbol slider; //handle
 		symbol line;
+		symbol prev_arrow;
+		symbol next_arrow;
 
 		scroll_appearance_a(bool direction = tui::DIRECTION::VERTICAL)
 		{
@@ -28,11 +30,14 @@ namespace tui
 			case tui::DIRECTION::VERTICAL:
 				slider = U'\x2551';
 				line = U'\x2502';
+				prev_arrow = U'\x25B2';
+				next_arrow = U'\x25BC';
 				break;
 			case tui::DIRECTION::HORIZONTAL:
 				slider = U'\x2550';
 				line = U'\x2500';
-				break;
+				prev_arrow = U'\x25C0';
+				next_arrow = U'\x25B6';
 			}
 		}
 		scroll_appearance_a(symbol slider, symbol line) : slider(slider), line(line) {}
@@ -46,11 +51,17 @@ namespace tui
 		void setAppearance(scroll_appearance_a appearance) { *this = appearance; }
 		scroll_appearance_a getAppearance() { return *this; }
 
-		void setSlider(symbol Slider) { slider = Slider; }
-		symbol getSlider() { return slider; }
+		void setSliderSymbol(const symbol& Slider) { slider = Slider; }
+		symbol getSliderSymbol() { return slider; }
 
-		void setLine(symbol Line) { line = Line; }
+		void setLineSymbol(const symbol& Line) { line = Line; }
 		symbol getLine() { return line; }
+
+		void setPreviousArrowSymbol(const symbol& prev) { prev_arrow = prev; }
+		symbol getPreviousArrowSymbol() { return prev_arrow; }
+
+		void setNextArrowSymbol(const symbol& next) { next_arrow = next; }
+		symbol getNextArrowSymbol() { return next_arrow; }
 	};
 
 	struct scroll_appearance : appearance
@@ -110,17 +121,28 @@ namespace tui
 		{
 			if (isNeeded())
 			{
-				for (int i = 0; i < surface1D<direction>::getSize(); i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
+				surface1D<direction>::setSymbolAt(getCurrentAppearance().prev_arrow, 0);
+				surface1D<direction>::setSymbolAt(getCurrentAppearance().next_arrow, surface1D<direction>::getSize() - 1);
 
-				int handle_length = ((visibleContentLength() * 1.f) / m_content_length) * surface1D<direction>::getSize();
+				for (int i = 1; i < surface1D<direction>::getSize() -1; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
+
+				int handle_length = ((visibleContentLength() * 1.f) / m_content_length) * (surface1D<direction>::getSize() - 2);
 
 				if (handle_length < 1) { handle_length = 1; }
 
 				float handle_pos_perc = m_handle_position * 1.f / (m_content_length * 1.f - visibleContentLength());
 
-				int handle_position = round(surface1D<direction>::getSize() * (handle_pos_perc)-handle_length * (handle_pos_perc));
+				int handle_position = 0;
+				
+				if (surface1D<direction>::getSize() - 2 >= 0)
+				{
+					handle_position = round((surface1D<direction>::getSize() - 2) * (handle_pos_perc)-handle_length * (handle_pos_perc)) + 1;
+				}
 
-				for (int i = 0; i < handle_length; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); }
+				for (int i = 0; i < handle_length; i++) 
+				{
+					surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); 
+				}
 			}
 			else
 			{
