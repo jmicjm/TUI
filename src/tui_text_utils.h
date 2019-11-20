@@ -137,10 +137,10 @@ namespace tui
 		symbol(const char32_t* Symbol) : symbol(std::u32string(Symbol), color()) {}
 		symbol(const char* Symbol, color color) : symbol(std::string(Symbol), color) {}
 		symbol(const char32_t* Symbol, color color) : symbol(std::u32string(Symbol), color) {}
-		symbol(std::string Symbol) : symbol(Symbol, color()) {}
-		symbol(std::u32string Symbol) : symbol(Symbol, color()) {}
-		symbol(std::string Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
-		symbol(std::u32string Symbol, color color) : m_multiple_cp_size(0)
+		symbol(const std::string& Symbol) : symbol(Symbol, color()) {}
+		symbol(const std::u32string& Symbol) : symbol(Symbol, color()) {}
+		symbol(const std::string& Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
+		symbol(const std::u32string& Symbol, color color) : m_multiple_cp_size(0)
 		{
 			setSymbol(Symbol); 
 			setColor(color);
@@ -199,7 +199,7 @@ namespace tui
 
 		void setSymbol(char32_t character) { setSingleCp(character); }
 
-		void setSymbol(std::u32string symbol) 
+		void setSymbol(const std::u32string& symbol) 
 		{
 
 			if (symbol.size() == 0) { setSingleCp(U' '); }
@@ -297,10 +297,10 @@ namespace tui
 		}
 		console_string(const char* str) : console_string(Utf8ToUtf32(str)) {}
 		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
-		console_string(std::string str) : console_string(Utf8ToUtf32(str), color()) {}
-		console_string(std::u32string str) : console_string(str, color()) {}
-		console_string(std::string str, color color) : console_string(Utf8ToUtf32(str), color) {}	
-		console_string(std::u32string str, color color)
+		console_string(const std::string& str) : console_string(Utf8ToUtf32(str), color()) {}
+		console_string(const std::u32string& str) : console_string(str, color()) {}
+		console_string(const std::string& str, color color) : console_string(Utf8ToUtf32(str), color) {}	
+		console_string(const std::u32string& str, color color)
 		{
 			std::vector<symbol> temp_vec;
 
