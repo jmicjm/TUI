@@ -13,7 +13,6 @@
 
 #include "tui_utils.h"
 #include "tui_text_utils.h"
-#include "tui_enums.h"
 #include "tui_surface.h"
 #include "tui_input.h"
 

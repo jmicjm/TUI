@@ -148,7 +148,7 @@ namespace tui
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i] = Symbol; }
 		}
 		void makeTransparent() { fill((char32_t)0); }
-		void makeBlank() { fill(BLANKSYMBOL); }
+		void makeBlank() { fill(' '); }
 
 		void invert()
 		{
