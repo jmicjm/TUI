@@ -102,7 +102,7 @@ namespace tui
 		int m_top_position = 0;
 		int m_current_position = 0;
 
-		bool m_free_mode = true;
+		bool m_free_mode = false;
 
 		bool m_immobilized = false;
 

@@ -181,22 +181,22 @@ namespace tui
 
 		void lineUp()
 		{
-			m_scroll.setTopPosition(m_scroll.getTopPosition() - 1);
+			m_scroll.up();
 			fill();
 		}
 		void lineDown()
 		{
-			m_scroll.setTopPosition(m_scroll.getTopPosition() + 1);
+			m_scroll.down();
 			fill();
 		}
 		void pageUp()
 		{
-			m_scroll.setTopPosition(m_scroll.getTopPosition() - getSize().y);
+			m_scroll.pageUp();
 			fill();
 		}
 		void pageDown()
 		{
-			m_scroll.setTopPosition(m_scroll.getTopPosition() + getSize().y);
+			m_scroll.pageDown();
 			fill();
 		}
 
