@@ -59,6 +59,10 @@ namespace tui
 	struct box : surface, box_appearance
 	{
 	private:
+		console_string m_title;
+
+		bool m_redraw_needed = true;
+
 		void fill()
 		{
 			setSymbolAt(m_top_left, vec2i(0, 0));
@@ -71,9 +75,24 @@ namespace tui
 
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
+
+			unsigned int t_pos = getSize().x / 2 - m_title.size() / 2;
+
+			for (int i = 0; i<m_title.size() && t_pos < getSize().x; i++, t_pos++)
+			{
+				setSymbolAt(m_title[i], vec2i(t_pos, 0));
+			}
 		}
-		void resizeAction() override { fill(); }
-		void setAppearanceAction() override { fill(); }
+		void drawAction() override
+		{
+			if (m_redraw_needed) 
+			{
+				fill(); 
+				m_redraw_needed = false;
+			}
+		}
+		void resizeAction() override { m_redraw_needed = true; }
+		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
 		box() : box({ {3,3} }) {}
 		box(surface_size size) : box(size, box_appearance()) {}
@@ -82,5 +101,12 @@ namespace tui
 			setSizeInfo(size);
 			setAppearance(appearance);
 		}
+
+		void setTitle(const console_string& str)
+		{
+			m_title = str;
+			m_redraw_needed = true;
+		}
+		console_string getTitle() { return m_title; }
 	};
 }
