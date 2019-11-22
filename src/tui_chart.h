@@ -109,7 +109,7 @@ namespace tui
 				int halves = m_chart.getSize().y * 2;
 				int p_halves = round(m_max / distance * halves) * (m_max>=0);
 
-				int h_pos = m_scroll.getHandlePosition();
+				int h_pos = m_scroll.getTopPosition();
 				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
 
 				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
@@ -251,9 +251,9 @@ namespace tui
 
 		void update()
 		{
-			int old_scroll_handle_pos = m_scroll.getHandlePosition();
+			int old_scroll_handle_pos = m_scroll.getTopPosition();
 			m_scroll.update();
-			if (m_scroll.getHandlePosition() != old_scroll_handle_pos)
+			if (m_scroll.getTopPosition() != old_scroll_handle_pos)
 			{
 				m_redraw_needed = true;
 			}

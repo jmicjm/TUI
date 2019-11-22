@@ -49,9 +49,9 @@ namespace tui
 			{
 				for (int x = 0; x < m_text.getSize().x; x++)
 				{
-					if (m_text.getSize().x * m_scroll.getHandlePosition() + y * m_text.getSize().x + x < m_prepared_text.size())
+					if (m_text.getSize().x * m_scroll.getTopPosition() + y * m_text.getSize().x + x < m_prepared_text.size())
 					{
-						m_text[x][y] = m_prepared_text[m_text.getSize().x * m_scroll.getHandlePosition() + y * m_text.getSize().x + x];
+						m_text[x][y] = m_prepared_text[m_text.getSize().x * m_scroll.getTopPosition() + y * m_text.getSize().x + x];
 					}
 				}
 			}
@@ -172,31 +172,31 @@ namespace tui
 
 		void goToLine(int line)
 		{
-			m_scroll.setHandlePosition(line);
+			m_scroll.setTopPosition(line);
 			fill();
 		}
 
 		//return current line number
-		int getLine() { return m_scroll.getHandlePosition(); }
+		int getLine() { return m_scroll.getTopPosition(); }
 
 		void lineUp()
 		{
-			m_scroll.setHandlePosition(m_scroll.getHandlePosition() - 1);
+			m_scroll.setTopPosition(m_scroll.getTopPosition() - 1);
 			fill();
 		}
 		void lineDown()
 		{
-			m_scroll.setHandlePosition(m_scroll.getHandlePosition() + 1);
+			m_scroll.setTopPosition(m_scroll.getTopPosition() + 1);
 			fill();
 		}
 		void pageUp()
 		{
-			m_scroll.setHandlePosition(m_scroll.getHandlePosition() - getSize().y);
+			m_scroll.setTopPosition(m_scroll.getTopPosition() - getSize().y);
 			fill();
 		}
 		void pageDown()
 		{
-			m_scroll.setHandlePosition(m_scroll.getHandlePosition() + getSize().y);
+			m_scroll.setTopPosition(m_scroll.getTopPosition() + getSize().y);
 			fill();
 		}
 
@@ -274,9 +274,9 @@ namespace tui
 
 		void update()
 		{
-			int pos = m_scroll.getHandlePosition();
+			int pos = m_scroll.getTopPosition();
 			m_scroll.update();
-			if (pos != m_scroll.getHandlePosition()) { fill(); }
+			if (pos != m_scroll.getTopPosition()) { fill(); }
 		}
 
 		void resizeAction() override

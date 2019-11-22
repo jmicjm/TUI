@@ -99,7 +99,10 @@ namespace tui
 	private:
 		int m_content_length = 0;
 		int m_visible_content_length = -1;
-		int m_handle_position = 0;
+		int m_top_position = 0;
+		int m_current_position = 0;
+
+		bool m_free_mode = true;
 
 		bool m_immobilized = false;
 
@@ -130,7 +133,7 @@ namespace tui
 
 				if (handle_length < 1) { handle_length = 1; }
 
-				float handle_pos_perc = m_handle_position * 1.f / (m_content_length * 1.f - visibleContentLength());
+				float handle_pos_perc = m_top_position * 1.f / (m_content_length * 1.f - visibleContentLength());
 
 				int handle_position = 0;
 				
@@ -154,11 +157,23 @@ namespace tui
 		{
 			if (!isNeeded())
 			{
-				m_handle_position = 0;
+				m_top_position = 0;
 			}
-			else if (m_handle_position > m_content_length - visibleContentLength())
+			else
 			{
-				m_handle_position = m_content_length - visibleContentLength();
+				if (m_top_position > m_content_length - visibleContentLength())
+				{
+					m_top_position = m_content_length - visibleContentLength();
+				}
+				if (m_current_position >= m_top_position + visibleContentLength())
+				{
+					m_current_position = m_top_position + visibleContentLength() -1;
+				}
+			}
+
+			if (!m_free_mode)
+			{
+				m_current_position = m_top_position;
 			}
 		}
 
@@ -166,7 +181,8 @@ namespace tui
 		{
 			adjustHandlePositionRespectLength();
 
-			if (m_handle_position < 0) { m_handle_position = 0; }
+			if (m_top_position < 0) { m_top_position = 0; }
+			if (m_current_position < 0) { m_current_position = 0; }
 		}
 
 		void updateAction() override { update(); }
@@ -216,16 +232,28 @@ namespace tui
 		}
 		int getVisibleContentLength() { return m_visible_content_length; }
 
-		void setHandlePosition(int handle_position)
+		void useFreeMode(bool use)
 		{
-			m_handle_position = handle_position;
+			m_free_mode = use;
+			if (!use)
+			{
+				m_current_position = m_top_position;
+			}
+		}
+		bool isUsingFreeMode() { return m_free_mode; }
+
+		void setTopPosition(int handle_position)
+		{
+			m_top_position = handle_position;
+			m_current_position = handle_position;
 
 			adjustHandlePositionRespectBounds();
 			fill();
 		}
 
 		int getContentLength() { return m_content_length; }
-		int getHandlePosition() { return m_handle_position; }
+		int getTopPosition() { return m_top_position; }
+		int getCurrentPosition() { return m_current_position; }
 
 		void immobilize(bool i) { m_immobilized = i; }
 		bool isImmobilized() { return m_immobilized; }
@@ -235,19 +263,43 @@ namespace tui
 
 		void up(unsigned int n = 1)
 		{
-			setHandlePosition(getHandlePosition() - n);
+			if (!m_free_mode)
+			{
+				setTopPosition(getTopPosition() - n);
+			}
+			else
+			{
+				m_current_position--;
+				if (m_current_position < m_top_position)
+				{
+					m_top_position--;
+				}
+				adjustHandlePositionRespectBounds();
+			}
 		}
 		void down(unsigned int n = 1)
 		{
-			setHandlePosition(getHandlePosition() + n);
+			if (!m_free_mode)
+			{
+				setTopPosition(getTopPosition() + n);
+			}
+			else
+			{
+				m_current_position++;
+				if (m_current_position >= m_top_position + visibleContentLength())
+				{
+					m_top_position++;
+				}
+				adjustHandlePositionRespectBounds();
+			}
 		}
 		void pageUp(unsigned int n = 1)
 		{
-			setHandlePosition(getHandlePosition() - n * visibleContentLength());
+			setTopPosition(getTopPosition() - n * visibleContentLength());
 		}
 		void pageDown(unsigned int n = 1)
 		{
-			setHandlePosition(getHandlePosition() + n * visibleContentLength());
+			setTopPosition(getTopPosition() + n * visibleContentLength());
 		}
 
 		void update()
