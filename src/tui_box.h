@@ -2,6 +2,7 @@
 #include "tui_surface.h"
 #include "tui_appearance.h"
 #include "tui_text_utils.h"
+#include "tui_utils.h"
 
 namespace tui
 {
@@ -60,6 +61,7 @@ namespace tui
 	{
 	private:
 		console_string m_title;
+		int m_title_position = POSITION::HORIZONTAL::CENTER;
 
 		bool m_redraw_needed = true;
 
@@ -76,7 +78,9 @@ namespace tui
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
 
-			unsigned int t_pos = getSize().x / 2 - m_title.size() / 2;
+			int shift = getSize().x > m_title.size();
+			int t_pos = (getSize().x-2) * (m_title_position / 100.f) - m_title.size() * (m_title_position / 100.f) + shift;
+			if (t_pos < 0) { t_pos = 0; }
 
 			for (int i = 0; i<m_title.size() && t_pos < getSize().x; i++, t_pos++)
 			{
@@ -108,5 +112,12 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		console_string getTitle() { return m_title; }
+
+		void setTitlePosition(int position)
+		{
+			m_title_position = position;
+			m_redraw_needed = true;
+		}
+		int getTitlePosition() { return m_title_position; }
 	};
 }
