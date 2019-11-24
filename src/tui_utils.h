@@ -73,20 +73,10 @@ namespace tui
 
 	namespace POSITION
 	{
-		namespace VERTICAL
+		enum POSITION
 		{
-			enum VERTICAL
-			{
-				TOP = 0, CENTER = 50, BOTTOM = 100
-			};
-		}
-		namespace HORIZONTAL
-		{
-			enum HORIZONTAL
-			{
-				LEFT = 0, CENTER = 50, RIGHT = 100
-			};
-		}
+			BEGIN = 0, CENTER = 50, END = 100
+		};
 	}
 
 	struct position
@@ -95,9 +85,9 @@ namespace tui
 		vec2i percentage_offset;
 		vec2i relative;
 
-		position() : position(vec2i(0, 0), vec2i(0,0), vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
-		position(vec2i offset): position(offset, vec2i(0,0), vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
-		position(vec2i offset, vec2i percentage_offset) : position(offset, percentage_offset, vec2i(POSITION::HORIZONTAL::LEFT, POSITION::VERTICAL::TOP)) {}
+		position() : position(vec2i(0, 0), vec2i(0,0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
+		position(vec2i offset): position(offset, vec2i(0,0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
+		position(vec2i offset, vec2i percentage_offset) : position(offset, percentage_offset, vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
 		position(vec2i Offset, vec2i Percentage_offset, vec2i Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
 	};
 

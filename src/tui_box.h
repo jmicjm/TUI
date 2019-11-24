@@ -61,7 +61,7 @@ namespace tui
 	{
 	private:
 		console_string m_title;
-		int m_title_position = POSITION::HORIZONTAL::CENTER;
+		int m_title_position = POSITION::CENTER;
 
 		bool m_redraw_needed = true;
 

@@ -16,7 +16,7 @@ namespace tui
 		color max_color;
 		color percentage_color;
 	public:
-		bar_appearance(bool direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', {COLOR::DARKGRAY, COLOR::DARKGRAY} })
+		bar_appearance(DIRECTION direction = tui::DIRECTION::VERTICAL) : bar_appearance({ U'\x2588', COLOR::WHITE }, { U' ', {COLOR::DARKGRAY, COLOR::DARKGRAY} })
 		{
 			switch (direction)
 			{
@@ -69,7 +69,7 @@ namespace tui
 		color getPercentageColor() { return percentage_color; }
 	};
 
-	template <int direction>
+	template <DIRECTION direction>
 	struct bar : surface1D<direction>, bar_appearance
 	{
 	private:

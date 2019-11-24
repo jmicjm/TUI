@@ -182,7 +182,7 @@ namespace tui
 		chart() : m_scroll({0,100}) 
 		{
 			m_scroll.setPositionInfo({ { 0,-1 }, { 0,100 } });
-			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP} });
+			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::END, tui::POSITION::BEGIN} });
 		}
 
 		void setValues(std::vector<float> values)

@@ -23,7 +23,7 @@ namespace tui
 		symbol prev_arrow;
 		symbol next_arrow;
 
-		scroll_appearance_a(bool direction = tui::DIRECTION::VERTICAL)
+		scroll_appearance_a(DIRECTION direction = tui::DIRECTION::VERTICAL)
 		{
 			switch (direction)
 			{
@@ -70,7 +70,7 @@ namespace tui
 		scroll_appearance_a m_active_appearance;
 		scroll_appearance_a m_inactive_appearance;
 	public:
-		scroll_appearance(bool direction = tui::DIRECTION::VERTICAL) : m_active_appearance(direction), m_inactive_appearance(direction)
+		scroll_appearance(DIRECTION direction = tui::DIRECTION::VERTICAL) : m_active_appearance(direction), m_inactive_appearance(direction)
 		{
 			m_inactive_appearance.setColor(tui::COLOR::DARKGRAY);
 		}
@@ -93,7 +93,7 @@ namespace tui
 		scroll_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
 
-	template<int direction>
+	template<DIRECTION direction>
 	struct scroll : surface1D<direction>, scroll_appearance, active_element
 	{
 	private:
