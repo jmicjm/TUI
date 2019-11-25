@@ -235,9 +235,9 @@ namespace tui
 			switch (direction)
 			{
 			case tui::DIRECTION::HORIZONTAL:
-				return surface1D_size(surface::getSizeInfo().getFixedSize().x, surface::getSizeInfo().getPercentageSize().x);
+				return surface1D_size(surface::getSizeInfo().fixed.x, surface::getSizeInfo().percentage.x);
 			case tui::DIRECTION::VERTICAL:
-				return surface1D_size(surface::getSizeInfo().getFixedSize().y, surface::getSizeInfo().getPercentageSize().y);;
+				return surface1D_size(surface::getSizeInfo().fixed.y, surface::getSizeInfo().percentage.y);;
 			}
 		}
 	};

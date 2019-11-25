@@ -51,7 +51,7 @@ namespace tui
 		enum BUTTON_TYPE {SWITCH, PUSH};
 	}
 
-	template<int direction, int button_type>
+	template<DIRECTION direction, int button_type>
 	struct button : surface1D<direction>, button_appearance, active_element
 	{
 	private:
