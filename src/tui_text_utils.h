@@ -33,50 +33,6 @@ namespace tui
 		WHITE
 	};
 
-	std::array<std::string, 16> linuxBG =
-	{
-		{
-			"40",
-			"44",
-			"42",
-			"46",
-			"41",
-			"45",
-			"43",
-			"47",
-			"100",
-			"104",
-			"102",
-			"106",
-			"101",
-			"105",
-			"103",
-			"107"
-		}
-	};
-
-	std::array<std::string, 16> linuxFG =
-	{
-		{
-			"30",
-			"34",
-			"32",
-			"36",
-			"31",
-			"35",
-			"33",
-			"37",
-			"30;1",
-			"34;1",
-			"32;1",
-			"36;1",
-			"31;1",
-			"35;1",
-			"33;1",
-			"37;1"
-		}
-	};
-
 	struct color
 	{
 	private:
@@ -103,18 +59,7 @@ namespace tui
 		int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
 		uint8_t getForegroundColor() { return m_foreground; }
 		uint8_t getBackgroundColor() { return m_background; }
-		std::string getForegroundColorLinux() { return linuxFG[m_foreground]; }
-		std::string getBackgroundColorLinux() { return linuxBG[m_background]; }
-		std::string getEscapeCode()
-		{
-			std::string esc_c = "\033[";
-			esc_c += getForegroundColorLinux();
-			esc_c += ";";
-			esc_c += getBackgroundColorLinux();
-			esc_c += "m";
 
-			return esc_c;
-		}
 		bool operator==(color c)
 		{
 			return c.m_background == m_background && c.m_foreground == m_foreground;

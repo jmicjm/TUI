@@ -170,8 +170,29 @@ namespace tui
 			delete srect;	
 
 			SetConsoleCursorPosition(m_console_handle, { 0,0 });
+			SetConsoleTextAttribute(m_console_handle, color(COLOR::WHITE, COLOR::BLACK).getRGBIColor());
 #endif
+
 #ifdef TUI_TARGET_SYSTEM_LINUX
+			static const std::array<std::string, 16> bg =
+			{
+				{ "40","44","42","46","41","45","43","47","100","104","102","106","101","105","103","107" }
+			};
+
+			static const std::array<std::string, 16> fg =
+			{
+				{ "30","34","32","36","31","35","33","37","30;1","34;1","32;1","36;1","31;1","35;1","33;1","37;1" }
+			};
+			auto getEscCode = [](color c)
+			{
+				std::string esc_c = "\033[";
+				esc_c += fg[c.getForegroundColor()];
+				esc_c += ";";
+				esc_c += bg[c.getBackgroundColor()];
+				esc_c += "m";
+
+				return esc_c;
+			};
 			
 			std::string str;
 
@@ -179,11 +200,10 @@ namespace tui
 			{
 				for (int j = 0; j < getSize().x; j++)
 				{
-					str += m_buffer.getSymbolAt({ j, i }).getColor().getEscapeCode();
+					str += getEscCode(m_buffer.getSymbolAt({ j, i }).getColor());
 
 					if (m_buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 					{
-						//std::u32string u32s = 
 						str += Utf32ToUtf8(m_buffer.getSymbolAt({ j, i }).getSymbol());
 					}
 					else
@@ -195,11 +215,8 @@ namespace tui
 
 			/* if not doubled last few characters will be displayed after
 			some delay. I dont know why this happen*/
-			std::cout << str << "\033[H" << str << "\033[H";
-			
-
+			std::cout << str << "\033[H" << str << "\033[H" << getEscCode({ COLOR::WHITE, COLOR::BLACK });;
 #endif
-			setGlobalColor(color(COLOR::WHITE, COLOR::BLACK));
 			hidePrompt();
 			updateLastBuffer();
 		}
@@ -240,17 +257,6 @@ namespace tui
 			else { m_resized = false; }
 
 			m_last_size = console_size;
-		}
-
-		void setGlobalColor(color color) 
-		{
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
-			SetConsoleTextAttribute(m_console_handle, color.getRGBIColor()); 
-#endif
-
-#ifdef TUI_TARGET_SYSTEM_LINUX
-			std::cout << color.getEscapeCode();
-#endif
 		}
 
 		void hidePrompt()
