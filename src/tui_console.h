@@ -135,7 +135,7 @@ namespace tui
 		{
 			m_fps_control.sleepUntilEnd();
 
-			KEYBOARD::buffer.clear();
+			input::buffer.clear();
 
 			if (!changed()) { return; }
 

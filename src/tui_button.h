@@ -135,7 +135,7 @@ namespace tui
 
 			if (isActive())
 			{
-				if (KEYBOARD::isKeyPressed(keySelect))
+				if (input::IsKeyPressed(keySelect))
 				{
 					m_selected = !m_selected;
 

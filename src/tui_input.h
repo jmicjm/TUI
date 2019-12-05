@@ -24,7 +24,7 @@
 
 namespace tui
 {
-	namespace KEYBOARD
+	namespace input
 	{
 
 
@@ -462,14 +462,14 @@ namespace tui
 		extern keyboard_buffer buffer;
 
 		//return amount of key press in iteration before last clear
-		inline int isKeyPressed(int key)
+		inline int IsKeyPressed(int key)
 		{
 			if (key >= 0) { return buffer[key]; }
 			else { return false; }
 		}
 
 		//return string that consist of characters pressed in iteration before last clear
-		inline std::string getInputAsString()
+		inline std::string GetInputAsString()
 		{
 			return buffer.getString();
 		}

@@ -10,10 +10,10 @@ namespace tui
 {
 	struct scroll_keys
 	{
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		int keyPageUp = KEYBOARD::KEY::PGUP;
-		int keyPageDown = KEYBOARD::KEY::PGDN;
+		int keyUp = input::KEY::UP;
+		int keyDown = input::KEY::DOWN;
+		int keyPageUp = input::KEY::PGUP;
+		int keyPageDown = input::KEY::PGDN;
 	};
 
 	struct scroll_appearance_a
@@ -204,8 +204,8 @@ namespace tui
 		{
 			if(direction == DIRECTION::HORIZONTAL)
 			{
-				keys.keyUp = KEYBOARD::KEY::LEFT;
-				keys.keyDown = KEYBOARD::KEY::RIGHT;
+				keys.keyUp = input::KEY::LEFT;
+				keys.keyDown = input::KEY::RIGHT;
 			}
 
 			surface1D<direction>::setSizeInfo({ size.fixed, size.percentage });
@@ -305,10 +305,10 @@ namespace tui
 		void update()
 		{
 			if (isActive() && !isImmobilized()) {
-				if (KEYBOARD::isKeyPressed(keys.keyUp)) { up(); }
-				if (KEYBOARD::isKeyPressed(keys.keyDown)) { down(); }
-				if (KEYBOARD::isKeyPressed(keys.keyPageUp)) { pageUp(); }
-				if (KEYBOARD::isKeyPressed(keys.keyPageDown)) { pageDown(); }
+				if (input::IsKeyPressed(keys.keyUp)) { up(); }
+				if (input::IsKeyPressed(keys.keyDown)) { down(); }
+				if (input::IsKeyPressed(keys.keyPageUp)) { pageUp(); }
+				if (input::IsKeyPressed(keys.keyPageDown)) { pageDown(); }
 			}
 		}
 

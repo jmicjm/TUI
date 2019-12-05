@@ -2,7 +2,7 @@
 
 namespace tui
 {
-	namespace KEYBOARD
+	namespace input
 	{
 		keyboard_buffer buffer;
 

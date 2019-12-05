@@ -41,11 +41,11 @@ namespace tui
 
 	struct input_text_keys
 	{
-		int keyUp = KEYBOARD::KEY::UP;
-		int keyDown = KEYBOARD::KEY::DOWN;
-		int keyLeft = KEYBOARD::KEY::LEFT;
-		int keyRight = KEYBOARD::KEY::RIGHT;
-		int keyInsert = KEYBOARD::KEY::INS;
+		int keyUp = input::KEY::UP;
+		int keyDown = input::KEY::DOWN;
+		int keyLeft = input::KEY::LEFT;
+		int keyRight = input::KEY::RIGHT;
+		int keyInsert = input::KEY::INS;
 	};
 
 	struct input_text : surface, active_element, input_text_appearance
@@ -278,7 +278,7 @@ namespace tui
 		{
 			if (isActive())
 			{
-				console_string input = KEYBOARD::getInputAsString();
+				console_string input = input::GetInputAsString();
 
 				if (input.size() > 0)
 				{
@@ -308,9 +308,9 @@ namespace tui
 				}
 
 
-				if (KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE))
+				if (input::IsKeyPressed(input::KEY::BACKSPACE))
 				{
-					int erase_c = KEYBOARD::isKeyPressed(KEYBOARD::KEY::BACKSPACE);
+					int erase_c = input::IsKeyPressed(input::KEY::BACKSPACE);
 					if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
 
 					m_str.erase(m_str.begin() + m_cursor_pos_in_txt - erase_c, m_str.begin() + m_cursor_pos_in_txt);
@@ -319,12 +319,12 @@ namespace tui
 					updateText();
 				}
 
-				if (KEYBOARD::isKeyPressed(m_keys.keyLeft)) { moveCursorLeft(KEYBOARD::isKeyPressed(m_keys.keyLeft)); }
-				if (KEYBOARD::isKeyPressed(m_keys.keyRight)) { moveCursorRight(KEYBOARD::isKeyPressed(m_keys.keyRight)); }
-				if (KEYBOARD::isKeyPressed(m_keys.keyUp)) { moveCursorUp(KEYBOARD::isKeyPressed(m_keys.keyUp)); }
-				if (KEYBOARD::isKeyPressed(m_keys.keyDown)) { moveCursorDown(KEYBOARD::isKeyPressed(m_keys.keyDown)); }
+				if (input::IsKeyPressed(m_keys.keyLeft)) { moveCursorLeft(input::IsKeyPressed(m_keys.keyLeft)); }
+				if (input::IsKeyPressed(m_keys.keyRight)) { moveCursorRight(input::IsKeyPressed(m_keys.keyRight)); }
+				if (input::IsKeyPressed(m_keys.keyUp)) { moveCursorUp(input::IsKeyPressed(m_keys.keyUp)); }
+				if (input::IsKeyPressed(m_keys.keyDown)) { moveCursorDown(input::IsKeyPressed(m_keys.keyDown)); }
 
-				if (KEYBOARD::isKeyPressed(m_keys.keyInsert)) { m_insert_mode = !m_insert_mode; }
+				if (input::IsKeyPressed(m_keys.keyInsert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
 	};
