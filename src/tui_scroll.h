@@ -36,8 +36,8 @@ namespace tui
 			case tui::DIRECTION::HORIZONTAL:
 				slider = U'\x2550';
 				line = U'\x2500';
-				prev_arrow = U'\x25C0';
-				next_arrow = U'\x25B6';
+				prev_arrow = U'\x25C4';
+				next_arrow = U'\x25BA';
 			}
 		}
 		scroll_appearance_a(symbol slider, symbol line) : slider(slider), line(line) {}
