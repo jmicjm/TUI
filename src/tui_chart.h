@@ -70,8 +70,8 @@ namespace tui
 
 		void updateMinMaxStr()
 		{
-			m_max_str = { ToStringP(m_max, m_value_labels_precision), value_labels_color };
-			m_min_str = { ToStringP(m_min, m_value_labels_precision), value_labels_color };
+			m_max_str = m_max > 0 ? console_string(ToStringP(m_max, m_value_labels_precision), value_labels_color) : "0";
+			m_min_str = m_min < 0 ? console_string(ToStringP(m_min, m_value_labels_precision), value_labels_color) : "0";
 		}
 
 		void fill()
