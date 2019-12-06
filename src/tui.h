@@ -11,6 +11,7 @@
 #include "tui_button.h"
 #include "tui_image.h"
 #include "tui_chart.h"
+#include "tui_animation.h"
 
 #include "tui_group.h"
 #include "tui_navigation_group.h"
