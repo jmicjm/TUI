@@ -1,5 +1,5 @@
 
-#include "tui.h"
+#include "src/tui.h"
 
 
 
@@ -12,162 +12,93 @@
 
 int main()
 {
-
 	tui::console con;
-	//con.setTitle("tytul");
-	con.setFPSlimit(10);
+	con.setFPSlimit(30);
 
 	tui::rectangle rect;
-	rect.setSize({{ -2,-2 }, { 20,20 }});
-	rect.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-	rect.setChar(tui::symbol(u8"\u2588", tui::color(tui::COLOR::CYAN, tui::COLOR::BLACK)));
+	rect.setSizeInfo({ { -2,-2 }, { 20,20 } });
+	rect.setPositionInfo(tui::position({ 0, 0 }, { 0,0 }, { tui::POSITION::CENTER, tui::POSITION::CENTER }));
 
-	tui::box mainBox({ {0,0}, { 100, 100 } }, tui::THICKNESS::MEDIUM);
-	
-	tui::box box1({ {20,0}, { 0, 100 } }, tui::THICKNESS::THIN);
-	box1.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
+	tui::box mainBox({ {0,0}, { 100, 100 } });
+
+	tui::box box1({ {20,0}, { 0, 100 } });
+	box1.setPositionInfo(tui::position({ 0, 0 }, { 0,0 }, { tui::POSITION::END, tui::POSITION::BEGIN }));
 	box1.setColor({ tui::COLOR::MAGENTA, tui::COLOR::BLACK });
-
-	//std::string  ipsum = 
-	//"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum feugiat egestas urna non euismod. Maecenas magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
 
 	tui::console_string ipsum;
 	ipsum << tui::color(tui::COLOR::CYAN);
-	//ipsum << u8"\u2588";
 	ipsum << u8"Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
 	ipsum << tui::color(tui::COLOR::MAGENTA);
 	ipsum << u8"Vestibulum feugiat egestas urna non euismod. ";
 	ipsum << tui::color(tui::COLOR::BLACK, tui::COLOR::YELLOW);
 	ipsum << u8"Maecenas ";
 	ipsum << tui::color(tui::COLOR::MAGENTA);
-	ipsum += u8"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";
+	ipsum += u8"magna mauris, dictum non egestas eu, rhoncus sed sem. Cras egestas massa eget nulla cursus"
+			 u8"venenatis. Nulla id ultricies arcu, id sollicitudin augue. Orci varius natoque penatibus e"
+			 u8"t magnisdis parturient montes, nascetur ridiculus mus.";
 	ipsum.push_back("x");
-	tui::text text({ {18,0}, {0, 50} }, ipsum);
-	text.setPosition(tui::position(tui::vec2i(-1, 1), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::RIGHT, tui::POSITION::VERTICAL::TOP)));
 
+	tui::text text({ {18,0}, {0, 50} }, ipsum);
+	text.setPositionInfo(tui::position({ -1, 1 }, { 0,0 }, { tui::POSITION::END, tui::POSITION::BEGIN }));
 	text.activate();
 
+	tui::chart chart;
+	chart.setValues({ 8.8,8.5,-8.9,-4,-3,-2,-1,-0.5,7,4,-1,1,0.5,8,1,2,3,4 });
+	chart.setSizeInfo({ {0,0},{33,33} });
+	chart.setPositionInfo({ {1,1} });
+	chart.activate();
 
-	
+	tui::animation anim;
+	anim.setSizeInfo({ {2,2} });
+	anim.setPositionInfo({ {-1,-1}, {0,0}, {tui::POSITION::END, tui::POSITION::END} });
+	anim.setFPS(1);
+
+	tui::image img[4];
+	img[0].setImageColorOnly({1,2,3,4},2);
+	img[1].setImageColorOnly({ 4,1,2,3 }, 2);
+	img[2].setImageColorOnly({ 3,4,1,2}, 2);
+	img[3].setImageColorOnly({ 2,3,4,1 }, 2);
+
+	for (int i = 0; i < 4; i++) { anim.addFrame(img[i]); }
 
 
-	tui::text input_text({ {0,0}, {20, 20} }, u8"xxxxx ");
-		input_text.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::LEFT, tui::POSITION::VERTICAL::BOTTOM)));
+	for (;;)
+	{
+		con.clear();
 
-		
-		/*tui::box bx0(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
-		bx0.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }));
+		con.draw(rect);
+		con.draw(box1);
+		con.draw(mainBox);
+		con.draw(text);
 
-		tui::box bx1(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
-		bx1.setPosition(tui::position(tui::vec2i(0, 0), { 25,0 }));
-
-		tui::box bx2(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
-		bx2.setPosition(tui::position(tui::vec2i(0, 0), { 50,0 }));
-
-		tui::box bx3(tui::vec2i(25, 100), tui::SIZE::PERCENTAGE, tui::THICKNESS::THIN);
-		bx3.setPosition(tui::position(tui::vec2i(0, 0), { 75,0 }));
-
-
-		tui::group grp(tui::vec2i(50, 50), tui::SIZE::PERCENTAGE);
-		grp.setPosition(tui::position(tui::vec2i(0, 0), { 0,0 }, tui::vec2i(tui::POSITION::HORIZONTAL::CENTER, tui::POSITION::VERTICAL::CENTER)));
-
-		grp.addSurface(bx0);
-		grp.addSurface(bx1);
-		grp.addSurface(bx2);
-		grp.addSurface(bx3);
-
-		//grp.removeSurface(bx1);
-
-		bx0.setColor(tui::color(tui::COLOR::BLUE, tui::COLOR::DARKGRAY));
-		*/
-		std::string t_s;
-
-		tui::console_string con_str(u8"test");
-
-		//con_str << tui::COLOR::BLUE;
-		con_str = u8"test";
-
-		/*tui::rectangle r0;
-		r0.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
-		r0.setPosition(tui::position(tui::vec2i(20, 0)));
-		r0.setChar(tui::console_char(219));
-		tui::rectangle r1;
-		r1.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
-		r1.setPosition(tui::position(tui::vec2i(22, 0)));
-		r1.setChar(tui::console_char(219));
-		tui::rectangle r2;
-		r2.setSize(tui::vec2i(1, 1), tui::SIZE::CONSTANT);
-		r2.setPosition(tui::position(tui::vec2i(24, 0)));
-		r2.setChar(tui::console_char(219));
-		*/
-
-/*tui::navigation_group act_group;
-		
-		act_group.setKeyComboNext({ tui::KEYBOARD::CTRL, tui::KEYBOARD::RIGHT });
-		//act_group.addElement(r0);
-		//act_group.addElement(r1);
-		//act_group.addElement(r2);
-		act_group.addElement(text);
-		act_group.addElement(input_text);
-		act_group.activate();
-		*/
-
-		for (;;)
+		if (tui::input::IsKeyPressed('a'))
 		{
-			/*
-			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::CTRL)) {
-				rect.move(tui::vec2i(1, 0));
-			}
-			if (tui::KEYBOARD::isKeyPressedBuffered(tui::KEYBOARD::LEFT)) {
-				rect.move(tui::vec2i(-1, 0));
-			}
-			*/
-
-			auto start = std::chrono::steady_clock::now();
-			con.clear();
-
-		//	act_group.update();
-
-			con.draw(rect);
-
-			con.draw(box1);
-			con.draw(mainBox);
-			
-			
-			
-
-			con.draw(text);
-
-
-			t_s += tui::KEYBOARD::getInputAsString();
-
-			//t_s += 'd';
-
-			input_text.setText(t_s);
-			con.draw(input_text);
-			/*
-			
-			
-			*/
-			/*con.draw(r0);
-			con.draw(r1);
-			con.draw(r2);
-
-			con.draw(grp);
-			*/
-			con.display();
-			
-			auto end = std::chrono::steady_clock::now();
-			auto diff = end - start;
-	
-		//	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-			 
-			//std::cout << std::endl << std::chrono::duration <double, std::milli>(diff).count() << " ms" << std::endl;
-		//	std::cout << "X: " << con.getSize().x << " Y: " << con.getSize().y << std::endl;
-			//std::cout << "Xb: " << mainBox.getSize().x << " Yb: " << mainBox.getSize().y << std::endl;
-			//std::cout << text.isActive();
-	
+			chart.displayValueLabels(!chart.isDisplayingValueLabels());
 		}
+		if (tui::input::IsKeyPressed('b'))
+		{
+			std::vector<float> v = chart.getValues();
+			for (int i = 0; i < v.size(); i++) { v[i] = v[i] * -1; }
+			chart.setValues(v);
+		}
+		if (tui::input::IsKeyPressed('c'))
+		{
+			std::vector<float> v = chart.getValues();
+			for (int i = 0; i < v.size(); i++) { v[i]++; }
+			chart.setValues(v);
+		}
+		if (tui::input::IsKeyPressed('d'))
+		{
+			std::vector<float> v = chart.getValues();
+			for (int i = 0; i < v.size(); i++) { v[i]--; }
+			chart.setValues(v);
+		}
+
+		con.draw(chart);
+		con.draw(anim);
+
+		con.display();
+	}
 	
 	return 0;
 }
