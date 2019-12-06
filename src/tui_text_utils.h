@@ -364,16 +364,12 @@ namespace tui
 
 	inline bool IsPunctuation(symbol Symbol)
 	{
-		if (   Symbol == U"."
+		return   Symbol == U"."
 			|| Symbol == U","
 			|| Symbol == U":"
 			|| Symbol == U";"
 			|| Symbol == U"!"
-			|| Symbol == U"?")
-		{
-			return true;
-		}
-		else { return false; }
+			|| Symbol == U"?";
 	}
 
 

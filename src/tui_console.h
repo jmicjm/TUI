@@ -1,7 +1,6 @@
 #pragma once
 
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
-#define UNICODE
 	#include <windows.h>
 #endif
 
@@ -18,8 +17,7 @@
 
 #include <vector>
 #include <iostream>
-#include <locale>
-#include <codecvt>
+
 
 
 namespace tui
