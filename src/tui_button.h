@@ -91,7 +91,7 @@ namespace tui
 		}
 
 	public:
-		int keySelect = KEYBOARD::KEY::ENTER;
+		int keySelect = input::KEY::ENTER;
 
 		button() : button({3}, ' ') {}
 		button(surface1D_size size, console_string text) : button(size, text, text) {}

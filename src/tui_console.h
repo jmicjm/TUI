@@ -184,9 +184,9 @@ namespace tui
 			auto getEscCode = [](color c)
 			{
 				std::string esc_c = "\033[";
-				esc_c += fg[c.getForegroundColor()];
+				esc_c += fg[c.foreground];
 				esc_c += ";";
-				esc_c += bg[c.getBackgroundColor()];
+				esc_c += bg[c.background];
 				esc_c += "m";
 
 				return esc_c;

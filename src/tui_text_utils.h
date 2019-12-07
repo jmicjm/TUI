@@ -35,34 +35,26 @@ namespace tui
 
 	struct color
 	{
-	private:
-		uint8_t m_foreground :4;
-		uint8_t m_background :4;
-	public:
+		uint8_t foreground :4;
+		uint8_t background :4;
+
 		color() : color(tui::COLOR::WHITE, tui::COLOR::BLACK) {}
 		color(uint8_t foreground) : color(foreground, tui::COLOR::BLACK) {}
-		color(uint8_t foreground, uint8_t background) { setColor(foreground, background); }
-		void setColor(uint8_t foreground, uint8_t background)
-		{
-			m_background = background;
-			m_foreground = foreground;
-		}
+		color(uint8_t Foreground, uint8_t Background) : foreground(Foreground), background(Background) {}
 
 		//swaps foreground color with background color
 		void invert()
 		{
-			uint8_t foreground = m_foreground;
-			m_foreground = m_background;
-			m_background = foreground;
+			uint8_t fg = foreground;
+			foreground = background;
+			background = fg;
 		}
 
-		int getRGBIColor() { return 16 * m_background + m_foreground; } //return windows console color
-		uint8_t getForegroundColor() { return m_foreground; }
-		uint8_t getBackgroundColor() { return m_background; }
+		int getRGBIColor() { return 16 * background + foreground; } //return windows console color
 
 		bool operator==(color c)
 		{
-			return c.m_background == m_background && c.m_foreground == m_foreground;
+			return c.background == background && c.foreground == foreground;
 		}
 		bool operator!=(color c) { return !operator==(c); }
 	};
