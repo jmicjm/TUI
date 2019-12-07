@@ -4,9 +4,9 @@
 #include "tui_text_utils.h"
 #include "tui_active_element.h"
 #include "tui_scroll.h"
+
 #include <vector>
-#include <sstream>
-#include <iomanip>
+#include <algorithm>
 
 namespace tui
 {
@@ -78,14 +78,14 @@ namespace tui
 		{
 			makeTransparent();
 
-			unsigned short range_width = m_display_value_labels * (m_max_str.size() > m_min_str.size() ? m_max_str.size() : m_min_str.size());
+			unsigned short label_str_width = m_display_value_labels * (m_max_str.size() > m_min_str.size() ? m_max_str.size() : m_min_str.size());
 
 			m_scroll.setContentLength(m_values.size() * m_distance - (m_distance-1));
-			m_scroll.setVisibleContentLength(getSize().x - range_width);
+			m_scroll.setVisibleContentLength(getSize().x - label_str_width);
 			insertSurface(m_scroll, false);
 
-			if (m_scroll.isNeeded()) { m_chart.setSizeInfo({ {range_width * -1,-1},{100,100} }); }
-			else { m_chart.setSizeInfo({ {range_width * -1,0},{100,100} }); }
+			if (m_scroll.isNeeded()) { m_chart.setSizeInfo({ {label_str_width * -1,-1},{100,100} }); }
+			else { m_chart.setSizeInfo({ {label_str_width * -1,0},{100,100} }); }
 			updateSurfaceSize(m_chart);
 
 			if (m_display_value_labels)
@@ -109,10 +109,10 @@ namespace tui
 				int halves = m_chart.getSize().y * 2;
 				int p_halves = round(m_max / distance * halves) * (m_max>=0);
 
-				int h_pos = m_scroll.getTopPosition();
-				int x = m_distance *(h_pos % m_distance != 0) - h_pos % m_distance;
+				int scroll_pos = m_scroll.getTopPosition();
+				int x = m_distance *(scroll_pos % m_distance != 0) - scroll_pos % m_distance;
 
-				for (int i = ceil(h_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
+				for (int i = ceil(scroll_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
 				{
 					int h = round(fabs(m_values[i]) / distance * halves);
 
@@ -121,27 +121,25 @@ namespace tui
 						switch (m_values[i] >= 0)
 						{
 						case true:
-							if (y >= p_halves - h && y < p_halves) { return true; }
-							break;
+							return y >= p_halves - h && y < p_halves;
 						case false:
-							if (y >= p_halves && y < p_halves + h) { return true; }
+							return y >= p_halves && y < p_halves + h;
 						}
-						return false;
 					};
 						
-					for (int j = 0; j < halves; j+=2)
+					for (int y = 0; y < halves; y+=2)
 					{
-						if (isFull(j) && isFull(j + 1))
+						if (isFull(y) && isFull(y + 1))
 						{
-							m_chart.setSymbolAt(full, { x, j / 2 });
+							m_chart.setSymbolAt(full, { x, y / 2 });
 						}
-						else if (isFull(j) && !isFull(j + 1))
+						else if (isFull(y) && !isFull(y + 1))
 						{
-							m_chart.setSymbolAt(upper_half, { x, j / 2 });
+							m_chart.setSymbolAt(upper_half, { x, y / 2 });
 						}
-						else if (!isFull(j) && isFull(j + 1))
+						else if (!isFull(y) && isFull(y + 1))
 						{
-							m_chart.setSymbolAt(lower_half, { x, j / 2 });
+							m_chart.setSymbolAt(lower_half, { x, y / 2 });
 						}
 					}	
 				}
@@ -187,42 +185,18 @@ namespace tui
 
 		void setValues(std::vector<float> values)
 		{
-			auto getMin = [&]()
+			m_values = values;
+
+			m_min = 0;
+			m_max = 0;
+			if (m_values.size() > 0)
 			{
-				if (values.size() == 0) { return (float)0; }
-				else
-				{
-					float min = values[0];
-					{
-						for (int i = 0; i < values.size(); i++)
-						{
-							if (values[i] < min) { min = values[i]; }
-						}
-					}
-					return min;
-				}
-			};
-			auto getMax = [&]()
-			{
-				if (values.size() == 0) { return (float)0; }
-				else
-				{
-					float max = values[0];
-					{
-						for (int i = 0; i < values.size(); i++)
-						{
-							if (values[i] > max) { max = values[i]; }
-						}
-					}
-					return max;
-				}
-			};
-			m_min = getMin();
-			m_max = getMax();
+				m_min = *std::min_element(m_values.begin(), m_values.end());
+				m_max = *std::max_element(m_values.begin(), m_values.end());
+			}
 
 			updateMinMaxStr();
 
-			m_values = values;
 			m_redraw_needed = true;
 		}
 		std::vector<float> getValues() { return m_values; }
