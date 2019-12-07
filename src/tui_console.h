@@ -122,8 +122,6 @@ namespace tui
 			clear_buf();
 		}
 
-		
-
 		bool isTimeToDisplay()
 		{
 			return m_fps_control.isEnd(false);
@@ -247,12 +245,11 @@ namespace tui
 			console_size.y = w.ws_row;
 #endif
 
-			if (console_size.x != m_last_size.x || console_size.y != m_last_size.y)
+			m_resized = console_size.x != m_last_size.x || console_size.y != m_last_size.y;
+			if (m_resized)
 			{
 				resize(console_size);
-				m_resized = true;
 			}
-			else { m_resized = false; }
 
 			m_last_size = console_size;
 		}
@@ -261,7 +258,6 @@ namespace tui
 		{
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
 			CONSOLE_CURSOR_INFO cursor_info;
-			SetConsoleCursorInfo(m_console_handle, &cursor_info);
 			cursor_info.bVisible = false;
 			cursor_info.dwSize = 1;
 
