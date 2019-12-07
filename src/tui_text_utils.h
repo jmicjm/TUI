@@ -50,8 +50,6 @@ namespace tui
 			background = fg;
 		}
 
-		int getRGBIColor() { return 16 * background + foreground; } //return windows console color
-
 		bool operator==(color c)
 		{
 			return c.background == background && c.foreground == foreground;

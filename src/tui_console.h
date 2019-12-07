@@ -138,6 +138,11 @@ namespace tui
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			std::vector<CHAR_INFO> temp;
 
+			auto getRgbiColor = [](color c)
+			{
+				return 16 * c.background + c.foreground;
+			};
+
 			for (int i = 0; i < getSize().y; i++)
 			{
 				for (int j = 0; j < getSize().x; j++)
@@ -150,7 +155,7 @@ namespace tui
 					}
 					else { ch_info.Char.UnicodeChar = '?'; }
 
-					ch_info.Attributes = m_buffer.getSymbolAt({ j,i }).getColor().getRGBIColor();
+					ch_info.Attributes = getRgbiColor(m_buffer.getSymbolAt({ j,i }).getColor());
 
 					temp.push_back(ch_info);
 				}
@@ -166,7 +171,7 @@ namespace tui
 			delete srect;	
 
 			SetConsoleCursorPosition(m_console_handle, { 0,0 });
-			SetConsoleTextAttribute(m_console_handle, color(COLOR::WHITE, COLOR::BLACK).getRGBIColor());
+			SetConsoleTextAttribute(m_console_handle, getRgbiColor({ COLOR::WHITE, COLOR::BLACK }));
 #endif
 
 #ifdef TUI_TARGET_SYSTEM_LINUX
