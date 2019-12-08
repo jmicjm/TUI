@@ -177,6 +177,11 @@ namespace tui
 		}
 
 	public:
+		int& key_up = m_scroll.key_up;
+		int& key_down = m_scroll.key_down;
+		int& key_pgup = m_scroll.key_pgup;
+		int& key_pgdn = m_scroll.key_pgdn;
+
 		chart() : m_scroll({0,100}) 
 		{
 			m_scroll.setPositionInfo({ { 0,-1 }, { 0,100 } });

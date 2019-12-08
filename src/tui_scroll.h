@@ -8,14 +8,6 @@
 
 namespace tui
 {
-	struct scroll_keys
-	{
-		int keyUp = input::KEY::UP;
-		int keyDown = input::KEY::DOWN;
-		int keyPageUp = input::KEY::PGUP;
-		int keyPageDown = input::KEY::PGDN;
-	};
-
 	struct scroll_appearance_a
 	{
 		symbol slider; //handle
@@ -105,8 +97,6 @@ namespace tui
 		bool m_free_mode = false;
 
 		bool m_immobilized = false;
-
-		scroll_keys keys;
 
 		int visibleContentLength()
 		{
@@ -199,13 +189,18 @@ namespace tui
 		void disactivationAction() override { fill(); }
 
 	public:
+		int key_up = input::KEY::UP;
+		int key_down = input::KEY::DOWN;
+		int key_pgup = input::KEY::PGUP;
+		int key_pgdn = input::KEY::PGDN;
+
 		scroll() : scroll(1) {}
 		scroll(surface1D_size size) : scroll_appearance(direction)
 		{
 			if(direction == DIRECTION::HORIZONTAL)
 			{
-				keys.keyUp = input::KEY::LEFT;
-				keys.keyDown = input::KEY::RIGHT;
+				key_up = input::KEY::LEFT;
+				key_down = input::KEY::RIGHT;
 			}
 
 			surface1D<direction>::setSizeInfo({ size.fixed, size.percentage });
@@ -258,8 +253,6 @@ namespace tui
 		void immobilize(bool i) { m_immobilized = i; }
 		bool isImmobilized() { return m_immobilized; }
 
-		void setKeys(scroll_keys Keys) { keys = Keys; }
-		scroll_keys getKeys() { return keys; }
 
 		void up(unsigned int n = 1)
 		{
@@ -305,10 +298,10 @@ namespace tui
 		void update()
 		{
 			if (isActive() && !isImmobilized()) {
-				if (input::IsKeyPressed(keys.keyUp)) { up(); }
-				if (input::IsKeyPressed(keys.keyDown)) { down(); }
-				if (input::IsKeyPressed(keys.keyPageUp)) { pageUp(); }
-				if (input::IsKeyPressed(keys.keyPageDown)) { pageDown(); }
+				if (input::IsKeyPressed(key_up)) { up(); }
+				if (input::IsKeyPressed(key_down)) { down(); }
+				if (input::IsKeyPressed(key_pgup)) { pageUp(); }
+				if (input::IsKeyPressed(key_pgdn)) { pageDown(); }
 			}
 		}
 

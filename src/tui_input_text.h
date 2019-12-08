@@ -39,15 +39,6 @@ namespace tui
 		text_appearance getTextAppearance() { return m_text_appearance; }
 	};
 
-	struct input_text_keys
-	{
-		int keyUp = input::KEY::UP;
-		int keyDown = input::KEY::DOWN;
-		int keyLeft = input::KEY::LEFT;
-		int keyRight = input::KEY::RIGHT;
-		int keyInsert = input::KEY::INS;
-	};
-
 	struct input_text : surface, active_element, input_text_appearance
 	{
 	private:
@@ -61,8 +52,6 @@ namespace tui
 		bool m_insert_mode = true;
 		bool m_confidential_mode = false;
 		bool m_blink = true;
-
-		input_text_keys m_keys;
 
 		void updateCursorPos()
 		{
@@ -252,6 +241,13 @@ namespace tui
 			m_redraw_needed = true;
 		}
 	public:
+		int key_up = input::KEY::UP;
+		int key_down = input::KEY::DOWN;
+		int key_left = input::KEY::LEFT;
+		int key_right = input::KEY::RIGHT;
+		int key_insert = input::KEY::INS;
+		int key_backspace = input::KEY::BACKSPACE;
+
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
 			m_text.setSizeInfo({ {0,0},{100,100} });
@@ -261,10 +257,6 @@ namespace tui
 		}
 
 		console_string getText() { return m_str; }
-
-		void setKeys(input_text_keys keys) { m_keys = keys; }
-		input_text_keys getKeys() { return m_keys; }
-
 
 		void useConfidentialMode(bool use)
 		{
@@ -308,9 +300,9 @@ namespace tui
 				}
 
 
-				if (input::IsKeyPressed(input::KEY::BACKSPACE))
+				if (input::IsKeyPressed(key_backspace))
 				{
-					int erase_c = input::IsKeyPressed(input::KEY::BACKSPACE);
+					int erase_c = input::IsKeyPressed(key_backspace);
 					if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
 
 					m_str.erase(m_str.begin() + m_cursor_pos_in_txt - erase_c, m_str.begin() + m_cursor_pos_in_txt);
@@ -319,12 +311,12 @@ namespace tui
 					updateText();
 				}
 
-				if (input::IsKeyPressed(m_keys.keyLeft)) { moveCursorLeft(input::IsKeyPressed(m_keys.keyLeft)); }
-				if (input::IsKeyPressed(m_keys.keyRight)) { moveCursorRight(input::IsKeyPressed(m_keys.keyRight)); }
-				if (input::IsKeyPressed(m_keys.keyUp)) { moveCursorUp(input::IsKeyPressed(m_keys.keyUp)); }
-				if (input::IsKeyPressed(m_keys.keyDown)) { moveCursorDown(input::IsKeyPressed(m_keys.keyDown)); }
+				if (input::IsKeyPressed(key_left)) { moveCursorLeft(input::IsKeyPressed(key_left)); }
+				if (input::IsKeyPressed(key_right)) { moveCursorRight(input::IsKeyPressed(key_right)); }
+				if (input::IsKeyPressed(key_up)) { moveCursorUp(input::IsKeyPressed(key_up)); }
+				if (input::IsKeyPressed(key_down)) { moveCursorDown(input::IsKeyPressed(key_down)); }
 
-				if (input::IsKeyPressed(m_keys.keyInsert)) { m_insert_mode = !m_insert_mode; }
+				if (input::IsKeyPressed(key_insert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
 	};

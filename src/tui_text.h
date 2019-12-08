@@ -139,6 +139,11 @@ namespace tui
 		}
 
 	public:
+		int& key_up = m_scroll.key_up;
+		int& key_down = m_scroll.key_down;
+		int& key_pgup = m_scroll.key_pgup;
+		int& key_pgdn = m_scroll.key_pgdn;
+
 		text() : text({ {1,1} }) {}
 		text(surface_size size) : text(size, U"") {}
 		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
@@ -268,9 +273,6 @@ namespace tui
 			}
 		}
 		void resizeToText() { resizeToText(0); }
-
-		void setKeys(scroll_keys keys) { m_scroll.setKeys(keys); }
-		scroll_keys getKeys() { return m_scroll.getKeys(); }
 
 		void update()
 		{

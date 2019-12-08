@@ -91,7 +91,7 @@ namespace tui
 		}
 
 	public:
-		int keySelect = input::KEY::ENTER;
+		int key_select = input::KEY::ENTER;
 
 		button() : button({3}, ' ') {}
 		button(surface1D_size size, console_string text) : button(size, text, text) {}
@@ -135,7 +135,7 @@ namespace tui
 
 			if (isActive())
 			{
-				if (input::IsKeyPressed(keySelect))
+				if (input::IsKeyPressed(key_select))
 				{
 					m_selected = !m_selected;
 
