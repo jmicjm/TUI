@@ -308,25 +308,27 @@ namespace tui
 
 			void bufferThread()
 			{
-				for (;;)
+				auto gchar = [&]()
 				{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-					int pressed = _getch();
+					return _getch();
+#endif
+#ifdef TUI_TARGET_SYSTEM_LINUX
+					return getchar();
+#endif
+				};
+
+				for (;;)
+				{
+					int pressed = gchar();
 
 					if (pressed == 3)
 					{
 						CTRLC_handler();
 					}
-					if (pressed == 127)//backspace could be 8 or 127
-					{
-						buffer[1][BACKSPACE]++;
-					}
-					if (pressed == 10)//enter could be 10 or 13
-					{
-						buffer[1][ENTER]++;
-					}
 					if (pressed == 10 || pressed == 13) { string_buffer[1] += '\n'; }
 
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
 					if (pressed != 0 && pressed != 224)
 					{
 						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
@@ -342,7 +344,7 @@ namespace tui
 
 					if (pressed == 0 || pressed == 224)
 					{
-						int second_getch = _getch();
+						int second_getch = gchar();
 
 						if (second_getch >= 0 && second_getch < TUI_GETCH_RANGE)
 						{
@@ -351,22 +353,10 @@ namespace tui
 					}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
-					int pressed = getchar();
-
-					if (pressed == 3)
-					{
-						CTRLC_handler();
-					}
-
-					if (pressed == 8)//backspace could be 8 or 127
+					if (pressed == 127)//backspace could be 8 or 127
 					{
 						buffer[1][BACKSPACE]++;
 					}
-					if (pressed == 10)//enter could be 10 or 13
-					{
-						buffer[1][ENTER]++;
-					}
-					if (pressed == 10 || pressed == 13) { string_buffer[1] += '\n'; }
 
 					if (pressed != 27)
 					{
@@ -404,7 +394,7 @@ namespace tui
 						
 						for (int i = 0; i < term_info.longest_seq; i++)
 						{
-							int input = getchar();
+							int input = gchar();
 							if (input == -1)
 							{
 								copyToBuffer();
@@ -432,14 +422,8 @@ namespace tui
 								tcsetattr(0, TCSANOW, &noncanon_settings);
 								break;
 							}
-								
-
-
 						}
-
-
 					}
-
 #endif
 				}
 			}
