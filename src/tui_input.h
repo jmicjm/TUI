@@ -257,7 +257,6 @@ namespace tui
 			termios noncanon_settings;
 			termios nonblocking_settings;
 #endif
-
 			std::string m_raw[2];
 			std::string m_str[2];
 			std::vector<short> m_input[2];
@@ -300,10 +299,19 @@ namespace tui
 #endif
 				};
 
+				auto push = [&](char ch)
+				{
+					m_input[1].push_back(ch);
+
+					if (ch >= 32 && ch != 127 && ch <= 255)
+					{
+						m_str[1] += ch;
+					}
+				};
+
 				for (;;)
 				{
 					int gc = gchar();
-
 					m_raw[1] += gc;
 
 					if (gc == 3)
@@ -315,12 +323,7 @@ namespace tui
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 					if (gc != 0 && gc != 224)
 					{
-							m_input[1].push_back(gc);
-
-							if (gc >= 32 && gc != 127 && gc <= 255)
-							{
-								m_str[1] += (char)gc;
-							}
+						push(gc);
 					}
 					else//non-alphanumeric, consisting of more than one byte
 					{
@@ -334,22 +337,14 @@ namespace tui
 					}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
-					if (gc == 8)//backspace could be 8 or 127
+					if (gc == 8)//backspace could be 8 or 127(BACKSPACE ENUM)
 					{
 						m_input[1].push_back(BACKSPACE);
 					}
 
 					if (gc != 27)
 					{
-						if (gc >= 0 && gc <= 255)
-						{
-							m_input[1].push_back(gc);
-
-							if (gc >= 32 && gc != 127 && gc <=255)
-							{
-								m_str[1] += (char)gc;
-							}
-						}
+						push(gc);
 					}
 					else//non-alphanumeric, consisting of more than one byte
 					{
@@ -360,23 +355,13 @@ namespace tui
 						{
 							for (int j = 0; j < buf.size(); j++)
 							{
-								if (buf[j] >= 0 && buf[j] <= 255)
-								{
-									m_input[1].push_back(buf[j]);
-
-									if (buf[j] >= 32 && buf[j] != 127 && buf[j] <= 255)
-									{
-										m_str[1] += (char)buf[j];
-									}
-								}
+								push(buf[j]);
 							}
 						};
-
 						
 						for (int i = 0; i < term_info.longest_seq; i++)
 						{
 							int gcn = gchar();
-
 							m_raw[1] += gcn;
 
 							if (gcn == -1)//no input
