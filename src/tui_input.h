@@ -86,31 +86,31 @@ namespace tui
 			ESC = 27,
 			TAB = 9,
 
-			PGUP = TUI_BUFFER_OFFSET,
-			PGDN = TUI_BUFFER_OFFSET + 1,
+			PGUP = TUI_KEY_OFFSET,
+			PGDN = TUI_KEY_OFFSET + 1,
 
-			DEL = TUI_BUFFER_OFFSET + 2,
-			INS = TUI_BUFFER_OFFSET + 3,
-			END = TUI_BUFFER_OFFSET + 4,
-			HOME = TUI_BUFFER_OFFSET + 5,
+			DEL = TUI_KEY_OFFSET + 2,
+			INS = TUI_KEY_OFFSET + 3,
+			END = TUI_KEY_OFFSET + 4,
+			HOME = TUI_KEY_OFFSET + 5,
 
-			F1 = TUI_BUFFER_OFFSET + 6,
-			F2 = TUI_BUFFER_OFFSET + 7,
-			F3 = TUI_BUFFER_OFFSET + 8,
-			F4 = TUI_BUFFER_OFFSET + 9,
-			F5 = TUI_BUFFER_OFFSET + 10,
-			F6 = TUI_BUFFER_OFFSET + 11,
-			F7 = TUI_BUFFER_OFFSET + 12,
-			F8 = TUI_BUFFER_OFFSET + 13,
-			F9 = TUI_BUFFER_OFFSET + 14,
-			F10 = TUI_BUFFER_OFFSET + 15,
-			F11 = TUI_BUFFER_OFFSET + 16,
-			F12 = TUI_BUFFER_OFFSET + 17,
+			F1 = TUI_KEY_OFFSET + 6,
+			F2 = TUI_KEY_OFFSET + 7,
+			F3 = TUI_KEY_OFFSET + 8,
+			F4 = TUI_KEY_OFFSET + 9,
+			F5 = TUI_KEY_OFFSET + 10,
+			F6 = TUI_KEY_OFFSET + 11,
+			F7 = TUI_KEY_OFFSET + 12,
+			F8 = TUI_KEY_OFFSET + 13,
+			F9 = TUI_KEY_OFFSET + 14,
+			F10 = TUI_KEY_OFFSET + 15,
+			F11 = TUI_KEY_OFFSET + 16,
+			F12 = TUI_KEY_OFFSET + 17,
 
-			UP = TUI_BUFFER_OFFSET + 18,
-			DOWN = TUI_BUFFER_OFFSET + 19,
-			LEFT = TUI_BUFFER_OFFSET + 20,
-			RIGHT = TUI_BUFFER_OFFSET + 21
+			UP = TUI_KEY_OFFSET + 18,
+			DOWN = TUI_KEY_OFFSET + 19,
+			LEFT = TUI_KEY_OFFSET + 20,
+			RIGHT = TUI_KEY_OFFSET + 21
 		};
 
 		struct terminal_info
@@ -322,7 +322,7 @@ namespace tui
 								m_str[1] += (char)gc;
 							}
 					}
-					else
+					else//non-alphanumeric, consisting of more than one byte
 					{
 						int gc2 = gchar();
 						m_raw[1] += gc2;
@@ -334,24 +334,24 @@ namespace tui
 					}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
-					if (pressed == 127)//backspace could be 8 or 127
+					if (gc == 8)//backspace could be 8 or 127
 					{
-						buffer[1][BACKSPACE]++;
+						m_input[1].push_back(BACKSPACE);
 					}
 
-					if (pressed != 27)
+					if (gc != 27)
 					{
-						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
+						if (gc >= 0 && gc <= 255)
 						{
-							buffer[1][pressed]++;
+							m_input[1].push_back(gc);
 
-							if (pressed >= 32 && pressed != 127)
+							if (gc >= 32 && gc != 127 && gc <=255)
 							{
-								string_buffer[1] += (char)pressed;
+								m_str[1] += (char)gc;
 							}
 						}
 					}
-					else
+					else//non-alphanumeric, consisting of more than one byte
 					{
 						tcsetattr(0, TCSANOW, &nonblocking_settings);
 						std::vector<int> buf = { 27 };
@@ -360,13 +360,13 @@ namespace tui
 						{
 							for (int j = 0; j < buf.size(); j++)
 							{
-								if (buf[j] >= 0 && buf[j] < TUI_GETCH_RANGE)
+								if (buf[j] >= 0 && buf[j] <= 255)
 								{
-									buffer[1][buf[j]]++;
+									m_input[1].push_back(buf[j]);
 
-									if (buf[j] >= 32 && buf[j] != 127)
+									if (buf[j] >= 32 && buf[j] != 127 && buf[j] <= 255)
 									{
-										string_buffer[1] += (char)buf[j];
+										m_str[1] += (char)buf[j];
 									}
 								}
 							}
@@ -375,8 +375,11 @@ namespace tui
 						
 						for (int i = 0; i < term_info.longest_seq; i++)
 						{
-							int input = gchar();
-							if (input == -1)
+							int gcn = gchar();
+
+							m_raw[1] += gcn;
+
+							if (gcn == -1)//no input
 							{
 								copyToBuffer();
 
@@ -385,12 +388,12 @@ namespace tui
 							}
 							else
 							{
-								buf.push_back(input);
+								buf.push_back(gcn);
 							}
 
 							if (term_info.getSeqNumber(buf) >= 0)
 							{
-								second_buffer[1][term_info.getSeqNumber(buf)]++;
+								m_input[1].push_back(term_info.getSeqNumber(buf) + TUI_KEY_OFFSET);
 
 								tcsetattr(0, TCSANOW, &noncanon_settings);
 								break;
