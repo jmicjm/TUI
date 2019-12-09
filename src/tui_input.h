@@ -280,11 +280,17 @@ namespace tui
 				nonblocking_settings.c_cc[VTIME] = 0;
 
 				tcsetattr(0, TCSANOW, &noncanon_settings);
-
 				system("tput smkx");
 #endif
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
+			}
+			~keyboard_buffer()
+			{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+				tcsetattr(0, TCSANOW, &default_settings);
+				system("tput rmkx");
+#endif
 			}
 
 			void bufferThread()
