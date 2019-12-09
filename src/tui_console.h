@@ -161,15 +161,12 @@ namespace tui
 				}
 			}
 
-			SMALL_RECT* srect = new SMALL_RECT;
-			*srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
-
 			SetConsoleCursorPosition(m_console_handle, { 0,0 });//without this output may be misplaced after console resize if "wrap text on resize" was selected in console options
 
-			WriteConsoleOutputW(m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, srect);
+			SMALL_RECT srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
+			WriteConsoleOutputW(m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);	
 
-			delete srect;	
-
+			//reset
 			SetConsoleCursorPosition(m_console_handle, { 0,0 });
 			SetConsoleTextAttribute(m_console_handle, getRgbiColor({ COLOR::WHITE, COLOR::BLACK }));
 #endif
