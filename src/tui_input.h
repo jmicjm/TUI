@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
 #include <thread>
-#include <chrono>
 #include <vector>
 #include <cmath>
 #include <cstdio>
+
+#include <algorithm>
 
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
@@ -15,9 +16,7 @@
 #include "termios.h"
 #endif
 
-#define TUI_GETCH_RANGE 256
-
-#define TUI_BUFFER_OFFSET 0xF00 // could be any value above TUI_GETCH_RANGE
+#define TUI_KEY_OFFSET 0xF00 // could be any value above 255
 
 
 
@@ -41,31 +40,31 @@ namespace tui
 			ESC = 27,
 			TAB = 9,
 
-			PGUP = TUI_BUFFER_OFFSET + 73,
-			PGDN = TUI_BUFFER_OFFSET + 81,
+			PGUP = TUI_KEY_OFFSET + 73,
+			PGDN = TUI_KEY_OFFSET + 81,
 
-			DEL = TUI_BUFFER_OFFSET + 83,
-			INS = TUI_BUFFER_OFFSET + 82,
-			END = TUI_BUFFER_OFFSET + 79,
-			HOME = TUI_BUFFER_OFFSET + 71,
+			DEL = TUI_KEY_OFFSET + 83,
+			INS = TUI_KEY_OFFSET + 82,
+			END = TUI_KEY_OFFSET + 79,
+			HOME = TUI_KEY_OFFSET + 71,
 
-			F1 = TUI_BUFFER_OFFSET + 59,
-			F2 = TUI_BUFFER_OFFSET + 60,
-			F3 = TUI_BUFFER_OFFSET + 61,
-			F4 = TUI_BUFFER_OFFSET + 62,
-			F5 = TUI_BUFFER_OFFSET + 63,
-			F6 = TUI_BUFFER_OFFSET + 64,
-			F7 = TUI_BUFFER_OFFSET + 65,
-			F8 = TUI_BUFFER_OFFSET + 66,
-			F9 = TUI_BUFFER_OFFSET + 67,
-			F10 = TUI_BUFFER_OFFSET + 68,
-			F11 = TUI_BUFFER_OFFSET + 133,
-			F12 = TUI_BUFFER_OFFSET + 134,
+			F1 = TUI_KEY_OFFSET + 59,
+			F2 = TUI_KEY_OFFSET + 60,
+			F3 = TUI_KEY_OFFSET + 61,
+			F4 = TUI_KEY_OFFSET + 62,
+			F5 = TUI_KEY_OFFSET + 63,
+			F6 = TUI_KEY_OFFSET + 64,
+			F7 = TUI_KEY_OFFSET + 65,
+			F8 = TUI_KEY_OFFSET + 66,
+			F9 = TUI_KEY_OFFSET + 67,
+			F10 = TUI_KEY_OFFSET + 68,
+			F11 = TUI_KEY_OFFSET + 133,
+			F12 = TUI_KEY_OFFSET + 134,
 
-			UP = TUI_BUFFER_OFFSET + 72,
-			DOWN = TUI_BUFFER_OFFSET + 80,
-			LEFT = TUI_BUFFER_OFFSET + 75,
-			RIGHT = TUI_BUFFER_OFFSET + 77
+			UP = TUI_KEY_OFFSET + 72,
+			DOWN = TUI_KEY_OFFSET + 80,
+			LEFT = TUI_KEY_OFFSET + 75,
+			RIGHT = TUI_KEY_OFFSET + 77
 
 		};
 #endif
@@ -259,25 +258,15 @@ namespace tui
 			termios nonblocking_settings;
 #endif
 
-			std::vector<int> buffer[2];
-			std::vector<int> second_buffer[2]; //buffer for "characters" that needs to return more than one time
+			std::string m_raw[2];
+			std::string m_str[2];
+			std::vector<short> m_input[2];
 
-			std::string string_buffer[2];
+			friend std::string GetRawInput();
+			friend std::string GetStringInput();
+			friend std::vector<short> GetInput();
+			friend int IsKeyPressed(short);
 		public:
-			int operator[](int i) 
-			{
-				if (i < TUI_BUFFER_OFFSET)
-				{
-					return buffer[0][i];
-				}
-				else
-				{
-					return second_buffer[0][i - TUI_BUFFER_OFFSET];
-				}
-			}
-			std::string getString() { return string_buffer[0]; }
-			int size() { return buffer[0].size(); }
-
 			keyboard_buffer()
 			{
 #ifdef  TUI_TARGET_SYSTEM_LINUX
@@ -295,13 +284,6 @@ namespace tui
 
 				system("tput smkx");
 #endif
-
-
-				buffer[0].resize(TUI_GETCH_RANGE);
-				buffer[1].resize(TUI_GETCH_RANGE);
-				second_buffer[0].resize(TUI_GETCH_RANGE);
-				second_buffer[1].resize(TUI_GETCH_RANGE);
-		
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
 			}
@@ -320,35 +302,34 @@ namespace tui
 
 				for (;;)
 				{
-					int pressed = gchar();
+					int gc = gchar();
 
-					if (pressed == 3)
+					m_raw[1] += gc;
+
+					if (gc == 3)
 					{
 						CTRLC_handler();
 					}
-					if (pressed == 10 || pressed == 13) { string_buffer[1] += '\n'; }
+					if (gc == 10 || gc == 13) { m_str[1] += '\n'; }
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-					if (pressed != 0 && pressed != 224)
+					if (gc != 0 && gc != 224)
 					{
-						if (pressed >= 0 && pressed < TUI_GETCH_RANGE)
-						{
-							buffer[1][pressed]++;
+							m_input[1].push_back(gc);
 
-							if (pressed >= 32 && pressed != 127)
+							if (gc >= 32 && gc != 127 && gc <= 255)
 							{
-								string_buffer[1] += (char)pressed;
+								m_str[1] += (char)gc;
 							}
-						}
 					}
-
-					if (pressed == 0 || pressed == 224)
+					else
 					{
-						int second_getch = gchar();
+						int gc2 = gchar();
+						m_raw[1] += gc2;
 
-						if (second_getch >= 0 && second_getch < TUI_GETCH_RANGE)
+						if (gc2 >= 0 && gc2 <= 255)
 						{
-							second_buffer[1][second_getch]++;
+							m_input[1].push_back(gc2 + TUI_KEY_OFFSET);
 						}
 					}
 #endif
@@ -428,35 +409,44 @@ namespace tui
 				}
 			}
 
-			//swaps buffers and clear [1] ones
 			void clear()
 			{
-				buffer[0] = buffer[1];
-				second_buffer[0] = second_buffer[1];
-				string_buffer[0] = string_buffer[1];
+				m_raw[0] = m_raw[1];
+				m_str[0] = m_str[1];
+				m_input[0] = m_input[1];
 
-				for (int i = 0; i < buffer[0].size(); i++)
-				{
-					buffer[1][i] = 0;
-					second_buffer[1][i] = 0;
-					string_buffer[1].clear();
-				}
+				m_raw[1].clear();
+				m_str[1].clear();
+				m_input[1].clear();
 			}
 		};
 		extern keyboard_buffer buffer;
 
-		//return amount of key press in iteration before last clear
-		inline int IsKeyPressed(int key)
+		inline std::vector<short> GetInput()
 		{
-			if (key >= 0) { return buffer[key]; }
-			else { return false; }
+			return buffer.m_input[0];
+		}
+		inline std::string GetRawInput()
+		{
+			return buffer.m_raw[0];
+		}
+		inline std::string GetStringInput()
+		{
+			return buffer.m_str[0];
 		}
 
-		//return string that consist of characters pressed in iteration before last clear
-		inline std::string GetInputAsString()
+		//return amount of key press in iteration before last clear
+		inline int IsKeyPressed(short key)
 		{
-			return buffer.getString();
+			if (key >= 0)
+			{
+				std::vector<short>& input = buffer.m_input[0];
+				return std::count(input.begin(), input.end(), key);
+			}
+			return false;
 		}
+
+
 
 		/*NOTE ABOUT DOUBLE BUFFERING
 

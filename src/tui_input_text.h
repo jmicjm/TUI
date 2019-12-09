@@ -270,7 +270,7 @@ namespace tui
 		{
 			if (isActive())
 			{
-				console_string input = input::GetInputAsString();
+				console_string input = input::GetStringInput();
 
 				if (input.size() > 0)
 				{
