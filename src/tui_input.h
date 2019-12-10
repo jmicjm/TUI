@@ -4,8 +4,8 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
-
 #include <algorithm>
+#include <mutex>
 
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
@@ -13,7 +13,7 @@
 #endif
 
 #ifdef  TUI_TARGET_SYSTEM_LINUX
-#include "termios.h"
+	#include "termios.h"
 #endif
 
 #define TUI_KEY_OFFSET 0xF00 // could be any value above 255
@@ -261,6 +261,8 @@ namespace tui
 			std::string m_str[2];
 			std::vector<short> m_input[2];
 
+			std::mutex m_mtx;
+
 			friend std::string GetRawInput();
 			friend std::string GetStringInput();
 			friend std::vector<short> GetInput();
@@ -318,6 +320,7 @@ namespace tui
 				for (;;)
 				{
 					int gc = gchar();
+					m_mtx.lock();
 					m_raw[1] += gc;
 
 					if (gc == 3)
@@ -400,11 +403,14 @@ namespace tui
 						}
 					}
 #endif
+					m_mtx.unlock();
 				}
 			}
 
 			void clear()
 			{
+				m_mtx.lock();
+
 				m_raw[0] = m_raw[1];
 				m_str[0] = m_str[1];
 				m_input[0] = m_input[1];
@@ -412,6 +418,8 @@ namespace tui
 				m_raw[1].clear();
 				m_str[1].clear();
 				m_input[1].clear();
+
+				m_mtx.unlock();
 			}
 		};
 		extern keyboard_buffer buffer;
@@ -436,6 +444,7 @@ namespace tui
 			{
 				std::vector<short>& input = buffer.m_input[0];
 				return std::count(input.begin(), input.end(), key);
+
 			}
 			return false;
 		}
