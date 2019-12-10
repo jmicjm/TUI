@@ -16,6 +16,7 @@
 #include "tui_input.h"
 
 #include <vector>
+#include <array>
 #include <iostream>
 
 
@@ -135,12 +136,41 @@ namespace tui
 
 			if (!changed()) { return; }
 
+			const std::array<rgb, 16> color16 = 
+			{
+				COLOR::BLACK, COLOR::BLUE, COLOR::GREEN, COLOR::CYAN,
+				COLOR::RED, COLOR::MAGENTA, COLOR::BROWN, COLOR::LIGHTGRAY,
+				COLOR::DARKGRAY, COLOR::LIGHTBLUE, COLOR::LIGHTGREEN, COLOR::LIGHTCYAN,
+				COLOR::LIGHTRED, COLOR::LIGHTMAGENTA, COLOR::YELLOW, COLOR::WHITE 
+			};
+
+			auto rgbDst = [](rgb c1, rgb c2)
+			{
+				return pow((c1.r - c2.r), 2) + pow((c1.g - c2.g), 2) + pow((c1.b - c2.b), 2);
+			};
+
+			auto rgbToRgbi = [&](rgb c)
+			{
+				int smallest_dst_id = 0;
+				int smallest_dst = rgbDst(c, color16[0]);
+
+				for (int i = 1; i < color16.size(); i++)
+				{
+					if (rgbDst(c, color16[i]) < smallest_dst)
+					{
+						smallest_dst = rgbDst(c, color16[i]);
+						smallest_dst_id = i;
+					}
+				}
+				return smallest_dst_id;
+			};
+
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 			std::vector<CHAR_INFO> temp;
 
-			auto getRgbiColor = [](color c)
+			auto getRgbiColor = [&](color c)
 			{
-				return 16 * c.background + c.foreground;
+				return 16 * rgbToRgbi(c.background) + rgbToRgbi(c.foreground);
 			};
 
 			for (int i = 0; i < getSize().y; i++)
@@ -181,12 +211,32 @@ namespace tui
 			{
 				{ "30","34","32","36","31","35","33","37","30;1","34;1","32;1","36;1","31;1","35;1","33;1","37;1" }
 			};
-			auto getEscCode = [](color c)
+			auto getEscCodeRgbi = [&](color c)
 			{
 				std::string esc_c = "\033[";
-				esc_c += fg[c.foreground];
+				esc_c += fg[rgbToRgbi(c.foreground)];
 				esc_c += ";";
-				esc_c += bg[c.background];
+				esc_c += bg[rgbToRgbi(c.background)];
+				esc_c += "m";
+
+				return esc_c;
+			};
+			auto getEscCodeRgb = [&](color c)
+			{
+				std::string esc_c = "\033[38;2;";
+				esc_c += std::to_string(c.foreground.r);
+				esc_c += ";";
+				esc_c += std::to_string(c.foreground.g);
+				esc_c += ";";
+				esc_c += std::to_string(c.foreground.b);
+				esc_c +="m";
+
+				esc_c += "\033[48;2;";
+				esc_c += std::to_string(c.background.r);
+				esc_c += ";";
+				esc_c += std::to_string(c.background.g);
+				esc_c += ";";
+				esc_c += std::to_string(c.background.b);
 				esc_c += "m";
 
 				return esc_c;
@@ -198,7 +248,8 @@ namespace tui
 			{
 				for (int j = 0; j < getSize().x; j++)
 				{
-					str += getEscCode(m_buffer.getSymbolAt({ j, i }).getColor());
+					str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
+					str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
 
 					if (m_buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 					{
@@ -213,7 +264,7 @@ namespace tui
 
 			/* if not doubled last few characters will be displayed after
 			some delay. I dont know why this happen*/
-			std::cout << str << "\033[H" << str << "\033[H" << getEscCode({ COLOR::WHITE, COLOR::BLACK });;
+			std::cout << str << "\033[H" << str << "\033[H" << getEscCodeRgbi({ COLOR::WHITE, COLOR::BLACK });;
 #endif
 			hidePrompt();
 			updateLastBuffer();

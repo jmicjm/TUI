@@ -8,6 +8,14 @@ namespace tui
 {
 	struct image : surface
 	{
+		const std::array<rgb, 16> color16 =
+		{
+			COLOR::BLACK, COLOR::BLUE, COLOR::GREEN, COLOR::CYAN,
+			COLOR::RED, COLOR::MAGENTA, COLOR::BROWN, COLOR::LIGHTGRAY,
+			COLOR::DARKGRAY, COLOR::LIGHTBLUE, COLOR::LIGHTGREEN, COLOR::LIGHTCYAN,
+			COLOR::LIGHTRED, COLOR::LIGHTMAGENTA, COLOR::YELLOW, COLOR::WHITE
+		};
+
 		void setImage(std::vector<symbol> image, unsigned int width)
 		{
 			if (width == 0) { return; }
@@ -32,7 +40,7 @@ namespace tui
 					temp[i] = symbol((char32_t)0);
 					continue;
 				}
-				temp[i] = symbol(' ', color(COLOR::BLACK, image[i]));
+				temp[i] = symbol(' ', color(COLOR::BLACK, color16[image[i]]));
 			}
 
 			setImage(temp, width);
@@ -75,7 +83,7 @@ namespace tui
 				{
 					if (symbol_vals.size() == 3)
 					{
-						temp.push_back(symbol(symbol_vals[0], { (uint8_t)symbol_vals[1], (uint8_t)symbol_vals[2] }));
+						temp.push_back(symbol(symbol_vals[0], { color16[(uint8_t)symbol_vals[1]], color16[(uint8_t)symbol_vals[2]] }));
 					}
 					else
 					{
@@ -113,7 +121,7 @@ namespace tui
 						continue;
 					}
 					val[0] = input_str[i];
-					temp.push_back(symbol(' ', {tui::COLOR::BLACK, (uint8_t)std::stoi(val, nullptr, 16)}));
+					temp.push_back(symbol(' ', {tui::COLOR::BLACK, color16[(uint8_t)std::stoi(val, nullptr, 16)]}));
 				}
 			}
 			setImage(temp, width);
