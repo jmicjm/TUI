@@ -132,7 +132,7 @@ namespace tui
 		{
 			m_fps_control.sleepUntilEnd();
 
-			input::buffer.clear();
+			input::swap();
 
 			if (!changed()) { return; }
 
