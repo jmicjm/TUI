@@ -187,6 +187,11 @@ namespace tui
 
 					ch_info.Attributes = getRgbiColor(m_buffer.getSymbolAt({ j,i }).getColor());
 
+					if (m_buffer.getSymbolAt({ j,i }).isUnderscore())
+					{
+						ch_info.Attributes |= COMMON_LVB_UNDERSCORE;
+					}
+
 					temp.push_back(ch_info);
 				}
 			}
@@ -248,8 +253,14 @@ namespace tui
 			{
 				for (int j = 0; j < getSize().x; j++)
 				{
+					str += "\033[0m";
 					str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
 					str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
+
+					if (m_buffer.getSymbolAt({ j, i }).isUnderscore())
+					{
+						str += "\033[4m";
+					}
 
 					if (m_buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 					{

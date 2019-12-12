@@ -72,6 +72,12 @@ namespace tui
 		bool operator!=(color c) { return !operator==(c); }
 	};
 
+	enum class ATTRIBUTE
+	{
+		UNDERSCORE,
+		NO_UNDERSCORE
+	};
+
 	struct symbol
 	{
 	private:
@@ -85,6 +91,8 @@ namespace tui
 		} m_cluster;
 
 		uint8_t m_multiple_cp_size;
+
+		bool m_underscore = false;
 
 		color m_color;
 
@@ -161,6 +169,7 @@ namespace tui
 			}
 
 			m_color = sym.m_color;
+			m_underscore = sym.m_underscore;
 		}
 
 		~symbol()
@@ -182,6 +191,7 @@ namespace tui
 				}
 
 				m_color = sym.m_color;
+				m_underscore = sym.m_underscore;
 			}
 
 			return *this;
@@ -253,12 +263,15 @@ namespace tui
 		}
 		color getColor() const { return m_color; }
 
+		void setUnderscore(bool set) { m_underscore = set; }
+		bool isUnderscore() { return m_underscore; }
+
 		bool operator==(const symbol& sym)
 		{
 			switch (sym.isMultipleCP())
 			{
 			case false:
-				return m_cluster.single_cp == sym.m_cluster.single_cp && m_color == sym.m_color;
+				return m_cluster.single_cp == sym.m_cluster.single_cp && m_color == sym.m_color && m_underscore == sym.m_underscore;
 			case true:
 				if (m_multiple_cp_size != sym.m_multiple_cp_size) { return false; }
 				else
@@ -268,7 +281,7 @@ namespace tui
 						if (m_cluster.multiple_cp[i] != sym.m_cluster.multiple_cp[i]) { return false; }
 					}
 				}
-				return m_color == sym.m_color;
+				return m_color == sym.m_color && m_underscore == sym.m_underscore;
 			}
 		}
 		bool operator!=(const symbol& sym) { return !operator==(sym); }
@@ -279,6 +292,7 @@ namespace tui
 	{
 	private:
 		color m_selected_color;
+		bool m_underscore = false;
 	public:
 		console_string() {}
 		console_string(symbol Symbol)
@@ -321,12 +335,27 @@ namespace tui
 			return *this;
 		}
 
+		console_string& operator<<(ATTRIBUTE attr)
+		{
+			switch (attr)
+			{
+			case ATTRIBUTE::UNDERSCORE:
+				m_underscore = true;
+				break;
+			case ATTRIBUTE::NO_UNDERSCORE:
+				m_underscore = false;
+			}
+
+			return *this;
+		};
+
 		console_string& operator<< (const console_string& string)
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
 				this->push_back(string[i]);
 				(*this)[this->size()-1].setColor(m_selected_color);
+				(*this)[this->size()-1].setUnderscore(m_underscore);
 			}
 			return *this;
 		}
