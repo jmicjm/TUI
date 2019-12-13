@@ -14,6 +14,7 @@ namespace tui
 		}
 		virtual void setAppearanceAction() {}
 	public:
+		virtual ~appearance() {}
 		virtual void setColor(color Color) = 0;
 	};
 }

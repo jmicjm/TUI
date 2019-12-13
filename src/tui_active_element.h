@@ -10,6 +10,7 @@ namespace tui
 		virtual void activationAction() {}
 		virtual void disactivationAction() {}
 	public:
+		virtual ~active_element() {}
 		void activate()
 		{
 			active = true;

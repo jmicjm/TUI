@@ -54,6 +54,7 @@ namespace tui
 				setSymbolAt(str[i], { i,0 });
 			}
 		}
+		virtual ~surface() {}
 
 		bool isResized() { return m_resized; }
 
