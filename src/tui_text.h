@@ -105,6 +105,7 @@ namespace tui
 					)
 				{
 					prepared << m_unprepared_text[i - 1].getColor();
+					prepared.setSelectedUnderscore(m_unprepared_text[i - 1].isUnderscore());
 					if (m_unprepared_text[i - 1].getFirstChar() != U' ')
 					{
 						prepared << "-";
