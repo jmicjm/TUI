@@ -375,6 +375,12 @@ namespace tui
 			return tmp += str;
 		}
 
+		void setSelectedColor(color Color) { m_selected_color = Color; }
+		void setSelectedUnderscore(bool underscore) { m_underscore = underscore; }
+
+		color getSelectedColor() { return m_selected_color; }
+		bool isSelectedUnderscore() { return m_underscore; }
+
 		void invert()
 		{
 			for (int i = 0; i < size(); i++)
@@ -388,6 +394,14 @@ namespace tui
 			for (int i = 0; i < size(); i++)
 			{
 				(*this)[i].setColor(Color);
+			}
+		}
+
+		void setUnderscore(bool set)
+		{
+			for (int i = 0; i < size(); i++)
+			{
+				(*this)[i].setUnderscore(set);
 			}
 		}
 	};
