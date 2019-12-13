@@ -218,7 +218,7 @@ namespace tui
 #endif
 				};
 
-				auto push = [&](char ch)
+				auto push = [&](unsigned char ch)
 				{
 					m_input[1].push_back(ch);
 
