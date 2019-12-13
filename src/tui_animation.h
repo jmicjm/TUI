@@ -40,6 +40,16 @@ namespace tui
 		{
 			m_frames.push_back(surf);
 		}
+		void setFrames(std::vector<surface> frames)
+		{
+			m_frames = frames;
+			m_frame = 0;
+		}
+		void clear() 
+		{
+			m_frames.clear();
+			m_frame = 0;
+		}
 		void setFPS(unsigned int fps) { m_fps_control.setFrameTime(std::chrono::milliseconds(1000)/ fps); }
 	};
 }
