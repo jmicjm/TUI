@@ -23,7 +23,6 @@
 
 namespace tui
 {
-	//buffer
 	struct console_buffer
 	{
 	protected:
@@ -50,7 +49,7 @@ namespace tui
 				}
 			}
 		}
-		bool changed()
+		bool isChanged()
 		{
 			if (m_last_buffer.getSize() != m_buffer.getSize())
 			{
@@ -69,6 +68,7 @@ namespace tui
 			}
 			return false;
 		}
+		void clearBuffer() { m_buffer.makeBlank(); }
 
 	public:
 		vec2i getSize() { return m_buffer.getSize(); }
@@ -78,8 +78,6 @@ namespace tui
 		void draw(surface &surf) { m_buffer.insertSurface(surf); }
 
 		void updateSurfaceSize(surface &surf) {	m_buffer.updateSurfaceSize(surf); }
-
-		void clear_buf() { m_buffer.makeBlank(); }
 	};
 
 
@@ -101,14 +99,9 @@ namespace tui
 			system("chcp 65001");
 			m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
-
-#ifdef TUI_TARGET_SYSTEM_LINUX
-			
-#endif
 			updateSize();
 			hidePrompt();
 		}
-
 
 		bool isResized() { return m_resized; }
 
@@ -120,7 +113,7 @@ namespace tui
 		void clear()
 		{
 			updateSize();
-			clear_buf();
+			clearBuffer();
 		}
 
 		bool isTimeToDisplay()
@@ -134,9 +127,9 @@ namespace tui
 
 			input::swap();
 
-			if (!changed()) { return; }
+			if (!isChanged()) { return; }
 
-			const std::array<rgb, 16> color16 = 
+			static const std::array<rgb, 16> colorRgbi = 
 			{
 				COLOR::BLACK, COLOR::BLUE, COLOR::GREEN, COLOR::CYAN,
 				COLOR::RED, COLOR::MAGENTA, COLOR::BROWN, COLOR::LIGHTGRAY,
@@ -152,13 +145,13 @@ namespace tui
 			auto rgbToRgbi = [&](rgb c)
 			{
 				int smallest_dst_id = 0;
-				int smallest_dst = rgbDst(c, color16[0]);
+				int smallest_dst = rgbDst(c, colorRgbi[0]);
 
-				for (int i = 1; i < color16.size(); i++)
+				for (int i = 1; i < colorRgbi.size(); i++)
 				{
-					if (rgbDst(c, color16[i]) < smallest_dst)
+					if (rgbDst(c, colorRgbi[i]) < smallest_dst)
 					{
-						smallest_dst = rgbDst(c, color16[i]);
+						smallest_dst = rgbDst(c, colorRgbi[i]);
 						smallest_dst_id = i;
 					}
 				}
