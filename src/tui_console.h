@@ -242,18 +242,31 @@ namespace tui
 			
 			std::string str;
 
+			color last_color;
+			bool last_underscore = false;
+
 			for (int i = 0; i < getSize().y; i++)
 			{
 				for (int j = 0; j < getSize().x; j++)
 				{
-					str += "\033[0m";
-					str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
-					str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
-
-					if (m_buffer.getSymbolAt({ j, i }).isUnderscore())
+					if (last_color != m_buffer.getSymbolAt({ j, i }).getColor())
 					{
-						str += "\033[4m";
+						str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
+						str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
 					}
+					last_color = m_buffer.getSymbolAt({ j, i }).getColor();
+
+					switch(m_buffer.getSymbolAt({ j, i }).isUnderscore())
+					{
+					case true:
+						if (last_underscore) { break; }
+						str += "\033[4m";
+						break;
+					case false:
+						if (!last_underscore) { break; }
+						str += "\033[24m";
+					}
+					last_underscore = m_buffer.getSymbolAt({ j, i }).isUnderscore();
 
 					if (m_buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 					{
