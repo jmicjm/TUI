@@ -92,6 +92,8 @@ namespace tui
 		bool m_resized;
 		time_frame m_fps_control;
 
+		bool m_display_rgb = true;
+		bool m_display_rgbi = true;
 	public:
 		console() : m_fps_control(std::chrono::milliseconds(1000) / 30)
 		{
@@ -109,6 +111,19 @@ namespace tui
 		{
 			m_fps_control.setFrameTime(std::chrono::milliseconds(1000) / fps);
 		}
+
+		void displayRgbColor(bool display) { m_display_rgb = display; }
+		bool isDisplayingRgbColor() { return m_display_rgb; }
+
+		void displayRgbiColor(bool display) { m_display_rgbi = display; }
+		bool isDisplayingRgbiColor() { return m_display_rgbi; }
+
+		void displayColor(bool display)
+		{
+			m_display_rgb = display;
+			m_display_rgbi = display;
+		}
+		bool isDisplayingColor() { return m_display_rgbi || m_display_rgb; }
 
 		void clear()
 		{
@@ -178,7 +193,14 @@ namespace tui
 					}
 					else { ch_info.Char.UnicodeChar = '?'; }
 
-					ch_info.Attributes = getRgbiColor(m_buffer.getSymbolAt({ j,i }).getColor());
+					if (m_display_rgbi)
+					{
+						ch_info.Attributes = getRgbiColor(m_buffer.getSymbolAt({ j,i }).getColor());
+					}
+					else
+					{
+						ch_info.Attributes = getRgbiColor({ COLOR::WHITE, COLOR::BLACK });
+					}
 
 					if (m_buffer.getSymbolAt({ j,i }).isUnderscore())
 					{
@@ -251,8 +273,14 @@ namespace tui
 				{
 					if (last_color != m_buffer.getSymbolAt({ j, i }).getColor())
 					{
-						str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
-						str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
+						if (m_display_rgbi)
+						{
+							str += getEscCodeRgbi(m_buffer.getSymbolAt({ j, i }).getColor());
+						}
+						if (m_display_rgb)
+						{
+							str += getEscCodeRgb(m_buffer.getSymbolAt({ j, i }).getColor());
+						}
 					}
 					last_color = m_buffer.getSymbolAt({ j, i }).getColor();
 
