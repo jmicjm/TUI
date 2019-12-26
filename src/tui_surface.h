@@ -35,6 +35,16 @@ namespace tui
 			}
 		}
 
+		void setString(const console_string& str)
+		{
+			setSizeInfo({ {(int)str.size(),1},{0,0} });
+
+			for (int i = 0; i < getSize().x; i++)
+			{
+				setSymbolAt(str[i], { i,0 });
+			}
+		}
+
 	protected:
 		virtual void resizeAction() {}
 		virtual void updateAction() {}
@@ -47,16 +57,15 @@ namespace tui
 		surface(const symbol& sym) : surface(console_string(sym)) {}
 		surface(const console_string& str)
 		{
-			setSizeInfo({ {(int)str.size(),1},{0,0} });
-
-			for (int i = 0; i < getSize().x; i++)
-			{
-				setSymbolAt(str[i], { i,0 });
-			}
+			setString(str);
 		}
 		virtual ~surface() {}
 
-		bool isResized() { return m_resized; }
+		surface& operator=(const console_string& str)
+		{
+			setString(str);
+			return *this;
+		}
 
 		struct surface_proxy
 		{
@@ -79,6 +88,8 @@ namespace tui
 
 			return proxy;
 		}
+
+		bool isResized() { return m_resized; }
 
 		void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
 		symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
