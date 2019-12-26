@@ -187,6 +187,7 @@ namespace tui
 				noncanon_settings = default_settings;
 				noncanon_settings.c_lflag &= ~ICANON;
 				noncanon_settings.c_lflag &= ~ECHO;
+				noncanon_settings.c_iflag &= ~ICRNL;
 
 				nonblocking_settings = noncanon_settings;
 				nonblocking_settings.c_cc[VMIN] = 0;
