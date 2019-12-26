@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "tui_console.h"
+#include "tui_output.h"
+#include "tui_input.h"
 
 #include "tui_rectangle.h"
 #include "tui_box.h"

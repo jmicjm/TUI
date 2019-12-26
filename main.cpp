@@ -1,19 +1,9 @@
-
 #include "src/tui.h"
-
-
-
-#include <iostream>
-
-#include <thread>
-#include <chrono>
-
 
 
 int main()
 {
-	tui::console con;
-	con.setFPSlimit(30);
+	tui::output::setFpslimit(30);
 
 	tui::rectangle rect;
 	rect.setSizeInfo({ { -2,-2 }, { 20,20 } });
@@ -54,9 +44,9 @@ int main()
 	anim.setFPS(1);
 
 	tui::image img[4];
-	img[0].setImageColorOnly({1,2,3,4},2);
+	img[0].setImageColorOnly({ 1,2,3,4 },2);
 	img[1].setImageColorOnly({ 4,1,2,3 }, 2);
-	img[2].setImageColorOnly({ 3,4,1,2}, 2);
+	img[2].setImageColorOnly({ 3,4,1,2 }, 2);
 	img[3].setImageColorOnly({ 2,3,4,1 }, 2);
 
 	for (int i = 0; i < 4; i++) { anim.addFrame(img[i]); }
@@ -64,12 +54,12 @@ int main()
 
 	for (;;)
 	{
-		con.clear();
+		tui::output::clear();
 
-		con.draw(rect);
-		con.draw(box1);
-		con.draw(mainBox);
-		con.draw(text);
+		tui::output::draw(rect);
+		tui::output::draw(box1);
+		tui::output::draw(mainBox);
+		tui::output::draw(text);
 
 		if (tui::input::IsKeyPressed('a'))
 		{
@@ -94,10 +84,10 @@ int main()
 			chart.setValues(v);
 		}
 
-		con.draw(chart);
-		con.draw(anim);
+		tui::output::draw(chart);
+		tui::output::draw(anim);
 
-		con.display();
+		tui::output::display();
 	}
 	
 	return 0;

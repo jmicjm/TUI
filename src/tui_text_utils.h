@@ -406,10 +406,6 @@ namespace tui
 		}
 	};
 
-
-
-
-
 	inline bool IsPunctuation(symbol Symbol)
 	{
 		return   Symbol == U"."
@@ -420,9 +416,7 @@ namespace tui
 			|| Symbol == U"?";
 	}
 
-
-
-	std::string ToStringP(float val, int precision)
+	inline std::string ToStringP(float val, int precision)
 	{
 		std::stringstream ss_val;
 		if (precision >= 0)
