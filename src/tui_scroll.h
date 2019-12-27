@@ -298,10 +298,10 @@ namespace tui
 		void update()
 		{
 			if (isActive() && !isImmobilized()) {
-				if (input::IsKeyPressed(key_up)) { up(); }
-				if (input::IsKeyPressed(key_down)) { down(); }
-				if (input::IsKeyPressed(key_pgup)) { pageUp(); }
-				if (input::IsKeyPressed(key_pgdn)) { pageDown(); }
+				if (input::isKeyPressed(key_up)) { up(); }
+				if (input::isKeyPressed(key_down)) { down(); }
+				if (input::isKeyPressed(key_pgup)) { pageUp(); }
+				if (input::isKeyPressed(key_pgdn)) { pageDown(); }
 			}
 		}
 

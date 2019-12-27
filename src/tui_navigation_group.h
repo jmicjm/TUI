@@ -58,12 +58,12 @@ namespace tui
 		{
 			if (isActive())
 			{
-				if (tui::input::IsKeyPressed(key_block))
+				if (tui::input::isKeyPressed(key_block))
 				{
 					m_blocked = !m_blocked;
 				}
 
-				if (tui::input::IsKeyPressed(key_next) && !m_blocked)
+				if (tui::input::isKeyPressed(key_next) && !m_blocked)
 				{
 					disactivateAll();
 
@@ -72,7 +72,7 @@ namespace tui
 					m_elements[m_selected]->activate();
 				}
 
-				if (tui::input::IsKeyPressed(key_last) && !m_blocked)
+				if (tui::input::isKeyPressed(key_last) && !m_blocked)
 				{
 					disactivateAll();
 

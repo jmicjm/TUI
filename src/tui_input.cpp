@@ -39,10 +39,10 @@ namespace tui
 
 			std::mutex m_mtx;
 
-			friend std::string GetRawInput();
-			friend std::string GetStringInput();
-			friend std::vector<short> GetInput();
-			friend int IsKeyPressed(short);
+			friend std::string getRawInput();
+			friend std::string getStringInput();
+			friend std::vector<short> getInput();
+			friend int isKeyPressed(short);
 		public:
 			keyboard_buffer()
 			{
@@ -215,20 +215,20 @@ namespace tui
 		};
 		keyboard_buffer buffer;
 
-		std::vector<short> GetInput()
+		std::vector<short> getInput()
 		{
 			return buffer.m_input[0];
 		}
-		std::string GetRawInput()
+		std::string getRawInput()
 		{
 			return buffer.m_raw[0];
 		}
-		std::string GetStringInput()
+		std::string getStringInput()
 		{
 			return buffer.m_str[0];
 		}
 
-		int IsKeyPressed(short key)
+		int isKeyPressed(short key)
 		{
 			if (key >= 0)
 			{

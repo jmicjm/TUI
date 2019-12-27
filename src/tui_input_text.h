@@ -270,7 +270,7 @@ namespace tui
 		{
 			if (isActive())
 			{
-				console_string input = input::GetStringInput();
+				console_string input = input::getStringInput();
 
 				if (input.size() > 0)
 				{
@@ -300,9 +300,9 @@ namespace tui
 				}
 
 
-				if (input::IsKeyPressed(key_backspace))
+				if (input::isKeyPressed(key_backspace))
 				{
-					int erase_c = input::IsKeyPressed(key_backspace);
+					int erase_c = input::isKeyPressed(key_backspace);
 					if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
 
 					m_str.erase(m_str.begin() + m_cursor_pos_in_txt - erase_c, m_str.begin() + m_cursor_pos_in_txt);
@@ -311,12 +311,12 @@ namespace tui
 					updateText();
 				}
 
-				if (input::IsKeyPressed(key_left)) { moveCursorLeft(input::IsKeyPressed(key_left)); }
-				if (input::IsKeyPressed(key_right)) { moveCursorRight(input::IsKeyPressed(key_right)); }
-				if (input::IsKeyPressed(key_up)) { moveCursorUp(input::IsKeyPressed(key_up)); }
-				if (input::IsKeyPressed(key_down)) { moveCursorDown(input::IsKeyPressed(key_down)); }
+				if (input::isKeyPressed(key_left)) { moveCursorLeft(input::isKeyPressed(key_left)); }
+				if (input::isKeyPressed(key_right)) { moveCursorRight(input::isKeyPressed(key_right)); }
+				if (input::isKeyPressed(key_up)) { moveCursorUp(input::isKeyPressed(key_up)); }
+				if (input::isKeyPressed(key_down)) { moveCursorDown(input::isKeyPressed(key_down)); }
 
-				if (input::IsKeyPressed(key_insert)) { m_insert_mode = !m_insert_mode; }
+				if (input::isKeyPressed(key_insert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
 	};

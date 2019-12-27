@@ -11,7 +11,7 @@
 
 namespace tui
 {
-	std::string ToStringP(float val, int precision);
+	std::string toStringP(float val, int precision);
 
 
 	struct rgb
@@ -138,7 +138,7 @@ namespace tui
 		symbol(const char32_t* Symbol, color color) : symbol(std::u32string(Symbol), color) {}
 		symbol(const std::string& Symbol) : symbol(Symbol, color()) {}
 		symbol(const std::u32string& Symbol) : symbol(Symbol, color()) {}
-		symbol(const std::string& Symbol, color color) : symbol(Utf8ToUtf32(Symbol), color) {}
+		symbol(const std::string& Symbol, color color) : symbol(utf8ToUtf32(Symbol), color) {}
 		symbol(const std::u32string& Symbol, color color) : m_multiple_cp_size(0)
 		{
 			setSymbol(Symbol); 
@@ -212,7 +212,7 @@ namespace tui
 
 				for (int i = 0; i < symbol.size() - 1; i++)
 				{
-					if (!IsBreakBetween(symbol[i], symbol[i + 1]))
+					if (!isBreakBetween(symbol[i], symbol[i + 1]))
 					{
 						temp += symbol[i + 1];
 					}
@@ -300,11 +300,11 @@ namespace tui
 			this->resize(1);
 			(*this)[0] = Symbol;
 		}
-		console_string(const char* str) : console_string(Utf8ToUtf32(str)) {}
+		console_string(const char* str) : console_string(utf8ToUtf32(str)) {}
 		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
-		console_string(const std::string& str) : console_string(Utf8ToUtf32(str), color()) {}
+		console_string(const std::string& str) : console_string(utf8ToUtf32(str), color()) {}
 		console_string(const std::u32string& str) : console_string(str, color()) {}
-		console_string(const std::string& str, color color) : console_string(Utf8ToUtf32(str), color) {}	
+		console_string(const std::string& str, color color) : console_string(utf8ToUtf32(str), color) {}	
 		console_string(const std::u32string& str, color color)
 		{
 			std::vector<symbol> temp_vec;
@@ -317,7 +317,7 @@ namespace tui
 					std::u32string temp;
 					temp += str[i];
 
-					for (; (i<str.size()-1 && !IsBreakBetween(str[i], str[i + 1])); i++)
+					for (; (i<str.size()-1 && !isBreakBetween(str[i], str[i + 1])); i++)
 					{
 						temp += str[i + 1];
 					}			
@@ -406,7 +406,7 @@ namespace tui
 		}
 	};
 
-	inline bool IsPunctuation(symbol Symbol)
+	inline bool isPunctuation(symbol Symbol)
 	{
 		return   Symbol == U"."
 			|| Symbol == U","
@@ -416,7 +416,7 @@ namespace tui
 			|| Symbol == U"?";
 	}
 
-	inline std::string ToStringP(float val, int precision)
+	inline std::string toStringP(float val, int precision)
 	{
 		std::stringstream ss_val;
 		if (precision >= 0)

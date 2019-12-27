@@ -4,22 +4,22 @@
 
 namespace tui
 {
-	std::u32string Utf8ToUtf32(const std::string& utf8_str);
+	std::u32string utf8ToUtf32(const std::string& utf8_str);
 
-	std::string Utf32ToUtf8(const std::u32string& utf32_str);
+	std::string utf32ToUtf8(const std::u32string& utf32_str);
 
-	std::string Char32ToUtf8(char32_t character);
+	std::string char32ToUtf8(char32_t character);
 
-	size_t GetUtf8StrLength(std::string str);
+	size_t getUtf8StrLength(std::string str);
 
-	int GetGraphemeType(char32_t grapheme);
+	int getGraphemeType(char32_t grapheme);
 
-	bool IsBreakBetween(char32_t l, char32_t r);
+	bool isBreakBetween(char32_t l, char32_t r);
 
-	bool IsControl(char32_t ch);
+	bool isControl(char32_t ch);
 
 
-	inline std::u32string Utf8ToUtf32(const std::string& utf8_str)
+	inline std::u32string utf8ToUtf32(const std::string& utf8_str)
 	{
 		std::u32string utf32_str;
 		utf32_str.reserve(utf8_str.size() / 2);
@@ -90,7 +90,7 @@ namespace tui
 		return utf32_str;
 	}
 
-	inline std::string Utf32ToUtf8(const std::u32string& utf32_str)
+	inline std::string utf32ToUtf8(const std::u32string& utf32_str)
 	{
 		std::string utf8_str;
 		utf8_str.reserve(utf32_str.size() * 2);
@@ -145,18 +145,18 @@ namespace tui
 		return utf8_str;
 	}
 
-	inline std::string Char32ToUtf8(char32_t character)
+	inline std::string char32ToUtf8(char32_t character)
 	{
 		std::u32string str;
 		str.resize(1);
 		str[0] = character;
 
-		return Utf32ToUtf8(str);
+		return utf32ToUtf8(str);
 	}
 
-	inline size_t GetUtf8StrLength(std::string str)
+	inline size_t getUtf8StrLength(std::string str)
 	{
-		return Utf8ToUtf32(str).size();
+		return utf8ToUtf32(str).size();
 	}
 
 
@@ -181,7 +181,7 @@ namespace tui
 		};
 	}
 
-	inline int GetGraphemeType(char32_t grapheme)
+	inline int getGraphemeType(char32_t grapheme)
 	{
 #ifndef TUI_DISABLE_MEMBER_PACKING
 #pragma pack(push,1)
@@ -218,10 +218,10 @@ namespace tui
 		return GRAPHEME_TYPE::OTHER;
 	}
 
-	inline bool IsBreakBetween(char32_t l, char32_t r)
+	inline bool isBreakBetween(char32_t l, char32_t r)
 	{
-		int l_t = GetGraphemeType(l);
-		int r_t = GetGraphemeType(r);
+		int l_t = getGraphemeType(l);
+		int r_t = getGraphemeType(r);
 
 		/*
 		http://www.unicode.org/reports/tr29/
@@ -299,9 +299,9 @@ namespace tui
 		return true;
 	}
 
-	inline bool IsControl(char32_t ch)
+	inline bool isControl(char32_t ch)
 	{
-		int g_type = GetGraphemeType(ch);
+		int g_type = getGraphemeType(ch);
 
 		return g_type == GRAPHEME_TYPE::CONTROL
 			|| g_type == GRAPHEME_TYPE::CR

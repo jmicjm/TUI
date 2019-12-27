@@ -85,16 +85,16 @@ namespace tui
 #endif
 		};
 
-		std::vector<short> GetInput();
+		std::vector<short> getInput();
 
 		//uninterpreted input
-		std::string GetRawInput();
+		std::string getRawInput();
 
 		//alphanumerical + '/n'
-		std::string GetStringInput();
+		std::string getStringInput();
 
 		//amount of key press
-		int IsKeyPressed(short key);
+		int isKeyPressed(short key);
 
 		//swap buffers
 		void swap();

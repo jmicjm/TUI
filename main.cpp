@@ -61,23 +61,23 @@ int main()
 		tui::output::draw(mainBox);
 		tui::output::draw(text);
 
-		if (tui::input::IsKeyPressed('a'))
+		if (tui::input::isKeyPressed('a'))
 		{
 			chart.displayValueLabels(!chart.isDisplayingValueLabels());
 		}
-		if (tui::input::IsKeyPressed('b'))
+		if (tui::input::isKeyPressed('b'))
 		{
 			std::vector<float> v = chart.getValues();
 			for (int i = 0; i < v.size(); i++) { v[i] = v[i] * -1; }
 			chart.setValues(v);
 		}
-		if (tui::input::IsKeyPressed('c'))
+		if (tui::input::isKeyPressed('c'))
 		{
 			std::vector<float> v = chart.getValues();
 			for (int i = 0; i < v.size(); i++) { v[i]++; }
 			chart.setValues(v);
 		}
-		if (tui::input::IsKeyPressed('d'))
+		if (tui::input::isKeyPressed('d'))
 		{
 			std::vector<float> v = chart.getValues();
 			for (int i = 0; i < v.size(); i++) { v[i]--; }

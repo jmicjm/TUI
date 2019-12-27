@@ -96,10 +96,10 @@ namespace tui
 
 				if (isDisplayingLabels())
 				{
-					if (m_display_percentage_label) { val_str += {ToStringP(abs(m_min - m_value) / distance * 100, m_labels_precision) + '%', percentage_color}; }
-					if (m_display_min_label) { val_str += {ToStringP(m_min, m_labels_precision) + '/', min_color}; }
-					if (m_display_value_label) { val_str += {ToStringP(m_value, m_labels_precision), value_color}; }
-					if (m_display_max_label) { val_str += {'/' + ToStringP(m_max, m_labels_precision), max_color}; }
+					if (m_display_percentage_label) { val_str += {toStringP(abs(m_min - m_value) / distance * 100, m_labels_precision) + '%', percentage_color}; }
+					if (m_display_min_label) { val_str += {toStringP(m_min, m_labels_precision) + '/', min_color}; }
+					if (m_display_value_label) { val_str += {toStringP(m_value, m_labels_precision), value_color}; }
+					if (m_display_max_label) { val_str += {'/' + toStringP(m_max, m_labels_precision), max_color}; }
 				}
 
 				auto getBarSize = [&]()

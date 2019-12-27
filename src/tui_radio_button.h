@@ -166,8 +166,8 @@ namespace tui
 		{
 			if (isActive())
 			{
-				if (input::IsKeyPressed(key_next)) { nextOption(); }
-				if (input::IsKeyPressed(key_previous)) { previousOption(); }
+				if (input::isKeyPressed(key_next)) { nextOption(); }
+				if (input::isKeyPressed(key_previous)) { previousOption(); }
 			}
 		}
 	};

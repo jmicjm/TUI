@@ -123,7 +123,7 @@ namespace tui
 					{
 						CHAR_INFO ch_info;
 
-						if (buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !IsControl(buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
+						if (buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !isControl(buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
 						{
 							ch_info.Char.UnicodeChar = buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
 						}
@@ -234,7 +234,7 @@ namespace tui
 
 						if (buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
 						{
-							str += Utf32ToUtf8(buffer.getSymbolAt({ j, i }).getSymbol());
+							str += utf32ToUtf8(buffer.getSymbolAt({ j, i }).getSymbol());
 						}
 						else
 						{
