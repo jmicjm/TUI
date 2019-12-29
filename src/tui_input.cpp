@@ -20,9 +20,9 @@ namespace tui
 {
 	namespace input
 	{
-		void CTRLC_handler()
+		void CtrlcHandler()
 		{
-
+			std::exit(0);
 		}
 
 		terminal_info term_info;
@@ -52,9 +52,8 @@ namespace tui
 				tcgetattr(0, &default_settings);
 
 				noncanon_settings = default_settings;
-				noncanon_settings.c_lflag &= ~ICANON;
-				noncanon_settings.c_lflag &= ~ECHO;
-				noncanon_settings.c_iflag &= ~ICRNL;
+				noncanon_settings.c_lflag &= ~(ICANON | ECHO | ISIG | IEXTEN);
+				noncanon_settings.c_iflag &= ~(ICRNL | IXON);
 
 				nonblocking_settings = noncanon_settings;
 				nonblocking_settings.c_cc[VMIN] = 0;
@@ -102,9 +101,9 @@ namespace tui
 					m_mtx.lock();
 					m_raw[1] += gc;
 
-					if (gc == 3)
+					if (gc == CTRL_C)
 					{
-						CTRLC_handler();
+						CtrlcHandler();
 					}
 					if (gc == 10 || gc == 13) { m_str[1] += '\n'; }
 
