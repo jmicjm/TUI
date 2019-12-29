@@ -24,6 +24,12 @@ namespace tui
 		{
 			terminal_info()
 			{
+				set();
+			}
+
+			void set()
+			{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
 				std::array<char, 128> buffer;
 				std::string infocmp;
 				FILE* pipe = popen("infocmp", "r");
@@ -97,7 +103,18 @@ namespace tui
 						s++;
 					}
 				}
+#endif
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+				std::vector<int> keys =
+				{
+					73, 81, 83,82, 79, 71, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 133, 134, 72, 80, 75, 77
+				};
 
+				for (int i = 0; i < sequences.size(); i++)
+				{
+					sequences[i].seq = { keys[i] };
+				}
+#endif
 			}
 
 			std::vector<key_seq_pair> sequences =

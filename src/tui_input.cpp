@@ -1,15 +1,20 @@
 #include "tui_input.h"
+#include "tui_terminal_info.h"
 
-
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-	#include "tui_terminal_info.h"
-#endif
 
 #include <thread>
 #include <cstdio>
 #include <algorithm>
 #include <mutex>
 #include <cmath>
+
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+	#include <conio.h>
+#endif
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+	#include "termios.h"
+#endif
 
 namespace tui
 {
@@ -20,10 +25,7 @@ namespace tui
 
 		}
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
 		terminal_info term_info;
-#endif
-
 
 		struct keyboard_buffer
 		{
@@ -116,14 +118,14 @@ namespace tui
 						int gc2 = gchar();
 						m_raw[1] += gc2;
 
-						if (gc2 >= 0 && gc2 <= 255)
+						if (term_info.getSeqNumber({ gc2 }) >= 0)
 						{
-							m_input[1].push_back(gc2 + TUI_KEY_OFFSET);
+							m_input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
 						}
 					}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
-					if (gc == 8)//backspace could be 8 or 127(BACKSPACE ENUM)
+					if (gc == 127)//backspace could be 8 or 127
 					{
 						m_input[1].push_back(BACKSPACE);
 					}
