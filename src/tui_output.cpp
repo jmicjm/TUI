@@ -198,9 +198,9 @@ namespace tui
 					return esc_c;
 				};
 
-				std::string str;
+				std::string str = "\033[24m" + getEscCodeRgbi({ COLOR::WHITE, COLOR::BLACK }) + getEscCodeRgb({ COLOR::WHITE, COLOR::BLACK });
 
-				color last_color;
+				color last_color = {COLOR::WHITE, COLOR::BLACK};
 				bool last_underscore = false;
 
 				for (int i = 0; i < getSize().y; i++)
