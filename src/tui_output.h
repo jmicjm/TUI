@@ -1,23 +1,6 @@
 #pragma once
 #include "tui_utils.h"
-#include "tui_text_utils.h"
 #include "tui_surface.h"
-#include "tui_input.h"
-
-#include <vector>
-#include <string>
-#include <iostream>
-
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
-	#include <windows.h>
-#endif
-
-#ifdef TUI_TARGET_SYSTEM_LINUX
-	#include <sys/ioctl.h>
-	#include <unistd.h>
-	#include <termios.h>
-#endif
-
 
 namespace tui
 {

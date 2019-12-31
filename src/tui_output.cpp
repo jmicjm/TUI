@@ -1,9 +1,41 @@
 #include "tui_output.h"
+#include "tui_input.h"
+#include "tui_text_utils.h"
+
+#include <cstdlib>
+#include <vector>
+#include <string>
+#include <iostream>
+
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
+	#include <windows.h>
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+	#include <sys/ioctl.h>
+	#include <unistd.h>
+	#include <termios.h>
+#endif
 
 namespace tui
 {
 	namespace output
 	{
+		void restoreCursor()
+		{
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
+			CONSOLE_CURSOR_INFO cursor_info;
+			cursor_info.bVisible = true;
+			cursor_info.dwSize = 1;
+
+			SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			std::cout << "\033[?25h";
+#endif
+		}
+
 		struct console_buffer
 		{
 		protected:
@@ -62,6 +94,8 @@ namespace tui
 				system("chcp 65001");
 				m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
+				std::atexit(restoreCursor);
+
 				updateSize();
 				hidePrompt();
 			}
