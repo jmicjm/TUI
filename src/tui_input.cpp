@@ -1,11 +1,11 @@
 #include "tui_input.h"
 #include "tui_terminal_info.h"
 
-
 #include <thread>
+#include <mutex>
+#include <cstdlib>
 #include <cstdio>
 #include <algorithm>
-#include <mutex>
 #include <cmath>
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
@@ -25,31 +25,37 @@ namespace tui
 			std::exit(0);
 		}
 
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+		termios default_settings;
+		termios noncanon_settings;
+		termios nonblocking_settings;
+#endif
+
+		void restoreTerminal()
+		{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			tcsetattr(0, TCSANOW, &default_settings);
+			system("tput rmkx");
+#endif
+		}
+
 		terminal_info term_info;
 
 		struct keyboard_buffer
 		{
 		private:
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-			termios default_settings;
-			termios noncanon_settings;
-			termios nonblocking_settings;
-#endif
+			std::mutex m_mtx;
+		public:
 			std::string m_raw[2];
 			std::string m_str[2];
 			std::vector<short> m_input[2];
 
-			std::mutex m_mtx;
-
-			friend std::string getRawInput();
-			friend std::string getStringInput();
-			friend std::vector<short> getInput();
-			friend int isKeyPressed(short);
-		public:
 			keyboard_buffer()
 			{
 #ifdef  TUI_TARGET_SYSTEM_LINUX
 				tcgetattr(0, &default_settings);
+
+				std::atexit(restoreTerminal);
 
 				noncanon_settings = default_settings;
 				noncanon_settings.c_lflag &= ~(ICANON | ECHO | ISIG | IEXTEN);
@@ -65,12 +71,10 @@ namespace tui
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
 			}
+
 			~keyboard_buffer()
 			{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-				tcsetattr(0, TCSANOW, &default_settings);
-				system("tput rmkx");
-#endif
+				restoreTerminal();
 			}
 
 			void bufferThread()
