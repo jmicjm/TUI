@@ -166,6 +166,11 @@ namespace tui
 				return -1;
 			}
 
+			std::vector<int> getSeq(unsigned int seq)
+			{
+				return sequences[seq].seq;
+			}
+
 		};
 	}
 }

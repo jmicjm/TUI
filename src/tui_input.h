@@ -86,7 +86,7 @@ namespace tui
 		//clear buffers
 		void clear();
 
-
+		bool isKeySupported(short key);
 
 
 		/*NOTE ABOUT DOUBLE BUFFERING

@@ -247,5 +247,15 @@ namespace tui
 		void swap() { buffer.swap(); }
 
 		void clear() { buffer.clear(); }
+
+		bool isKeySupported(short key)
+		{
+			if (key < 0) { return false; }
+			if (key >= 0 && key <= 256) { return true; }
+			else if (key >= 256)
+			{
+				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
+			}
+		}
 	}
 }
