@@ -48,7 +48,7 @@ namespace tui
 
 		for (int i = 0; i < utf8_str.size(); i++, bytec--)
 		{
-			if ((utf8_str[i] & 0x10000000) == 0b00000000)
+			if ((utf8_str[i] & 0b10000000) == 0b00000000)
 			{
 				push(i);
 				setBc(1);
