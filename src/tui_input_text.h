@@ -270,53 +270,101 @@ namespace tui
 		{
 			if (isActive())
 			{
-				console_string input = input::getStringInput();
+				std::vector<short> input = input::getInput();
+				console_string buffer;
 
-				if (input.size() > 0)
+				auto addText = [&](console_string& str)
 				{
 					if (m_insert_mode)
 					{
-						for (int i = 0; i < input.size(); i++)
+						for (int i = 0; i < str.size(); i++)
 						{
-							m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, input[i]);
+							m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, str[i]);
 						}
 					}
 					else//overtype
 					{
-						for (int i = 0; i < input.size(); i++)
+						for (int i = 0; i < str.size(); i++)
 						{
 							if (i + m_cursor_pos_in_txt < m_str.size())
 							{
-								m_str[i + m_cursor_pos_in_txt] = input[i];
+								m_str[i + m_cursor_pos_in_txt] = str[i];
 							}
 							else
 							{
-								m_str.push_back(input[i]);
+								m_str.push_back(str[i]);
 							}
-						}	
+						}
 					}
-					moveCursorRight(input.size());
-					updateText();
-				}
-
-
-				if (input::isKeyPressed(key_backspace))
+					moveCursorRight(str.size());
+				};
+				auto isSpecialKey = [&](short key)
 				{
-					int erase_c = input::isKeyPressed(key_backspace);
-					if (erase_c > m_cursor_pos_in_txt) { erase_c = m_cursor_pos_in_txt; }
+					return key == input::KEY::BACKSPACE
+						|| key == input::KEY::INS
+						|| key == input::KEY::LEFT
+						|| key == input::KEY::RIGHT
+						|| key == input::KEY::UP
+						|| key == input::KEY::DOWN;
+				};
 
-					m_str.erase(m_str.begin() + m_cursor_pos_in_txt - erase_c, m_str.begin() + m_cursor_pos_in_txt);
+				bool update_needed = false;
+				auto update = [&]()
+				{
+					if (buffer.size() > 0 || update_needed) { updateText(); }
+					update_needed = false;
+				};
 
-					moveCursorLeft(erase_c);
-					updateText();
+				for (int i = 0; i < input.size(); i++)
+				{
+					if (isSpecialKey(input[i]))
+					{
+						addText(buffer);
+
+						switch (input[i])
+						{
+						case input::KEY::BACKSPACE:
+							if (m_cursor_pos_in_txt > 0)
+							{
+								m_str.erase(m_str.begin() + m_cursor_pos_in_txt - 1);
+								moveCursorLeft();
+
+								update_needed = true;
+							}
+							break;
+						case input::KEY::LEFT:
+							moveCursorLeft();
+							break;
+						case input::KEY::RIGHT:
+							moveCursorRight();
+							break;
+						case input::KEY::UP:
+							update();
+							moveCursorUp();
+							break;
+						case input::KEY::DOWN:
+							update();
+							moveCursorDown();
+							break;
+						case input::KEY::INS:
+							m_insert_mode = !m_insert_mode;
+						}
+
+						buffer.clear();
+					}
+					else if (input[i] >= 0 && input[i] <= 256 && input[i] != input::KEY::ENTER)
+					{
+						buffer.push_back(input[i]);
+					}
+					else if (input[i] == input::KEY::ENTER)
+					{
+						buffer.push_back('\n');
+					}
 				}
 
-				if (input::isKeyPressed(key_left)) { moveCursorLeft(input::isKeyPressed(key_left)); }
-				if (input::isKeyPressed(key_right)) { moveCursorRight(input::isKeyPressed(key_right)); }
-				if (input::isKeyPressed(key_up)) { moveCursorUp(input::isKeyPressed(key_up)); }
-				if (input::isKeyPressed(key_down)) { moveCursorDown(input::isKeyPressed(key_down)); }
+				addText(buffer);
+				update();
 
-				if (input::isKeyPressed(key_insert)) { m_insert_mode = !m_insert_mode; }
 			}
 		}
 	};
