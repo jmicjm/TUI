@@ -109,7 +109,6 @@ namespace tui
 					{
 						CtrlcHandler();
 					}
-					if (gc == 10 || gc == 13) { m_str[1] += '\n'; }
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 					if (gc != 0 && gc != 224)
