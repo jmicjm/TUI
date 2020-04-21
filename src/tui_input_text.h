@@ -273,7 +273,7 @@ namespace tui
 				std::vector<short> input = input::getInput();
 				std::string buffer;
 
-				auto addText = [&](console_string& str)
+				auto addText = [&](console_string str)
 				{
 					if (m_insert_mode)
 					{
@@ -319,7 +319,7 @@ namespace tui
 				{
 					if (isSpecialKey(input[i]))
 					{
-						addText((console_string&)buffer);
+						addText((console_string)buffer);
 
 						switch (input[i])
 						{
@@ -362,7 +362,7 @@ namespace tui
 					}
 				}
 
-				addText((console_string&)buffer);
+				addText((console_string)buffer);
 				update();
 
 			}
