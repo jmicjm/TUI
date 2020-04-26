@@ -121,35 +121,38 @@ namespace tui
 
 		void insertSurface(surface& obj, bool update = true)
 		{
-			updateSurfaceSize(obj);
-
-			if (update) { obj.updateAction(); }
-
-			obj.drawAction();
-
-
-			int x_origin = getSize().x * (obj.getPositionInfo().relative.x / 100.f) - obj.getSize().x * (obj.getPositionInfo().relative.x / 100.f);
-			x_origin += obj.getPositionInfo().offset.x;
-			x_origin += obj.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
-
-			int y_origin = getSize().y * (obj.getPositionInfo().relative.y / 100.f) - obj.getSize().y * (obj.getPositionInfo().relative.y / 100.f);
-			y_origin += obj.getPositionInfo().offset.y;
-			y_origin += obj.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
-
-			obj.m_position = { x_origin, y_origin };
-			obj.m_global_position = m_global_position + obj.m_position;
-
-			for (int y = 0; y < obj.getSize().y; y++)
+			if (&obj != this)
 			{
-				for (int x = 0; x < obj.getSize().x; x++)
+				updateSurfaceSize(obj);
+
+				if (update) { obj.updateAction(); }
+
+				obj.drawAction();
+
+
+				int x_origin = getSize().x * (obj.getPositionInfo().relative.x / 100.f) - obj.getSize().x * (obj.getPositionInfo().relative.x / 100.f);
+				x_origin += obj.getPositionInfo().offset.x;
+				x_origin += obj.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+
+				int y_origin = getSize().y * (obj.getPositionInfo().relative.y / 100.f) - obj.getSize().y * (obj.getPositionInfo().relative.y / 100.f);
+				y_origin += obj.getPositionInfo().offset.y;
+				y_origin += obj.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+
+				obj.m_position = { x_origin, y_origin };
+				obj.m_global_position = m_global_position + obj.m_position;
+
+				for (int y = 0; y < obj.getSize().y; y++)
 				{
-					if (x_origin + x < getSize().x
-						&& y_origin + y < getSize().y
-						&& x_origin + x >= 0
-						&& y_origin + y >= 0
-						&& obj[x][y].getFirstChar() != 0)
+					for (int x = 0; x < obj.getSize().x; x++)
 					{
-						setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
+						if (x_origin + x < getSize().x
+							&& y_origin + y < getSize().y
+							&& x_origin + x >= 0
+							&& y_origin + y >= 0
+							&& obj[x][y].getFirstChar() != 0)
+						{
+							setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
+						}
 					}
 				}
 			}
