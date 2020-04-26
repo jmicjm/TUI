@@ -132,20 +132,15 @@ namespace tui
 					m_first_pos = 0; 
 				}
 
-				auto strIdx = [=](int i)
+				for (int i = too_long, j = m_first_pos; j < m_generated_tabs.size() && i < surface1D<direction>::getSize() - too_long; i++, j++)
 				{
-					return i - too_long + m_first_pos;
-				};
-
-				for (int i = too_long; strIdx(i) < m_generated_tabs.size() && i < surface1D<direction>::getSize() - too_long; i++)
-				{
-					switch (strIdx(i) >= m_tabs[m_selected].position && strIdx(i) < m_tabs[m_selected].position + m_tabs[m_selected].string.size())
+					switch (j >= m_tabs[m_selected].position && j < m_tabs[m_selected].position + m_tabs[m_selected].string.size())
 					{
 					case false:
-						surface1D<direction>::setSymbolAt(m_generated_tabs[strIdx(i)], i);
+						surface1D<direction>::setSymbolAt(m_generated_tabs[j], i);
 						break;
 					case true:
-						symbol s = m_generated_tabs[strIdx(i)];
+						symbol s = m_generated_tabs[j];
 						s.invert();
 						surface1D<direction>::setSymbolAt(s, i);
 					}
