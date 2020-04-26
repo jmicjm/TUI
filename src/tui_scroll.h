@@ -39,21 +39,6 @@ namespace tui
 			slider.setColor(Color);
 			line.setColor(Color);
 		}
-
-		void setAppearance(scroll_appearance_a appearance) { *this = appearance; }
-		scroll_appearance_a getAppearance() { return *this; }
-
-		void setSliderSymbol(const symbol& Slider) { slider = Slider; }
-		symbol getSliderSymbol() { return slider; }
-
-		void setLineSymbol(const symbol& Line) { line = Line; }
-		symbol getLine() { return line; }
-
-		void setPreviousArrowSymbol(const symbol& prev) { prev_arrow = prev; }
-		symbol getPreviousArrowSymbol() { return prev_arrow; }
-
-		void setNextArrowSymbol(const symbol& next) { next_arrow = next; }
-		symbol getNextArrowSymbol() { return next_arrow; }
 	};
 
 	struct scroll_appearance : appearance
