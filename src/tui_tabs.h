@@ -112,18 +112,26 @@ namespace tui
 			if (m_tabs.size() > 0)
 			{
 				bool too_long = m_generated_tabs.size() > surface1D<direction>::getSize();
+
+				int len = surface1D<direction>::getSize() - 2 * too_long;
+
 				if (too_long)
 				{
 					surface1D<direction>::setSymbolAt(getCurrentAppearance().prev_arrow, 0);
 					surface1D<direction>::setSymbolAt(getCurrentAppearance().next_arrow, surface1D<direction>::getSize() - 1);
 
-					if (m_tabs[m_selected].position < m_first_pos)
+					if (m_generated_tabs.size() - m_first_pos < len)
+					{
+						m_first_pos = m_generated_tabs.size() - len;
+					}
+
+					if (m_tabs[m_selected].position <= m_first_pos)
 					{
 						m_first_pos = m_tabs[m_selected].position;
 					}
-					else if (m_tabs[m_selected].position + m_tabs[m_selected].string.size() >= surface1D<direction>::getSize() - 2 * too_long)
+					else if (m_tabs[m_selected].position + m_tabs[m_selected].string.size() > m_first_pos + len)
 					{
-						m_first_pos = m_tabs[m_selected].position + m_tabs[m_selected].string.size() - (surface1D<direction>::getSize() - 2 * too_long);
+						m_first_pos = m_tabs[m_selected].position + m_tabs[m_selected].string.size() - len;
 					}
 				}
 				else 
@@ -160,7 +168,12 @@ namespace tui
 			if (m_redraw_needed) { fill(); }
 			m_redraw_needed = false;
 		}
-		void activationAction()
+		void activationAction() override
+		{
+			generateTabs();
+			m_redraw_needed = true;
+		}
+		void disactivationAction() override
 		{
 			generateTabs();
 			m_redraw_needed = true;
