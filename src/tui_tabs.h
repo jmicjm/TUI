@@ -125,14 +125,24 @@ namespace tui
 						m_first_pos = m_generated_tabs.size() - len;
 					}
 
-					if (m_tabs[m_selected].position <= m_first_pos)
+					auto adjustLeft = [&]()
 					{
-						m_first_pos = m_tabs[m_selected].position;
-					}
-					else if (m_tabs[m_selected].position + m_tabs[m_selected].string.size() > m_first_pos + len)
+						if (m_tabs[m_selected].position <= m_first_pos)
+						{
+							m_first_pos = m_tabs[m_selected].position;
+						}
+					};
+					auto adjustRight = [&]()
 					{
-						m_first_pos = m_tabs[m_selected].position + m_tabs[m_selected].string.size() - len;
-					}
+						if (m_tabs[m_selected].position + m_tabs[m_selected].string.size() > m_first_pos + len)
+						{
+							m_first_pos = m_tabs[m_selected].position + m_tabs[m_selected].string.size() - len;
+						}
+					};
+
+					adjustLeft();
+					adjustRight();
+					adjustLeft();
 				}
 				else 
 				{
@@ -199,7 +209,20 @@ namespace tui
 				m_tabs[i].string = tabs[i];
 			}
 			generateTabs();
+			m_selected = 0;
 			m_redraw_needed = true;
+		}
+
+		std::vector<console_string> getTabs()
+		{
+			std::vector<console_string> tabs;
+
+			for (int i = 0; i < m_tabs.size(); i++)
+			{
+				tabs.push_back(m_tabs[i].string);
+			}
+
+			return tabs;
 		}
 
 		void resizeToTabs()
