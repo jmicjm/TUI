@@ -88,6 +88,8 @@ namespace tui
 
 		bool isKeySupported(short key);
 
+		std::string getKeyName(short key, bool use_ctrl_name = false);
+
 
 		/*NOTE ABOUT DOUBLE BUFFERING
 

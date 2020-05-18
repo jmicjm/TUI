@@ -256,5 +256,55 @@ namespace tui
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 			}
 		}
+
+		std::string getKeyName(short key, bool use_ctrl_name)
+		{
+			std::string name;
+
+			if (key > 32 && key < 128)
+			{
+				name = key;
+			}
+			else if (key == 32)
+			{
+				name = "space";
+			}
+			else if (key > 0 && key < 32)
+			{
+				name = std::string("CTRL ") + char(key+64);
+			}
+
+			if (!use_ctrl_name)
+			{
+				switch (key)
+				{
+				case BACKSPACE:
+					name = "BACKPSPACE";
+					break;
+				case TAB:
+					name = "TAB";
+					break;
+				case ENTER:
+					name = "ENTER";
+					break;
+				case ESC:
+					name = "ESC";
+				}
+			}
+
+			static const std::string offset_key[22] = {
+				"PGUP","PGDN","DEL","INS","END","HOME",
+				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
+				"UP","DOWN","LEFT","RIGHT"
+			};
+
+			if (key >= TUI_KEY_OFFSET && key <= TUI_KEY_OFFSET+21)
+			{
+				name = offset_key[key - TUI_KEY_OFFSET];
+			}
+
+			return name;
+		}
+
 	}
 }
