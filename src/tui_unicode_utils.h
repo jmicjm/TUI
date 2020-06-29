@@ -4,7 +4,7 @@
 
 namespace tui
 {
-	std::u32string utf8ToUtf32(const std::string& utf8_str);
+	std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after = true, float reserve_ratio = 0.5);
 
 	std::string utf32ToUtf8(const std::u32string& utf32_str);
 
@@ -19,26 +19,19 @@ namespace tui
 	bool isControl(char32_t ch);
 
 
-	inline std::u32string utf8ToUtf32(const std::string& utf8_str)
+	inline std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after, float reserve_ratio)
 	{
 		std::u32string utf32_str;
-		utf32_str.reserve(utf8_str.size() / 2);
+		utf32_str.reserve(utf8_str.size() * reserve_ratio);
 
 		char32_t utf32_char = 0;
-		int bytec = 0;
 		int bitc = 0;
-
-		auto setBc = [&](int bc)
-		{
-			bytec = bc;
-			bitc = (bytec - 1) * 6;
-		};
 
 		auto push = [&](int i)
 		{
 			if (i > 0)
 			{
-				if (bytec == 0 && !(utf32_char >= 0xD800 && utf32_char <= 0xDFFF) && utf32_char <= 0x10FFFF)
+				if (bitc == 0 && !(utf32_char >= 0xD800 && utf32_char <= 0xDFFF) && utf32_char <= 0x10FFFF)
 				{
 					utf32_str.push_back(utf32_char);
 				}
@@ -46,12 +39,12 @@ namespace tui
 			}
 		};
 
-		for (int i = 0; i < utf8_str.size(); i++, bytec--)
+		for (int i = 0; i < utf8_str.size(); i++)
 		{
 			if ((utf8_str[i] & 0b10000000) == 0b00000000)
 			{
 				push(i);
-				setBc(1);
+				bitc = 0;
 				utf32_char = utf8_str[i];
 			}
 			else if ((utf8_str[i] & 0b11000000) == 0b10000000)
@@ -62,31 +55,35 @@ namespace tui
 			else if ((utf8_str[i] & 0b11100000) == 0b11000000)
 			{
 				push(i);
-				setBc(2);
+				bitc = 6;
 				utf32_char = (utf8_str[i] & 0b000111111) << bitc;
 			}
 			else if ((utf8_str[i] & 0b11110000) == 0b11100000)
 			{
 				push(i);
-				setBc(3);
+				bitc = 12;
 				utf32_char = (utf8_str[i] & 0b00001111) << bitc;
 			}
 			else if ((utf8_str[i] & 0b11111000) == 0b11110000)
 			{
 				push(i);
-				setBc(4);
+				bitc = 18;
 				utf32_char = (utf8_str[i] & 0b00000111) << bitc;
 			}
 			else
 			{
 				push(i);
-				setBc(-1);
+				bitc = -1;
 			}
 		}
 
 		if (utf8_str.size() > 0) { push(true); }
 
-		utf32_str.shrink_to_fit();
+		if (shrink_after)
+		{
+			utf32_str.shrink_to_fit();
+		}
+
 		return utf32_str;
 	}
 
