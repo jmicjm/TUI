@@ -6,7 +6,7 @@ namespace tui
 {
 	std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after = true, float reserve_ratio = 0.5);
 
-	std::string utf32ToUtf8(const std::u32string& utf32_str);
+	std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after = true, float reserve_ratio = 2);
 
 	std::string char32ToUtf8(char32_t character);
 
@@ -87,10 +87,10 @@ namespace tui
 		return utf32_str;
 	}
 
-	inline std::string utf32ToUtf8(const std::u32string& utf32_str)
+	inline std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after, float reserve_ratio)
 	{
 		std::string utf8_str;
-		utf8_str.reserve(utf32_str.size() * 2);
+		utf8_str.reserve(utf32_str.size() * reserve_ratio);
 
 		char utf8_buf[4] = { 0, 0, 0, 0 };
 
@@ -138,7 +138,11 @@ namespace tui
 
 		}
 
-		utf8_str.shrink_to_fit();
+		if (shrink_after)
+		{
+			utf8_str.shrink_to_fit();
+		}
+
 		return utf8_str;
 	}
 
