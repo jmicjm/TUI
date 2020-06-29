@@ -8,10 +8,6 @@ namespace tui
 
 	std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after = true, float reserve_ratio = 2);
 
-	std::string char32ToUtf8(char32_t character);
-
-	size_t getUtf8StrLength(std::string str);
-
 	int getGraphemeType(char32_t grapheme);
 
 	bool isBreakBetween(char32_t l, char32_t r);
@@ -145,21 +141,6 @@ namespace tui
 
 		return utf8_str;
 	}
-
-	inline std::string char32ToUtf8(char32_t character)
-	{
-		std::u32string str;
-		str.resize(1);
-		str[0] = character;
-
-		return utf32ToUtf8(str);
-	}
-
-	inline size_t getUtf8StrLength(std::string str)
-	{
-		return utf8ToUtf32(str).size();
-	}
-
 
 	namespace GRAPHEME_TYPE
 	{
