@@ -8,7 +8,7 @@ namespace tui
 
 	std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after = true, float reserve_ratio = 2);
 
-	int getGraphemeType(char32_t grapheme);
+	uint8_t getGraphemeType(char32_t grapheme);
 
 	bool isBreakBetween(char32_t l, char32_t r);
 
@@ -163,38 +163,33 @@ namespace tui
 		};
 	}
 
-	inline int getGraphemeType(char32_t grapheme)
+	inline uint8_t getGraphemeType(char32_t grapheme)
 	{
-#ifndef TUI_DISABLE_MEMBER_PACKING
-#pragma pack(push,1)
-#endif
 		struct grapheme_range_info { unsigned int r_s, r_e; uint8_t r_t; };
-
-#ifndef TUI_DISABLE_MEMBER_PACKING
-#pragma pack(pop)
-#endif
 
 		static const std::vector<grapheme_range_info> ranges =
 		{
 			#include "grapheme_ranges.h"
 		};
 
-		int s = -1;
-		int e = ranges.size();
+		unsigned int s = 0;
+		unsigned int e = ranges.size() - 1;
 
-		while (s != e - 1)
+		while (s <= e)
 		{
-			if (ranges[(s + e) / 2].r_s > grapheme)
+			unsigned int c = (s + e) / 2;
+
+			if (ranges[c].r_s > grapheme)
 			{
-				e = (s + e) / 2;
+				e = --c;
 			}
-			else if (ranges[(s + e) / 2].r_e < grapheme)
+			else if (ranges[c].r_e < grapheme)
 			{
-				s = (s + e) / 2;
+				s = ++c;
 			}
 			else
 			{
-				return ranges[(s + e) / 2].r_t;
+				return ranges[c].r_t;
 			}
 		}
 		return GRAPHEME_TYPE::OTHER;
