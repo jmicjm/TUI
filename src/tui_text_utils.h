@@ -81,212 +81,196 @@ namespace tui
 	struct symbol
 	{
 	private:
-#ifndef TUI_DISABLE_MEMBER_PACKING
-#pragma pack(push,1)
-#endif
-		union grapheme_cluster
+
+		struct hybrid_container
 		{
-			char32_t single_cp;
-			char32_t* multiple_cp;
+		private:
+			constexpr static unsigned int stack_size = sizeof(char*);
+
+			union
+			{
+				char m_stack[stack_size];
+				char* m_heap;
+			};
+			uint8_t m_size;
+
+			bool isStack() const  { return m_size <= stack_size; }
+			bool isHeap() const { return !isStack(); }
+			
+			void setStackData(const char* data, uint8_t size)
+			{
+				if(isHeap()) { delete[] m_heap; }
+
+				for (int i = 0; i < size; i++)
+				{
+					m_stack[i] = data[i];
+				}
+				m_size = size;
+			}
+			void setHeapData(const char* data, uint8_t size)
+			{
+				if (isStack()) { m_heap = new char[size]; }
+
+				if (isHeap() && m_size != size)
+				{
+					delete[] m_heap;
+					m_heap = new char[size];
+				}
+
+				for (int i = 0; i < size; i++)
+				{
+					m_heap[i] = data[i];
+				}
+				m_size = size;
+			}
+		public:
+			hybrid_container()
+			{
+				for (int i = 0; i < stack_size; i++)
+				{
+					m_stack[i] = 0;
+				}
+				m_size = 0;
+			}
+			~hybrid_container()
+			{
+				if (isHeap()) { delete[] m_heap; }
+			}
+
+			hybrid_container& operator=(const hybrid_container& other)
+			{
+				if (this != &other)
+				{
+					setData(other.getData(), other.size());
+				}
+				return *this;
+			}
+
+			uint8_t size() const { return m_size; }
+
+			const char* getData() const 
+			{
+				switch (isStack())
+				{
+				case true:
+					return m_stack;
+				case false:
+					return m_heap;
+				}
+			}
+
+			void setData(const char* data, uint8_t size)
+			{
+				switch (size <= stack_size)
+				{
+				case true:
+					setStackData(data, size);
+					break;
+				case false:
+					setHeapData(data, size);
+				}
+			}
+
+			bool operator==(const hybrid_container& other) const
+			{
+				if (size() != other.size()) { return false; }
+				
+				for (int i = 0; i < size(); i++)
+				{
+					if(getData()[i] != other.getData()[i])
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+			bool operator!=(const hybrid_container& other) const { return !operator==(other); }
 		} m_cluster;
 
-		uint8_t m_multiple_cp_size;
-
 		bool m_underscore = false;
-
 		color m_color;
 
-#ifndef TUI_DISABLE_MEMBER_PACKING
-#pragma pack(pop)
-#endif
-
-		void setSingleCp(char32_t cp)
-		{
-			if (isMultipleCP())
-			{
-				delete[] m_cluster.multiple_cp;
-			}
-
-			m_cluster.single_cp = cp;
-			m_multiple_cp_size = 0;
-		}
-
-		void setMultipleCP(const char32_t* cp, size_t size)
-		{
-			if (m_multiple_cp_size != size)
-			{
-				if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
-
-				m_cluster.multiple_cp = new char32_t[size];
-			}
-			m_multiple_cp_size = size;
-
-			for (int i = 0; i < m_multiple_cp_size; i++)
-			{
-				m_cluster.multiple_cp[i] = cp[i];
-			}
-		}
-
-		bool isMultipleCP() const { return m_multiple_cp_size > 0; }
-
-		
 	public:
-		symbol() : symbol(U' ', color()) {}
+		symbol() : symbol(" ", color()) {}
+		symbol(char32_t c) :symbol(c, color()){}
+		symbol(char32_t c, color Color): symbol(utf32ToUtf8(std::u32string(&c,1)), Color) {}
 		symbol(const char* Symbol) : symbol(std::string(Symbol), color()) {}
-		symbol(const char32_t* Symbol) : symbol(std::u32string(Symbol), color()) {}
+		symbol(const char32_t* Symbol) : symbol(utf32ToUtf8(std::u32string(Symbol)), color()) {}
 		symbol(const char* Symbol, color color) : symbol(std::string(Symbol), color) {}
-		symbol(const char32_t* Symbol, color color) : symbol(std::u32string(Symbol), color) {}
+		symbol(const char32_t* Symbol, color color) : symbol(utf32ToUtf8(std::u32string(Symbol)), color) {}
 		symbol(const std::string& Symbol) : symbol(Symbol, color()) {}
-		symbol(const std::u32string& Symbol) : symbol(Symbol, color()) {}
-		symbol(const std::string& Symbol, color color) : symbol(utf8ToUtf32(Symbol), color) {}
-		symbol(const std::u32string& Symbol, color color) : m_multiple_cp_size(0)
+
+
+		symbol(const std::string& cluster, color Color)
 		{
-			setSymbol(Symbol); 
-			setColor(color);
-		}
-		symbol(char32_t character) : symbol(character, color()) {}
-		symbol(char32_t character, color color) : m_multiple_cp_size(0)
-		{
-			setSingleCp(character);
-			setColor(color);
+			setSymbol(cluster);
+			setColor(Color);
 		}
 
-		symbol(const symbol& sym)
+		symbol(const symbol& other)
 		{
-			switch (sym.isMultipleCP())
-			{
-			case false:
-				m_cluster.single_cp = sym.m_cluster.single_cp;
-				m_multiple_cp_size = 0;
-				break;
-			case true:
-				m_cluster.multiple_cp = new char32_t[sym.m_multiple_cp_size];
-				for (int i = 0; i < sym.m_multiple_cp_size; i++)
-				{
-					m_cluster.multiple_cp[i] = sym.m_cluster.multiple_cp[i];
-				}
-				m_multiple_cp_size = sym.m_multiple_cp_size;
-			}
-
-			m_color = sym.m_color;
-			m_underscore = sym.m_underscore;
+			m_cluster = other.m_cluster;
+			m_color = other.m_color;
+			m_underscore = other.m_underscore;
 		}
 
-		~symbol()
+		symbol& operator=(const symbol& other)
 		{
-			if (isMultipleCP()) { delete[] m_cluster.multiple_cp; }
-		}
-
-		symbol& operator=(const symbol& sym)
-		{
-			if (this != &sym)
-			{
-				switch (sym.isMultipleCP())
-				{
-				case false:
-					setSingleCp(sym.m_cluster.single_cp);
-					break;
-				case true:
-					setMultipleCP(sym.m_cluster.multiple_cp, sym.m_multiple_cp_size);
-				}
-
-				m_color = sym.m_color;
-				m_underscore = sym.m_underscore;
-			}
+			m_cluster = other.m_cluster;
+			m_color = other.m_color;
+			m_underscore = other.m_underscore;
 
 			return *this;
 		}
 
-
-		void setSymbol(char32_t character) { setSingleCp(character); }
-
-		void setSymbol(const std::u32string& symbol) 
+		void setSymbol(const std::string& cluster)
 		{
-
-			if (symbol.size() == 0) { setSingleCp(U' '); }
-			else if (symbol.size() == 1) { setSingleCp(symbol[0]); }
-			else
+			if (cluster.size() == 0)
 			{
-				std::u32string temp;
-				temp += symbol[0];
-
-				for (int i = 0; i < symbol.size() - 1; i++)
-				{
-					if (!isBreakBetween(symbol[i], symbol[i + 1]))
-					{
-						temp += symbol[i + 1];
-					}
-					else { break; }
-				}
-
-				if (temp.size() > 1)
-				{
-					setMultipleCP(temp.data(), temp.size());
-				}
-				else { setSingleCp(temp[0]); }
+				m_cluster.setData(nullptr, 0);
+				return;
 			}
+
+			std::u32string utf32_cluster = utf8ToUtf32(cluster);
+			unsigned int size = 1;
+			
+			for (; size < utf32_cluster.size(); size++)
+			{
+				if (isBreakBetween(utf32_cluster[size - 1], utf32_cluster[size]))
+				{
+					break;
+				}
+			}
+
+			utf32_cluster.resize(size);
+
+			std::string new_cluster = utf32ToUtf8(utf32_cluster);
+
+			m_cluster.setData(new_cluster.data(), new_cluster.size());
+		}
+		std::string getSymbol()
+		{
+			return std::string(m_cluster.getData(), m_cluster.size());
+		}
+
+		char getFirstChar() const
+		{
+			return m_cluster.getData()[0];
 		}
 
 		void invert() { m_color.invert(); }
 
-
-		char32_t getFirstChar() const
-		{ 
-			switch (isMultipleCP())
-			{
-			case true:
-				return m_cluster.multiple_cp[0];
-				break;
-			case false:
-				return m_cluster.single_cp;
-			}
-		}
-		void setColor(color color) { m_color = color; }
-		std::u32string getSymbol() const
-		{
-			std::u32string temp;
-			if (!isMultipleCP())
-			{
-				temp.resize(1);
-				temp[0] = m_cluster.single_cp;
-			}
-			else
-			{
-				temp.resize(m_multiple_cp_size);
-				for (int i = 0; i < m_multiple_cp_size; i++)
-				{
-					temp[i] = m_cluster.multiple_cp[i];
-				}
-			}
-
-			return temp;
-		}
-		color getColor() const { return m_color; }
-
+		void setColor(color Color) { m_color = Color; }
+		color getColor() { return m_color; }
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() { return m_underscore; }
 
-		bool operator==(const symbol& sym)
+		bool operator==(const symbol& other)
 		{
-			switch (sym.isMultipleCP())
-			{
-			case false:
-				return m_cluster.single_cp == sym.m_cluster.single_cp && m_color == sym.m_color && m_underscore == sym.m_underscore;
-			case true:
-				if (m_multiple_cp_size != sym.m_multiple_cp_size) { return false; }
-				else
-				{
-					for (int i = 0; i < m_multiple_cp_size; i++)
-					{
-						if (m_cluster.multiple_cp[i] != sym.m_cluster.multiple_cp[i]) { return false; }
-					}
-				}
-				return m_color == sym.m_color && m_underscore == sym.m_underscore;
-			}
+			return m_cluster == other.m_cluster && m_color == other.m_color && m_underscore == other.m_underscore;
 		}
-		bool operator!=(const symbol& sym) { return !operator==(sym); }
+		bool operator!=(const symbol& other) { return !operator==(other); }
 	};
-
 
 	struct console_string : std::vector<symbol>
 	{
@@ -321,7 +305,7 @@ namespace tui
 					{
 						temp += str[i + 1];
 					}			
-					temp_vec.push_back(symbol(temp, color));
+					temp_vec.push_back(symbol(utf32ToUtf8(temp), color));
 					i++;
 				}
 			}

@@ -157,9 +157,9 @@ namespace tui
 					{
 						CHAR_INFO ch_info;
 
-						if (buffer.getSymbolAt(vec2i(j, i)).getFirstChar() < pow(2, (sizeof(wchar_t) * 8)) && !isControl(buffer.getSymbolAt(vec2i(j, i)).getFirstChar()))
+						if (utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0] < pow(2, (sizeof(wchar_t) * 8)) && !isControl(utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0]))
 						{
-							ch_info.Char.UnicodeChar = buffer.getSymbolAt(vec2i(j, i)).getFirstChar();
+							ch_info.Char.UnicodeChar = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0];
 						}
 						else { ch_info.Char.UnicodeChar = '?'; }
 
@@ -266,9 +266,9 @@ namespace tui
 						}
 						last_underscore = buffer.getSymbolAt({ j, i }).isUnderscore();
 
-						if (buffer.getSymbolAt({ j, i }).getFirstChar() >= 32)
+						if (utf8ToUtf32(buffer.getSymbolAt({ j, i }).getSymbol())[0] >= 32)
 						{
-							str += utf32ToUtf8(buffer.getSymbolAt({ j, i }).getSymbol());
+							str += buffer.getSymbolAt({ j, i }).getSymbol();
 						}
 						else
 						{
