@@ -87,12 +87,18 @@ namespace tui
 		private:
 			constexpr static unsigned int stack_size = sizeof(char*);
 
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(push,1)
+#endif
 			union
 			{
 				char m_stack[stack_size];
 				char* m_heap;
 			};
 			uint8_t m_size;
+#ifndef TUI_DISABLE_MEMBER_PACKING
+#pragma pack(pop)
+#endif
 
 			bool isStack() const  { return m_size <= stack_size; }
 			bool isHeap() const { return !isStack(); }
