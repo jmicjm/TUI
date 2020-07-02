@@ -197,17 +197,12 @@ namespace tui
 		color m_color;
 
 	public:
-		symbol() : symbol(" ", color()) {}
-		symbol(char32_t c) :symbol(c, color()){}
-		symbol(char32_t c, color Color): symbol(utf32ToUtf8(std::u32string(&c,1)), Color) {}
-		symbol(const char* Symbol) : symbol(std::string(Symbol), color()) {}
-		symbol(const char32_t* Symbol) : symbol(utf32ToUtf8(std::u32string(Symbol)), color()) {}
-		symbol(const char* Symbol, color color) : symbol(std::string(Symbol), color) {}
-		symbol(const char32_t* Symbol, color color) : symbol(utf32ToUtf8(std::u32string(Symbol)), color) {}
-		symbol(const std::string& Symbol) : symbol(Symbol, color()) {}
+		symbol() : symbol("", color()) {}
+		symbol(char32_t c, color Color = color()) : symbol(utf32ToUtf8(std::u32string(&c,1)), Color) {}
+		symbol(const char* cluster, color color = color()) : symbol(std::string(cluster), color) {}
+		symbol(const char32_t* cluster, color color = color()) : symbol(utf32ToUtf8(std::u32string(cluster)), color) {}
 
-
-		symbol(const std::string& cluster, color Color)
+		symbol(const std::string& cluster, color Color = color())
 		{
 			setSymbol(cluster);
 			setColor(Color);
