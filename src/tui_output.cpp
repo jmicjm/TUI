@@ -157,9 +157,11 @@ namespace tui
 					{
 						CHAR_INFO ch_info;
 
-						if (utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0] < pow(2, (sizeof(wchar_t) * 8)) && !isControl(utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0]))
+						char32_t c = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0];
+
+						if (c < pow(2, (sizeof(wchar_t) * 8)) && !isControl(c))
 						{
-							ch_info.Char.UnicodeChar = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0];
+							ch_info.Char.UnicodeChar = c;
 						}
 						else { ch_info.Char.UnicodeChar = '?'; }
 
