@@ -102,10 +102,17 @@ namespace tui
 
 			bool isStack() const  { return m_size <= stack_size; }
 			bool isHeap() const { return !isStack(); }
+
+			void clearStack()
+			{
+				m_heap = 0;
+			}
 			
 			void setStackData(const char* data, uint8_t size)
 			{
 				if(isHeap()) { delete[] m_heap; }
+
+				clearStack();
 
 				for (int i = 0; i < size; i++)
 				{
@@ -132,10 +139,7 @@ namespace tui
 		public:
 			hybrid_container()
 			{
-				for (int i = 0; i < stack_size; i++)
-				{
-					m_stack[i] = 0;
-				}
+				clearStack();
 				m_size = 0;
 			}
 			~hybrid_container()
