@@ -224,6 +224,13 @@ namespace tui
 			return *this;
 		}
 
+		uint8_t size() const { return m_cluster.size(); }
+
+		const char& operator[](int i) const
+		{
+			return m_cluster.getData()[i];
+		}
+
 		void setSymbol(const std::string& cluster)
 		{
 			if (cluster.size() == 0)
@@ -249,7 +256,7 @@ namespace tui
 
 			m_cluster.setData(new_cluster.data(), new_cluster.size());
 		}
-		std::string getSymbol()
+		std::string getSymbol() const
 		{
 			return std::string(m_cluster.getData(), m_cluster.size());
 		}
