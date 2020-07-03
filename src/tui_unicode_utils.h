@@ -278,11 +278,7 @@ namespace tui
 
 	inline bool isControl(char32_t ch)
 	{
-		int g_type = getGraphemeType(ch);
-
-		return g_type == GRAPHEME_TYPE::CONTROL
-			|| g_type == GRAPHEME_TYPE::CR
-			|| g_type == GRAPHEME_TYPE::LF;
+		return !(ch >= 32 && ch <= 126) && (ch < 32 || getGraphemeType(ch) == GRAPHEME_TYPE::CONTROL);
 	}
 
 }
