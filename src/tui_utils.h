@@ -50,48 +50,6 @@ namespace tui
 		}
 	};
 
-	struct surface_size
-	{
-		vec2i fixed;
-		vec2i percentage;
-
-		surface_size() : surface_size({ 0,0 }, { 0,0 }) {}
-		surface_size(vec2i Fixed) : surface_size(Fixed, { 0,0 }) {}
-		surface_size(vec2i Fixed, vec2i Percentage) : fixed(Fixed), percentage(Percentage) {}
-	};
-
-	struct surface1D_size
-	{
-		int fixed;
-		int percentage;
-
-		surface1D_size() : surface1D_size(0,0) {}
-		surface1D_size(int Fixed) : surface1D_size(Fixed, 0) {}
-		surface1D_size(int Fixed, int Percentage) : fixed(Fixed), percentage(Percentage) {}
-
-	};
-
-	namespace POSITION
-	{
-		enum POSITION
-		{
-			BEGIN = 0, CENTER = 50, END = 100
-		};
-	}
-
-	struct position
-	{
-		vec2i offset;
-		vec2i percentage_offset;
-		vec2i relative;
-
-		position() : position(vec2i(0, 0), vec2i(0,0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i offset): position(offset, vec2i(0,0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i offset, vec2i percentage_offset) : position(offset, percentage_offset, vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i Offset, vec2i Percentage_offset, vec2i Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
-	};
-
-
 	struct time_frame
 	{
 	private:
