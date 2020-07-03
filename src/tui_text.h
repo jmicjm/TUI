@@ -242,7 +242,7 @@ namespace tui
 		//is displaying scroll currently
 		bool isDisplayingScroll() { return m_display_scroll && m_scroll.isNeeded(); }
 
-		void resizeToText(int max_width)
+		void resizeToText(int max_width = 0)
 		{
 			if (max_width <= 0)
 			{
@@ -273,7 +273,6 @@ namespace tui
 				m_display_scroll = display_scroll;
 			}
 		}
-		void resizeToText() { resizeToText(0); }
 
 		void update()
 		{
