@@ -149,7 +149,7 @@ namespace tui
 							&& y_origin + y < getSize().y
 							&& x_origin + x >= 0
 							&& y_origin + y >= 0
-							&& obj[x][y].getFirstChar() != 0)
+							&& obj[x][y][0] != 0)
 						{
 							setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
 						}

@@ -78,11 +78,11 @@ namespace tui
 
 				m_symbolPos[i] = { pos_in_line, (int)floor((float)pos / m_text.getSize().x) };
 
-				if (isControl(m_unprepared_text[i].getFirstChar()))
+				if (isControl(utf8ToUtf32(m_unprepared_text[i].getSymbol())[0]))
 				{
 					if (m_use_control_characters)
 					{
-						if (m_unprepared_text[i].getFirstChar() == '\n')
+						if (m_unprepared_text[i][0] == '\n')
 						{
 							for (int i = 0; i < (m_text.getSize().x - pos_in_line); i++)
 							{
@@ -97,23 +97,23 @@ namespace tui
 				if (usePrepared()
 					&& pos_in_line == m_text.getSize().x - 1
 					&& i + 1 < m_unprepared_text.size()
-					&& m_unprepared_text[i].getFirstChar() != (U' ')
-					&& m_unprepared_text[i + 1].getFirstChar() != (U' ')
-					&& !isControl(m_unprepared_text[i + 1].getFirstChar())
+					&& m_unprepared_text[i][0] != (U' ')
+					&& m_unprepared_text[i + 1][0] != (U' ')
+					&& !isControl(utf8ToUtf32(m_unprepared_text[i + 1].getSymbol())[0])
 					&& (m_use_dense_punctuation ? !isPunctuation(m_unprepared_text[i]) : true)
 					&& (m_use_dense_punctuation ? !isPunctuation(m_unprepared_text[i + 1]) : true)
 					)
 				{
 					prepared << m_unprepared_text[i - 1].getColor();
 					prepared.setSelectedUnderscore(m_unprepared_text[i - 1].isUnderscore());
-					if (m_unprepared_text[i - 1].getFirstChar() != U' ')
+					if (m_unprepared_text[i - 1][0] != U' ')
 					{
 						prepared << "-";
 					}
 					else { prepared << " "; }
 					pos++;
 				}
-				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i].getFirstChar() == U' ') { continue; }//omit space at start of line
+				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i][0] == U' ') { continue; }//omit space at start of line
 
 				prepared.push_back(m_unprepared_text[i]);
 				pos++;

@@ -265,11 +265,6 @@ namespace tui
 			return std::string(m_cluster.getData(), m_cluster.size());
 		}
 
-		char getFirstChar() const
-		{
-			return m_cluster.getData()[0];
-		}
-
 		void invert() { m_color.invert(); }
 
 		void setColor(color Color) { m_color = Color; }
