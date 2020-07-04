@@ -157,7 +157,7 @@ namespace tui
 					{
 						CHAR_INFO ch_info;
 
-						char32_t c = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getSymbol())[0];
+						char32_t c = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getCluster())[0];
 
 						if (c < pow(2, (sizeof(wchar_t) * 8)) && !isControl(c))
 						{
@@ -268,9 +268,9 @@ namespace tui
 						}
 						last_underscore = buffer.getSymbolAt({ j, i }).isUnderscore();
 
-						if (utf8ToUtf32(buffer.getSymbolAt({ j, i }).getSymbol())[0] >= 32)
+						if (utf8ToUtf32(buffer.getSymbolAt({ j, i }).getCluster())[0] >= 32)
 						{
-							str += buffer.getSymbolAt({ j, i }).getSymbol();
+							str += buffer.getSymbolAt({ j, i }).getCluster();
 						}
 						else
 						{

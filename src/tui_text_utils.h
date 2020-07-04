@@ -208,7 +208,7 @@ namespace tui
 
 		symbol(const std::string& cluster, color Color = color())
 		{
-			setSymbol(cluster);
+			setCluster(cluster);
 			setColor(Color);
 		}
 
@@ -235,7 +235,7 @@ namespace tui
 			return m_cluster.getData()[i];
 		}
 
-		void setSymbol(const std::string& cluster)
+		void setCluster(const std::string& cluster)
 		{
 			if (cluster.size() == 0)
 			{
@@ -260,7 +260,7 @@ namespace tui
 
 			m_cluster.setData(new_cluster.data(), new_cluster.size());
 		}
-		std::string getSymbol() const
+		std::string getCluster() const
 		{
 			return std::string(m_cluster.getData(), m_cluster.size());
 		}
