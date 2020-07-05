@@ -10,12 +10,26 @@ namespace tui
 	{
 	private:
 		std::vector<surface*> m_surfaces;
+
+		void drawAction() override
+		{
+			makeTransparent();
+
+			for (int i = 0; i < m_surfaces.size(); i++)
+			{
+				insertSurface(*m_surfaces[i]);
+			}
+		}
 	public:
 		group(surface_size size = { {1,1},{0,0} })
 		{
 			setSizeInfo(size);
 		}
 
+		void setSurfaces(std::vector<surface*> surfaces)
+		{
+			m_surfaces = surfaces;
+		}
 		void addSurface(surface& surf)
 		{
 			m_surfaces.push_back(&surf);
@@ -30,16 +44,9 @@ namespace tui
 				}
 			}
 		}
-
-		void drawAction() override
+		void removeAll()
 		{
-			makeTransparent();
-
-			for (int i = 0; i < m_surfaces.size(); i++)
-			{
-				insertSurface(*m_surfaces[i]);
-			}
+			m_surfaces.clear();
 		}
-
 	};
 }
