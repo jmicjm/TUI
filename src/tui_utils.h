@@ -19,33 +19,33 @@ namespace tui
 		vec2() : vec2(0,0) {}
 		vec2(T X, T Y) : x(X), y(Y) {}
 
-		bool operator==(vec2 r)
+		bool operator==(vec2<T> r)
 		{
 			return (x == r.x && y == r.y);
 		}
-		bool operator!=(vec2 r)
+		bool operator!=(vec2<T> r)
 		{
 			return (x != r.x || y != r.y);
 		}
 
-		vec2& operator+=(vec2 r)
+		vec2<T>& operator+=(vec2<T> r)
 		{
 			x += r.x;
 			y += r.y;
 			return *this;
 		}
-		vec2& operator-=(vec2 r)
+		vec2<T>& operator-=(vec2<T> r)
 		{
 			x -= r.x;
 			y -= r.y;
 			return *this;
 		}
 
-		vec2 operator+(vec2 r)
+		vec2<T> operator+(vec2<T> r)
 		{
 			return { x + r.x, y + r.y };
 		}
-		vec2 operator-(vec2 r)
+		vec2<T> operator-(vec2<T> r)
 		{
 			return { x - r.x, y - r.y };
 		}
