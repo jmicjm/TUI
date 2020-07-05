@@ -300,12 +300,12 @@ namespace tui
 				};
 				auto isSpecialKey = [&](short key)
 				{
-					return key == input::KEY::BACKSPACE
-						|| key == input::KEY::INS
-						|| key == input::KEY::LEFT
-						|| key == input::KEY::RIGHT
-						|| key == input::KEY::UP
-						|| key == input::KEY::DOWN;
+					return key == key_backspace
+						|| key == key_insert
+						|| key == key_left
+						|| key == key_right
+						|| key == key_up
+						|| key == key_down;
 				};
 
 				bool update_needed = false;
@@ -321,9 +321,8 @@ namespace tui
 					{
 						addText((console_string)buffer);
 
-						switch (input[i])
+						if (input[i] == key_backspace)
 						{
-						case input::KEY::BACKSPACE:
 							if (m_cursor_pos_in_txt > 0)
 							{
 								m_str.erase(m_str.begin() + m_cursor_pos_in_txt - 1);
@@ -331,22 +330,27 @@ namespace tui
 
 								update_needed = true;
 							}
-							break;
-						case input::KEY::LEFT:
+						}
+						else if (input[i] == key_left)
+						{
 							moveCursorLeft();
-							break;
-						case input::KEY::RIGHT:
+						}
+						else if (input[i] == key_right)
+						{
 							moveCursorRight();
-							break;
-						case input::KEY::UP:
+						}
+						else if (input[i] == key_up)
+						{
 							update();
 							moveCursorUp();
-							break;
-						case input::KEY::DOWN:
+						}
+						else if (input[i] == key_down)
+						{
 							update();
 							moveCursorDown();
-							break;
-						case input::KEY::INS:
+						}
+						else if (input[i] == key_insert)
+						{
 							m_insert_mode = !m_insert_mode;
 						}
 
