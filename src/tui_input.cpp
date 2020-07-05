@@ -267,7 +267,7 @@ namespace tui
 			}
 			else if (key == 32)
 			{
-				name = "space";
+				name = "SPACE";
 			}
 			else if (key > 0 && key < 32)
 			{
