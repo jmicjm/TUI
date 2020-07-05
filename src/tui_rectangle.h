@@ -29,18 +29,18 @@ namespace tui
 	struct rectangle : surface, rectangle_appearance
 	{
 	private:
+		bool m_redraw_needed = true;
 		void fill()
 		{
-			for (int y = 0; y < getSize().y; y++)
-			{
-				for (int x = 0; x < getSize().x; x++)
-				{
-					setSymbolAt(filling, vec2i(x,y));
-				}
-			}
+			surface::fill(filling);
 		}
-		void resizeAction() override { fill(); }
-		void setAppearanceAction() override { fill(); }
+		void drawAction() override
+		{
+			if (m_redraw_needed) { fill(); }
+			m_redraw_needed = false;
+		}
+		void resizeAction() override { m_redraw_needed = true; }
+		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
 		rectangle() : rectangle({{ 1,1 }}) {}
 		rectangle(surface_size size) : rectangle(size, rectangle_appearance()) {}
