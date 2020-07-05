@@ -51,7 +51,7 @@ namespace tui
 		enum BUTTON_TYPE {SWITCH, PUSH};
 	}
 
-	template<DIRECTION direction, int button_type>
+	template<DIRECTION direction>
 	struct button : surface1D<direction>, button_appearance, active_element
 	{
 	private:
@@ -92,6 +92,7 @@ namespace tui
 
 	public:
 		int key_select = input::KEY::ENTER;
+		BUTTON_TYPE::BUTTON_TYPE type = BUTTON_TYPE::PUSH;
 
 		button() : button({3}, ' ') {}
 		button(surface1D_size size, console_string text) : button(size, text, text) {}
@@ -131,7 +132,7 @@ namespace tui
 		{
 			bool last_state = isSelected();
 
-			if (button_type == BUTTON_TYPE::PUSH) { m_selected = false; }
+			if (type == BUTTON_TYPE::PUSH) { m_selected = false; }
 
 			if (isActive())
 			{
