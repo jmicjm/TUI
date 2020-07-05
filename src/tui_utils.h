@@ -12,43 +12,47 @@
 
 namespace tui 
 {
-	struct vec2i
+	template <typename T>
+	struct vec2
 	{
-		int x, y;
-		vec2i() : vec2i(0,0) {}
-		vec2i(int X, int Y) : x(X), y(Y) {}
+		T x, y;
+		vec2() : vec2(0,0) {}
+		vec2(T X, T Y) : x(X), y(Y) {}
 
-		bool operator==(vec2i r)
+		bool operator==(vec2 r)
 		{
 			return (x == r.x && y == r.y);
 		}
-		bool operator!=(vec2i r)
+		bool operator!=(vec2 r)
 		{
 			return (x != r.x || y != r.y);
 		}
 
-		vec2i& operator+=(vec2i r)
+		vec2& operator+=(vec2 r)
 		{
 			x += r.x;
 			y += r.y;
 			return *this;
 		}
-		vec2i& operator-=(vec2i r)
+		vec2& operator-=(vec2 r)
 		{
 			x -= r.x;
 			y -= r.y;
 			return *this;
 		}
 
-		vec2i operator+(vec2i r)
+		vec2 operator+(vec2 r)
 		{
 			return { x + r.x, y + r.y };
 		}
-		vec2i operator-(vec2i r)
+		vec2 operator-(vec2 r)
 		{
 			return { x - r.x, y - r.y };
 		}
 	};
+
+	using vec2i = vec2<int>;
+	using vec2f = vec2<float>;
 
 	struct time_frame
 	{
