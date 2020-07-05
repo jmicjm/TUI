@@ -128,33 +128,25 @@ namespace tui
 			}
 		}
 
-		void adjustHandlePositionRespectLength()
+		void adjustHandlePosition()
 		{
 			if (!isNeeded())
 			{
 				m_top_position = 0;
 			}
-			else
+			else if (m_top_position > m_content_length - visibleContentLength())
 			{
-				if (m_top_position > m_content_length - visibleContentLength())
-				{
-					m_top_position = m_content_length - visibleContentLength();
-				}
-				if (m_current_position >= m_top_position + visibleContentLength())
-				{
-					m_current_position = m_top_position + visibleContentLength() -1;
-				}
+				m_top_position = m_content_length - visibleContentLength();
 			}
 
 			if (!m_free_mode)
 			{
 				m_current_position = m_top_position;
 			}
-		}
-
-		void adjustHandlePositionRespectBounds()
-		{
-			adjustHandlePositionRespectLength();
+			else if (m_current_position >= m_top_position + visibleContentLength())
+			{
+				m_current_position = m_top_position + visibleContentLength() - 1;
+			}
 
 			if (m_top_position < 0) { m_top_position = 0; }
 			if (m_current_position < 0) { m_current_position = 0; }
@@ -164,7 +156,7 @@ namespace tui
 		void drawAction() override { fill(); }
 		void resizeAction() override
 		{
-			adjustHandlePositionRespectLength();
+			adjustHandlePosition();
 			fill();
 		}
 
@@ -201,13 +193,13 @@ namespace tui
 			if (length >= 0) { m_content_length = length; }
 			else { m_content_length = 0; }
 
-			adjustHandlePositionRespectLength();
+			adjustHandlePosition();
 			fill();
 		}
 		void setVisibleContentLength(int length)
 		{
 			m_visible_content_length = length;
-			adjustHandlePositionRespectLength();
+			adjustHandlePosition();
 			fill();
 		}
 		int getVisibleContentLength() { return m_visible_content_length; }
@@ -227,7 +219,7 @@ namespace tui
 			m_top_position = handle_position;
 			m_current_position = handle_position;
 
-			adjustHandlePositionRespectBounds();
+			adjustHandlePosition();
 			fill();
 		}
 
@@ -252,7 +244,7 @@ namespace tui
 				{
 					m_top_position--;
 				}
-				adjustHandlePositionRespectBounds();
+				adjustHandlePosition();
 			}
 		}
 		void down(unsigned int n = 1)
@@ -268,7 +260,7 @@ namespace tui
 				{
 					m_top_position++;
 				}
-				adjustHandlePositionRespectBounds();
+				adjustHandlePosition();
 			}
 		}
 		void pageUp(unsigned int n = 1)
