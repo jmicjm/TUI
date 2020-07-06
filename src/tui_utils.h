@@ -1,15 +1,7 @@
 #pragma once
-
-#include <string>
-#include <vector>
-#include <array>
+#include <type_traits>
 #include <chrono>
 #include <thread>
-#include <type_traits>
-
-#include <locale>
-#include <codecvt>
-
 
 namespace tui 
 {
