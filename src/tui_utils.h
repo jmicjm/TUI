@@ -5,6 +5,7 @@
 #include <array>
 #include <chrono>
 #include <thread>
+#include <type_traits>
 
 #include <locale>
 #include <codecvt>
@@ -19,37 +20,69 @@ namespace tui
 		vec2() : vec2(0,0) {}
 		vec2(T X, T Y) : x(X), y(Y) {}
 
-		bool operator==(vec2<T> r)
+		template <typename Y>
+		vec2(const vec2<Y>& r)
 		{
-			return (x == r.x && y == r.y);
-		}
-		bool operator!=(vec2<T> r)
-		{
-			return (x != r.x || y != r.y);
+			x = r.x;
+			y = r.y;
 		}
 
-		vec2<T>& operator+=(vec2<T> r)
+		template <typename Y>
+		vec2<T>& operator=(vec2<Y> r)
+		{
+			x = r.x;
+			y = r.y;
+			return *this;
+		}
+
+		template <typename Y>
+		bool operator==(vec2<Y> r) const
+		{
+			return x == r.x && y == r.y;
+		}
+		template <typename Y>
+		bool operator!=(vec2<Y> r) const
+		{
+			return x != r.x || y != r.y;
+		}
+
+		template <typename Y>
+		vec2<T>& operator+=(vec2<Y> r)
 		{
 			x += r.x;
 			y += r.y;
 			return *this;
 		}
-		vec2<T>& operator-=(vec2<T> r)
+		template <typename Y>
+		vec2<T>& operator-=(vec2<Y> r)
 		{
 			x -= r.x;
 			y -= r.y;
 			return *this;
 		}
-
-		vec2<T> operator+(vec2<T> r)
-		{
-			return { x + r.x, y + r.y };
-		}
-		vec2<T> operator-(vec2<T> r)
-		{
-			return { x - r.x, y - r.y };
-		}
 	};
+
+	template <typename T>
+	vec2<T> operator+(vec2<T> l, vec2<T> r)
+	{
+		return vec2<T>(l.x + r.x, l.y + r.y);
+	}
+	template <typename T>
+	vec2<T> operator-(vec2<T> l, vec2<T> r)
+	{
+		return vec2<T>(l.x - r.x, l.y - r.y);
+	}
+
+	template <typename T, typename Y>
+	vec2<typename std::common_type<T, Y>::type> operator+(vec2<T> l, vec2<Y> r)
+	{
+		return vec2<typename std::common_type<T, Y>::type>(l.x + r.x, l.y + r.y);
+	}
+	template <typename T, typename Y>
+	vec2<typename std::common_type<T, Y>::type> operator-(vec2<T> l, vec2<Y> r)
+	{
+		return vec2<typename std::common_type<T, Y>::type>(l.x - r.x, l.y - r.y);
+	}
 
 	using vec2i = vec2<int>;
 	using vec2f = vec2<float>;
