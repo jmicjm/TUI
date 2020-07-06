@@ -239,7 +239,7 @@ namespace tui
 			}
 			else
 			{
-				m_current_position--;
+				m_current_position-=n;
 				if (m_current_position < m_top_position)
 				{
 					m_top_position = m_current_position;
@@ -255,7 +255,7 @@ namespace tui
 			}
 			else
 			{
-				m_current_position++;
+				m_current_position+=n;
 				if (m_current_position >= m_top_position + visibleContentLength())
 				{
 					m_top_position = m_current_position - visibleContentLength() + 1;
