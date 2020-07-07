@@ -139,6 +139,23 @@ namespace tui
 			m_scroll.setContentLength(getNumberOfLines());
 		}
 
+		void resizeAction() override
+		{
+			updateSurfaceSize(m_scroll);
+			adjustSizes();
+			fill();
+		}
+		void updateAction() override { update(); }
+
+		void activationAction() override { m_scroll.activate(); }
+		void disactivationAction() override { m_scroll.disactivate(); }
+
+		void setAppearanceAction() override
+		{
+			m_scroll.setAppearance(text_scroll_appearance);
+			fill();
+		}
+
 	public:
 		short& key_up = m_scroll.key_up;
 		short& key_down = m_scroll.key_down;
@@ -279,23 +296,6 @@ namespace tui
 			int pos = m_scroll.getTopPosition();
 			m_scroll.update();
 			if (pos != m_scroll.getTopPosition()) { fill(); }
-		}
-
-		void resizeAction() override
-		{
-			updateSurfaceSize(m_scroll);
-			adjustSizes();
-			fill();
-		}
-		void updateAction() override { update(); }
-
-		void activationAction() override { m_scroll.activate(); }
-		void disactivationAction() override { m_scroll.disactivate(); }
-
-		void setAppearanceAction() override 
-		{ 
-			m_scroll.setAppearance(text_scroll_appearance);
-			fill();
 		}
 
 	};
