@@ -81,8 +81,6 @@ namespace tui
 
 		bool m_free_mode = false;
 
-		bool m_immobilized = false;
-
 		int visibleContentLength()
 		{
 			if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
@@ -227,10 +225,6 @@ namespace tui
 		int getTopPosition() { return m_top_position; }
 		int getCurrentPosition() { return m_current_position; }
 
-		void immobilize(bool i) { m_immobilized = i; }
-		bool isImmobilized() { return m_immobilized; }
-
-
 		void up(unsigned int n = 1)
 		{
 			if (!m_free_mode)
@@ -274,7 +268,8 @@ namespace tui
 
 		void update()
 		{
-			if (isActive() && !isImmobilized()) {
+			if (isActive()) 
+			{
 				if (input::isKeyPressed(key_up)) { up(); }
 				if (input::isKeyPressed(key_down)) { down(); }
 				if (input::isKeyPressed(key_pgup)) { pageUp(); }
