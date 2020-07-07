@@ -186,10 +186,9 @@ namespace tui
 			return m_content_length > visibleContentLength();
 		};
 
-		void setContentLength(int length)
+		void setContentLength(unsigned int length)
 		{
-			if (length >= 0) { m_content_length = length; }
-			else { m_content_length = 0; }
+			m_content_length = length; 
 
 			adjustHandlePosition();
 			fill();
