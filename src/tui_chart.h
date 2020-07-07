@@ -177,10 +177,10 @@ namespace tui
 		}
 
 	public:
-		int& key_up = m_scroll.key_up;
-		int& key_down = m_scroll.key_down;
-		int& key_pgup = m_scroll.key_pgup;
-		int& key_pgdn = m_scroll.key_pgdn;
+		short& key_up = m_scroll.key_up;
+		short& key_down = m_scroll.key_down;
+		short& key_pgup = m_scroll.key_pgup;
+		short& key_pgdn = m_scroll.key_pgdn;
 
 		chart() : m_scroll({0,100}) 
 		{

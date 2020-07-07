@@ -91,7 +91,7 @@ namespace tui
 		}
 
 	public:
-		int key_select = input::KEY::ENTER;
+		short key_select = input::KEY::ENTER;
 		BUTTON_TYPE::BUTTON_TYPE type = BUTTON_TYPE::PUSH;
 
 		button() : button({3}, ' ') {}

@@ -164,10 +164,10 @@ namespace tui
 		void disactivationAction() override { fill(); }
 
 	public:
-		int key_up = input::KEY::UP;
-		int key_down = input::KEY::DOWN;
-		int key_pgup = input::KEY::PGUP;
-		int key_pgdn = input::KEY::PGDN;
+		short key_up = input::KEY::UP;
+		short key_down = input::KEY::DOWN;
+		short key_pgup = input::KEY::PGUP;
+		short key_pgdn = input::KEY::PGDN;
 
 		scroll() : scroll(1) {}
 		scroll(surface1D_size size) : scroll_appearance(direction)

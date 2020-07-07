@@ -241,12 +241,12 @@ namespace tui
 			m_redraw_needed = true;
 		}
 	public:
-		int key_up = input::KEY::UP;
-		int key_down = input::KEY::DOWN;
-		int key_left = input::KEY::LEFT;
-		int key_right = input::KEY::RIGHT;
-		int key_insert = input::KEY::INS;
-		int key_backspace = input::KEY::BACKSPACE;
+		short key_up = input::KEY::UP;
+		short key_down = input::KEY::DOWN;
+		short key_left = input::KEY::LEFT;
+		short key_right = input::KEY::RIGHT;
+		short key_insert = input::KEY::INS;
+		short key_backspace = input::KEY::BACKSPACE;
 
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
