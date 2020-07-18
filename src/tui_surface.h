@@ -160,39 +160,45 @@ namespace tui
 			obj.resize({ x,y });
 		}
 
+		void updateSurfacePosition(surface& surf)
+		{
+			vec2i origin;
+
+			origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f);
+			origin.x += surf.getPositionInfo().offset.x;
+			origin.x += surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+
+			origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f);
+			origin.y += surf.getPositionInfo().offset.y;
+			origin.y += surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+
+			surf.m_position = origin;
+			surf.m_global_position = m_global_position + origin;
+		}
+
 		void insertSurface(surface& obj, bool update = true)
 		{
 			if (&obj != this)
 			{
 				updateSurfaceSize(obj);
+				updateSurfacePosition(obj);
 
 				if (update) { obj.updateAction(); }
 
 				obj.drawAction();
 
-
-				int x_origin = getSize().x * (obj.getPositionInfo().relative.x / 100.f) - obj.getSize().x * (obj.getPositionInfo().relative.x / 100.f);
-				x_origin += obj.getPositionInfo().offset.x;
-				x_origin += obj.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
-
-				int y_origin = getSize().y * (obj.getPositionInfo().relative.y / 100.f) - obj.getSize().y * (obj.getPositionInfo().relative.y / 100.f);
-				y_origin += obj.getPositionInfo().offset.y;
-				y_origin += obj.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
-
-				obj.m_position = { x_origin, y_origin };
-				obj.m_global_position = m_global_position + obj.m_position;
-
+				vec2i origin = obj.m_position;			
 				for (int y = 0; y < obj.getSize().y; y++)
 				{
 					for (int x = 0; x < obj.getSize().x; x++)
 					{
-						if (x_origin + x < getSize().x
-							&& y_origin + y < getSize().y
-							&& x_origin + x >= 0
-							&& y_origin + y >= 0
+						if (origin.x + x < getSize().x
+							&& origin.y + y < getSize().y
+							&& origin.x + x >= 0
+							&& origin.y + y >= 0
 							&& obj[x][y][0] != 0)
 						{
-							setSymbolAt(obj.getSymbolAt({ x, y }), { x_origin + x, y_origin + y });
+							setSymbolAt(obj.getSymbolAt({ x, y }), { origin.x + x, origin.y + y });
 						}
 					}
 				}
