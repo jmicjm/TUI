@@ -74,7 +74,7 @@ namespace tui
 		//uninterpreted input
 		std::string getRawInput();
 
-		//alphanumerical + '/n'
+		//alphanumerical input
 		std::string getStringInput();
 
 		//amount of key press

@@ -149,15 +149,15 @@ namespace tui
 			resize(size.fixed);
 		}
 
-		void updateSurfaceSize(surface& obj)
+		void updateSurfaceSize(surface& surf)
 		{
-			vec2i perc_size = obj.getSizeInfo().percentage;
-			vec2i int_size = obj.getSizeInfo().fixed;
+			vec2i perc_size = surf.getSizeInfo().percentage;
+			vec2i int_size = surf.getSizeInfo().fixed;
 
 			int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
 			int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
 
-			obj.resize({ x,y });
+			surf.resize({ x,y });
 		}
 
 		void updateSurfacePosition(surface& surf)
@@ -176,29 +176,29 @@ namespace tui
 			surf.m_global_position = m_global_position + origin;
 		}
 
-		void insertSurface(surface& obj, bool update = true)
+		void insertSurface(surface& surf, bool update = true)
 		{
-			if (&obj != this)
+			if (&surf != this)
 			{
-				updateSurfaceSize(obj);
-				updateSurfacePosition(obj);
+				updateSurfaceSize(surf);
+				updateSurfacePosition(surf);
 
-				if (update) { obj.updateAction(); }
+				if (update) { surf.updateAction(); }
 
-				obj.drawAction();
+				surf.drawAction();
 
-				vec2i origin = obj.m_position;			
-				for (int y = 0; y < obj.getSize().y; y++)
+				vec2i origin = surf.m_position;
+				for (int y = 0; y < surf.getSize().y; y++)
 				{
-					for (int x = 0; x < obj.getSize().x; x++)
+					for (int x = 0; x < surf.getSize().x; x++)
 					{
 						if (origin.x + x < getSize().x
 							&& origin.y + y < getSize().y
 							&& origin.x + x >= 0
 							&& origin.y + y >= 0
-							&& obj[x][y][0] != 0)
+							&& surf[x][y][0] != 0)
 						{
-							setSymbolAt(obj.getSymbolAt({ x, y }), { origin.x + x, origin.y + y });
+							setSymbolAt(surf.getSymbolAt({ x, y }), { origin.x + x, origin.y + y });
 						}
 					}
 				}
