@@ -50,7 +50,7 @@ namespace tui
 	{
 	private:
 		std::vector<symbol> m_symbols;
-		unsigned int m_width = 0;
+		unsigned int m_width = 1;
 		position m_position_info;
 		vec2i m_position;
 		vec2i m_global_position;
@@ -221,11 +221,7 @@ namespace tui
 		vec2i getGlobalPosition() { return m_global_position; }
 		position getPositionInfo() { return m_position_info; }
 
-		vec2i getSize()
-		{
-			if (m_width > 0) { return vec2i(m_width, m_symbols.size() / m_width); }
-			else { return vec2i(0, 0); }
-		}
+		vec2i getSize() { return vec2i(m_width, m_symbols.size() / m_width); }
 		surface_size getSizeInfo() { return size_info; }
 	};
 
