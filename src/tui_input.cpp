@@ -131,8 +131,7 @@ namespace tui
 					{
 						m_input[1].push_back(BACKSPACE);
 					}
-
-					if (gc != 27)
+					else if (gc != 27)
 					{
 						push(gc);
 					}
