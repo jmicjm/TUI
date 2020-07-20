@@ -151,29 +151,35 @@ namespace tui
 
 		void updateSurfaceSize(surface& surf)
 		{
-			vec2i perc_size = surf.getSizeInfo().percentage;
-			vec2i int_size = surf.getSizeInfo().fixed;
+			if (&surf != this)
+			{
+				vec2i perc_size = surf.getSizeInfo().percentage;
+				vec2i int_size = surf.getSizeInfo().fixed;
 
-			int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
-			int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
+				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
+				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
 
-			surf.resize({ x,y });
+				surf.resize({ x,y });
+			}
 		}
 
 		void updateSurfacePosition(surface& surf)
 		{
-			vec2i origin;
+			if (&surf != this)
+			{
+				vec2i origin;
 
-			origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f);
-			origin.x += surf.getPositionInfo().offset.x;
-			origin.x += surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+				origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f);
+				origin.x += surf.getPositionInfo().offset.x;
+				origin.x += surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-			origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f);
-			origin.y += surf.getPositionInfo().offset.y;
-			origin.y += surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+				origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f);
+				origin.y += surf.getPositionInfo().offset.y;
+				origin.y += surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
 
-			surf.m_position = origin;
-			surf.m_global_position = m_global_position + origin;
+				surf.m_position = origin;
+				surf.m_global_position = m_global_position + origin;
+			}
 		}
 
 		void insertSurface(surface& surf, bool update = true)
