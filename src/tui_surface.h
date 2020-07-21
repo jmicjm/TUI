@@ -198,7 +198,6 @@ namespace tui
 				updateSurfacePosition(surf);
 
 				if (update) { surf.updateAction(); }
-
 				surf.drawAction();
 
 				vec2i origin = surf.m_position;
@@ -206,13 +205,13 @@ namespace tui
 				{
 					for (int x = 0; x < surf.getSize().x; x++)
 					{
-						if (origin.x + x < getSize().x
-							&& origin.y + y < getSize().y
+						if (surf[x][y][0] != 0 //transparent
 							&& origin.x + x >= 0
 							&& origin.y + y >= 0
-							&& surf[x][y][0] != 0)
+							&& origin.x + x < getSize().x
+							&& origin.y + y < getSize().y)
 						{
-							setSymbolAt(surf.getSymbolAt({ x, y }), { origin.x + x, origin.y + y });
+							setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });
 						}
 					}
 				}
