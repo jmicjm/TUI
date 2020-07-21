@@ -257,10 +257,9 @@ namespace tui
 				break;
 			case tui::DIRECTION::VERTICAL:
 				surface::setSizeInfo({ {1, size.fixed},{0, size.percentage} });
-				break;
 			}
 		}
-		int getSize()
+		int getSize() const
 		{
 			switch (direction)
 			{
@@ -279,10 +278,9 @@ namespace tui
 				break;
 			case tui::DIRECTION::VERTICAL:
 				surface::setSymbolAt(character, { 0, position });
-				break;
 			}
 		}
-		symbol getSymbolAt(int position)
+		symbol getSymbolAt(int position) const
 		{
 			switch (direction)
 			{
@@ -292,7 +290,7 @@ namespace tui
 				return surface::getSymbolAt({ 0, position });
 			}
 		}
-		symbol& operator[](int i)
+		symbol& operator[](size_t i)
 		{
 			switch (direction)
 			{
@@ -302,7 +300,17 @@ namespace tui
 				return surface::operator[](0)[i];
 			}
 		}
-		surface1D_size getSizeInfo()
+		const symbol& operator[](size_t i) const 
+		{
+			switch (direction)
+			{
+			case tui::DIRECTION::HORIZONTAL:
+				return surface::operator[](i)[0];
+			case tui::DIRECTION::VERTICAL:
+				return surface::operator[](0)[i];
+			}
+		}
+		surface1D_size getSizeInfo() const
 		{
 			switch (direction)
 			{
