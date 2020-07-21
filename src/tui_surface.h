@@ -86,6 +86,25 @@ namespace tui
 			}
 		}
 
+		template<typename T>
+		struct surface_proxy
+		{
+			friend class surface;
+		private:
+			T* surf;
+			size_t x;
+			surface_proxy(T* s, size_t x) : surf(s), x(x) {}
+		public:
+			symbol& operator[](size_t y)
+			{
+				return surf->m_symbols[surf->m_width * y + x];
+			}
+			const symbol& operator[](size_t y) const
+			{
+				return surf->m_symbols[surf->m_width * y + x];
+			}
+		};
+
 	protected:
 		virtual void resizeAction() {}
 		virtual void updateAction() {}
@@ -108,32 +127,21 @@ namespace tui
 			return *this;
 		}
 
-		struct surface_proxy
-		{
-			friend class surface;
-		private:
-			surface* surf;
-			size_t x;
-		public:
-			symbol& operator[](size_t y)
-			{
-				return surf->m_symbols[surf->m_width * y + x];
-			}
-		};
+		
 
-		surface_proxy operator[](size_t x)
+		surface_proxy<surface> operator[](size_t x)
 		{
-			surface_proxy proxy;
-			proxy.surf = this;
-			proxy.x = x;
-
-			return proxy;
+			return surface_proxy<surface>(this, x);
+		}
+		const surface_proxy<const surface> operator[](size_t x) const 
+		{
+			return surface_proxy<const surface>(this, x);
 		}
 
-		bool isResized() { return m_resized; }
+		bool isResized() const { return m_resized; }
 
 		void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
-		symbol getSymbolAt(vec2i position) { return m_symbols[position.y * m_width + position.x]; }
+		symbol getSymbolAt(vec2i position) const { return m_symbols[position.y * m_width + position.x]; }
 
 		void move(vec2i offset)
 		{
@@ -149,7 +157,7 @@ namespace tui
 			resize(size.fixed);
 		}
 
-		void updateSurfaceSize(surface& surf)
+		void updateSurfaceSize(surface& surf) const
 		{
 			if (&surf != this)
 			{
@@ -163,7 +171,7 @@ namespace tui
 			}
 		}
 
-		void updateSurfacePosition(surface& surf)
+		void updateSurfacePosition(surface& surf) const
 		{
 			if (&surf != this)
 			{
@@ -223,12 +231,12 @@ namespace tui
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].invert(); }
 		}
 
-		vec2i getPosition() { return m_position; }
-		vec2i getGlobalPosition() { return m_global_position; }
-		position getPositionInfo() { return m_position_info; }
+		vec2i getPosition() const { return m_position; }
+		vec2i getGlobalPosition() const { return m_global_position; }
+		position getPositionInfo() const { return m_position_info; }
 
-		vec2i getSize() { return vec2i(m_width, m_symbols.size() / m_width); }
-		surface_size getSizeInfo() { return size_info; }
+		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
+		surface_size getSizeInfo() const { return size_info; }
 	};
 
 	enum class DIRECTION : bool
