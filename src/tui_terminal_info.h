@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdio>
 #include <cmath>
+#include <algorithm>
 
 namespace tui 
 {
@@ -41,29 +42,84 @@ namespace tui
 				}
 				pclose(pipe);
 
-				int longest = 0;
-				int shortest = pow(2, sizeof(int) * 8) - 1;
-
-				for (int i = 0; i < sequences.size(); i++)
+				auto getSeq = [&](std::string seq_name)
 				{
-					if (infocmp.find(sequences[i].name) != std::string::npos)
-					{
-						int s = infocmp.find(sequences[i].name);
-						s += sequences[i].name.size();
-						s += 3; // =\E
+					//https://man7.org/linux/man-pages/man5/terminfo.5.html
+					std::vector<int> seq;
 
-						sequences[i].seq = { 27 }; //ESC
+					if (infocmp.find(seq_name) != std::string::npos)
+					{
+						int s = infocmp.find(seq_name);
+						s += seq_name.size() + 1;
 
 						while (infocmp[s] != ',')
 						{
-							sequences[i].seq.push_back(infocmp[s]);
-							s++;
+							if (infocmp[s] == '\\')
+							{
+								s++;
+								switch (infocmp[s])
+								{
+								case 'E':
+								case 'e':
+									seq.push_back(27);
+									break;
+								case 'n':
+								case 'l'://?
+									seq.push_back('\n');
+									break;
+								case 'r':
+									seq.push_back('\r');
+									break;
+								case 't':
+									seq.push_back('\t');
+									break;
+								case 'b':
+									seq.push_back('\b');
+									break;
+								case 'f':
+									seq.push_back('\f');
+									break;
+								case 's':
+									seq.push_back(' ');
+									break;
+								case '0':
+									seq.push_back(0);
+									break;
+								default:
+									seq.push_back(infocmp[s]); // eg \^ => ^
+								}
+								s++;
+							}
+							else if (infocmp[s] == '^')
+							{
+								s++;
+								if (infocmp[s] == '?')
+								{
+									seq.push_back(127);
+								}
+								else
+								{
+									seq.push_back(infocmp[s] & 0x1F);
+								}
+								s++;
+							}
+							else
+							{
+								seq.push_back(infocmp[s]);
+								s++;
+							}
 						}
 					}
-					else
-					{
-						sequences[i].seq = { -2 };
-					}
+
+					return seq;
+				};
+
+				unsigned short longest = 0;
+				unsigned short shortest = pow(2, sizeof(short) * 8) - 1;
+
+				for (int i = 0; i < sequences.size(); i++)
+				{
+					sequences[i].seq = getSeq(sequences[i].name);
 
 					if (sequences[i].seq.size() > longest)
 					{
@@ -78,31 +134,18 @@ namespace tui
 				longest_seq = longest;
 				shortest_seq = shortest;
 
-
-				if (infocmp.find("smkx") != std::string::npos)
+				auto vecToStr = [](std::vector<int> vec)
 				{
-					int s = infocmp.find("smkx");
-					s += 7; //smkx=\E
-					smkx = '\033';
-
-					while (infocmp[s] != ',')
+					std::string str;
+					for (int i = 0; i < vec.size(); i++)
 					{
-						smkx += infocmp[s];
-						s++;
+						str.push_back(vec[i]);
 					}
-				}
-				if (infocmp.find("rmkx") != std::string::npos)
-				{
-					int s = infocmp.find("rmkx");
-					s += 7; //rmkx=\E
-					rmkx = '\033';
+					return str;
+				};
 
-					while (infocmp[s] != ',')
-					{
-						rmkx += infocmp[s];
-						s++;
-					}
-				}
+				smkx = vecToStr(getSeq("smkx"));
+				rmkx = vecToStr(getSeq("rmkx"));
 #endif
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 				std::vector<int> keys =
@@ -150,8 +193,8 @@ namespace tui
 			std::string smkx;
 			std::string rmkx;
 
-			int longest_seq;
-			int shortest_seq;
+			unsigned short longest_seq;
+			unsigned short shortest_seq;
 
 			//return position of sequence, if there is no given sequence return -1
 			int getSeqNumber(std::vector<int> seq)

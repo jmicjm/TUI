@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include <conio.h>
@@ -20,6 +21,8 @@ namespace tui
 {
 	namespace input
 	{
+		terminal_info term_info;
+
 		void CtrlcHandler()
 		{
 			std::exit(0);
@@ -35,11 +38,9 @@ namespace tui
 		{
 #ifdef  TUI_TARGET_SYSTEM_LINUX
 			tcsetattr(0, TCSANOW, &default_settings);
-			system("tput rmkx");
+			std::cout << term_info.rmkx;
 #endif
 		}
-
-		terminal_info term_info;
 
 		struct keyboard_buffer
 		{
@@ -66,7 +67,7 @@ namespace tui
 				nonblocking_settings.c_cc[VTIME] = 0;
 
 				tcsetattr(0, TCSANOW, &noncanon_settings);
-				system("tput smkx");
+				std::cout << term_info.smkx;
 #endif
 				std::thread keyboardBufferThread([this] {bufferThread(); });
 				keyboardBufferThread.detach();
