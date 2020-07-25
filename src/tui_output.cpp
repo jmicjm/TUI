@@ -157,7 +157,7 @@ namespace tui
 					{
 						CHAR_INFO ch_info;
 
-						char32_t c = utf8ToUtf32(buffer.getSymbolAt(vec2i(j, i)).getCluster())[0];
+						char32_t c = utf8ToUtf32(buffer[j][i].getCluster())[0];
 
 						if (c < pow(2, (sizeof(wchar_t) * 8)) && !isControl(c))
 						{
@@ -167,14 +167,14 @@ namespace tui
 
 						if (display_rgbi)
 						{
-							ch_info.Attributes = getRgbiColor(buffer.getSymbolAt({ j,i }).getColor());
+							ch_info.Attributes = getRgbiColor(buffer[j][i].getColor());
 						}
 						else
 						{
 							ch_info.Attributes = getRgbiColor({ COLOR::WHITE, COLOR::BLACK });
 						}
 
-						if (buffer.getSymbolAt({ j,i }).isUnderscore())
+						if (buffer[j][i].isUnderscore())
 						{
 							ch_info.Attributes |= COMMON_LVB_UNDERSCORE;
 						}
@@ -243,20 +243,20 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().x; j++)
 					{
-						if (last_color != buffer.getSymbolAt({ j, i }).getColor())
+						if (last_color != buffer[j][i].getColor())
 						{
 							if (display_rgbi)
 							{
-								str += getEscCodeRgbi(buffer.getSymbolAt({ j, i }).getColor());
+								str += getEscCodeRgbi(buffer[j][i].getColor());
 							}
 							if (display_rgb)
 							{
-								str += getEscCodeRgb(buffer.getSymbolAt({ j, i }).getColor());
+								str += getEscCodeRgb(buffer[j][i].getColor());
 							}
 						}
-						last_color = buffer.getSymbolAt({ j, i }).getColor();
+						last_color = buffer[j][i].getColor();
 
-						switch (buffer.getSymbolAt({ j, i }).isUnderscore())
+						switch (buffer[j][i].isUnderscore())
 						{
 						case true:
 							if (last_underscore) { break; }
@@ -266,11 +266,11 @@ namespace tui
 							if (!last_underscore) { break; }
 							str += "\033[24m";
 						}
-						last_underscore = buffer.getSymbolAt({ j, i }).isUnderscore();
+						last_underscore = buffer[j][i].isUnderscore();
 
-						if (utf8ToUtf32(buffer.getSymbolAt({ j, i }).getCluster())[0] >= 32)
+						if (utf8ToUtf32(buffer[j][i].getCluster())[0] >= 32)
 						{
-							str += buffer.getSymbolAt({ j, i }).getCluster();
+							str += buffer[j][i].getCluster();
 						}
 						else
 						{
