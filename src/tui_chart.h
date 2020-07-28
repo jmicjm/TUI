@@ -66,12 +66,14 @@ namespace tui
 		console_string m_min_str;
 		console_string m_max_str;
 
+		console_string m_unit;
+
 		bool m_redraw_needed = true;
 
 		void updateMinMaxStr()
 		{
-			m_max_str = m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), value_labels_color) : "0";
-			m_min_str = m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), value_labels_color) : "0";
+			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), value_labels_color) : "0") + m_unit;
+			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), value_labels_color) : "0") + m_unit;
 		}
 
 		void fill()
@@ -227,6 +229,14 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		int getValueLabelsPrecision() { return m_value_labels_precision; }
+
+		void setValueUnit(console_string unit)
+		{
+			m_unit = unit;
+			updateMinMaxStr();
+			m_redraw_needed = true;
+		}
+		console_string getValueUnit() { return m_unit; }
 
 		void update()
 		{
