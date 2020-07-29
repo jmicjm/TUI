@@ -140,7 +140,7 @@ namespace tui
 
 		bool isResized() const { return m_resized; }
 
-		void setSymbolAt(symbol character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
+		void setSymbolAt(const symbol& character, vec2i position) { m_symbols[position.y * m_width + position.x] = character; }
 		symbol getSymbolAt(vec2i position) const { return m_symbols[position.y * m_width + position.x]; }
 
 		void move(vec2i offset)
@@ -218,7 +218,7 @@ namespace tui
 			}
 		}
 
-		void fill(symbol Symbol)
+		void fill(const symbol& Symbol)
 		{
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i] = Symbol; }
 		}
@@ -268,7 +268,7 @@ namespace tui
 				return surface::getSize().y;
 			}
 		}
-		void setSymbolAt(symbol character, int position)
+		void setSymbolAt(const symbol& character, int position)
 		{
 			switch (direction)
 			{
