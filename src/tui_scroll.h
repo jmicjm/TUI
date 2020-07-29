@@ -38,6 +38,8 @@ namespace tui
 		{
 			slider.setColor(Color);
 			line.setColor(Color);
+			prev_arrow.setColor(Color);
+			next_arrow.setColor(Color);
 		}
 	};
 
