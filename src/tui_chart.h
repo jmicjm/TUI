@@ -88,8 +88,8 @@ namespace tui
 
 		void updateMinMaxStr()
 		{
-			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : "0") + console_string(m_unit, gca().value_labels_color);
-			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : "0") + console_string(m_unit, gca().value_labels_color);
+			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : console_string("0", gca().value_labels_color)) + console_string(m_unit, gca().value_labels_color);
+			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : console_string("0", gca().value_labels_color)) + console_string(m_unit, gca().value_labels_color);
 		}
 
 		void fill()
