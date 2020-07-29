@@ -76,7 +76,7 @@ namespace tui
 		console_string m_min_str;
 		console_string m_max_str;
 
-		console_string m_unit;
+		std::string m_unit;
 
 		bool m_redraw_needed = true;
 
@@ -88,8 +88,8 @@ namespace tui
 
 		void updateMinMaxStr()
 		{
-			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : "0") + m_unit;
-			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : "0") + m_unit;
+			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : "0") + console_string(m_unit, gca().value_labels_color);
+			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : "0") + console_string(m_unit, gca().value_labels_color);
 		}
 
 		void fill()
@@ -179,11 +179,13 @@ namespace tui
 		void activationAction() override
 		{
 			m_scroll.activate();
+			updateMinMaxStr();
 			m_redraw_needed = true; 
 		}
 		void disactivationAction() override
 		{
 			m_scroll.disactivate();
+			updateMinMaxStr();
 			m_redraw_needed = true;
 		}
 
@@ -246,13 +248,13 @@ namespace tui
 		}
 		int getValueLabelsPrecision() { return m_value_labels_precision; }
 
-		void setValueUnit(console_string unit)
+		void setValueUnit(std::string unit)
 		{
 			m_unit = unit;
 			updateMinMaxStr();
 			m_redraw_needed = true;
 		}
-		console_string getValueUnit() { return m_unit; }
+		std::string getValueUnit() { return m_unit; }
 
 		void update()
 		{
