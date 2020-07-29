@@ -10,45 +10,55 @@
 
 namespace tui
 {
-	struct chart_appearance : appearance
+	struct chart_appearance_a
 	{
-	protected:
 		symbol full;
 		symbol lower_half;
 		symbol upper_half;
-		scroll_appearance chart_scroll_appearance;
+		scroll_appearance_a chart_scroll_appearance_a;
 		color value_labels_color;
-	public:
-		chart_appearance() : chart_appearance(U'\x2588', U'\x2584', U'\x2580') {}
-		chart_appearance(symbol Full, symbol Lower, symbol Upper) 
-			: full(Full), lower_half(Lower), upper_half(Upper), chart_scroll_appearance(tui::DIRECTION::HORIZONTAL) {}
 
-		void setColor(color Color) override
+		chart_appearance_a() : chart_appearance_a(U'\x2588', U'\x2584', U'\x2580') {}
+		chart_appearance_a(symbol Full, symbol Lower, symbol Upper)
+			: full(Full), lower_half(Lower), upper_half(Upper), chart_scroll_appearance_a(tui::DIRECTION::HORIZONTAL) {}
+
+		void setColor(color Color)
 		{
 			full.setColor(Color);
 			lower_half.setColor(Color);
 			upper_half.setColor(Color);
 			value_labels_color = Color;
-			chart_scroll_appearance.setColor(Color);
+			chart_scroll_appearance_a.setColor(Color);
+		}
+	};
+
+	struct chart_appearance : appearance
+	{
+	protected:
+		chart_appearance_a active_appearance;
+		chart_appearance_a inactive_appearance;
+	public:
+		chart_appearance()
+		{
+			active_appearance.setColor(tui::COLOR::WHITE);
+			inactive_appearance.setColor(tui::COLOR::DARKGRAY);
+		}
+		chart_appearance(chart_appearance_a active, chart_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
+
+		void setColor(color Color) override
+		{
+			active_appearance.setColor(Color);
+			inactive_appearance.setColor(Color);
 			setAppearanceAction();
 		}
 		void setAppearance(chart_appearance appearance) { setElement(*this, appearance); }
 		chart_appearance getAppearance() { return *this; }
 
-		void setFullSymbol(symbol Full) { setElement(full, Full); }
-		symbol getFullSymbol() { return full; }
+		void setActiveAppearance(chart_appearance_a active) { setElement(active_appearance, active); }
+		chart_appearance_a getActiveAppearance() { return active_appearance; }
 
-		void setLowerHalfSymbol(symbol Lower) { setElement(lower_half, Lower); }
-		symbol getLowerHalfSymbol() { return lower_half; }
-
-		void setUpperHalfSymbol(symbol Upper) { setElement(upper_half, Upper); }
-		symbol getUpperHalfSymbol() { return upper_half; }
-
-		void setScrollAppearance(scroll_appearance scroll) { setElement(chart_scroll_appearance, scroll); }
-		scroll_appearance getScrollAppearance() { return chart_scroll_appearance; }
-
-		void setValueLabelsColor(color Color) { setElement(value_labels_color, Color); }
-		color getValueLabelsColor() { return value_labels_color; }
+		void setInactiveAppearance(chart_appearance_a inactive) { setElement(inactive_appearance, inactive); }
+		chart_appearance_a getInactiveAppearance() { return inactive_appearance; }
 	};
 
 	struct chart : surface, chart_appearance, active_element
@@ -70,10 +80,16 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
+		chart_appearance_a gca()
+		{
+			if (isActive()) { return active_appearance; }
+			else { return inactive_appearance; }
+		}
+
 		void updateMinMaxStr()
 		{
-			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), value_labels_color) : "0") + m_unit;
-			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), value_labels_color) : "0") + m_unit;
+			m_max_str = (m_max > 0 ? console_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : "0") + m_unit;
+			m_min_str = (m_min < 0 ? console_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : "0") + m_unit;
 		}
 
 		void fill()
@@ -133,15 +149,15 @@ namespace tui
 					{
 						if (isFull(y) && isFull(y + 1))
 						{
-							m_chart.setSymbolAt(full, { x, y / 2 });
+							m_chart.setSymbolAt(gca().full, { x, y / 2 });
 						}
 						else if (isFull(y) && !isFull(y + 1))
 						{
-							m_chart.setSymbolAt(upper_half, { x, y / 2 });
+							m_chart.setSymbolAt(gca().upper_half, { x, y / 2 });
 						}
 						else if (!isFull(y) && isFull(y + 1))
 						{
-							m_chart.setSymbolAt(lower_half, { x, y / 2 });
+							m_chart.setSymbolAt(gca().lower_half, { x, y / 2 });
 						}
 					}	
 				}
@@ -163,17 +179,17 @@ namespace tui
 		void activationAction() override
 		{
 			m_scroll.activate();
-			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+			m_redraw_needed = true; 
 		}
 		void disactivationAction() override
 		{
 			m_scroll.disactivate();
-			if (m_scroll.isNeeded()) { m_redraw_needed = true; }
+			m_redraw_needed = true;
 		}
 
 		void setAppearanceAction() override 
 		{
-			m_scroll.setAppearance(chart_scroll_appearance);
+			m_scroll.setAppearance({active_appearance.chart_scroll_appearance_a, inactive_appearance.chart_scroll_appearance_a});
 			updateMinMaxStr();
 			m_redraw_needed = true; 
 		}
