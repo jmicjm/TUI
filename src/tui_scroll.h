@@ -78,6 +78,8 @@ namespace tui
 
 		bool m_free_mode = false;
 
+		bool m_redraw_needed = true;
+
 		int visibleContentLength()
 		{
 			if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
@@ -148,17 +150,21 @@ namespace tui
 		}
 
 		void updateAction() override { update(); }
-		void drawAction() override { fill(); }
+		void drawAction() override 
+		{
+			if (m_redraw_needed) { fill(); }
+			m_redraw_needed = false;
+		}
 		void resizeAction() override
 		{
 			adjustHandlePosition();
-			fill();
+			m_redraw_needed = true;
 		}
 
-		void setAppearanceAction() override { fill(); }
+		void setAppearanceAction() override { m_redraw_needed = true; }
 
-		void activationAction() override { fill(); }
-		void disactivationAction() override { fill(); }
+		void activationAction() override { m_redraw_needed = true; }
+		void disactivationAction() override { m_redraw_needed = true; }
 
 	public:
 		short key_up = input::KEY::UP;
@@ -188,13 +194,13 @@ namespace tui
 			m_content_length = length; 
 
 			adjustHandlePosition();
-			fill();
+			m_redraw_needed = true;
 		}
 		void setVisibleContentLength(int length)
 		{
 			m_visible_content_length = length;
 			adjustHandlePosition();
-			fill();
+			m_redraw_needed = true;
 		}
 		int getVisibleContentLength() { return m_visible_content_length; }
 
@@ -214,7 +220,7 @@ namespace tui
 			m_current_position = handle_position;
 
 			adjustHandlePosition();
-			fill();
+			m_redraw_needed = true;
 		}
 
 		int getContentLength() { return m_content_length; }
