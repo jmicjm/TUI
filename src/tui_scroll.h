@@ -86,7 +86,7 @@ namespace tui
 			else { return m_visible_content_length; }
 		}
 
-		scroll_appearance_a getCurrentAppearance()
+		scroll_appearance_a gca()
 		{
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
@@ -96,10 +96,10 @@ namespace tui
 		{
 			if (isNeeded())
 			{
-				surface1D<direction>::setSymbolAt(getCurrentAppearance().prev_arrow, 0);
-				surface1D<direction>::setSymbolAt(getCurrentAppearance().next_arrow, surface1D<direction>::getSize() - 1);
+				surface1D<direction>::setSymbolAt(gca().prev_arrow, 0);
+				surface1D<direction>::setSymbolAt(gca().next_arrow, surface1D<direction>::getSize() - 1);
 
-				for (int i = 1; i < surface1D<direction>::getSize() -1; i++) { surface1D<direction>::setSymbolAt(getCurrentAppearance().line, i); }
+				for (int i = 1; i < surface1D<direction>::getSize() -1; i++) { surface1D<direction>::setSymbolAt(gca().line, i); }
 
 				int handle_length = ((visibleContentLength() * 1.f) / m_content_length) * (surface1D<direction>::getSize() - 2);
 
@@ -116,7 +116,7 @@ namespace tui
 
 				for (int i = 0; i < handle_length; i++) 
 				{
-					surface1D<direction>::setSymbolAt(getCurrentAppearance().slider, i + handle_position); 
+					surface1D<direction>::setSymbolAt(gca().slider, i + handle_position); 
 				}
 			}
 			else
@@ -172,8 +172,7 @@ namespace tui
 		short key_pgup = input::KEY::PGUP;
 		short key_pgdn = input::KEY::PGDN;
 
-		scroll() : scroll(1) {}
-		scroll(surface1D_size size) : scroll_appearance(direction)
+		scroll(surface1D_size size = 1) : scroll_appearance(direction)
 		{
 			if(direction == DIRECTION::HORIZONTAL)
 			{
@@ -196,6 +195,8 @@ namespace tui
 			adjustHandlePosition();
 			m_redraw_needed = true;
 		}
+		int getContentLength() { return m_content_length; }
+
 		void setVisibleContentLength(int length)
 		{
 			m_visible_content_length = length;
@@ -222,9 +223,8 @@ namespace tui
 			adjustHandlePosition();
 			m_redraw_needed = true;
 		}
-
-		int getContentLength() { return m_content_length; }
 		int getTopPosition() { return m_top_position; }
+
 		int getCurrentPosition() { return m_current_position; }
 
 		void up(unsigned int n = 1)
@@ -242,6 +242,7 @@ namespace tui
 				}
 				adjustHandlePosition();
 			}
+			m_redraw_needed = true;
 		}
 		void down(unsigned int n = 1)
 		{
@@ -258,21 +259,23 @@ namespace tui
 				}
 				adjustHandlePosition();
 			}
+			m_redraw_needed = true;
 		}
+
 		void pageUp(unsigned int n = 1)
 		{
-			setTopPosition(getTopPosition() - n * visibleContentLength());
+			up(n * visibleContentLength());
 		}
 		void pageDown(unsigned int n = 1)
 		{
-			setTopPosition(getTopPosition() + n * visibleContentLength());
+			down(n * visibleContentLength());
 		}
 
 		void update()
 		{
 			if (isActive()) 
 			{
-				if (input::isKeyPressed(key_up)) { up(); }
+				if (input::isKeyPressed(key_up))   { up(); }
 				if (input::isKeyPressed(key_down)) { down(); }
 				if (input::isKeyPressed(key_pgup)) { pageUp(); }
 				if (input::isKeyPressed(key_pgdn)) { pageDown(); }
