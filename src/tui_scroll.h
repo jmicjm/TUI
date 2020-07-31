@@ -10,7 +10,7 @@ namespace tui
 {
 	struct scroll_appearance_a
 	{
-		symbol slider; //handle
+		symbol slider;
 		symbol line;
 		symbol prev_arrow;
 		symbol next_arrow;
@@ -20,19 +20,14 @@ namespace tui
 			switch (direction)
 			{
 			case tui::DIRECTION::VERTICAL:
-				slider = U'\x2551';
-				line = U'\x2502';
-				prev_arrow = U'\x25B2';
-				next_arrow = U'\x25BC';
+				*this = scroll_appearance_a(U'\x2551', U'\x2502', U'\x25B2', U'\x25BC');
 				break;
 			case tui::DIRECTION::HORIZONTAL:
-				slider = U'\x2550';
-				line = U'\x2500';
-				prev_arrow = U'\x25C4';
-				next_arrow = U'\x25BA';
+				*this = scroll_appearance_a(U'\x2550', U'\x2500', U'\x25C4', U'\x25BA');
 			}
 		}
-		scroll_appearance_a(symbol slider, symbol line) : slider(slider), line(line) {}
+		scroll_appearance_a(symbol slider, symbol line, symbol prev_arrow, symbol next_arrow) 
+			: slider(slider), line(line), prev_arrow(prev_arrow), next_arrow(next_arrow) {}
 
 		void setColor(color Color)
 		{
