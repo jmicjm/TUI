@@ -26,7 +26,7 @@ namespace tui
 		//update surface position relative to console size
 		void updateSurfacePosition(surface&);
 
-		void setFpslimit(int);
+		void setFpslimit(unsigned int);
 
 		bool isTimeToDisplay();
 

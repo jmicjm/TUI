@@ -270,7 +270,7 @@ namespace tui
 						}
 						last_underscore = buffer[j][i].isUnderscore();
 
-						if (utf8ToUtf32(buffer[j][i].getCluster())[0] >= 32)
+						if (!isControl(utf8ToUtf32(buffer[j][i].getCluster())[0]))
 						{
 							str += buffer[j][i].getCluster();
 						}
@@ -308,9 +308,7 @@ namespace tui
 				console_size.x = w.ws_col;
 				console_size.y = w.ws_row;
 #endif
-
-				resized = console_size.x != m_last_size.x || console_size.y != m_last_size.y;
-				if (resized)
+				if (console_size != m_last_size)
 				{
 					resize(console_size);
 				}
@@ -349,7 +347,7 @@ namespace tui
 
 		void updateSurfacePosition(surface& surf) { con.updateSurfacePosition(surf); }
 
-		void setFpslimit(int fps)
+		void setFpslimit(unsigned int fps)
 		{
 			con.fps_control.setFrameTime(std::chrono::milliseconds(1000) / fps);
 		}
