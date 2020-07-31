@@ -73,6 +73,8 @@ namespace tui
 			void draw(surface& surf) { buffer.insertSurface(surf); }
 
 			void updateSurfaceSize(surface& surf) { buffer.updateSurfaceSize(surf); }
+
+			void updateSurfacePosition(surface& surf) { buffer.updateSurfacePosition(surf); }
 		};
 
 		struct console : console_buffer
@@ -344,6 +346,8 @@ namespace tui
 		bool isResized() { return con.resized; }
 
 		void updateSurfaceSize(surface& surf) { con.updateSurfaceSize(surf); }
+
+		void updateSurfacePosition(surface& surf) { con.updateSurfacePosition(surf); }
 
 		void setFpslimit(int fps)
 		{
