@@ -121,14 +121,8 @@ namespace tui
 				{
 					sequences[i].seq = getSeq(sequences[i].name);
 
-					if (sequences[i].seq.size() > longest)
-					{
-						longest = sequences[i].seq.size();
-					}
-					if (sequences[i].seq.size() < shortest)
-					{
-						shortest = sequences[i].seq.size();
-					}
+					longest = std::max(sequences[i].seq.size(), (size_t)longest);
+					shortest = std::min(sequences[i].seq.size(), (size_t)shortest);
 				}
 
 				longest_seq = longest;
