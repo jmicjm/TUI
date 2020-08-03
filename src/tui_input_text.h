@@ -43,7 +43,7 @@ namespace tui
 	{
 	private:
 		text m_text;
-		console_string m_str;
+		symbol_string m_str;
 		vec2i m_cursor_pos = { 0,0 };
 		int m_cursor_pos_in_txt = 0;
 		time_frame m_cursor_blink;
@@ -92,7 +92,7 @@ namespace tui
 
 		void updateText()
 		{
-			console_string s = m_str;
+			symbol_string s = m_str;
 			
 			if (m_confidential_mode)
 			{
@@ -256,7 +256,7 @@ namespace tui
 			m_text.setAppearance(m_text_appearance);
 		}
 
-		console_string getText() { return m_str; }
+		symbol_string getText() { return m_str; }
 
 		void useConfidentialMode(bool use)
 		{
@@ -273,7 +273,7 @@ namespace tui
 				std::vector<short> input = input::getInput();
 				std::string buffer;
 
-				auto addText = [&](console_string str)
+				auto addText = [&](symbol_string str)
 				{
 					if (m_insert_mode)
 					{
@@ -319,7 +319,7 @@ namespace tui
 				{
 					if (isSpecialKey(input[i]))
 					{
-						addText((console_string)buffer);
+						addText((symbol_string)buffer);
 
 						if (input[i] == key_backspace)
 						{
@@ -366,7 +366,7 @@ namespace tui
 					}
 				}
 
-				addText((console_string)buffer);
+				addText((symbol_string)buffer);
 				update();
 
 			}

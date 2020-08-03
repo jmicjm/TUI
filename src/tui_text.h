@@ -31,8 +31,8 @@ namespace tui
 		surface m_text;
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
-		console_string m_unprepared_text;
-		console_string m_prepared_text;
+		symbol_string m_unprepared_text;
+		symbol_string m_prepared_text;
 
 		std::vector<vec2i> m_symbolPos;
 
@@ -62,7 +62,7 @@ namespace tui
 		}
 		void prepareText()
 		{
-			console_string prepared;
+			symbol_string prepared;
 
 			m_symbolPos.resize(m_unprepared_text.size());
 
@@ -164,7 +164,7 @@ namespace tui
 
 		text() : text({ {1,1} }) {}
 		text(surface_size size) : text(size, U"") {}
-		text(surface_size size, console_string txt) : m_scroll({ 0, 100 })
+		text(surface_size size, symbol_string txt) : m_scroll({ 0, 100 })
 		{
 			setSizeInfo(size);
 			m_text.setSizeInfo({ {-1,0}, {100,100} });
@@ -180,14 +180,14 @@ namespace tui
 			return m_symbolPos[i];
 		}
 
-		void setText(console_string txt)
+		void setText(symbol_string txt)
 		{
 			m_unprepared_text = txt;
 			adjustSizes();
 			fill();
 		}
 
-		console_string getText() { return m_unprepared_text; }
+		symbol_string getText() { return m_unprepared_text; }
 		int getNumberOfLines()
 		{
 			return ceil(m_prepared_text.size() / (m_text.getSize().x * 1.f));

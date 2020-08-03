@@ -76,7 +76,7 @@ namespace tui
 			}
 		}
 
-		void setString(const console_string& str)
+		void setString(const symbol_string& str)
 		{
 			setSizeInfo({ {(int)str.size(),1},{0,0} });
 
@@ -114,14 +114,14 @@ namespace tui
 		{
 			setSizeInfo(size);
 		}
-		surface(const symbol& sym) : surface(console_string(sym)) {}
-		surface(const console_string& str)
+		surface(const symbol& sym) : surface(symbol_string(sym)) {}
+		surface(const symbol_string& str)
 		{
 			setString(str);
 		}
 		virtual ~surface() {}
 
-		surface& operator=(const console_string& str)
+		surface& operator=(const symbol_string& str)
 		{
 			setString(str);
 			return *this;

@@ -92,7 +92,7 @@ namespace tui
 
 			if (distance > 0)
 			{
-				console_string val_str;
+				symbol_string val_str;
 
 				if (isDisplayingLabels())
 				{

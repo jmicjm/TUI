@@ -73,12 +73,12 @@ namespace tui
 	private:
 		struct tab_info
 		{
-			console_string string;
+			symbol_string string;
 			unsigned int position = 0;
 		};
 
 		std::vector<tab_info> m_tabs;
-		console_string m_generated_tabs;
+		symbol_string m_generated_tabs;
 		unsigned int m_selected = 0;
 		unsigned int m_first_pos = 0;
 
@@ -201,7 +201,7 @@ namespace tui
 			}
 		}
 
-		void setTabs(const std::vector<console_string>& tabs)
+		void setTabs(const std::vector<symbol_string>& tabs)
 		{
 			m_tabs.resize(tabs.size());
 			for (int i = 0; i < m_tabs.size(); i++)
@@ -213,9 +213,9 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
-		std::vector<console_string> getTabs()
+		std::vector<symbol_string> getTabs()
 		{
-			std::vector<console_string> tabs;
+			std::vector<symbol_string> tabs;
 
 			for (int i = 0; i < m_tabs.size(); i++)
 			{

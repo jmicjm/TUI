@@ -60,7 +60,7 @@ namespace tui
 	struct box : surface, box_appearance
 	{
 	private:
-		console_string m_title;
+		symbol_string m_title;
 		int m_title_position = POSITION::CENTER;
 
 		bool m_redraw_needed = true;
@@ -106,12 +106,12 @@ namespace tui
 			setAppearance(appearance);
 		}
 
-		void setTitle(const console_string& str)
+		void setTitle(const symbol_string& str)
 		{
 			m_title = str;
 			m_redraw_needed = true;
 		}
-		console_string getTitle() { return m_title; }
+		symbol_string getTitle() { return m_title; }
 
 		void setTitlePosition(int position)
 		{

@@ -55,8 +55,8 @@ namespace tui
 	struct button : surface1D<direction>, button_appearance, active_element
 	{
 	private:
-		console_string m_selected_text;
-		console_string m_deselected_text;
+		symbol_string m_selected_text;
+		symbol_string m_deselected_text;
 
 		void (*m_selection_function_ptr)(void) = nullptr;
 		void (*m_deselection_function_ptr)(void) = nullptr;
@@ -70,7 +70,7 @@ namespace tui
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
 		}
-		const console_string& getCurrentText()
+		const symbol_string& getCurrentText()
 		{
 			if (isSelected()) { return m_selected_text; }
 			else { return m_deselected_text; }
@@ -95,9 +95,9 @@ namespace tui
 		BUTTON_TYPE::BUTTON_TYPE type = BUTTON_TYPE::PUSH;
 
 		button() : button({3}, ' ') {}
-		button(surface1D_size size, console_string text) : button(size, text, text) {}
-		button(surface1D_size size, console_string selected, console_string deselected) : button(size, selected, deselected, button_appearance()) {}
-		button(surface1D_size size, console_string selected, console_string deselected, button_appearance appearance) : m_selected_text(selected), m_deselected_text(deselected)
+		button(surface1D_size size, symbol_string text) : button(size, text, text) {}
+		button(surface1D_size size, symbol_string selected, symbol_string deselected) : button(size, selected, deselected, button_appearance()) {}
+		button(surface1D_size size, symbol_string selected, symbol_string deselected, button_appearance appearance) : m_selected_text(selected), m_deselected_text(deselected)
 		{
 			surface1D<direction>::setSize(size);
 			setAppearance(appearance);
@@ -105,17 +105,17 @@ namespace tui
 	
 		bool isSelected() { return m_selected; }
 
-		void setSelectedText(console_string text)
+		void setSelectedText(symbol_string text)
 		{
 			m_selected_text = text;
 			if (isSelected()) { m_redraw_needed = true; }
 		}
-		void setDeselectedText(console_string text)
+		void setDeselectedText(symbol_string text)
 		{
 			m_deselected_text = text;
 			if (!isSelected()) { m_redraw_needed = true; }
 		}
-		void setText(console_string text)
+		void setText(symbol_string text)
 		{
 			m_selected_text = text;
 			m_deselected_text = text;

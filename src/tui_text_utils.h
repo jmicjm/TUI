@@ -221,24 +221,24 @@ namespace tui
 		bool operator!=(const symbol& other) { return !operator==(other); }
 	};
 
-	struct console_string : std::vector<symbol>
+	struct symbol_string : std::vector<symbol>
 	{
 	private:
 		color m_selected_color;
 		bool m_underscore = false;
 	public:
-		console_string() {}
-		console_string(symbol Symbol)
+		symbol_string() {}
+		symbol_string(symbol Symbol)
 		{
 			this->resize(1);
 			(*this)[0] = Symbol;
 		}
-		console_string(const char* str) : console_string(utf8ToUtf32(str)) {}
-		console_string(const char32_t* str) : console_string(std::u32string(str)) {}
-		console_string(const std::string& str) : console_string(utf8ToUtf32(str), color()) {}
-		console_string(const std::u32string& str) : console_string(str, color()) {}
-		console_string(const std::string& str, color color) : console_string(utf8ToUtf32(str), color) {}	
-		console_string(const std::u32string& str, color color)
+		symbol_string(const char* str) : symbol_string(utf8ToUtf32(str)) {}
+		symbol_string(const char32_t* str) : symbol_string(std::u32string(str)) {}
+		symbol_string(const std::string& str) : symbol_string(utf8ToUtf32(str), color()) {}
+		symbol_string(const std::u32string& str) : symbol_string(str, color()) {}
+		symbol_string(const std::string& str, color color) : symbol_string(utf8ToUtf32(str), color) {}	
+		symbol_string(const std::u32string& str, color color)
 		{
 			std::vector<symbol> temp_vec;
 
@@ -262,13 +262,13 @@ namespace tui
 			(*(std::vector<symbol>*)this) = temp_vec;
 		}
 
-		console_string& operator<< (color color)
+		symbol_string& operator<< (color color)
 		{
 			m_selected_color = color;
 			return *this;
 		}
 
-		console_string& operator<<(ATTRIBUTE attr)
+		symbol_string& operator<<(ATTRIBUTE attr)
 		{
 			switch (attr)
 			{
@@ -282,7 +282,7 @@ namespace tui
 			return *this;
 		};
 
-		console_string& operator<< (const console_string& string)
+		symbol_string& operator<< (const symbol_string& string)
 		{
 			for (int i = 0; i < string.size(); i++)
 			{
@@ -293,7 +293,7 @@ namespace tui
 			return *this;
 		}
 
-		console_string& operator+=(const console_string& str)
+		symbol_string& operator+=(const symbol_string& str)
 		{
 			for (int i = 0; i < str.size(); i++)
 			{
@@ -302,9 +302,9 @@ namespace tui
 			return *this;
 		}
 
-		console_string operator+(const console_string& str)
+		symbol_string operator+(const symbol_string& str)
 		{
-			console_string tmp = *this;
+			symbol_string tmp = *this;
 			return tmp += str;
 		}
 
