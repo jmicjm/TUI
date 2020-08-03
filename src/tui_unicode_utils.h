@@ -5,8 +5,10 @@
 namespace tui
 {
 	std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after = true, float reserve_ratio = 0.5);
+	std::u32string utf8ToUtf32(const char* utf8_str, size_t len, bool shrink_after = true, float reserve_ratio = 0.5);
 
 	std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after = true, float reserve_ratio = 2);
+	std::string utf32ToUtf8(const char32_t* utf32_str, size_t len, bool shrink_after = true, float reserve_ratio = 2);
 
 	uint8_t getGraphemeType(char32_t grapheme);
 
@@ -15,10 +17,10 @@ namespace tui
 	bool isControl(char32_t ch);
 
 
-	inline std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after, float reserve_ratio)
+	inline std::u32string utf8ToUtf32(const char* utf8_str, size_t len, bool shrink_after, float reserve_ratio)
 	{
 		std::u32string utf32_str;
-		utf32_str.reserve(utf8_str.size() * reserve_ratio);
+		utf32_str.reserve(len * reserve_ratio);
 
 		char32_t utf32_char = 0;
 		int bitc = 0;
@@ -35,7 +37,7 @@ namespace tui
 			}
 		};
 
-		for (int i = 0; i < utf8_str.size(); i++)
+		for (int i = 0; i < len; i++)
 		{
 			if ((utf8_str[i] & 0b10000000) == 0b00000000)
 			{
@@ -73,7 +75,7 @@ namespace tui
 			}
 		}
 
-		if (utf8_str.size() > 0) { push(true); }
+		if (len > 0) { push(true); }
 
 		if (shrink_after)
 		{
@@ -82,11 +84,15 @@ namespace tui
 
 		return utf32_str;
 	}
+	inline std::u32string utf8ToUtf32(const std::string& utf8_str, bool shrink_after, float reserve_ratio)
+	{
+		return utf8ToUtf32(utf8_str.data(), utf8_str.size(), shrink_after, reserve_ratio);
+	}
 
-	inline std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after, float reserve_ratio)
+	inline std::string utf32ToUtf8(const char32_t* utf32_str, size_t len, bool shrink_after, float reserve_ratio)
 	{
 		std::string utf8_str;
-		utf8_str.reserve(utf32_str.size() * reserve_ratio);
+		utf8_str.reserve(len * reserve_ratio);
 
 		char utf8_buf[4] = { 0, 0, 0, 0 };
 
@@ -96,7 +102,7 @@ namespace tui
 			((char32_t*)utf8_buf)[0] = 0;
 		};
 
-		for (int i = 0; i < utf32_str.size(); i++)
+		for (int i = 0; i < len; i++)
 		{
 			if (!(utf32_str[i] >= 0xD800 && utf32_str[i] <= 0xDFFF) && utf32_str[i] <= 0x10FFFF)
 			{
@@ -140,6 +146,10 @@ namespace tui
 		}
 
 		return utf8_str;
+	}
+	inline std::string utf32ToUtf8(const std::u32string& utf32_str, bool shrink_after, float reserve_ratio)
+	{
+		return utf32ToUtf8(utf32_str.data(), utf32_str.size(), shrink_after, reserve_ratio);
 	}
 
 	namespace GRAPHEME_TYPE
