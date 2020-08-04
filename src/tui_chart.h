@@ -40,7 +40,6 @@ namespace tui
 	public:
 		chart_appearance()
 		{
-			active_appearance.setColor(tui::COLOR::WHITE);
 			inactive_appearance.setColor(tui::COLOR::DARKGRAY);
 		}
 		chart_appearance(chart_appearance_a active, chart_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
