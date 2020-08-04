@@ -6,23 +6,45 @@
 
 namespace tui
 {
+	struct text_appearance_a
+	{
+		scroll_appearance_a text_scroll_appearance_a;
+
+		text_appearance_a() : text_scroll_appearance_a(tui::DIRECTION::VERTICAL) {}
+
+		void setColor(color Color)
+		{
+			text_scroll_appearance_a.setColor(Color);
+		}
+	};
+
 	struct text_appearance : appearance
 	{
 	protected:
-		scroll_appearance text_scroll_appearance;
+		text_appearance_a active_appearance;
+		text_appearance_a inactive_appearance;
 	public:
-		text_appearance() : text_appearance(scroll_appearance()) {}
-		text_appearance(scroll_appearance scroll) : text_scroll_appearance(scroll) {}
+		text_appearance() 
+		{
+			inactive_appearance.setColor(tui::COLOR::DARKGRAY);
+		}
+		text_appearance(text_appearance_a active, text_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
+
 		void setColor(color Color) override
 		{
-			text_scroll_appearance.setColor(Color);
+			active_appearance.setColor(Color);
+			inactive_appearance.setColor(Color);
 			setAppearanceAction();
 		}
+
 		void setAppearance(text_appearance appearance) { setElement(*this, appearance); }
 		text_appearance getAppearance() { return *this; }
 
-		void setScrollAppearance(scroll_appearance scroll) { setElement(text_scroll_appearance, scroll); }
-		scroll_appearance getScrollAppearance() { return text_scroll_appearance; }
+		void setActiveAppearance(text_appearance_a active) { setElement(active_appearance, active); }
+		text_appearance_a getActiveAppearance() { return active_appearance; }
+
+		void setInactiveAppearance(text_appearance_a inactive) { setElement(inactive_appearance, inactive); }
+		text_appearance_a getInactiveAppearance() { return inactive_appearance; }
 	};
 
 	struct text : surface, text_appearance, active_element
@@ -147,12 +169,20 @@ namespace tui
 		}
 		void updateAction() override { update(); }
 
-		void activationAction() override { m_scroll.activate(); }
-		void disactivationAction() override { m_scroll.disactivate(); }
+		void activationAction() override 
+		{
+			m_scroll.activate(); 
+			fill();
+		}
+		void disactivationAction() override 
+		{
+			m_scroll.disactivate(); 
+			fill();
+		}
 
 		void setAppearanceAction() override
 		{
-			m_scroll.setAppearance(text_scroll_appearance);
+			m_scroll.setAppearance({active_appearance.text_scroll_appearance_a, inactive_appearance.text_scroll_appearance_a});
 			fill();
 		}
 
