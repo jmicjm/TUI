@@ -54,13 +54,13 @@ namespace tui
 		position m_position_info;
 		vec2i m_position;
 		vec2i m_global_position;
-		surface_size size_info;
+		surface_size m_size_info;
 
 		bool m_resized;
 
 		void resize(vec2i size)
 		{
-			m_resized = size.x != getSize().x || size.y != getSize().y;
+			m_resized = size != getSize();
 
 			if (m_resized)
 			{
@@ -127,8 +127,6 @@ namespace tui
 			return *this;
 		}
 
-		
-
 		surface_proxy<surface> operator[](size_t x)
 		{
 			return surface_proxy<surface>(this, x);
@@ -153,7 +151,7 @@ namespace tui
 
 		void setSizeInfo(surface_size size)
 		{
-			size_info = size;
+			m_size_info = size;
 			resize(size.fixed);
 		}
 
@@ -235,7 +233,7 @@ namespace tui
 		position getPositionInfo() const { return m_position_info; }
 
 		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
-		surface_size getSizeInfo() const { return size_info; }
+		surface_size getSizeInfo() const { return m_size_info; }
 	};
 
 	enum class DIRECTION : bool
