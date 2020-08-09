@@ -26,8 +26,13 @@ namespace tui
 		void activationAction()
 		{
 			disactivateAll();
-			m_selected = 0;
 			m_blocked = false;
+
+			if (m_selected > m_elements.size() - 1)
+			{
+				m_selected = m_elements.size() - 1;
+			}
+
 			if (m_elements.size() > 0)
 			{
 				m_elements[m_selected]->activate();
@@ -35,7 +40,7 @@ namespace tui
 		}
 	public:
 		int key_next = -1;
-		int key_last = -1;
+		int key_prev = -1;
 		int key_block = -1;
 
 		void addElement(active_element& element)
@@ -50,6 +55,11 @@ namespace tui
 				if (m_elements[i] == &element)
 				{
 					m_elements.erase(m_elements.begin() + i);
+
+					if (m_selected == i)
+					{
+						m_selected = 0;
+					}
 				}
 			}
 		}
@@ -67,17 +77,19 @@ namespace tui
 				{
 					disactivateAll();
 
-					if (m_selected < (int)m_elements.size() - 1) { m_selected++; }
+					if (m_selected < m_elements.size() - 1) { m_selected++; }
 					else { m_selected = 0; }
+
 					m_elements[m_selected]->activate();
 				}
 
-				if (tui::input::isKeyPressed(key_last) && !m_blocked)
+				if (tui::input::isKeyPressed(key_prev) && !m_blocked)
 				{
 					disactivateAll();
 
 					if (m_selected > 0) { m_selected--; }
 					else { m_selected = m_elements.size() - 1; }
+
 					m_elements[m_selected]->activate();
 				}
 			}
