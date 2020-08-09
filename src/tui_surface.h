@@ -1,29 +1,30 @@
 #pragma once
-#include <vector>
 #include "tui_utils.h"
 #include "tui_text_utils.h"
+
+#include <vector>
+#include <cmath>
 
 namespace tui
 {
 	struct surface_size
 	{
 		vec2i fixed;
-		vec2i percentage;
+		vec2f percentage;
 
 		surface_size() : surface_size({ 0,0 }, { 0,0 }) {}
 		surface_size(vec2i Fixed) : surface_size(Fixed, { 0,0 }) {}
-		surface_size(vec2i Fixed, vec2i Percentage) : fixed(Fixed), percentage(Percentage) {}
+		surface_size(vec2i Fixed, vec2f Percentage) : fixed(Fixed), percentage(Percentage) {}
 	};
 
 	struct surface1D_size
 	{
 		int fixed;
-		int percentage;
+		float percentage;
 
 		surface1D_size() : surface1D_size(0, 0) {}
 		surface1D_size(int Fixed) : surface1D_size(Fixed, 0) {}
-		surface1D_size(int Fixed, int Percentage) : fixed(Fixed), percentage(Percentage) {}
-
+		surface1D_size(int Fixed, float Percentage) : fixed(Fixed), percentage(Percentage) {}
 	};
 
 	namespace POSITION
@@ -37,13 +38,13 @@ namespace tui
 	struct position
 	{
 		vec2i offset;
-		vec2i percentage_offset;
-		vec2i relative;
+		vec2f percentage_offset;
+		vec2f relative;
 
-		position() : position(vec2i(0, 0), vec2i(0, 0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i offset) : position(offset, vec2i(0, 0), vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i offset, vec2i percentage_offset) : position(offset, percentage_offset, vec2i(POSITION::BEGIN, POSITION::BEGIN)) {}
-		position(vec2i Offset, vec2i Percentage_offset, vec2i Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
+		position() : position({ 0, 0 }, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		position(vec2i offset) : position(offset, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		position(vec2i offset, vec2f percentage_offset) : position(offset, percentage_offset, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		position(vec2i Offset, vec2f Percentage_offset, vec2f Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
 	};
 
 	struct surface
@@ -158,12 +159,12 @@ namespace tui
 		void updateSurfaceSize(surface& surf) const
 		{
 			if (&surf != this)
-			{
-				vec2i perc_size = surf.getSizeInfo().percentage;
+			{	
 				vec2i int_size = surf.getSizeInfo().fixed;
+				vec2f perc_size = surf.getSizeInfo().percentage;
 
-				int x = (perc_size.x / 100.f) * getSize().x + int_size.x;
-				int y = (perc_size.y / 100.f) * getSize().y + int_size.y;
+				int x = std::round((perc_size.x / 100.f) * getSize().x + int_size.x);
+				int y = std::round((perc_size.y / 100.f) * getSize().y + int_size.y);
 
 				surf.resize({ x,y });
 			}
@@ -173,15 +174,18 @@ namespace tui
 		{
 			if (&surf != this)
 			{
-				vec2i origin;
+				vec2f origin;
 
-				origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f);
-				origin.x += surf.getPositionInfo().offset.x;
-				origin.x += surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+				origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
+					+ surf.getPositionInfo().offset.x 
+					+ surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-				origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f);
-				origin.y += surf.getPositionInfo().offset.y;
-				origin.y += surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+				origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
+					+ surf.getPositionInfo().offset.y
+					+ surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+
+				origin.x = std::round(origin.x);
+				origin.y = std::round(origin.y);
 
 				surf.m_position = origin;
 				surf.m_global_position = m_global_position + origin;
