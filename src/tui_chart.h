@@ -3,6 +3,7 @@
 #include "tui_appearance.h"
 #include "tui_text_utils.h"
 #include "tui_active_element.h"
+#include "tui_input.h"
 #include "tui_scroll.h"
 
 #include <vector>
