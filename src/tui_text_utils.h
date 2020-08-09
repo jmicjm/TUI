@@ -287,8 +287,8 @@ namespace tui
 			for (int i = 0; i < string.size(); i++)
 			{
 				this->push_back(string[i]);
-				(*this)[this->size()-1].setColor(m_selected_color);
-				(*this)[this->size()-1].setUnderscore(m_underscore);
+				this->back().setColor(m_selected_color);
+				this->back().setUnderscore(m_underscore);
 			}
 			return *this;
 		}
