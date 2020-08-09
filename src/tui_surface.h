@@ -144,8 +144,7 @@ namespace tui
 
 		void move(vec2i offset)
 		{
-			vec2i act_pos = getPositionInfo().offset;
-			m_position_info.offset = vec2i(act_pos.x + offset.x, act_pos.y + offset.y);
+			m_position_info.offset += offset;
 		}
 
 		void setPositionInfo(position pos) { m_position_info = pos; }
