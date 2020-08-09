@@ -17,14 +17,10 @@ namespace tui
 			switch (direction)
 			{
 			case DIRECTION::HORIZONTAL:
-				filling = U'\x2550';
-				begin = U'\x2550';
-				end = U'\x2550';
+				*this = line_appearance(U'\x2550');
 				break;
 			case DIRECTION::VERTICAL:
-				filling = U'\x2551';
-				begin = U'\x2551';
-				end = U'\x2551';
+				*this = line_appearance(U'\x2551');
 			}
 		}
 		line_appearance(symbol Symbol) : line_appearance(Symbol, Symbol, Symbol) {}
