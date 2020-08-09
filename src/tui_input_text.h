@@ -6,37 +6,52 @@
 
 namespace tui
 {
+	struct input_text_appearance_a
+	{
+		symbol insert_cursor;
+		symbol overtype_cursor;
+
+		text_appearance_a itxt_text_appearance_a;
+
+		input_text_appearance_a() : input_text_appearance_a('_', U'\x2584', text_appearance_a()) {}
+		input_text_appearance_a(symbol insert_cursor, symbol overtype_cursor, text_appearance_a txt_appearance)
+			: insert_cursor(insert_cursor), overtype_cursor(overtype_cursor), itxt_text_appearance_a(txt_appearance) {}
+
+		void setColor(color Color)
+		{
+			insert_cursor.setColor(Color);
+			overtype_cursor.setColor(Color);
+			itxt_text_appearance_a.setColor(Color);
+		}
+	};
+
 	struct input_text_appearance : appearance
 	{
 	protected:
-		symbol m_insert_cursor;
-		symbol m_overtype_cursor;
-
-		text_appearance m_text_appearance;
+		input_text_appearance_a active_appearance;
+		input_text_appearance_a inactive_appearance;
 	public:
-		input_text_appearance() : input_text_appearance('_', U'\x2584', text_appearance()) {}
-		input_text_appearance(symbol insert_cursor, symbol overtype_cursor, text_appearance txt_appearance) 
-			: m_insert_cursor(insert_cursor), m_overtype_cursor(overtype_cursor), m_text_appearance(txt_appearance){}
+		input_text_appearance() 
+		{
+			inactive_appearance.setColor(COLOR::DARKGRAY);
+		}
+		input_text_appearance(input_text_appearance_a active, input_text_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
 		{
-			m_insert_cursor.setColor(Color);
-			m_overtype_cursor.setColor(Color);
-			m_text_appearance.setColor(Color);
+			active_appearance.setColor(Color);
+			inactive_appearance.setColor(Color);
 			setAppearanceAction();
 		}
 
 		void setAppearance(input_text_appearance appearance) { setElement(*this, appearance); }
 		input_text_appearance getAppearance() { return *this; }
 
-		void setInsertCursorSymbol(symbol Cursor) { setElement(m_insert_cursor,Cursor); }
-		symbol getInsertCursorSymbol() { return m_insert_cursor; }
+		void setActiveAppearance(input_text_appearance_a active) { setElement(active_appearance, active); }
+		input_text_appearance_a getActiveAppearance() { return active_appearance; }
 
-		void setOvertypeCursorSymbol(symbol Cursor) { setElement(m_overtype_cursor, Cursor); }
-		symbol getOvertypeCursorSymbol() { return m_overtype_cursor; }
-
-		void setTextAppearance(text_appearance appearance) { setElement(m_text_appearance, appearance); }
-		text_appearance getTextAppearance() { return m_text_appearance; }
+		void setInactiveAppearance(input_text_appearance_a inactive) { setElement(inactive_appearance, inactive); }
+		input_text_appearance_a getInactiveAppearance() { return inactive_appearance; }
 	};
 
 	struct input_text : surface, active_element, input_text_appearance
@@ -52,6 +67,12 @@ namespace tui
 		bool m_insert_mode = true;
 		bool m_confidential_mode = false;
 		bool m_blink = true;
+
+		input_text_appearance_a gca()
+		{
+			if (isActive()) { return active_appearance; }
+			else { return inactive_appearance; }
+		}
 
 		void updateCursorPos()
 		{
@@ -206,8 +227,8 @@ namespace tui
 			{
 				if (m_blink)
 				{
-					if (m_insert_mode) { setSymbolAt(m_insert_cursor, m_cursor_pos); }
-					else { setSymbolAt(m_overtype_cursor, m_cursor_pos); }
+					if (m_insert_mode) { setSymbolAt(gca().insert_cursor, m_cursor_pos); }
+					else { setSymbolAt(gca().overtype_cursor, m_cursor_pos); }
 				}
 				else
 				{
@@ -237,7 +258,7 @@ namespace tui
 
 		void setAppearanceAction() override
 		{
-			m_text.setAppearance(m_text_appearance);
+			m_text.setAppearance({active_appearance.itxt_text_appearance_a, inactive_appearance.itxt_text_appearance_a});
 			m_redraw_needed = true;
 		}
 	public:
@@ -253,7 +274,6 @@ namespace tui
 			m_text.setSizeInfo({ {0,0},{100,100} });
 			m_text.useDensePunctuation(false);
 			m_text.usePreparedText(false);
-			m_text.setAppearance(m_text_appearance);
 		}
 
 		symbol_string getText() { return m_str; }
