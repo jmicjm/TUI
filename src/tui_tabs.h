@@ -20,16 +20,14 @@ namespace tui
 			switch (direction)
 			{
 			case DIRECTION::HORIZONTAL:
-				separator = '|';
-				prev_arrow = U'\x25C4';
-				next_arrow = U'\x25BA';
+				*this = tabs_appearance_a('|', U'\x25C4', U'\x25BA');
 				break;
 			case DIRECTION::VERTICAL:
-				separator = '-';
-				prev_arrow = U'\x25B2';
-				next_arrow = U'\x25BC';
+				*this = tabs_appearance_a('-', U'\x25B2', U'\x25BC');
 			}
 		}
+		tabs_appearance_a(symbol separator, symbol prev_arrow, symbol next_arrow)
+			: separator(separator), prev_arrow(prev_arrow), next_arrow(next_arrow) {}
 
 		void setColor(color Color)
 		{

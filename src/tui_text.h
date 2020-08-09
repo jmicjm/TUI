@@ -11,6 +11,7 @@ namespace tui
 		scroll_appearance_a text_scroll_appearance_a;
 
 		text_appearance_a() : text_scroll_appearance_a(tui::DIRECTION::VERTICAL) {}
+		text_appearance_a(scroll_appearance_a scroll) : text_scroll_appearance_a(scroll) {}
 
 		void setColor(color Color)
 		{
