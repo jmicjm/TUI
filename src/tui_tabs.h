@@ -49,6 +49,7 @@ namespace tui
 		{
 			inactive_appearance.setColor(COLOR::DARKGRAY);
 		}
+		tabs_appearance(tabs_appearance_a active, tabs_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
 		{

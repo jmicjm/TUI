@@ -34,9 +34,9 @@ namespace tui
 	public:
 		radio_button_appearance()
 		{
-			active_appearance.setColor(COLOR::WHITE);
 			inactive_appearance.setColor(COLOR::DARKGRAY);
 		}
+		radio_button_appearance(radio_button_appearance_a active, radio_button_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
 		{
