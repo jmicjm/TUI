@@ -34,14 +34,6 @@ namespace tui
 		termios nonblocking_settings;
 #endif
 
-		void restoreTerminal()
-		{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-			tcsetattr(0, TCSANOW, &default_settings);
-			std::cout << term_info.rmkx;
-#endif
-		}
-
 		struct keyboard_buffer
 		{
 		private:
@@ -51,32 +43,9 @@ namespace tui
 			std::string m_str[2];
 			std::vector<short> m_input[2];
 
-			keyboard_buffer()
-			{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-				tcgetattr(0, &default_settings);
-
-				std::atexit(restoreTerminal);
-
-				noncanon_settings = default_settings;
-				noncanon_settings.c_lflag &= ~(ICANON | ECHO | ISIG | IEXTEN);
-				noncanon_settings.c_iflag &= ~(ICRNL | IXON);
-
-				nonblocking_settings = noncanon_settings;
-				nonblocking_settings.c_cc[VMIN] = 0;
-				nonblocking_settings.c_cc[VTIME] = 0;
-
-				tcsetattr(0, TCSANOW, &noncanon_settings);
-				std::cout << term_info.smkx;
-#endif
-				std::thread keyboardBufferThread([this] {bufferThread(); });
-				keyboardBufferThread.detach();
-			}
-
-			~keyboard_buffer()
-			{
-				restoreTerminal();
-			}
+			bool running = false;
+			bool terminate_req = false;
+			std::mutex sync_mtx;
 
 			void bufferThread()
 			{
@@ -102,6 +71,18 @@ namespace tui
 
 				for (;;)
 				{
+					sync_mtx.lock();
+					if (terminate_req)
+					{
+						running = false;
+						terminate_req = false;
+						clear();
+						sync_mtx.unlock();
+						return;
+					}
+					sync_mtx.unlock();
+
+
 					int gc = gchar();
 					m_mtx.lock();
 					m_raw[1] += gc;
@@ -218,6 +199,56 @@ namespace tui
 			}
 		};
 		keyboard_buffer buffer;
+
+		void restore()
+		{
+			buffer.sync_mtx.lock();
+			if (buffer.running)
+			{
+				buffer.terminate_req = true;
+			}
+			buffer.sync_mtx.unlock();
+
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			tcsetattr(0, TCSANOW, &default_settings);
+			std::cout << term_info.rmkx;
+#endif
+		}
+
+		void init()
+		{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			tcgetattr(0, &default_settings);
+
+			noncanon_settings = default_settings;
+			noncanon_settings.c_lflag &= ~(ICANON | ECHO | ISIG | IEXTEN);
+			noncanon_settings.c_iflag &= ~(ICRNL | IXON);
+
+			nonblocking_settings = noncanon_settings;
+			nonblocking_settings.c_cc[VMIN] = 0;
+			nonblocking_settings.c_cc[VTIME] = 0;
+
+			tcsetattr(0, TCSANOW, &noncanon_settings);
+			std::cout << term_info.smkx;
+#endif	
+
+			std::atexit(restore);
+
+			buffer.sync_mtx.lock();
+
+			switch (buffer.running)
+			{
+			case true:
+				buffer.terminate_req = false;
+				break;
+			case false:
+				std::thread keyboardBufferThread([&] {buffer.bufferThread(); });
+				keyboardBufferThread.detach();
+				buffer.running = true;
+			}
+
+			buffer.sync_mtx.unlock();
+		}
 
 		std::vector<short> getInput()
 		{

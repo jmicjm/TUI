@@ -69,6 +69,10 @@ namespace tui
 			CTRL_Z = 26
 		};
 
+		void init();
+
+		void restore();
+
 		std::vector<short> getInput();
 
 		//uninterpreted input

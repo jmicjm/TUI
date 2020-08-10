@@ -19,3 +19,18 @@
 
 #include "tui_group.h"
 #include "tui_navigation_group.h"
+
+namespace tui
+{
+	inline void init()
+	{
+		output::init();
+		input::init();
+	}
+
+	inline void restore()
+	{
+		output::restore();
+		input::restore();
+	}
+}

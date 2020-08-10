@@ -6,6 +6,10 @@ namespace tui
 {
 	namespace output
 	{
+		void init();
+
+		void restore();
+
 		//clear buffer + update size
 		void clear();
 

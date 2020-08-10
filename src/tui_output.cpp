@@ -21,21 +21,6 @@ namespace tui
 {
 	namespace output
 	{
-		void restoreCursor()
-		{
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
-			CONSOLE_CURSOR_INFO cursor_info;
-			cursor_info.bVisible = true;
-			cursor_info.dwSize = 1;
-
-			SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
-#endif
-
-#ifdef TUI_TARGET_SYSTEM_LINUX
-			std::cout << "\033[?25h";
-#endif
-		}
-
 		struct console_buffer
 		{
 		protected:
@@ -79,12 +64,11 @@ namespace tui
 
 		struct console : console_buffer
 		{
-		private:
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
 			HANDLE m_console_handle;
 #endif
 			vec2i m_last_size;
-		public:
+
 			bool resized;
 			time_frame fps_control;
 			bool display_rgb = true;
@@ -93,13 +77,8 @@ namespace tui
 			console() : fps_control(std::chrono::milliseconds(1000) / 30)
 			{
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
-				system("chcp 65001");
 				m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
-				std::atexit(restoreCursor);
-
-				updateSize();
-				hidePrompt();
 			}
 
 			void clear()
@@ -288,7 +267,7 @@ namespace tui
 				hidePrompt();
 				updateLastBuffer();
 			}
-		private:
+
 			void updateSize()
 			{
 				vec2i console_size;
@@ -369,5 +348,30 @@ namespace tui
 			con.display_rgbi = display;
 		}
 		bool isDisplayingColor() { return con.display_rgbi || con.display_rgb; }
+
+		void restore()
+		{
+#ifdef TUI_TARGET_SYSTEM_WINDOWS
+			CONSOLE_CURSOR_INFO cursor_info;
+			cursor_info.bVisible = true;
+			cursor_info.dwSize = 1;
+
+			SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
+#endif
+
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			std::cout << "\033[?25h";
+#endif
+		}
+
+		void init()
+		{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+			system("chcp 65001");		
+#endif
+			std::atexit(restore);
+
+			con.hidePrompt();
+		}
 	}
 }
