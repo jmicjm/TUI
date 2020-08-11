@@ -4,13 +4,13 @@
 
 #include <thread>
 #include <mutex>
-#include <cstdlib>
-#include <cstdio>
 #include <algorithm>
-#include <cmath>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include <conio.h>
@@ -42,9 +42,9 @@ namespace tui
 		private:
 			std::mutex m_mtx;
 		public:
-			std::string m_raw[2];
-			std::string m_str[2];
-			std::vector<short> m_input[2];
+			std::string raw[2];
+			std::string str[2];
+			std::vector<short> input[2];
 
 			bool running = false;
 			bool terminate_req = false;
@@ -64,11 +64,11 @@ namespace tui
 
 				auto push = [&](unsigned char ch)
 				{
-					m_input[1].push_back(ch);
+					input[1].push_back(ch);
 
 					if (ch >= 32 && ch != 127 && ch <= 255)
 					{
-						m_str[1] += ch;
+						str[1] += ch;
 					}
 				};
 
@@ -88,7 +88,7 @@ namespace tui
 
 					int gc = gchar();
 					m_mtx.lock();
-					m_raw[1] += gc;
+					raw[1] += gc;
 
 					if (gc == CTRL_C)
 					{
@@ -103,18 +103,18 @@ namespace tui
 					else//non-alphanumeric, consisting of more than one byte
 					{
 						int gc2 = gchar();
-						m_raw[1] += gc2;
+						raw[1] += gc2;
 
 						if (term_info.getSeqNumber({ gc2 }) >= 0)
 						{
-							m_input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
+							input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
 						}
 					}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
 					if (gc == 127)//backspace could be 8 or 127
 					{
-						m_input[1].push_back(BACKSPACE);
+						input[1].push_back(BACKSPACE);
 					}
 					else if (gc != 27)
 					{
@@ -136,7 +136,7 @@ namespace tui
 						for (int i = 0; i < term_info.longest_seq; i++)
 						{
 							int gcn = gchar();
-							m_raw[1] += gcn;
+							raw[1] += gcn;
 
 							if (gcn == -1)//no input
 							{
@@ -152,7 +152,7 @@ namespace tui
 
 							if (term_info.getSeqNumber(buf) >= 0)
 							{
-								m_input[1].push_back(term_info.getSeqNumber(buf) + TUI_KEY_OFFSET);
+								input[1].push_back(term_info.getSeqNumber(buf) + TUI_KEY_OFFSET);
 
 								tcsetattr(0, TCSANOW, &noncanon_settings);
 								break;
@@ -176,13 +176,13 @@ namespace tui
 			{
 				m_mtx.lock();
 
-				m_raw[0] = m_raw[1];
-				m_str[0] = m_str[1];
-				m_input[0] = m_input[1];
+				raw[0] = raw[1];
+				str[0] = str[1];
+				input[0] = input[1];
 
-				m_raw[1].clear();
-				m_str[1].clear();
-				m_input[1].clear();
+				raw[1].clear();
+				str[1].clear();
+				input[1].clear();
 
 				m_mtx.unlock();
 			}
@@ -191,12 +191,12 @@ namespace tui
 			{
 				m_mtx.lock();
 
-				m_raw[0].clear();
-				m_raw[1].clear();
-				m_str[0].clear();
-				m_str[1].clear();
-				m_input[0].clear();
-				m_input[1].clear();
+				raw[0].clear();
+				raw[1].clear();
+				str[0].clear();
+				str[1].clear();
+				input[0].clear();
+				input[1].clear();
 
 				m_mtx.unlock();
 			}
@@ -255,22 +255,22 @@ namespace tui
 
 		std::vector<short> getInput()
 		{
-			return buffer.m_input[0];
+			return buffer.input[0];
 		}
 		std::string getRawInput()
 		{
-			return buffer.m_raw[0];
+			return buffer.raw[0];
 		}
 		std::string getStringInput()
 		{
-			return buffer.m_str[0];
+			return buffer.str[0];
 		}
 
 		int isKeyPressed(short key)
 		{
 			if (key >= 0)
 			{
-				std::vector<short>& input = buffer.m_input[0];
+				std::vector<short>& input = buffer.input[0];
 				return std::count(input.begin(), input.end(), key);
 
 			}
@@ -279,7 +279,7 @@ namespace tui
 
 		int isCodePointPressed(char32_t code_point)
 		{
-			std::u32string u32_str = utf8ToUtf32(buffer.m_str[0]);
+			std::u32string u32_str = utf8ToUtf32(buffer.str[0]);
 			return std::count(u32_str.begin(), u32_str.end(), code_point);
 		}
 
