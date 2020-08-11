@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include "tui_output.h"
-#include "tui_input.h"
+#include "tui_io.h"
 
 #include "tui_rectangle.h"
 #include "tui_box.h"
@@ -19,18 +18,3 @@
 
 #include "tui_group.h"
 #include "tui_navigation_group.h"
-
-namespace tui
-{
-	inline void init()
-	{
-		output::init();
-		input::init();
-	}
-
-	inline void restore()
-	{
-		output::restore();
-		input::restore();
-	}
-}
