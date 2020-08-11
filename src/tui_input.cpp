@@ -1,5 +1,6 @@
 #include "tui_input.h"
 #include "tui_terminal_info.h"
+#include "tui_unicode_utils.h"
 
 #include <thread>
 #include <mutex>
@@ -8,6 +9,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <vector>
+#include <string>
 
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 	#include <conio.h>
@@ -272,6 +275,12 @@ namespace tui
 
 			}
 			return false;
+		}
+
+		int isCodePointPressed(char32_t code_point)
+		{
+			std::u32string u32_str = utf8ToUtf32(buffer.m_str[0]);
+			return std::count(u32_str.begin(), u32_str.end(), code_point);
 		}
 
 		void swap() { buffer.swap(); }

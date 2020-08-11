@@ -84,6 +84,9 @@ namespace tui
 		//amount of key press
 		int isKeyPressed(short key);
 
+		//amount of key press
+		int isCodePointPressed(char32_t code_point);
+
 		//swap buffers
 		void swap();
 
