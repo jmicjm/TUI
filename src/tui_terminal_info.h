@@ -52,9 +52,9 @@ namespace tui
 						int s = infocmp.find(seq_name);
 						s += seq_name.size() + 1;
 
-						while (infocmp[s] != ',')
+						while (infocmp[s] != ',' && s < infocmp.size())
 						{
-							if (infocmp[s] == '\\')
+							if (infocmp[s] == '\\' && s+1 < infocmp.size())
 							{
 								s++;
 								switch (infocmp[s])
@@ -90,7 +90,7 @@ namespace tui
 								}
 								s++;
 							}
-							else if (infocmp[s] == '^')
+							else if (infocmp[s] == '^' && s+1 < infocmp.size())
 							{
 								s++;
 								if (infocmp[s] == '?')
