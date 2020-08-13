@@ -137,12 +137,26 @@ namespace tui
 					}
 					else//non-alphanumeric, consisting of more than one byte
 					{
+						useNonBlocking();
 						int gc2 = gchar();
 						raw[1] += gc2;
+						useNonCanon();
 
-						if (term_info.getSeqNumber({ gc2 }) >= 0)
+						switch (gc2 != -1)
 						{
-							input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
+						case true:
+							if (term_info.getSeqNumber({ gc2 }) >= 0)
+							{
+								input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
+							}
+							else
+							{
+								push(gc);
+								push(gc2);
+							}
+							break;
+						case false:
+							push(gc);
 						}
 					}
 #endif
