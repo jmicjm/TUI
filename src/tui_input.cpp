@@ -36,6 +36,51 @@ namespace tui
 		termios noncanon_settings;
 		termios nonblocking_settings;
 #endif
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+		bool nonblocking = false;
+#endif
+
+		void useNonCanon()
+		{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			tcsetattr(0, TCSANOW, &noncanon_settings);
+#endif
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+			nonblocking = false;
+#endif
+		}
+		void useNonBlocking()
+		{
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+			tcsetattr(0, TCSANOW, &nonblocking_settings);
+#endif
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+			nonblocking = true;
+#endif
+		}
+
+		int gchar()
+		{
+#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+			switch (nonblocking)
+			{
+			case false:
+				return _getch();
+			case true:
+				if (_kbhit())
+				{
+					return _getch();
+				}
+				else
+				{
+					return -1;
+				}
+			}
+#endif
+#ifdef TUI_TARGET_SYSTEM_LINUX
+			return getchar();
+#endif
+		};
 
 		struct keyboard_buffer
 		{
@@ -52,16 +97,6 @@ namespace tui
 
 			void bufferThread()
 			{
-				auto gchar = [&]()
-				{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
-					return _getch();
-#endif
-#ifdef TUI_TARGET_SYSTEM_LINUX
-					return getchar();
-#endif
-				};
-
 				auto push = [&](unsigned char ch)
 				{
 					input[1].push_back(ch);
@@ -122,7 +157,7 @@ namespace tui
 					}
 					else//non-alphanumeric, consisting of more than one byte
 					{
-						tcsetattr(0, TCSANOW, &nonblocking_settings);
+						useNonBlocking();
 						std::vector<int> buf = { 27 };
 
 						auto copyToBuffer = [&]()
@@ -142,7 +177,7 @@ namespace tui
 							{
 								copyToBuffer();
 
-								tcsetattr(0, TCSANOW, &noncanon_settings);
+								useNonCanon();
 								break;
 							}
 							else
@@ -154,7 +189,7 @@ namespace tui
 							{
 								input[1].push_back(term_info.getSeqNumber(buf) + TUI_KEY_OFFSET);
 
-								tcsetattr(0, TCSANOW, &noncanon_settings);
+								useNonCanon();
 								break;
 							}
 
@@ -162,7 +197,7 @@ namespace tui
 							{
 								copyToBuffer();
 
-								tcsetattr(0, TCSANOW, &noncanon_settings);
+								useNonCanon();
 								break;
 							}
 						}
