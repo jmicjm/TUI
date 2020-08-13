@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 namespace tui 
 {
@@ -52,7 +53,7 @@ namespace tui
 						int s = infocmp.find(seq_name);
 						s += seq_name.size() + 1;
 
-						while (infocmp[s] != ',' && s < infocmp.size())
+						while (s < infocmp.size() && infocmp[s] != ',')
 						{
 							if (infocmp[s] == '\\' && s+1 < infocmp.size())
 							{
@@ -127,6 +128,18 @@ namespace tui
 
 				longest_seq = longest;
 				shortest_seq = shortest;
+
+				if (longest_seq <= 1)
+				{
+					std::cout << "There were some problems during retrieving information about terminal.\n"
+						"Nonalphanumerical input(arrows F-keys etc) will not work.\n"
+						"Possible reasons: no infocmp present or some problem with it, invalid terminal entry\n"
+						"press 'q' to exit or any other key to continue\n";
+					char k;
+					std::cin >> k;
+					
+					if (k == 'q' || k == 'Q') { std::exit(0); }
+				}
 
 				auto vecToStr = [](std::vector<int> vec)
 				{
