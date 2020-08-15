@@ -385,12 +385,12 @@ namespace tui
 
 		bool isKeySupported(short key)
 		{
-			if (key < 0) { return false; }
 			if (key >= 0 && key <= 255) { return true; }
-			else if (key >= 256)
+			else if (key >= KEY::PGUP && key <= KEY::RIGHT)
 			{
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 			}
+			return false;	
 		}
 
 		std::string getKeyName(short key, bool use_ctrl_name)
