@@ -82,6 +82,28 @@ namespace tui
 #endif
 		};
 
+		unsigned int expectedUtf8Len(char c)
+		{
+			if ((c & 0b10000000) == 0b00000000)
+			{
+				return 0;
+			}
+			else if ((c & 0b11100000) == 0b11000000)
+			{
+				return 1;
+			}
+			else if ((c & 0b11110000) == 0b11100000)
+			{
+				return 2;
+			}
+			else if ((c & 0b11111000) == 0b11110000)
+			{
+				return 3;
+			}
+
+			return 0;
+		}
+
 		struct keyboard_buffer
 		{
 		private:
@@ -217,6 +239,31 @@ namespace tui
 						}
 					}
 #endif
+					char utf8_buf[3] = { 0,0,0 };
+					unsigned int buf_len = 0;
+
+					useNonBlocking();
+					for (buf_len = 0; buf_len < expectedUtf8Len(gc); buf_len++)
+					{
+						char c = gchar();
+						raw[1].push_back(c);
+						if (c != -1)
+						{
+							utf8_buf[buf_len] = c;
+						}
+						else
+						{
+							break;
+						}
+					}
+					useNonCanon();
+
+					for (int i = 0; i < buf_len; i++)
+					{
+						push(utf8_buf[i]);
+					}
+
+
 					m_mtx.unlock();
 				}
 			}
