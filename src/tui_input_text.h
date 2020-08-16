@@ -377,7 +377,7 @@ namespace tui
 
 						buffer.clear();
 					}
-					else if (input[i] >= 0 && input[i] <= 255 && !isControl(input[i]))
+					else if (input[i] >= 32 && input[i] <= 255)
 					{
 						buffer.push_back(input[i]);
 					}
