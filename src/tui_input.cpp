@@ -135,6 +135,9 @@ namespace tui
 						running = false;
 						terminate_req = false;
 						clear();
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+						tcsetattr(0, TCSANOW, &default_settings);
+#endif
 						sync_mtx.unlock();
 						return;
 					}
@@ -210,8 +213,6 @@ namespace tui
 							if (gcn == -1)//no input
 							{
 								copyToBuffer();
-
-								useNonCanon();
 								break;
 							}
 							else
@@ -222,19 +223,16 @@ namespace tui
 							if (term_info.getSeqNumber(buf) >= 0)
 							{
 								input[1].push_back(term_info.getSeqNumber(buf) + TUI_KEY_OFFSET);
-
-								useNonCanon();
 								break;
 							}
 
 							if (i == term_info.longest_seq - 1)
 							{
 								copyToBuffer();
-
-								useNonCanon();
 								break;
 							}
 						}
+						useNonCanon();
 					}
 #endif
 					char utf8_buf[3] = { 0,0,0 };
