@@ -377,7 +377,7 @@ namespace tui
 
 						buffer.clear();
 					}
-					else if (input[i] >= 0 && input[i] <= 256 && input[i] != input::KEY::ENTER)
+					else if (input[i] >= 0 && input[i] <= 255 && !isControl(input[i]))
 					{
 						buffer.push_back(input[i]);
 					}
