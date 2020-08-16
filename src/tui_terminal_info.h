@@ -1,226 +1,66 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <array>
-#include <cstdio>
-#include <cmath>
-#include <algorithm>
-#include <iostream>
 
 namespace tui 
 {
-	namespace input
+	struct key_seq_pair
 	{
-		struct key_seq_pair
+		std::string name;
+		std::vector<int> seq;
+		key_seq_pair() {}
+		key_seq_pair(std::string Name) : name(Name) {}
+		key_seq_pair(std::string Name, std::vector<int> Seq) : name(Name), seq(Seq) {}
+	};
+
+	struct terminal_info
+	{
+		std::vector<key_seq_pair> sequences =
 		{
-			std::string name;
-			std::vector<int> seq;
-			key_seq_pair() {}
-			key_seq_pair(std::string Name) : name(Name) {}
-			key_seq_pair(std::string Name, std::vector<int> Seq) : name(Name), seq(Seq) {}
+			{"kpp"}, //PGUP
+			{"knp"}, //PGDN
+
+			{"kdch1"}, //DELETE
+			{"kich1"}, //INSERT
+			{"kend"}, //END
+			{"khome"}, //HOME
+
+			{"kf1"}, //F1
+			{"kf2"},
+			{"kf3"},
+			{"kf4"},
+			{"kf5"},
+			{"kf6"},
+			{"kf7"},
+			{"kf8"},
+			{"kf9"},
+			{"kf10"},
+			{"kf11"},
+			{"kf12"}, //F12
+
+			{"kcuu1"}, //UP
+			{"kcud1"}, //DOWN
+			{"kcub1"}, //LEFT
+			{"kcuf1"} //RIGHT
 		};
+		unsigned short longest_seq;
+		unsigned short shortest_seq;
+
+		std::string smkx;
+		std::string rmkx;
 
 
+		terminal_info() { set(); }
 
-		struct terminal_info
-		{
-			terminal_info()
-			{
-				set();
-			}
+		//load terminal information
+		void set();
 
-			void set()
-			{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
-				std::array<char, 128> buffer;
-				std::string infocmp;
-				FILE* pipe = popen("infocmp", "r");
-				if (pipe)
-				{
-					while (fgets(buffer.data(), buffer.size(), pipe) != NULL) {
-						infocmp += buffer.data();
-					}
-				}
-				pclose(pipe);
+		//return position of sequence, if there is no given sequence return -1
+		int getSeqNumber(const std::vector<int>& seq);
 
-				auto getSeq = [&](std::string seq_name)
-				{
-					//https://man7.org/linux/man-pages/man5/terminfo.5.html
-					std::vector<int> seq;
+		//return sequence
+		std::vector<int> getSeq(unsigned int seq);
+	};
 
-					if (infocmp.find(seq_name) != std::string::npos)
-					{
-						int s = infocmp.find(seq_name);
-						s += seq_name.size() + 1;
-
-						while (s < infocmp.size() && infocmp[s] != ',')
-						{
-							if (infocmp[s] == '\\' && s+1 < infocmp.size())
-							{
-								s++;
-								switch (infocmp[s])
-								{
-								case 'E':
-								case 'e':
-									seq.push_back(27);
-									break;
-								case 'n':
-								case 'l'://?
-									seq.push_back('\n');
-									break;
-								case 'r':
-									seq.push_back('\r');
-									break;
-								case 't':
-									seq.push_back('\t');
-									break;
-								case 'b':
-									seq.push_back('\b');
-									break;
-								case 'f':
-									seq.push_back('\f');
-									break;
-								case 's':
-									seq.push_back(' ');
-									break;
-								case '0':
-									seq.push_back(0);
-									break;
-								default:
-									seq.push_back(infocmp[s]); // eg \^ => ^
-								}
-								s++;
-							}
-							else if (infocmp[s] == '^' && s+1 < infocmp.size())
-							{
-								s++;
-								if (infocmp[s] == '?')
-								{
-									seq.push_back(127);
-								}
-								else
-								{
-									seq.push_back(infocmp[s] & 0x1F);
-								}
-								s++;
-							}
-							else
-							{
-								seq.push_back(infocmp[s]);
-								s++;
-							}
-						}
-					}
-
-					return seq;
-				};
-
-				unsigned short longest = 0;
-				unsigned short shortest = pow(2, sizeof(short) * 8) - 1;
-
-				for (int i = 0; i < sequences.size(); i++)
-				{
-					sequences[i].seq = getSeq(sequences[i].name);
-
-					longest = std::max(sequences[i].seq.size(), (size_t)longest);
-					shortest = std::min(sequences[i].seq.size(), (size_t)shortest);
-				}
-
-				longest_seq = longest;
-				shortest_seq = shortest;
-
-				if (longest_seq <= 1)
-				{
-					std::cout << "There were some problems during retrieving information about terminal.\n"
-						"Nonalphanumerical input(arrows F-keys etc) will not work.\n"
-						"Possible reasons: no infocmp present or some problem with it, invalid terminal entry\n"
-						"press 'q' to exit or any other key to continue\n";
-					char k;
-					std::cin >> k;
-					
-					if (k == 'q' || k == 'Q') { std::exit(0); }
-				}
-
-				auto vecToStr = [](std::vector<int> vec)
-				{
-					std::string str;
-					for (int i = 0; i < vec.size(); i++)
-					{
-						str.push_back(vec[i]);
-					}
-					return str;
-				};
-
-				smkx = vecToStr(getSeq("smkx"));
-				rmkx = vecToStr(getSeq("rmkx"));
-#endif
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
-				std::vector<int> keys =
-				{
-					73, 81, 83,82, 79, 71, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 133, 134, 72, 80, 75, 77
-				};
-
-				for (int i = 0; i < sequences.size(); i++)
-				{
-					sequences[i].seq = { keys[i] };
-				}
-#endif
-			}
-
-			std::vector<key_seq_pair> sequences =
-			{
-				{"kpp"}, //PGUP
-				{"knp"}, //PGDN
-
-				{"kdch1"}, //DELETE
-				{"kich1"}, //INSERT
-				{"kend"}, //END
-				{"khome"}, //HOME
-
-				{"kf1"}, //F1
-				{"kf2"},
-				{"kf3"},
-				{"kf4"},
-				{"kf5"},
-				{"kf6"},
-				{"kf7"},
-				{"kf8"},
-				{"kf9"},
-				{"kf10"},
-				{"kf11"},
-				{"kf12"}, //F12
-
-				{"kcuu1"}, //UP
-				{"kcud1"}, //DOWN
-				{"kcub1"}, //LEFT
-				{"kcuf1"} //RIGHT
-			};
-
-
-			std::string smkx;
-			std::string rmkx;
-
-			unsigned short longest_seq;
-			unsigned short shortest_seq;
-
-			//return position of sequence, if there is no given sequence return -1
-			int getSeqNumber(std::vector<int> seq)
-			{
-				for (int i = 0; i < sequences.size(); i++)
-				{
-					if (sequences[i].seq == seq)
-					{
-						return i;
-					}
-				}
-				return -1;
-			}
-
-			std::vector<int> getSeq(unsigned int seq)
-			{
-				return sequences[seq].seq;
-			}
-
-		};
-	}
+	extern terminal_info term_info;
 }

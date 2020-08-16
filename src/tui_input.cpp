@@ -24,8 +24,6 @@ namespace tui
 {
 	namespace input
 	{
-		terminal_info term_info;
-
 		void CtrlcHandler()
 		{
 			std::exit(0);
