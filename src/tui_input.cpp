@@ -18,6 +18,7 @@
 
 #ifdef  TUI_TARGET_SYSTEM_LINUX
 	#include "termios.h"
+	#include "unistd.h" 
 #endif
 
 namespace tui
@@ -76,7 +77,17 @@ namespace tui
 			}
 #endif
 #ifdef TUI_TARGET_SYSTEM_LINUX
-			return getchar();
+			char c;
+			size_t s = read(STDIN_FILENO, &c, 1);
+
+			if (s > 0)
+			{
+				return c;
+			}
+			else
+			{
+				return -1;
+			}
 #endif
 		};
 
