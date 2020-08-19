@@ -252,7 +252,7 @@ namespace tui
 					useNonBlocking();
 					for (buf_len = 0; buf_len < expectedUtf8Len(gc); buf_len++)
 					{
-						char c = gchar();
+						int c = gchar();
 						raw[1].push_back(c);
 						if (c != -1)
 						{
