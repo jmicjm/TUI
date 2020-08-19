@@ -137,6 +137,13 @@ namespace tui
 						str[1] += ch;
 					}
 				};
+				auto pushRaw = [&](int ch)
+				{
+					if (ch != -1)
+					{
+						raw[1] += ch;
+					}
+				};
 
 				for (;;)
 				{
@@ -157,7 +164,7 @@ namespace tui
 
 					int gc = gchar();
 					m_mtx.lock();
-					raw[1] += gc;
+					pushRaw(gc);
 
 					if (gc == CTRL_C)
 					{
@@ -219,7 +226,7 @@ namespace tui
 						for (int i = 0; i < term_info.longest_seq; i++)
 						{
 							int gcn = gchar();
-							raw[1] += gcn;
+							pushRaw(gcn);
 
 							if (gcn == -1)//no input
 							{
@@ -253,7 +260,7 @@ namespace tui
 					for (buf_len = 0; buf_len < expectedUtf8Len(gc); buf_len++)
 					{
 						int c = gchar();
-						raw[1].push_back(c);
+						pushRaw(c);
 						if (c != -1)
 						{
 							utf8_buf[buf_len] = c;
