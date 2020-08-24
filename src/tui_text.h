@@ -6,6 +6,8 @@
 #include "tui_input.h"
 #include "tui_scroll.h"
 
+#include <algorithm>
+
 namespace tui
 {
 	struct text_appearance_a
@@ -57,12 +59,8 @@ namespace tui
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		symbol_string m_unprepared_text;
-		symbol_string m_prepared_text;
-
 		std::vector<vec2i> m_symbolPos;
 
-		bool m_use_prepared_text = true;
-		bool m_use_dense_punctuation = false;
 		bool m_use_control_characters = true;
 		bool m_display_scroll = true;
 
@@ -70,13 +68,28 @@ namespace tui
 		{
 			m_text.makeTransparent();
 
-			for (int y = 0; y < m_text.getSize().y; y++)
+			if (m_symbolPos.size() > 0)
 			{
-				for (int x = 0; x < m_text.getSize().x; x++)
-				{
-					if (m_text.getSize().x * m_scroll.getTopPosition() + y * m_text.getSize().x + x < m_prepared_text.size())
+				auto f_it = std::lower_bound(
+					m_symbolPos.begin(),
+					m_symbolPos.end(),
+					vec2i(0, m_scroll.getTopPosition()),
+					[&](const vec2i& a, const vec2i& b) 
 					{
-						m_text[x][y] = m_prepared_text[m_text.getSize().x * m_scroll.getTopPosition() + y * m_text.getSize().x + x];
+						return a.y * m_text.getSize().x + a.x < b.y * m_text.getSize().x + b.x;
+					}
+				);	
+
+				for (int i = f_it - m_symbolPos.begin(); i < m_unprepared_text.size(); i++)
+				{
+					vec2i p = m_symbolPos[i];
+					p.y -= m_scroll.getTopPosition();
+
+					if (p.y >= m_text.getSize().y) { break; }
+
+					if (!isControl(utf8ToUtf32(m_unprepared_text[i].getCluster())[0]))
+					{
+						m_text.setSymbolAt(m_unprepared_text[i], p);
 					}
 				}
 			}
@@ -87,21 +100,13 @@ namespace tui
 		}
 		void prepareText()
 		{
-			symbol_string prepared;
-
 			m_symbolPos.resize(m_unprepared_text.size());
-
-			auto usePrepared = [&]()
-			{
-				return m_use_prepared_text && getSize().x > 2;
-			};
 
 			int pos = 0;
 			for (int i = 0; i < m_unprepared_text.size(); i++)
 			{
 				int pos_in_line = pos % m_text.getSize().x;
-
-				m_symbolPos[i] = { pos_in_line, (int)floor((float)pos / m_text.getSize().x) };
+				m_symbolPos[i] = { pos_in_line, pos / m_text.getSize().x };
 
 				if (isControl(utf8ToUtf32(m_unprepared_text[i].getCluster())[0]))
 				{
@@ -109,42 +114,14 @@ namespace tui
 					{
 						if (m_unprepared_text[i][0] == '\n')
 						{
-							for (int i = 0; i < (m_text.getSize().x - pos_in_line); i++)
-							{
-								prepared.push_back(' ');
-							}
 							pos += m_text.getSize().x - pos_in_line;
 						}
 					}
 					continue;
 				}
 
-				if (usePrepared()
-					&& pos_in_line == m_text.getSize().x - 1
-					&& i + 1 < m_unprepared_text.size()
-					&& m_unprepared_text[i][0] != (U' ')
-					&& m_unprepared_text[i + 1][0] != (U' ')
-					&& !isControl(utf8ToUtf32(m_unprepared_text[i + 1].getCluster())[0])
-					&& (m_use_dense_punctuation ? !isPunctuation(m_unprepared_text[i]) : true)
-					&& (m_use_dense_punctuation ? !isPunctuation(m_unprepared_text[i + 1]) : true)
-					)
-				{
-					prepared << m_unprepared_text[i - 1].getColor();
-					prepared.setSelectedUnderscore(m_unprepared_text[i - 1].isUnderscore());
-					if (m_unprepared_text[i - 1][0] != U' ')
-					{
-						prepared << "-";
-					}
-					else { prepared << " "; }
-					pos++;
-				}
-				if (usePrepared() && pos_in_line == 0 && m_unprepared_text[i][0] == U' ') { continue; }//omit space at start of line
-
-				prepared.push_back(m_unprepared_text[i]);
 				pos++;
 			}
-
-			m_prepared_text = prepared;
 		}
 
 		void adjustSizes()
@@ -223,7 +200,11 @@ namespace tui
 		symbol_string getText() { return m_unprepared_text; }
 		int getNumberOfLines()
 		{
-			return ceil(m_prepared_text.size() / (m_text.getSize().x * 1.f));
+			if (m_symbolPos.size() > 0)
+			{
+				return m_symbolPos.back().y + 1;
+			}
+			return 0;
 		}
 
 		void goToLine(int line)
@@ -255,22 +236,6 @@ namespace tui
 			m_scroll.pageDown();
 			fill();
 		}
-
-		void usePreparedText(bool use)
-		{
-			m_use_prepared_text = use;
-			adjustSizes();
-			fill();
-		}
-		bool isUsingPreparedText() { return m_use_prepared_text; }
-
-		void useDensePunctuation(bool use)
-		{
-			m_use_dense_punctuation = use;
-			adjustSizes();
-			fill();
-		}
-		bool isUsingDensePunctuation() { return m_use_dense_punctuation; }
 
 		void useControlCharacters(bool use)
 		{
@@ -305,7 +270,7 @@ namespace tui
 				with control characters disabled one line prepared text could be shorter than unprepared text
 				e.g. space at start of line will be removed and all control characters will be removed
 				*/
-				setSizeInfo({ {(int)m_prepared_text.size(), 1} });
+				setSizeInfo({ {(int)m_unprepared_text.size(), 1} });
 
 				m_use_control_characters = use_c_char;
 			}
@@ -317,7 +282,7 @@ namespace tui
 				setSizeInfo({ {max_width, 1} });
 				prepareText();
 
-				setSizeInfo({ {max_width, (int)ceil(1.f * m_prepared_text.size() / max_width)} });
+				setSizeInfo({ {max_width, (int)ceil(1.f * m_unprepared_text.size() / max_width)} });
 				fill();
 
 				m_display_scroll = display_scroll;

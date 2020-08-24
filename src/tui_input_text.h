@@ -273,8 +273,6 @@ namespace tui
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
 			m_text.setSizeInfo({ {0,0},{100,100} });
-			m_text.useDensePunctuation(false);
-			m_text.usePreparedText(false);
 		}
 
 		symbol_string getText() { return m_str; }
