@@ -55,6 +55,8 @@ namespace tui
 		public:
 			vec2i getSize() { return buffer.getSize(); }
 
+			bool isResized() { return buffer.isResized(); }
+
 			void draw(surface& surf) { buffer.insertSurface(surf); }
 
 			void updateSurfaceSize(surface& surf) { buffer.updateSurfaceSize(surf); }
@@ -67,9 +69,6 @@ namespace tui
 #ifdef TUI_TARGET_SYSTEM_WINDOWS
 			HANDLE m_console_handle;
 #endif
-			vec2i m_last_size;
-
-			bool resized;
 			time_frame fps_control;
 			bool display_rgb = true;
 			bool display_rgbi = true;
@@ -287,12 +286,7 @@ namespace tui
 				console_size.x = w.ws_col;
 				console_size.y = w.ws_row;
 #endif
-				if (console_size != m_last_size)
-				{
-					resize(console_size);
-				}
-
-				m_last_size = console_size;
+				resize(console_size);
 			}
 
 			void hidePrompt()
@@ -320,7 +314,7 @@ namespace tui
 
 		vec2i getSize() { return con.getSize(); }
 
-		bool isResized() { return con.resized; }
+		bool isResized() { return con.isResized(); }
 
 		void updateSurfaceSize(surface& surf) { con.updateSurfaceSize(surf); }
 
