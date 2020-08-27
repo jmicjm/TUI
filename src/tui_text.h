@@ -64,6 +64,8 @@ namespace tui
 		bool m_use_control_characters = true;
 		bool m_display_scroll = true;
 
+		bool m_redraw_needed = true;
+
 		void fill()
 		{
 			m_text.makeTransparent();
@@ -149,25 +151,30 @@ namespace tui
 		{
 			updateSurfaceSize(m_scroll);
 			adjustSizes();
-			fill();
+			m_redraw_needed = true;
 		}
 		void updateAction() override { update(); }
+		void drawAction() override
+		{
+			if (m_redraw_needed) { fill(); }
+			m_redraw_needed = false;
+		}
 
 		void activationAction() override 
 		{
 			m_scroll.activate(); 
-			fill();
+			m_redraw_needed = true;
 		}
 		void disactivationAction() override 
 		{
 			m_scroll.disactivate(); 
-			fill();
+			m_redraw_needed = true;
 		}
 
 		void setAppearanceAction() override
 		{
 			m_scroll.setAppearance({active_appearance.text_scroll_appearance_a, inactive_appearance.text_scroll_appearance_a});
-			fill();
+			m_redraw_needed = true;
 		}
 
 	public:
@@ -198,10 +205,10 @@ namespace tui
 		{
 			m_unprepared_text = txt;
 			adjustSizes();
-			fill();
+			m_redraw_needed = true;
 		}
-
 		symbol_string getText() { return m_unprepared_text; }
+
 		int getNumberOfLines()
 		{
 			if (m_symbolPos.size() > 0)
@@ -214,7 +221,7 @@ namespace tui
 		void goToLine(int line)
 		{
 			m_scroll.setTopPosition(line);
-			fill();
+			m_redraw_needed = true;
 		}
 
 		//return current line number
@@ -223,29 +230,29 @@ namespace tui
 		void lineUp()
 		{
 			m_scroll.up();
-			fill();
+			m_redraw_needed = true;
 		}
 		void lineDown()
 		{
 			m_scroll.down();
-			fill();
+			m_redraw_needed = true;
 		}
 		void pageUp()
 		{
 			m_scroll.pageUp();
-			fill();
+			m_redraw_needed = true;
 		}
 		void pageDown()
 		{
 			m_scroll.pageDown();
-			fill();
+			m_redraw_needed = true;
 		}
 
 		void useControlCharacters(bool use)
 		{
 			m_use_control_characters = use;
 			adjustSizes();
-			fill();
+			m_redraw_needed = true;
 		}
 		bool isUsingControlCharacters() { return m_use_control_characters; }
 
@@ -253,7 +260,7 @@ namespace tui
 		{
 			m_display_scroll = display;
 			adjustSizes();
-			fill();
+			m_redraw_needed = true;
 		}
 		//is displaying scroll if needed
 		bool isUsingScroll() { return m_display_scroll; }
@@ -285,13 +292,14 @@ namespace tui
 				m_scroll.setContentLength(h);
 				setSizeInfo({ {(int)max_width, h} });
 			}
+			m_redraw_needed = true;
 		}
 
 		void update()
 		{
 			int pos = m_scroll.getTopPosition();
 			m_scroll.update();
-			if (pos != m_scroll.getTopPosition()) { fill(); }
+			if (pos != m_scroll.getTopPosition()) { m_redraw_needed = true; }
 		}
 
 	};
