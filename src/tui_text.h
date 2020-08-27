@@ -261,35 +261,29 @@ namespace tui
 		//is displaying scroll currently
 		bool isDisplayingScroll() { return m_display_scroll && m_scroll.isNeeded(); }
 
-		void resizeToText(int max_width = 0)
+		void resizeToText(unsigned int max_width = 0)
 		{
-			if (max_width <= 0)
+			if (max_width == 0)
 			{
 				bool use_c_char = m_use_control_characters;
 				m_use_control_characters = false;//temporarily disable control characters
 
 				setSizeInfo({ {(int)m_unprepared_text.size(), 1} });
-				adjustSizes();
-				/*
-				with control characters disabled one line prepared text could be shorter than unprepared text
-				e.g. space at start of line will be removed and all control characters will be removed
-				*/
-				setSizeInfo({ {(int)m_unprepared_text.size(), 1} });
+				prepareText();
 
 				m_use_control_characters = use_c_char;
+
+				m_scroll.setContentLength(1);			
 			}
 			else
 			{
-				bool display_scroll = m_display_scroll;
-				m_display_scroll = false;
-
-				setSizeInfo({ {max_width, 1} });
+				setSizeInfo({ {(int)max_width, 1} });
 				prepareText();
 
-				setSizeInfo({ {max_width, (int)ceil(1.f * m_unprepared_text.size() / max_width)} });
-				fill();
+				int h = m_symbolPos.back().y;
 
-				m_display_scroll = display_scroll;
+				m_scroll.setContentLength(h);
+				setSizeInfo({ {(int)max_width, h} });
 			}
 		}
 
