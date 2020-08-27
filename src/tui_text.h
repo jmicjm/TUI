@@ -112,9 +112,13 @@ namespace tui
 				{
 					if (m_use_control_characters)
 					{
-						if (m_unprepared_text[i][0] == '\n')
+						switch (m_unprepared_text[i][0])
 						{
+						case '\n':
 							pos += m_text.getSize().x - pos_in_line;
+							break;
+						case '\t':
+							pos += 4;
 						}
 					}
 					continue;

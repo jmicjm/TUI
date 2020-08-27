@@ -379,9 +379,16 @@ namespace tui
 					{
 						buffer.push_back(input[i]);
 					}
-					else if (input[i] == input::KEY::ENTER)
+					else
 					{
-						buffer.push_back('\n');
+						switch (input[i])
+						{
+						case input::KEY::ENTER:
+							buffer.push_back('\n');
+							break;
+						case input::KEY::TAB:
+							buffer.push_back('\t');
+						}
 					}
 				}
 
