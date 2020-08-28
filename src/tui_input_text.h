@@ -178,6 +178,12 @@ namespace tui
 							m_redraw_needed = true;
 							break;
 						}
+						else if (m_text.getSymbolPos(l_pos).y < c_pos.y - n)
+						{
+							m_cursor_pos_in_txt = l_pos + 1;
+							m_redraw_needed = true;
+							break;
+						}
 					}
 				}
 			}
@@ -197,7 +203,7 @@ namespace tui
 
 					for (int l_pos = m_cursor_pos_in_txt + 1; l_pos <= m_str.size(); ++l_pos)
 					{
-						if (m_text.getSymbolPos(l_pos).y == c_pos.y + n && (m_text.getSymbolPos(l_pos).x == c_pos.x || l_pos == m_str.size()))
+						if (m_text.getSymbolPos(l_pos).y == c_pos.y + n && (m_text.getSymbolPos(l_pos).x >= c_pos.x || l_pos == m_str.size()))
 						{
 							m_cursor_pos_in_txt = l_pos;
 							m_redraw_needed = true;
