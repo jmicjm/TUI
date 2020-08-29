@@ -61,15 +61,27 @@ namespace tui
 		chart_appearance_a getInactiveAppearance() { return inactive_appearance; }
 	};
 
+	struct chart_data_unit
+	{
+		float value;
+		tui::symbol_string name;
+		chart_data_unit() : chart_data_unit(0) {}
+		chart_data_unit(float value) : chart_data_unit(value, "") {}
+		chart_data_unit(float value, symbol_string name) : value(value), name(name) {}
+	};
+
 	struct chart : surface, chart_appearance, active_element
 	{
 	private:
-		std::vector<float> m_values;
+		std::vector<chart_data_unit> m_values;
+
 		tui::scroll<tui::DIRECTION::HORIZONTAL> m_scroll;
 		tui::surface m_chart;
+
 		unsigned int m_distance = 2;
 		bool m_display_value_labels = false;
 		int m_value_labels_precision = -1;
+		bool m_display_data_labels = true;
 
 		float m_min = 0;
 		float m_max = 0;
@@ -124,7 +136,7 @@ namespace tui
 
 			if (distance > 0)
 			{
-				int halves = m_chart.getSize().y * 2;
+				int halves = (m_chart.getSize().y - m_display_data_labels) * 2;
 				int p_halves = round(m_max / distance * halves) * (m_max>=0);
 
 				int scroll_pos = m_scroll.getTopPosition();
@@ -132,11 +144,11 @@ namespace tui
 
 				for (int i = ceil(scroll_pos / (float)m_distance); (i < m_values.size() && x < m_chart.getSize().x); i++, x += m_distance)
 				{
-					int h = round(fabs(m_values[i]) / distance * halves);
+					int h = round(fabs(m_values[i].value) / distance * halves);
 
 					auto isFull = [&](int y)
 					{
-						switch (m_values[i] >= 0)
+						switch (m_values[i].value >= 0)
 						{
 						case true:
 							return y >= p_halves - h && y < p_halves;
@@ -160,6 +172,14 @@ namespace tui
 							m_chart.setSymbolAt(gca().lower_half, { x, y / 2 });
 						}
 					}	
+
+					if (m_display_data_labels)
+					{
+						for (int j = 0; j < m_values[i].name.size() && j < m_chart.getSize().x; j++)
+						{
+							m_chart.setSymbolAt(m_values[i].name[j], { x + j, m_chart.getSize().y - 1 });
+						}
+					}
 				}
 			}
 			insertSurface(m_chart);
@@ -208,7 +228,7 @@ namespace tui
 			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::END, tui::POSITION::BEGIN} });
 		}
 
-		void setValues(std::vector<float> values)
+		void setData(std::vector<chart_data_unit> values)
 		{
 			m_values = values;
 
@@ -216,15 +236,29 @@ namespace tui
 			m_max = 0;
 			if (m_values.size() > 0)
 			{
-				m_min = *std::min_element(m_values.begin(), m_values.end());
-				m_max = *std::max_element(m_values.begin(), m_values.end());
+				m_min = std::min_element(
+					m_values.begin(),
+					m_values.end(),
+					[](const chart_data_unit& a, const chart_data_unit& b)
+					{
+						return a.value < b.value;
+					}
+				)->value;
+				m_max = std::max_element(
+					m_values.begin(),
+					m_values.end(),
+					[](const chart_data_unit& a, const chart_data_unit& b)
+					{
+						return a.value < b.value;
+					}
+				)->value;
 			}
 
 			updateMinMaxStr();
 
 			m_redraw_needed = true;
 		}
-		std::vector<float> getValues() { return m_values; }
+		std::vector<chart_data_unit> getData() { return m_values; }
 
 		void setDistance(unsigned int distance)
 		{
@@ -255,6 +289,13 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		std::string getValueUnit() { return m_unit; }
+
+		void displayDataLabels(bool display)
+		{
+			m_display_data_labels = display;
+			m_redraw_needed = true;
+		}
+		bool isDisplayingDataLabels() { return m_display_data_labels; }
 
 		void update()
 		{
