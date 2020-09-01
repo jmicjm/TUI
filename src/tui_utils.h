@@ -55,12 +55,12 @@ namespace tui
 	};
 
 	template <typename T, typename Y>
-	vec2<typename std::common_type<T, Y>::type> operator+(vec2<T> l, vec2<Y> r)
+	inline vec2<typename std::common_type<T, Y>::type> operator+(vec2<T> l, vec2<Y> r)
 	{
 		return vec2<typename std::common_type<T, Y>::type>(l.x + r.x, l.y + r.y);
 	}
 	template <typename T, typename Y>
-	vec2<typename std::common_type<T, Y>::type> operator-(vec2<T> l, vec2<Y> r)
+	inline vec2<typename std::common_type<T, Y>::type> operator-(vec2<T> l, vec2<Y> r)
 	{
 		return vec2<typename std::common_type<T, Y>::type>(l.x - r.x, l.y - r.y);
 	}
