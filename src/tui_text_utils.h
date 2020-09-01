@@ -197,9 +197,9 @@ namespace tui
 		void invert() { m_color.invert(); }
 
 		void setColor(color Color) { m_color = Color; }
-		color getColor() { return m_color; }
+		color getColor() const { return m_color; }
 		void setUnderscore(bool set) { m_underscore = set; }
-		bool isUnderscore() { return m_underscore; }
+		bool isUnderscore() const { return m_underscore; }
 
 		bool operator==(const symbol& other) const
 		{
@@ -305,12 +305,6 @@ namespace tui
 			return *this;
 		}
 
-		symbol_string operator+(const symbol_string& other)
-		{
-			symbol_string tmp = *this;
-			return tmp += other;
-		}
-
 		bool operator==(const symbol_string& other) const
 		{
 			return *(std::vector<symbol>*)this == (std::vector<symbol>)other;
@@ -347,6 +341,12 @@ namespace tui
 			}
 		}
 	};
+
+	inline symbol_string operator+(const symbol_string& l, const symbol_string& r)
+	{
+		symbol_string tmp = l;
+		return tmp += r;
+	}
 
 	inline std::string toStringP(float val, int precision)
 	{
