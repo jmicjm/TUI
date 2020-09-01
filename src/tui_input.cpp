@@ -89,7 +89,7 @@ namespace tui
 				return -1;
 			}
 #endif
-		};
+		}
 
 		unsigned int expectedUtf8Len(char c)
 		{
