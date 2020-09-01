@@ -9,11 +9,11 @@ namespace tui
 		rgb() : rgb(0, 0, 0) {}
 		rgb(uint8_t R, uint8_t G, uint8_t B) : r(R), g(G), b(B) {}
 
-		bool operator==(rgb rhs)
+		bool operator==(rgb rhs) const
 		{
 			return r == rhs.r && g == rhs.g && b == rhs.b;
 		}
-		bool operator!=(rgb rhs) { return !operator==(rhs); }
+		bool operator!=(rgb rhs) const { return !operator==(rhs); }
 	};
 
 	namespace COLOR

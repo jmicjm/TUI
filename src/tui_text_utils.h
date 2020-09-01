@@ -311,17 +311,17 @@ namespace tui
 			return tmp += other;
 		}
 
-		bool operator==(const symbol_string& other)
+		bool operator==(const symbol_string& other) const
 		{
 			return *(std::vector<symbol>*)this == (std::vector<symbol>)other;
 		}
-		bool operator!=(const symbol_string& other) { return !operator==(other); }
+		bool operator!=(const symbol_string& other) const { return !operator==(other); }
 
 		void setSelectedColor(color Color) { m_selected_color = Color; }
 		void setSelectedUnderscore(bool underscore) { m_underscore = underscore; }
 
-		color getSelectedColor() { return m_selected_color; }
-		bool isSelectedUnderscore() { return m_underscore; }
+		color getSelectedColor() const { return m_selected_color; }
+		bool isSelectedUnderscore() const { return m_underscore; }
 
 		void invert()
 		{
