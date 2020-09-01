@@ -37,7 +37,7 @@ namespace tui
 				char m_stack[stack_size];
 				char* m_heap;
 			};
-			uint8_t m_size;
+			uint8_t m_size = 0;
 #ifndef TUI_DISABLE_MEMBER_PACKING
 #pragma pack(pop)
 #endif
@@ -82,7 +82,10 @@ namespace tui
 			hybrid_container()
 			{
 				clearStack();
-				m_size = 0;
+			}
+			hybrid_container(const hybrid_container& other)
+			{
+				setData(other.getData(), other.size());
 			}
 			~hybrid_container()
 			{
@@ -152,22 +155,6 @@ namespace tui
 		{
 			setCluster(cluster);
 			setColor(Color);
-		}
-
-		symbol(const symbol& other)
-		{
-			m_cluster = other.m_cluster;
-			m_color = other.m_color;
-			m_underscore = other.m_underscore;
-		}
-
-		symbol& operator=(const symbol& other)
-		{
-			m_cluster = other.m_cluster;
-			m_color = other.m_color;
-			m_underscore = other.m_underscore;
-
-			return *this;
 		}
 
 		uint8_t size() const { return m_cluster.size(); }
