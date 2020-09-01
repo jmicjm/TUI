@@ -215,9 +215,18 @@ namespace tui
 					return esc_c;
 				};
 
-				std::string str = "\033[24m" + getEscCodeRgbi({ COLOR::WHITE, COLOR::BLACK }) + getEscCodeRgb({ COLOR::WHITE, COLOR::BLACK });
+				std::string str = "\033[24m";
+				
+				if (display_rgbi)
+				{
+					str += getEscCodeRgbi(buffer[0][0].getColor());
+				}
+				if (display_rgb)
+				{
+					str += getEscCodeRgb(buffer[0][0].getColor());
+				}
 
-				color last_color = {COLOR::WHITE, COLOR::BLACK};
+				color last_color = buffer[0][0].getColor();
 				bool last_underscore = false;
 
 				for (int i = 0; i < getSize().y; i++)
