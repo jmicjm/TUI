@@ -348,16 +348,6 @@ namespace tui
 		}
 	};
 
-	inline bool isPunctuation(symbol Symbol)
-	{
-		return   Symbol == U"."
-			|| Symbol == U","
-			|| Symbol == U":"
-			|| Symbol == U";"
-			|| Symbol == U"!"
-			|| Symbol == U"?";
-	}
-
 	inline std::string toStringP(float val, int precision)
 	{
 		std::stringstream ss_val;
