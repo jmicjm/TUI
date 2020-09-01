@@ -53,10 +53,10 @@ namespace tui
 			background = fg;
 		}
 
-		bool operator==(color c)
+		bool operator==(color c) const
 		{
 			return c.background == background && c.foreground == foreground;
 		}
-		bool operator!=(color c) { return !operator==(c); }
+		bool operator!=(color c) const { return !operator==(c); }
 	};
 }

@@ -201,14 +201,14 @@ namespace tui
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() { return m_underscore; }
 
-		bool operator==(const symbol& other)
+		bool operator==(const symbol& other) const
 		{
 			return m_cluster == other.m_cluster && m_color == other.m_color && m_underscore == other.m_underscore;
 		}
-		bool operator!=(const symbol& other) { return !operator==(other); }
+		bool operator!=(const symbol& other) const { return !operator==(other); }
 	};
 
-	struct symbol_string : std::vector<symbol>
+	struct symbol_string : private std::vector<symbol>
 	{
 	private:
 		color m_selected_color;
@@ -217,7 +217,7 @@ namespace tui
 		symbol_string() {}
 		symbol_string(symbol Symbol)
 		{
-			this->resize(1);
+			resize(1);
 			(*this)[0] = Symbol;
 		}
 		symbol_string(const char* str) : symbol_string(utf8ToUtf32(str)) {}
@@ -249,7 +249,23 @@ namespace tui
 			(*(std::vector<symbol>*)this) = temp_vec;
 		}
 
-		symbol_string& operator<< (color color)
+		using std::vector<symbol>::operator[];
+		using std::vector<symbol>::front;
+		using std::vector<symbol>::back;
+		using std::vector<symbol>::data;
+		using std::vector<symbol>::begin;
+		using std::vector<symbol>::end;
+		using std::vector<symbol>::empty;
+		using std::vector<symbol>::size;
+		using std::vector<symbol>::clear;
+		using std::vector<symbol>::insert;
+		using std::vector<symbol>::erase;
+		using std::vector<symbol>::push_back;
+		using std::vector<symbol>::pop_back;
+		using std::vector<symbol>::resize;
+		
+
+		symbol_string& operator<<(color color)
 		{
 			m_selected_color = color;
 			return *this;
@@ -269,31 +285,37 @@ namespace tui
 			return *this;
 		};
 
-		symbol_string& operator<< (const symbol_string& string)
+		symbol_string& operator<<(const symbol_string& other)
 		{
-			for (int i = 0; i < string.size(); i++)
+			for (int i = 0; i < other.size(); i++)
 			{
-				this->push_back(string[i]);
-				this->back().setColor(m_selected_color);
-				this->back().setUnderscore(m_underscore);
+				push_back(other[i]);
+				back().setColor(m_selected_color);
+				back().setUnderscore(m_underscore);
 			}
 			return *this;
 		}
 
-		symbol_string& operator+=(const symbol_string& str)
+		symbol_string& operator+=(const symbol_string& other)
 		{
-			for (int i = 0; i < str.size(); i++)
+			for (int i = 0; i < other.size(); i++)
 			{
-				this->push_back(str[i]);
+				push_back(other[i]);
 			}
 			return *this;
 		}
 
-		symbol_string operator+(const symbol_string& str)
+		symbol_string operator+(const symbol_string& other)
 		{
 			symbol_string tmp = *this;
-			return tmp += str;
+			return tmp += other;
 		}
+
+		bool operator==(const symbol_string& other)
+		{
+			return *(std::vector<symbol>*)this == (std::vector<symbol>)other;
+		}
+		bool operator!=(const symbol_string& other) { return !operator==(other); }
 
 		void setSelectedColor(color Color) { m_selected_color = Color; }
 		void setSelectedUnderscore(bool underscore) { m_underscore = underscore; }
