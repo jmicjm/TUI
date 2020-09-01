@@ -6,47 +6,28 @@
 
 namespace tui
 {
-	struct group : surface
+	struct group : surface, private std::vector<surface*>
 	{
 	private:
-		std::vector<surface*> m_surfaces;
-
 		void drawAction() override
 		{
 			makeTransparent();
 
-			for (int i = 0; i < m_surfaces.size(); i++)
+			for (auto i : *(std::vector<surface*>*)this)
 			{
-				insertSurface(*m_surfaces[i]);
+				insertSurface(*i);
 			}
 		}
 	public:
-		group(surface_size size = { {1,1},{0,0} })
-		{
-			setSizeInfo(size);
-		}
+		group(){}
+		group(surface* surf) : std::vector<surface*>({ surf }) {}
+		group(std::vector<surface*> surfaces) : std::vector<surface*>(surfaces) {}
 
-		void setSurfaces(std::vector<surface*> surfaces)
-		{
-			m_surfaces = surfaces;
-		}
-		void addSurface(surface& surf)
-		{
-			m_surfaces.push_back(&surf);
-		}
-		void removeSurface(surface& surf)
-		{
-			for (int i = 0; i < m_surfaces.size(); i++)
-			{
-				if (m_surfaces[i] == &surf)
-				{
-					m_surfaces.erase(m_surfaces.begin() + i);
-				}
-			}
-		}
-		void removeAll()
-		{
-			m_surfaces.clear();
-		}
+		using std::vector<surface*>::size;
+		using std::vector<surface*>::operator[];
+		using std::vector<surface*>::push_back;
+		using std::vector<surface*>::pop_back;
+		using std::vector<surface*>::clear;
+		using std::vector<surface*>::erase;
 	};
 }
