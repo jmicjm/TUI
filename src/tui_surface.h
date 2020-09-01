@@ -47,22 +47,19 @@ namespace tui
 		position(vec2i Offset, vec2f Percentage_offset, vec2f Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
 	};
 
-	namespace SIDE
+	enum class SIDE
 	{
-		enum SIDE
-		{
-			TOP, BOTTOM, LEFT, RIGHT
-		};
-	}
+		TOP, BOTTOM, LEFT, RIGHT
+	};
 
 	struct anchor_position
 	{
-		SIDE::SIDE side;
+		SIDE side;
 		float position;
 
 		anchor_position() : anchor_position(SIDE::RIGHT, POSITION::CENTER) {}
-		anchor_position(SIDE::SIDE side) : anchor_position(side, POSITION::CENTER) {}
-		anchor_position(SIDE::SIDE side, float position) : side(side), position(position) {}
+		anchor_position(SIDE side) : anchor_position(side, POSITION::CENTER) {}
+		anchor_position(SIDE side, float position) : side(side), position(position) {}
 	};
 
 	struct surface
