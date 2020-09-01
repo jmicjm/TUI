@@ -49,6 +49,7 @@ namespace tui
 		std::string smkx;
 		std::string rmkx;
 
+		bool rgb_color;
 
 		terminal_info() { set(); }
 

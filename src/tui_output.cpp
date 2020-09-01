@@ -1,6 +1,7 @@
 #include "tui_output.h"
 #include "tui_input.h"
 #include "tui_text_utils.h"
+#include "tui_terminal_info.h"
 
 #include <cstdlib>
 #include <vector>
@@ -366,6 +367,8 @@ namespace tui
 			std::atexit(restore);
 
 			con.hidePrompt();
+
+			displayRgbColor(term_info.rgb_color);
 		}
 	}
 }

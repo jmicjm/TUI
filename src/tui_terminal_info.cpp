@@ -10,20 +10,28 @@ namespace tui
 {
 	terminal_info term_info;
 
+#ifdef  TUI_TARGET_SYSTEM_LINUX
+	std::string getCommandOutput(const char* command)
+	{
+		std::array<char, 128> buffer;
+		std::string output;
+		FILE* pipe = popen(command, "r");
+		if (pipe)
+		{
+			while (fgets(buffer.data(), buffer.size(), pipe) != NULL) {
+				output += buffer.data();
+			}
+		}
+		pclose(pipe);
+
+		return output;
+	}
+#endif
 
 	void terminal_info::set()
 	{
 #ifdef  TUI_TARGET_SYSTEM_LINUX
-		std::array<char, 128> buffer;
-		std::string infocmp;
-		FILE* pipe = popen("infocmp", "r");
-		if (pipe)
-		{
-			while (fgets(buffer.data(), buffer.size(), pipe) != NULL) {
-				infocmp += buffer.data();
-			}
-		}
-		pclose(pipe);
+		std::string infocmp = getCommandOutput("infocmp");
 
 		auto getSeq = [&](std::string seq_name)
 		{
@@ -135,6 +143,12 @@ namespace tui
 
 		smkx = vecToStr(getSeq("smkx"));
 		rmkx = vecToStr(getSeq("rmkx"));
+
+
+		std::string colorterm = getCommandOutput("echo $COLORTERM");
+
+		rgb_color = colorterm.find("truecolor") != std::string::npos || colorterm.find("24bit") != std::string::npos;
+
 #endif
 #ifdef  TUI_TARGET_SYSTEM_WINDOWS
 		std::vector<int> keys =
