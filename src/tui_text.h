@@ -107,7 +107,14 @@ namespace tui
 			int pos = 0;
 			for (int i = 0; i < m_unprepared_text.size(); i++)
 			{
+				int sym_w = symbolWidth(m_unprepared_text[i]);
+
 				int pos_in_line = pos % m_text.getSize().x;
+				if (pos_in_line + sym_w > m_text.getSize().x && pos_in_line != 0)
+				{
+					pos += m_text.getSize().x - pos_in_line;
+					pos_in_line = pos % m_text.getSize().x;
+				}		
 				m_symbolPos[i] = { pos_in_line, pos / m_text.getSize().x };
 
 				if (isControl(utf8ToUtf32(m_unprepared_text[i].getCluster())[0]))
@@ -126,7 +133,7 @@ namespace tui
 					continue;
 				}
 
-				pos++;
+				pos += sym_w > 0 ? sym_w : 1;
 			}
 		}
 
