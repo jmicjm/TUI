@@ -231,8 +231,16 @@ namespace tui
 
 				for (int i = 0; i < getSize().y; i++)
 				{
-					for (int j = 0; j < getSize().x; j++)
+					for (int j = 0; j < getSize().x;)
 					{
+						int sym_w = symbolWidth(buffer[j][i]);
+
+						if (j + sym_w > getSize().x)
+						{
+							str += '\n';
+							break;
+						}
+
 						if (last_color != buffer[j][i].getColor())
 						{
 							if (display_rgbi)
@@ -266,6 +274,9 @@ namespace tui
 						{
 							str += "?";
 						}
+
+						
+						j += sym_w > 0 ? sym_w : 1;
 					}
 				}
 
