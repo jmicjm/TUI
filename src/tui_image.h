@@ -3,6 +3,7 @@
 #include "tui_text_utils.h"
 
 #include <fstream>
+#include <array>
 
 namespace tui
 {

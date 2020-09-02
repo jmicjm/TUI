@@ -3,6 +3,7 @@
 #include "tui_color.h"
 
 #include <algorithm>
+#include <string>
 
 namespace tui
 {
