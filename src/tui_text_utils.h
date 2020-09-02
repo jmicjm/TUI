@@ -9,6 +9,8 @@
 #include <array>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
+#include <utility>
 
 namespace tui
 {
@@ -373,5 +375,37 @@ namespace tui
 		}
 
 		return s_val;
+	}
+	//returns number of columns occupied by symbol
+	inline int symbolWidth(const symbol& sym)
+	{
+		//probably broken here and there
+
+		std::u32string u32_s = utf8ToUtf32(&sym[0], sym.size(), false);
+
+		if (u32_s.size() == 0 || isControl(u32_s[0]))
+		{
+			return 0;
+		}
+
+		int w = 0;
+
+		for (int i = 0; i < u32_s.size(); i++)
+		{
+			int c_w = 0;
+
+			if (isWide(u32_s[i]))
+			{
+				c_w = 2;
+			}
+			else if(getGraphemeType(u32_s[i]) != GRAPHEME_TYPE::EXTEND)
+			{
+				c_w = 1;
+			}
+
+			w = std::max(w, c_w);
+		}
+
+		return w;
 	}
 }

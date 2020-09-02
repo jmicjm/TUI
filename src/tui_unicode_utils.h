@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace tui
 {
@@ -286,9 +287,41 @@ namespace tui
 		return true;
 	}
 
-	inline bool isControl(char32_t ch)
+	inline bool isControl(char32_t cp)
 	{
-		return !(ch >= 32 && ch <= 126) && (ch < 32 || getGraphemeType(ch) == GRAPHEME_TYPE::CONTROL);
+		return !(cp >= 32 && cp <= 126) && (cp < 32 || getGraphemeType(cp) == GRAPHEME_TYPE::CONTROL);
+	}
+
+	inline bool isWide(char32_t cp)
+	{
+		struct range { unsigned int r_s, r_e; };
+
+		static const std::vector<range> ranges =
+		{
+			#include "wide_ranges.h"
+		};
+
+		int s = 0;
+		int e = ranges.size() - 1;
+
+		while (s <= e)
+		{
+			int c = (s + e) / 2;
+
+			if (ranges[c].r_s > cp)
+			{
+				e = --c;
+			}
+			else if (ranges[c].r_e < cp)
+			{
+				s = ++c;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
