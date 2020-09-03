@@ -97,7 +97,7 @@ namespace tui
 			for (int i = 0; i < m_tabs.size(); i++)
 			{
 				m_tabs[i].position = m_generated_tabs.size();
-				m_generated_tabs += m_tabs[i].string;
+				m_generated_tabs += getFullWidthString(m_tabs[i].string);
 
 				if (m_display_separator && i < m_tabs.size() - 1) 
 				{
@@ -133,9 +133,9 @@ namespace tui
 					};
 					auto adjustRight = [&]()
 					{
-						if (m_tabs[m_selected].position + m_tabs[m_selected].string.size() > m_first_pos + len)
+						if (m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() > m_first_pos + len)
 						{
-							m_first_pos = m_tabs[m_selected].position + m_tabs[m_selected].string.size() - len;
+							m_first_pos = m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() - len;
 						}
 					};
 
@@ -151,7 +151,7 @@ namespace tui
 
 				for (int i = too_long, j = m_first_pos; j < m_generated_tabs.size() && i < surface1D<direction>::getSize() - too_long; i++, j++)
 				{
-					switch (j >= m_tabs[m_selected].position && j < m_tabs[m_selected].position + m_tabs[m_selected].string.size())
+					switch (j >= m_tabs[m_selected].position && j < m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size())
 					{
 					case false:
 						surface1D<direction>::setSymbolAt(m_generated_tabs[j], i);
