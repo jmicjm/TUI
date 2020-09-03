@@ -177,7 +177,7 @@ namespace tui
 					{
 						symbol_string fw_name = getFullWidthString(m_values[i].name);
 
-						for (int j = 0; j < fw_name.size() && j < m_chart.getSize().x; j++)
+						for (int j = 0; j < fw_name.size() && x + j < m_chart.getSize().x; j++)
 						{
 							m_chart.setSymbolAt(fw_name[j], { x + j, m_chart.getSize().y - 1 });
 						}
