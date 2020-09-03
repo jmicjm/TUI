@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 namespace tui
 {
@@ -261,6 +262,14 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		std::vector<chart_data_unit> getData() { return m_values; }
+
+		void goToBar(unsigned int line)
+		{
+			m_scroll.setTopPosition(line * m_distance);
+			m_redraw_needed = true;
+		}
+		//returns first visible bar
+		unsigned int getBar() { return std::ceil(m_scroll.getTopPosition() / (float)m_distance); }
 
 		void setDistance(unsigned int distance)
 		{
