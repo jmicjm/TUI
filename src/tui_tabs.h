@@ -124,24 +124,15 @@ namespace tui
 						m_first_pos = m_generated_tabs.size() - len;
 					}
 
-					auto adjustLeft = [&]()
+					if (m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() > m_first_pos + len)
 					{
-						if (m_tabs[m_selected].position <= m_first_pos)
-						{
-							m_first_pos = m_tabs[m_selected].position;
-						}
-					};
-					auto adjustRight = [&]()
-					{
-						if (m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() > m_first_pos + len)
-						{
-							m_first_pos = m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() - len;
-						}
-					};
+						m_first_pos = m_tabs[m_selected].position + getFullWidthString(m_tabs[m_selected].string).size() - len;
+					}
 
-					adjustLeft();
-					adjustRight();
-					adjustLeft();
+					if (m_tabs[m_selected].position <= m_first_pos)
+					{
+						m_first_pos = m_tabs[m_selected].position;
+					}
 				}
 				else 
 				{
