@@ -27,6 +27,7 @@ namespace tui
 		using std::vector<surface*>::operator[];
 		using std::vector<surface*>::push_back;
 		using std::vector<surface*>::pop_back;
+		using std::vector<surface*>::insert;
 		using std::vector<surface*>::clear;
 		using std::vector<surface*>::erase;
 	};
