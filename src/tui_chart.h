@@ -100,8 +100,8 @@ namespace tui
 
 		void updateMinMaxStr()
 		{
-			m_max_str = (m_max > 0 ? symbol_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : symbol_string("0", gca().value_labels_color)) + symbol_string(m_unit, gca().value_labels_color);
-			m_min_str = (m_min < 0 ? symbol_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : symbol_string("0", gca().value_labels_color)) + symbol_string(m_unit, gca().value_labels_color);
+			m_max_str = (m_max > 0 ? symbol_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : symbol_string("0", gca().value_labels_color)) + getFullWidthString(symbol_string(m_unit, gca().value_labels_color));
+			m_min_str = (m_min < 0 ? symbol_string(toStringP(m_min, m_value_labels_precision), gca().value_labels_color) : symbol_string("0", gca().value_labels_color)) + getFullWidthString(symbol_string(m_unit, gca().value_labels_color));
 		}
 
 		void fill()
@@ -175,9 +175,11 @@ namespace tui
 
 					if (m_display_data_labels)
 					{
-						for (int j = 0; j < m_values[i].name.size() && j < m_chart.getSize().x; j++)
+						symbol_string fw_name = getFullWidthString(m_values[i].name);
+
+						for (int j = 0; j < fw_name.size() && j < m_chart.getSize().x; j++)
 						{
-							m_chart.setSymbolAt(m_values[i].name[j], { x + j, m_chart.getSize().y - 1 });
+							m_chart.setSymbolAt(fw_name[j], { x + j, m_chart.getSize().y - 1 });
 						}
 					}
 				}
