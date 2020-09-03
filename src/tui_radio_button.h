@@ -12,12 +12,7 @@ namespace tui
 		symbol selected;
 		symbol not_selected;
 
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
-		radio_button_appearance_a() : radio_button_appearance_a(U'\x25CF', U'\x25CB') {}
-#endif
-#ifndef TUI_TARGET_SYSTEM_WINDOWS
 		radio_button_appearance_a() : radio_button_appearance_a(U'\x25C9', U'\x25CB') {}
-#endif
 		radio_button_appearance_a(symbol Selected, symbol Not_selected) : selected(Selected), not_selected(Not_selected) {}
 
 		void setColor(color Color)

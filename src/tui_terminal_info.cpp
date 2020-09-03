@@ -10,7 +10,7 @@ namespace tui
 {
 	terminal_info term_info;
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 	std::string getCommandOutput(const char* command)
 	{
 		std::array<char, 128> buffer;
@@ -30,7 +30,7 @@ namespace tui
 
 	void terminal_info::set()
 	{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 		std::string infocmp = getCommandOutput("infocmp");
 
 		auto getSeq = [&](std::string seq_name)
@@ -150,7 +150,7 @@ namespace tui
 		rgb_color = colorterm.find("truecolor") != std::string::npos || colorterm.find("24bit") != std::string::npos;
 
 #endif
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 		std::vector<int> keys =
 		{
 			73, 81, 83,82, 79, 71, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 133, 134, 72, 80, 75, 77

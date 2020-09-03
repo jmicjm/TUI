@@ -9,11 +9,11 @@
 #include <string>
 #include <iostream>
 
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 	#include <windows.h>
 #endif
 
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 	#include <sys/ioctl.h>
 	#include <unistd.h>
 	#include <termios.h>
@@ -68,7 +68,7 @@ namespace tui
 
 		struct console : console_buffer
 		{
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			HANDLE m_console_handle;
 #endif
 			time_frame fps_control;
@@ -77,7 +77,7 @@ namespace tui
 
 			console() : fps_control(std::chrono::milliseconds(1000) / 30)
 			{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 				m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
 			}
@@ -125,7 +125,7 @@ namespace tui
 					return smallest_dst_id;
 				};
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 				std::vector<CHAR_INFO> temp;
 
 				auto getRgbiColor = [&](color c)
@@ -175,7 +175,7 @@ namespace tui
 				SetConsoleTextAttribute(m_console_handle, getRgbiColor({ COLOR::WHITE, COLOR::BLACK }));
 #endif
 
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 				static const std::array<std::string, 16> bg =
 				{
 					{ "40","44","42","46","41","45","43","47","100","104","102","106","101","105","103","107" }
@@ -293,7 +293,7 @@ namespace tui
 			{
 				vec2i console_size;
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 				CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 				GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
 
@@ -301,7 +301,7 @@ namespace tui
 				console_size.y = buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1;
 #endif
 
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 				winsize w;
 				ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
@@ -313,7 +313,7 @@ namespace tui
 
 			void hidePrompt()
 			{
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 				CONSOLE_CURSOR_INFO cursor_info;
 				cursor_info.bVisible = false;
 				cursor_info.dwSize = 1;
@@ -321,7 +321,7 @@ namespace tui
 				SetConsoleCursorInfo(m_console_handle, &cursor_info);
 #endif
 
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 				std::cout << "\033[?25l";
 #endif
 			}
@@ -367,7 +367,7 @@ namespace tui
 
 		void restore()
 		{
-#ifdef TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			CONSOLE_CURSOR_INFO cursor_info;
 			cursor_info.bVisible = true;
 			cursor_info.dwSize = 1;
@@ -375,14 +375,14 @@ namespace tui
 			SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
 #endif
 
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			std::cout << "\033[?25h";
 #endif
 		}
 
 		void init()
 		{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			system("chcp 65001");		
 #endif
 			std::atexit(restore);

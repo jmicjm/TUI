@@ -12,11 +12,11 @@
 #include <cstdio>
 #include <cmath>
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 	#include <conio.h>
 #endif
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 	#include "termios.h"
 	#include "unistd.h" 
 #endif
@@ -30,37 +30,37 @@ namespace tui
 			std::exit(0);
 		}
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 		termios default_settings;
 		termios noncanon_settings;
 		termios nonblocking_settings;
 #endif
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 		bool nonblocking = false;
 #endif
 
 		void useNonCanon()
 		{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			tcsetattr(0, TCSANOW, &noncanon_settings);
 #endif
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			nonblocking = false;
 #endif
 		}
 		void useNonBlocking()
 		{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			tcsetattr(0, TCSANOW, &nonblocking_settings);
 #endif
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			nonblocking = true;
 #endif
 		}
 
 		int gchar()
 		{
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 			switch (nonblocking)
 			{
 			case false:
@@ -76,7 +76,7 @@ namespace tui
 				}
 			}
 #endif
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			char c;
 			size_t s = read(STDIN_FILENO, &c, 1);
 
@@ -153,7 +153,7 @@ namespace tui
 						running = false;
 						terminate_req = false;
 						clear();
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 						tcsetattr(0, TCSANOW, &default_settings);
 #endif
 						sync_mtx.unlock();
@@ -171,7 +171,7 @@ namespace tui
 						CtrlcHandler();
 					}
 
-#ifdef  TUI_TARGET_SYSTEM_WINDOWS
+#if defined(_WIN32)
 					if (gc != 0 && gc != 224)
 					{
 						push(gc);
@@ -201,7 +201,7 @@ namespace tui
 						}
 					}
 #endif
-#ifdef TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 					if (gc == 127)//backspace could be 8 or 127
 					{
 						input[1].push_back(BACKSPACE);
@@ -322,7 +322,7 @@ namespace tui
 			}
 			buffer.sync_mtx.unlock();
 
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			tcsetattr(0, TCSANOW, &default_settings);
 			std::cout << term_info.rmkx;
 #endif
@@ -330,7 +330,7 @@ namespace tui
 
 		void init()
 		{
-#ifdef  TUI_TARGET_SYSTEM_LINUX
+#if defined(__linux__) || defined(__unix__) 
 			tcgetattr(0, &default_settings);
 
 			noncanon_settings = default_settings;
