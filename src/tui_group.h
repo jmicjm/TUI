@@ -28,6 +28,8 @@ namespace tui
 		using std::vector<surface*>::push_back;
 		using std::vector<surface*>::pop_back;
 		using std::vector<surface*>::insert;
+		using std::vector<surface*>::begin;
+		using std::vector<surface*>::end;
 		using std::vector<surface*>::clear;
 		using std::vector<surface*>::erase;
 	};
