@@ -97,22 +97,13 @@ namespace tui
 
 		void setString(const symbol_string& str)
 		{
-			int w = 0;
+			symbol_string s = getFullWidthString(str);
 
-			for (int i = 0; i < str.size(); i++)
+			setSizeInfo({ {(int)s.size(),1},{0,0} });
+
+			for (int i = 0; i < s.size(); i++)
 			{
-				w += symbolWidth(str[i]);
-			}
-			setSizeInfo({ {w,1},{0,0} });
-
-			int x = 0;
-			int i = 0;
-			while (x < getSize().x && i < str.size())
-			{
-				setSymbolAt(str[i], { x,0 });
-
-				x += symbolWidth(str[i]);
-				i++;
+				setSymbolAt(s[i], { i,0 });
 			}
 		}
 

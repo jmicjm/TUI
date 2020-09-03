@@ -152,4 +152,26 @@ namespace tui
 		symbol_string tmp = l;
 		return tmp += r;
 	}
+
+	//returns spaced string
+	inline symbol_string getFullWidthString(const symbol_string& str)
+	{
+		symbol_string fw;
+
+		int w = 0;
+
+		for (int i = 0; i < str.size(); i++)
+		{
+			w += symbolWidth(str[i]);
+		}
+		fw.resize(w);
+
+		for (int i = 0, j = 0; i < str.size() && j < fw.size(); i++)
+		{
+			fw[j] = str[i];
+			j+= symbolWidth(str[i]);
+		}
+
+		return fw;
+	}
 }
