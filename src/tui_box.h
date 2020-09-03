@@ -78,13 +78,15 @@ namespace tui
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
 			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
 
-			int shift = getSize().x > m_title.size();
-			int t_pos = (getSize().x-2) * (m_title_position / 100.f) - m_title.size() * (m_title_position / 100.f) + shift;
+			symbol_string fw_str = getFullWidthString(m_title);
+
+			bool shift = getSize().x > fw_str.size();
+			int t_pos = (getSize().x-2) * (m_title_position / 100.f) - fw_str.size() * (m_title_position / 100.f) + shift;
 			if (t_pos < 0) { t_pos = 0; }
 
-			for (int i = 0; i<m_title.size() && t_pos < getSize().x; i++, t_pos++)
+			for (int i = 0; i < fw_str.size() && t_pos < getSize().x; i++, t_pos++)
 			{
-				setSymbolAt(m_title[i], vec2i(t_pos, 0));
+				setSymbolAt(fw_str[i], vec2i(t_pos, 0));
 			}
 		}
 		void drawAction() override
