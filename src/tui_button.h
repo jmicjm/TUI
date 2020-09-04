@@ -5,6 +5,8 @@
 #include "tui_active_element.h"
 #include "tui_input.h"
 
+#include <algorithm>
+
 namespace tui
 {
 	struct button_appearance_a
@@ -47,10 +49,8 @@ namespace tui
 		void setInactiveAppearance(button_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
 		button_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
 	};
-	namespace BUTTON_TYPE
-	{
-		enum BUTTON_TYPE {SWITCH, PUSH};
-	}
+
+	enum class BUTTON_TYPE { SWITCH, PUSH };
 
 	template<DIRECTION direction>
 	struct button : surface1D<direction>, button_appearance, active_element
@@ -58,6 +58,8 @@ namespace tui
 	private:
 		symbol_string m_selected_text;
 		symbol_string m_deselected_text;
+
+		BUTTON_TYPE m_type = BUTTON_TYPE::PUSH;
 
 		void (*m_selection_function_ptr)(void) = nullptr;
 		void (*m_deselection_function_ptr)(void) = nullptr;
@@ -71,10 +73,10 @@ namespace tui
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
 		}
-		const symbol_string& getCurrentText()
+		symbol_string getCurrentText()
 		{
-			if (isSelected()) { return m_selected_text; }
-			else { return m_deselected_text; }
+			if (isSelected()) { return getFullWidthString(m_selected_text); }
+			else { return getFullWidthString(m_deselected_text); }
 		}
 
 		void fill()
@@ -91,32 +93,51 @@ namespace tui
 			if (isSelected()) { surface::invert(); }
 		}
 
+		void resizeAction() override { m_redraw_needed = true; }
+		void updateAction() override { update(); }
+		void drawAction() override
+		{
+			if (m_redraw_needed)
+			{
+				fill();
+				m_redraw_needed = false;
+			}
+		}
+		void activationAction() override { m_redraw_needed = true; }
+		void disactivationAction() override { m_redraw_needed = true; }
+
+		void setAppearanceAction() override { m_redraw_needed = true; }
+
 	public:
 		short key_select = input::KEY::ENTER;
-		BUTTON_TYPE::BUTTON_TYPE type = BUTTON_TYPE::PUSH;
 
-		button() : button({3}, ' ') {}
-		button(surface1D_size size, symbol_string text) : button(size, text, text) {}
-		button(surface1D_size size, symbol_string selected, symbol_string deselected) : button(size, selected, deselected, button_appearance()) {}
-		button(surface1D_size size, symbol_string selected, symbol_string deselected, button_appearance appearance) : m_selected_text(selected), m_deselected_text(deselected)
+		button() : button(' ') {}
+		button(const symbol_string& text) : button(text, text) {}
+		button(const symbol_string& selected, const symbol_string& deselected) : m_selected_text(selected), m_deselected_text(deselected)
+		{
+			resizeToText();
+		}
+		button(const symbol_string& text, surface1D_size size) : button(text, text, size) {}
+		button(const symbol_string& selected, const symbol_string& deselected, surface1D_size size) : m_selected_text(selected), m_deselected_text(deselected)
 		{
 			surface1D<direction>::setSize(size);
-			setAppearance(appearance);
 		}
+
+		void setType(BUTTON_TYPE type) { m_type = type; }
 	
 		bool isSelected() { return m_selected; }
 
-		void setSelectedText(symbol_string text)
+		void setSelectedText(const symbol_string& text)
 		{
 			m_selected_text = text;
 			if (isSelected()) { m_redraw_needed = true; }
 		}
-		void setDeselectedText(symbol_string text)
+		void setDeselectedText(const symbol_string& text)
 		{
 			m_deselected_text = text;
 			if (!isSelected()) { m_redraw_needed = true; }
 		}
-		void setText(symbol_string text)
+		void setText(const symbol_string& text)
 		{
 			m_selected_text = text;
 			m_deselected_text = text;
@@ -125,15 +146,29 @@ namespace tui
 
 		void resizeToText()
 		{
-			unsigned int longest = m_selected_text.size() > m_deselected_text.size() ? m_selected_text.size() : m_deselected_text.size();
-			surface1D<direction>::setSize(longest+2);
+			unsigned int s_size = getFullWidthString(m_selected_text).size();
+			unsigned int d_size = getFullWidthString(m_deselected_text).size();
+
+			unsigned int longest = std::max(s_size, d_size);
+
+			surface1D<direction>::setSizeInfo(longest+2);
+		}
+
+		void setSelectionFunction(void (*func_ptr)(void))
+		{
+			m_selection_function_ptr = *func_ptr;
+		}
+
+		void setDeselectionFunction(void (*func_ptr)(void))
+		{
+			m_deselection_function_ptr = *func_ptr;
 		}
 
 		void update()
 		{
 			bool last_state = isSelected();
 
-			if (type == BUTTON_TYPE::PUSH) { m_selected = false; }
+			if (m_type == BUTTON_TYPE::PUSH) { m_selected = false; }
 
 			if (isActive())
 			{
@@ -159,33 +194,6 @@ namespace tui
 
 			if (last_state != isSelected()) { m_redraw_needed = true; }
 		}
-
-		void setSelectionFunction(void (*func_ptr)(void))
-		{
-			m_selection_function_ptr = *func_ptr;
-		}
-
-		void setDeselectionFunction(void (*func_ptr)(void))
-		{
-			m_deselection_function_ptr = *func_ptr;
-		}
-
-		void updateAction() override { update(); }
-
-		void drawAction() override 
-		{ 
-			if (m_redraw_needed)
-			{
-				fill();
-				m_redraw_needed = false;
-			}
-		}
-
-		void resizeAction() override { m_redraw_needed = true; }
-		void setAppearanceAction() override { m_redraw_needed = true; }
-
-		void activationAction() override { m_redraw_needed = true; }
-		void disactivationAction() override { m_redraw_needed = true; }
 	};
 
 }
