@@ -59,22 +59,28 @@ namespace tui
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		symbol_string m_unprepared_text;
-		std::vector<vec2i> m_symbolPos;
+		std::vector<vec2i> m_symbol_pos;
 
 		bool m_use_control_characters = true;
 		bool m_display_scroll = true;
 
 		bool m_redraw_needed = true;
 
+		friend struct input_text;
+		vec2i getSymbolPos(unsigned int i)
+		{
+			return m_symbol_pos[i];
+		}
+
 		void fill()
 		{
 			m_text.makeTransparent();
 
-			if (m_symbolPos.size() > 0)
+			if (m_symbol_pos.size() > 0)
 			{
 				auto f_it = std::lower_bound(
-					m_symbolPos.begin(),
-					m_symbolPos.end(),
+					m_symbol_pos.begin(),
+					m_symbol_pos.end(),
 					vec2i(0, m_scroll.getTopPosition()),
 					[&](const vec2i& a, const vec2i& b) 
 					{
@@ -82,14 +88,14 @@ namespace tui
 					}
 				);	
 
-				for (int i = f_it - m_symbolPos.begin(); i < m_unprepared_text.size(); i++)
+				for (int i = f_it - m_symbol_pos.begin(); i < m_unprepared_text.size(); i++)
 				{
-					vec2i p = m_symbolPos[i];
+					vec2i p = m_symbol_pos[i];
 					p.y -= m_scroll.getTopPosition();
 
 					if (p.y >= m_text.getSize().y) { break; }
 
-					if (!isControl(utf8ToUtf32(m_unprepared_text[i].getCluster())[0]))
+					if (symbolWidth(m_unprepared_text[i]) > 0)
 					{
 						m_text.setSymbolAt(m_unprepared_text[i], p);
 					}
@@ -102,7 +108,7 @@ namespace tui
 		}
 		void prepareText()
 		{
-			m_symbolPos.resize(m_unprepared_text.size());
+			m_symbol_pos.resize(m_unprepared_text.size());
 
 			int pos = 0;
 			for (int i = 0; i < m_unprepared_text.size(); i++)
@@ -115,9 +121,9 @@ namespace tui
 					pos += m_text.getSize().x - pos_in_line;
 					pos_in_line = pos % m_text.getSize().x;
 				}		
-				m_symbolPos[i] = { pos_in_line, pos / m_text.getSize().x };
+				m_symbol_pos[i] = { pos_in_line, pos / m_text.getSize().x };
 
-				if (isControl(utf8ToUtf32(m_unprepared_text[i].getCluster())[0]))
+				if (sym_w == 0)
 				{
 					if (m_use_control_characters)
 					{
@@ -133,7 +139,7 @@ namespace tui
 					continue;
 				}
 
-				pos += sym_w > 0 ? sym_w : 1;
+				pos += sym_w;
 			}
 		}
 
@@ -203,11 +209,6 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		vec2i getSymbolPos(int i)
-		{
-			return m_symbolPos[i];
-		}
-
 		void setText(symbol_string txt)
 		{
 			m_unprepared_text = txt;
@@ -218,9 +219,9 @@ namespace tui
 
 		int getNumberOfLines()
 		{
-			if (m_symbolPos.size() > 0)
+			if (m_symbol_pos.size() > 0)
 			{
-				return m_symbolPos.back().y + 1;
+				return m_symbol_pos.back().y + 1;
 			}
 			return 0;
 		}
@@ -294,7 +295,7 @@ namespace tui
 				setSizeInfo({ {(int)max_width, 1} });
 				prepareText();
 
-				int h = m_symbolPos.back().y;
+				int h = m_symbol_pos.back().y;
 
 				m_scroll.setContentLength(h);
 				setSizeInfo({ {(int)max_width, h} });
