@@ -22,8 +22,8 @@ namespace tui
 		void setAppearance(rectangle_appearance appearance) { setElement(*this, appearance); }
 		rectangle_appearance getAppearance() { return *this; }
 
-		void setFilling(symbol Filling) { setElement(filling, Filling); }
-		symbol getFilling() { return filling; }
+		void setFillingSymbol(symbol Filling) { setElement(filling, Filling); }
+		symbol getFillingSymbol() { return filling; }
 	};
 
 	struct rectangle : surface, rectangle_appearance

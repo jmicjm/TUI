@@ -37,24 +37,23 @@ namespace tui
 		void setAppearance(box_appearance appearance) { setElement(*this, appearance); }
 		box_appearance getAppearance() { return *this; }
 
-		void setHorizontalLine(symbol h_line) { setElement(m_horizontal_line,h_line); }
-		symbol getHorizontalLine() { return m_horizontal_line; }
+		void setHorizontalLineSymbol(symbol h_line) { setElement(m_horizontal_line,h_line); }
+		symbol getHorizontalLineSymbol() { return m_horizontal_line; }
 
-		void setVerticalLine(symbol v_line) { setElement(m_vertical_line, v_line); }
-		symbol getVerticalLine() { return m_vertical_line; }
+		void setVerticalLineSymbol(symbol v_line) { setElement(m_vertical_line, v_line); }
+		symbol getVerticalLineSymbol() { return m_vertical_line; }
 
-		void setTopLeft(symbol top_l) { setElement(m_top_left, top_l); }
-		symbol getTopLeft() { return m_top_left; }
+		void setTopLeftSymbol(symbol top_l) { setElement(m_top_left, top_l); }
+		symbol getTopLeftSymbol() { return m_top_left; }
 
-		void setTopRight(symbol top_r) { setElement(m_top_right, top_r); }
-		symbol getTopRight() { return m_top_right; }
+		void setTopRightSymbol(symbol top_r) { setElement(m_top_right, top_r); }
+		symbol getTopRightSymbol() { return m_top_right; }
 
-		void setBottomLeft(symbol bottom_l) { setElement(m_bottom_left, bottom_l); }
-		symbol getBottomLeft() { return m_bottom_left; }
+		void setBottomLeftSymbol(symbol bottom_l) { setElement(m_bottom_left, bottom_l); }
+		symbol getBottomLeftSymbol() { return m_bottom_left; }
 
-		void setBottomRight(symbol bottom_r) { setElement(m_bottom_right, bottom_r); }
-		symbol getBottomRight() { return m_bottom_right; }
-
+		void setBottomRightSymbol(symbol bottom_r) { setElement(m_bottom_right, bottom_r); }
+		symbol getBottomRightSymbol() { return m_bottom_right; }
 	};
 
 	struct box : surface, box_appearance
