@@ -75,6 +75,8 @@ namespace tui
 		surface* m_anchor = nullptr;
 		anchor_position m_anchor_position_info;
 
+		symbol m_clear_symbol = U'\0';
+
 		bool m_resized;
 
 		void resize(vec2i size)
@@ -90,7 +92,7 @@ namespace tui
 				m_symbols.resize(new_size.x * new_size.y);
 				m_width = new_size.x;
 
-				makeTransparent();
+				clear();
 				resizeAction();
 			}
 		}
@@ -130,6 +132,11 @@ namespace tui
 		virtual void resizeAction() {}
 		virtual void updateAction() {}
 		virtual void drawAction() {}
+
+		void clear()
+		{
+			fill(m_clear_symbol);
+		}
 	public:
 		surface(surface_size size = {{ 1,1 }, { 0,0 }})
 		{
@@ -168,6 +175,10 @@ namespace tui
 		}
 
 		void setPositionInfo(position pos) { m_position_info = pos; }
+		position getPositionInfo() const { return m_position_info; }
+
+		vec2i getPosition() const { return m_position; }
+		vec2i getGlobalPosition() const { return m_global_position; }
 
 		void setAnchor(surface* surf) 
 		{
@@ -180,13 +191,15 @@ namespace tui
 
 		void setAnchorPositionInfo(anchor_position anchor_pos) { m_anchor_position_info = anchor_pos; }
 		anchor_position getAnchorPositionInfo() const { return m_anchor_position_info; }
- 
 
 		void setSizeInfo(surface_size size)
 		{
 			m_size_info = size;
 			resize(size.fixed);
 		}
+		surface_size getSizeInfo() const { return m_size_info; }
+
+		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
 
 		void updateSurfaceSize(surface& surf) const
 		{
@@ -293,17 +306,13 @@ namespace tui
 		void makeTransparent() { fill((char32_t)0); }
 		void makeBlank() { fill(' '); }
 
+		void setClearSymbol(const symbol& sym) { m_clear_symbol = sym; }
+		symbol getClearSymbol() { return m_clear_symbol; }
+
 		void invert()
 		{
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].invert(); }
 		}
-
-		vec2i getPosition() const { return m_position; }
-		vec2i getGlobalPosition() const { return m_global_position; }
-		position getPositionInfo() const { return m_position_info; }
-
-		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
-		surface_size getSizeInfo() const { return m_size_info; }
 	};
 
 	enum class DIRECTION : bool

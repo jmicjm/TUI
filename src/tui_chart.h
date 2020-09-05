@@ -107,7 +107,7 @@ namespace tui
 
 		void fill()
 		{
-			makeTransparent();
+			clear();
 
 			unsigned short label_str_width = m_display_value_labels * (m_max_str.size() > m_min_str.size() ? m_max_str.size() : m_min_str.size());
 

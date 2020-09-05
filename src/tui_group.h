@@ -11,7 +11,7 @@ namespace tui
 	private:
 		void drawAction() override
 		{
-			makeTransparent();
+			clear();
 
 			for (auto i : *(std::vector<surface*>*)this)
 			{

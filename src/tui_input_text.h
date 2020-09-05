@@ -226,7 +226,7 @@ namespace tui
 
 			if (m_redraw_needed)
 			{
-				makeTransparent();
+				clear();
 				insertSurface(m_text, false);
 			}
 

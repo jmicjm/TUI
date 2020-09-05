@@ -74,6 +74,7 @@ namespace tui
 
 		void fill()
 		{
+			clear();
 			m_text.makeTransparent();
 
 			if (m_symbol_pos.size() > 0)
@@ -102,7 +103,6 @@ namespace tui
 				}
 			}
 
-			makeTransparent();
 			insertSurface(m_text);
 			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll, false); }
 		}

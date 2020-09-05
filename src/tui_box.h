@@ -66,6 +66,8 @@ namespace tui
 
 		void fill()
 		{
+			clear();
+
 			setSymbolAt(m_top_left, vec2i(0, 0));
 			setSymbolAt(m_top_right, vec2i(getSize().x - 1, 0));
 			setSymbolAt(m_bottom_left, vec2i(0, getSize().y - 1));
