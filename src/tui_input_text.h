@@ -196,7 +196,7 @@ namespace tui
 
 				if (c_pos.y < m_text.getNumberOfLines()-1)
 				{
-					if (c_pos.y >= m_text.getNumberOfLines() - n)
+					if (c_pos.y + n >= m_text.getNumberOfLines())
 					{
 						n = m_text.getNumberOfLines() - c_pos.y - 1;
 					}
@@ -271,6 +271,8 @@ namespace tui
 	public:
 		short key_up = input::KEY::UP;
 		short key_down = input::KEY::DOWN;
+		short key_pgup = input::KEY::PGUP;
+		short key_pgdn = input::KEY::PGDN;
 		short key_left = input::KEY::LEFT;
 		short key_right = input::KEY::RIGHT;
 		short key_insert = input::KEY::INS;
@@ -330,7 +332,9 @@ namespace tui
 						|| key == key_left
 						|| key == key_right
 						|| key == key_up
-						|| key == key_down;
+						|| key == key_down
+						|| key == key_pgup
+						|| key == key_pgdn;
 				};
 
 				bool update_needed = false;
@@ -373,6 +377,16 @@ namespace tui
 						{
 							update();
 							moveCursorDown();
+						}
+						else if (input[i] == key_pgup)
+						{
+							update();
+							moveCursorUp(getSize().y);
+						}
+						else if (input[i] == key_pgdn)
+						{
+							update();
+							moveCursorDown(getSize().y);
 						}
 						else if (input[i] == key_insert)
 						{
