@@ -146,7 +146,7 @@ namespace tui
 		}
 		void moveCursorLeft(unsigned int n = 1)
 		{
-			if (m_cursor_pos_in_txt - (int)n >= 0) //without casting "n" to signed "m_cursor_pos_in_txt" is implicitly casted to unsigned and condition is always true 
+			if (m_cursor_pos_in_txt >= n) 
 			{ 
 				m_cursor_pos_in_txt -= n; 
 				m_redraw_needed = true;
@@ -159,63 +159,98 @@ namespace tui
 		}
 		void moveCursorUp(unsigned int n = 1)
 		{
-			if (m_str.size() > 0)
+			vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+			if (c_pos.y > 0)
 			{
-				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
-
-				if (c_pos.y > 0)
+				if (c_pos.y < n)
 				{
-					if (c_pos.y < n)
-					{
-						n = c_pos.y;
-					}
+					n = c_pos.y;
+				}
 
-					for (int l_pos = m_cursor_pos_in_txt - 1; l_pos >= 0; --l_pos)
+				for (int l_pos = m_cursor_pos_in_txt - 1; l_pos >= 0; l_pos--)
+				{
+					if (m_text.getSymbolPos(l_pos).y == c_pos.y - n && m_text.getSymbolPos(l_pos).x <= c_pos.x)
 					{
-						if (m_text.getSymbolPos(l_pos).y == c_pos.y - n && m_text.getSymbolPos(l_pos).x <= c_pos.x)
-						{
-							m_cursor_pos_in_txt = l_pos;
-							m_redraw_needed = true;
-							break;
-						}
-						else if (m_text.getSymbolPos(l_pos).y < c_pos.y - n)
-						{
-							m_cursor_pos_in_txt = l_pos + 1;
-							m_redraw_needed = true;
-							break;
-						}
+						m_cursor_pos_in_txt = l_pos;
+						m_redraw_needed = true;
+						break;
+					}
+					else if (m_text.getSymbolPos(l_pos).y < c_pos.y - n)
+					{
+						m_cursor_pos_in_txt = l_pos + 1;
+						m_redraw_needed = true;
+						break;
 					}
 				}
 			}
 		}
 		void moveCursorDown(unsigned int n = 1)
 		{
-			if (m_str.size() > 0)
+			vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+			if (c_pos.y < m_text.getNumberOfLines()-1)
 			{
-				vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
-
-				if (c_pos.y < m_text.getNumberOfLines()-1)
+				if (c_pos.y + n >= m_text.getNumberOfLines())
 				{
-					if (c_pos.y + n >= m_text.getNumberOfLines())
-					{
-						n = m_text.getNumberOfLines() - c_pos.y - 1;
-					}
+					n = m_text.getNumberOfLines() - c_pos.y - 1;
+				}
 
-					for (int l_pos = m_cursor_pos_in_txt + 1; l_pos <= m_str.size(); ++l_pos)
+				for (int l_pos = m_cursor_pos_in_txt + 1; l_pos <= m_str.size(); l_pos++)
+				{
+					if (m_text.getSymbolPos(l_pos).y == c_pos.y + n && (m_text.getSymbolPos(l_pos).x >= c_pos.x || l_pos == m_str.size()))
 					{
-						if (m_text.getSymbolPos(l_pos).y == c_pos.y + n && (m_text.getSymbolPos(l_pos).x >= c_pos.x || l_pos == m_str.size()))
-						{
-							m_cursor_pos_in_txt = l_pos;
-							m_redraw_needed = true;
-							break;
-						}
-						else if (m_text.getSymbolPos(l_pos).y > c_pos.y + n)
-						{
-							m_cursor_pos_in_txt = l_pos - 1;
-							m_redraw_needed = true;
-							break;
-						}
+						m_cursor_pos_in_txt = l_pos;
+						m_redraw_needed = true;
+						break;
 					}
+					else if (m_text.getSymbolPos(l_pos).y > c_pos.y + n)
+					{
+						m_cursor_pos_in_txt = l_pos - 1;
+						m_redraw_needed = true;
+						break;
+					}
+				}
+			}
+		}
+
+		void moveCursorHome()
+		{
+			vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+			for (int l_pos = m_cursor_pos_in_txt - 1; l_pos >= 0; l_pos--)
+			{
+				if (m_text.getSymbolPos(l_pos).y < c_pos.y)
+				{
+					m_cursor_pos_in_txt = l_pos + 1;
+					m_redraw_needed = true;
+					break;
+				}
+				else if (l_pos == 0)
+				{
+					m_cursor_pos_in_txt = 0;
+					m_redraw_needed = true;
+					break;
+				}
+			}
+		}
+		void moveCursorEnd()
+		{
+			vec2i c_pos = m_text.getSymbolPos(m_cursor_pos_in_txt);
+
+			for (int l_pos = m_cursor_pos_in_txt + 1; l_pos <= m_str.size(); l_pos++)
+			{
+				if (m_text.getSymbolPos(l_pos).y > c_pos.y)
+				{
+					m_cursor_pos_in_txt = l_pos - 1;
+					m_redraw_needed = true;
+					break;
+				}
+				else if (l_pos == m_str.size())
+				{
+					m_cursor_pos_in_txt = l_pos;
+					m_redraw_needed = true;
+					break;
 				}
 			}
 		}
@@ -275,12 +310,15 @@ namespace tui
 		short key_pgdn = input::KEY::PGDN;
 		short key_left = input::KEY::LEFT;
 		short key_right = input::KEY::RIGHT;
+		short key_home = input::KEY::HOME;
+		short key_end = input::KEY::END;
 		short key_insert = input::KEY::INS;
 		short key_backspace = input::KEY::BACKSPACE;
 
 		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
 		{
 			m_text.setSizeInfo({ {0,0},{100,100} });
+			updateText();
 		}
 
 		symbol_string getText() { return m_str; }
@@ -334,7 +372,9 @@ namespace tui
 						|| key == key_up
 						|| key == key_down
 						|| key == key_pgup
-						|| key == key_pgdn;
+						|| key == key_pgdn
+						|| key == key_home
+						|| key == key_end;
 				};
 
 				bool update_needed = false;
@@ -387,6 +427,16 @@ namespace tui
 						{
 							update();
 							moveCursorDown(getSize().y);
+						}
+						else if (input[i] == key_home)
+						{
+							update();
+							moveCursorHome();
+						}
+						else if (input[i] == key_end)
+						{
+							update();
+							moveCursorEnd();
 						}
 						else if (input[i] == key_insert)
 						{
