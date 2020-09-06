@@ -142,7 +142,6 @@ namespace tui
 		{
 			setSizeInfo(size);
 		}
-		surface(const symbol& sym) : surface(symbol_string(sym)) {}
 		surface(const symbol_string& str)
 		{
 			setString(str);
