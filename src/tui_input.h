@@ -17,7 +17,6 @@ namespace tui
 
 			PGUP = TUI_KEY_OFFSET,
 			PGDN = TUI_KEY_OFFSET + 1,
-
 			DEL = TUI_KEY_OFFSET + 2,
 			INS = TUI_KEY_OFFSET + 3,
 			END = TUI_KEY_OFFSET + 4,
@@ -41,6 +40,25 @@ namespace tui
 			LEFT = TUI_KEY_OFFSET + 20,
 			RIGHT = TUI_KEY_OFFSET + 21,
 
+			//ALT KEYS
+			ALT_PGUP = TUI_KEY_OFFSET + 22,
+			ALT_PGDN = TUI_KEY_OFFSET + 23,
+			ALT_DEL = TUI_KEY_OFFSET + 24,
+			ALT_INS = TUI_KEY_OFFSET + 25,
+			ALT_END = TUI_KEY_OFFSET + 26,
+			ALT_HOME = TUI_KEY_OFFSET + 27,
+
+			ALT_UP = TUI_KEY_OFFSET + 28,
+			ALT_DOWN = TUI_KEY_OFFSET + 29,
+			ALT_LEFT = TUI_KEY_OFFSET + 30,
+			ALT_RIGHT = TUI_KEY_OFFSET + 31,
+			/*
+			ALT+F* omitted because linux environments tends to override them,
+			on windows they dont work at all,
+			so making reliable isKeySupported() would be painful
+			*/
+
+			//CTRL KEYS
 			CTRL_A = 1,
 			CTRL_B = 2,
 			CTRL_C = 3,

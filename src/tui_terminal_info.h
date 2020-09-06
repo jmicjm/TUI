@@ -19,9 +19,8 @@ namespace tui
 		{
 			{"kpp"}, //PGUP
 			{"knp"}, //PGDN
-
-			{"kdch1"}, //DELETE
-			{"kich1"}, //INSERT
+			{"kdch1"}, //DEL
+			{"kich1"}, //INS
 			{"kend"}, //END
 			{"khome"}, //HOME
 
@@ -41,7 +40,20 @@ namespace tui
 			{"kcuu1"}, //UP
 			{"kcud1"}, //DOWN
 			{"kcub1"}, //LEFT
-			{"kcuf1"} //RIGHT
+			{"kcuf1"}, //RIGHT
+
+			//ALT KEYS
+			{"kPRV3"}, //ALT+PGUP
+			{"kNXT3"}, //ALT+PGDN
+			{"kDC3"}, //ALT+DEL
+			{"kIC3"}, //ALT+INS
+			{"kEND3"}, //ALT+END
+			{"kHOM3"}, //ALT+HOME
+
+			{"kUP3"}, //ALT+UP
+			{"kDN3"}, //ALT+DOWN
+			{"kLFT3"}, //ALT+LEFT
+			{"kRIT3"} //ALT+RIGHT
 		};
 		unsigned short longest_seq;
 		unsigned short shortest_seq;

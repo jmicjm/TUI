@@ -32,7 +32,7 @@ namespace tui
 	void terminal_info::set()
 	{
 #if defined(__linux__) || defined(__unix__) 
-		std::string infocmp = getCommandOutput("infocmp");
+		std::string infocmp = getCommandOutput("infocmp") + getCommandOutput("infocmp -x");
 
 		auto getSeq = [&](std::string seq_name)
 		{
@@ -156,9 +156,8 @@ namespace tui
 		{
 			{224, 73}, //PGUP
 			{224, 81}, //PGDN
-
-			{224, 83}, //DELETE
-			{224, 82}, //INSERT
+			{224, 83}, //DEL
+			{224, 82}, //INS
 			{224, 79}, //END
 			{224, 71}, //HOME
 
@@ -178,7 +177,20 @@ namespace tui
 			{224, 72}, //UP
 			{224, 80}, //DOWN
 			{224, 75}, //LEFT
-			{224, 77} //RIGHT
+			{224, 77}, //RIGHT
+
+			//ALT KEYS
+			{0, 153}, //ALT+PGUP
+			{0, 161}, //ALT+PGDN
+			{0, 163}, //ALT+DEL
+			{0, 162}, //ALT+INS
+			{0, 159}, //ALT+END
+			{0, 151}, //ALT+HOME
+
+			{0, 152}, //ALT+UP
+			{0, 160}, //ALT+DOWN
+			{0, 155}, //ALT+LEFT
+			{0, 157}  //ALT+RIGHT
 		};
 
 		for (int i = 0; i < sequences.size(); i++)

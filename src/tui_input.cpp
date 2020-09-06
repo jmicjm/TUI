@@ -400,7 +400,7 @@ namespace tui
 		bool isKeySupported(short key)
 		{
 			if (key >= 0 && key <= 255) { return true; }
-			else if (key >= KEY::PGUP && key <= KEY::RIGHT)
+			else if (key >= KEY::PGUP && key <= KEY::ALT_RIGHT)
 			{
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 			}
@@ -442,13 +442,15 @@ namespace tui
 				}
 			}
 
-			static const std::string offset_key[22] = {
+			static const std::string offset_key[32] = {
 				"PGUP","PGDN","DEL","INS","END","HOME",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
-				"UP","DOWN","LEFT","RIGHT"
+				"UP","DOWN","LEFT","RIGHT",
+				"ALT+PGUP","ALT+PGDN","ALT+DEL","ALT+INS","ALT+END","ALT+HOME",
+				"ALT+UP","ALT+DOWN","ALT+LEFT","ALT+RIGHT"
 			};
 
-			if (key >= TUI_KEY_OFFSET && key <= TUI_KEY_OFFSET+21)
+			if (key >= KEY::PGUP && key <= KEY::ALT_RIGHT)
 			{
 				name = offset_key[key - TUI_KEY_OFFSET];
 			}
