@@ -186,9 +186,9 @@ namespace tui
 						switch (gc2 != -1)
 						{
 						case true:
-							if (term_info.getSeqNumber({ gc2 }) >= 0)
+							if (term_info.getSeqNumber({gc, gc2 }) >= 0)
 							{
-								input[1].push_back(term_info.getSeqNumber({ gc2 }) + TUI_KEY_OFFSET);
+								input[1].push_back(term_info.getSeqNumber({gc, gc2 }) + TUI_KEY_OFFSET);
 							}
 							else
 							{

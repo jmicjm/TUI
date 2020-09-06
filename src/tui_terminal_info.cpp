@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <utility>
 
 namespace tui
 {
@@ -151,14 +152,38 @@ namespace tui
 
 #endif
 #if defined(_WIN32)
-		std::vector<int> keys =
+		std::vector<std::pair<int,int>> keys =
 		{
-			73, 81, 83,82, 79, 71, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 133, 134, 72, 80, 75, 77
+			{224, 73}, //PGUP
+			{224, 81}, //PGDN
+
+			{224, 83}, //DELETE
+			{224, 82}, //INSERT
+			{224, 79}, //END
+			{224, 71}, //HOME
+
+			{0, 59}, //F1
+			{0, 60},
+			{0, 61},
+			{0, 62},
+			{0, 63},
+			{0, 64},
+			{0, 65},
+			{0, 66},
+			{0, 67},
+			{0, 68},
+			{224, 133},
+			{224, 134}, //F2
+
+			{224, 72}, //UP
+			{224, 80}, //DOWN
+			{224, 75}, //LEFT
+			{224, 77} //RIGHT
 		};
 
 		for (int i = 0; i < sequences.size(); i++)
 		{
-			sequences[i].seq = { keys[i] };
+			sequences[i].seq = { keys[i].first, keys[i].second };
 		}
 #endif
 	}
