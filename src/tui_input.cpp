@@ -400,13 +400,13 @@ namespace tui
 		bool isKeySupported(short key)
 		{
 			if (key >= 0 && key <= 255) { return true; }
-			else if (key >= KEY::PGUP && key <= KEY::SHIFT_RIGHT)
+			else if (key >= KEY::PGUP && key <= KEY::CTRL_RIGHT)
 			{
 #if defined(__linux__) || defined(__unix__) 
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 #endif
 #if defined(_WIN32)
-				if (!(key >= KEY::SHIFT_UP && key <= KEY::SHIFT_RIGHT))
+				if (!(key >= KEY::SHIFT_UP && key <= KEY::SHIFT_RIGHT) && key != KEY::CTRL_PGUP)
 				{
 					return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 				}
@@ -450,9 +450,10 @@ namespace tui
 				}
 			}
 
-			static const std::string offset_key[48] = {
+			static const std::string offset_key[70] = {
 				"PGUP","PGDN","DEL","INS","END","HOME",
-				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
+				"F1","F2","F3","F4","F5","F6",
+				"F7","F8","F9","F10","F11","F12",
 				"UP","DOWN","LEFT","RIGHT",
 
 				"ALT+PGUP","ALT+PGDN","ALT+DEL","ALT+INS","ALT+END","ALT+HOME",
@@ -460,10 +461,15 @@ namespace tui
 
 				"SHIFT+F1","SHIFT+F2","SHIFT+F3","SHIFT+F4","SHIFT+F5","SHIFT+F6",
 				"SHIFT+F7","SHIFT+F8","SHIFT+F9","SHIFT+F10","SHIFT+F11","SHIFT+F12",
-				"SHIFT+UP","SHIFT+DOWN","SHIFT+LEFT","SHIFT+RIGHT"
+				"SHIFT+UP","SHIFT+DOWN","SHIFT+LEFT","SHIFT+RIGHT",
+
+				"CTRL+PGUP","CTRL+PGDN","CTRL+DEL","CTRL+INS","CTRL+END","CTRL+HOME",
+				"CTRL+F1","CTRL+F2","CTRL+F3","CTRL+F4","CTRL+F5","CTRL+F6",
+				"CTRL+F7","CTRL+F8","CTRL+F9","CTRL+F10","CTRL+F11","CTRL+F12",
+				"CTRL+UP","CTRL+DOWN","CTRL+LEFT","CTRL+RIGHT"
 			};
 
-			if (key >= KEY::PGUP && key <= KEY::SHIFT_RIGHT)
+			if (key >= KEY::PGUP && key <= KEY::CTRL_RIGHT)
 			{
 				name = offset_key[key - TUI_KEY_OFFSET];
 			}

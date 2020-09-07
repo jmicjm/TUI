@@ -72,7 +72,33 @@ namespace tui
 			{"kUP"}, //SHIFT+UP
 			{"kDN"}, //SHIFT+DOWN
 			{"kLFT"}, //SHIFT+LEFT
-			{"kRIT"} //SHIFT+RIGHT
+			{"kRIT"}, //SHIFT+RIGHT
+
+			//CTRL KEYS
+			{"kPRV5"}, //CTRL+PGUP
+			{"kNXT5"}, //CTRL+PGDN
+			{"kDC5"}, //CTRL+DEL
+			{"kIC5"}, //CTRL+INS
+			{"kEND5"}, //CTRL+END
+			{"kHOM5"}, //CTRL+HOME
+
+			{"kf25"}, //CTRL+F1
+			{"kf26"},
+			{"kf27"},
+			{"kf28"},
+			{"kf29"},
+			{"kf30"},
+			{"kf31"},
+			{"kf32"},
+			{"kf33"},
+			{"kf34"},
+			{"kf35"},
+			{"kf36"}, //CTRL+F12
+
+			{"kUP5"}, //CTRL+UP
+			{"kDN5"}, //CTRL+DOWN
+			{"kLFT5"}, //CTRL+LEFT
+			{"kRIT5"} //CTRL+RIGHT
 		};
 		unsigned short longest_seq;
 		unsigned short shortest_seq;
