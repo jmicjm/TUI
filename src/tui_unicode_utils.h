@@ -180,7 +180,7 @@ namespace tui
 
 		static const std::vector<grapheme_range_info> ranges =
 		{
-			#include "grapheme_ranges.h"
+			#include "udata/grapheme_ranges.h"
 		};
 
 		unsigned int s = 0;
@@ -298,7 +298,7 @@ namespace tui
 
 		static const std::vector<range> ranges =
 		{
-			#include "wide_ranges.h"
+			#include "udata/wide_ranges.h"
 		};
 
 		int s = 0;
