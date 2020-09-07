@@ -400,9 +400,17 @@ namespace tui
 		bool isKeySupported(short key)
 		{
 			if (key >= 0 && key <= 255) { return true; }
-			else if (key >= KEY::PGUP && key <= KEY::ALT_RIGHT)
+			else if (key >= KEY::PGUP && key <= KEY::SHIFT_RIGHT)
 			{
+#if defined(__linux__) || defined(__unix__) 
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
+#endif
+#if defined(_WIN32)
+				if (!(key >= KEY::SHIFT_UP && key <= KEY::SHIFT_RIGHT))
+				{
+					return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
+				}
+#endif
 			}
 			return false;	
 		}
@@ -421,7 +429,7 @@ namespace tui
 			}
 			else if (key > 0 && key < 32)
 			{
-				name = std::string("CTRL ") + char(key+64);
+				name = std::string("CTRL+") + char(key+64);
 			}
 
 			if (!use_ctrl_name)
@@ -429,7 +437,7 @@ namespace tui
 				switch (key)
 				{
 				case BACKSPACE:
-					name = "BACKPSPACE";
+					name = "BACKSPACE";
 					break;
 				case TAB:
 					name = "TAB";
@@ -442,15 +450,20 @@ namespace tui
 				}
 			}
 
-			static const std::string offset_key[32] = {
+			static const std::string offset_key[48] = {
 				"PGUP","PGDN","DEL","INS","END","HOME",
 				"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12",
 				"UP","DOWN","LEFT","RIGHT",
+
 				"ALT+PGUP","ALT+PGDN","ALT+DEL","ALT+INS","ALT+END","ALT+HOME",
-				"ALT+UP","ALT+DOWN","ALT+LEFT","ALT+RIGHT"
+				"ALT+UP","ALT+DOWN","ALT+LEFT","ALT+RIGHT",
+
+				"SHIFT+F1","SHIFT+F2","SHIFT+F3","SHIFT+F4","SHIFT+F5","SHIFT+F6",
+				"SHIFT+F7","SHIFT+F8","SHIFT+F9","SHIFT+F10","SHIFT+F11","SHIFT+F12",
+				"SHIFT+UP","SHIFT+DOWN","SHIFT+LEFT","SHIFT+RIGHT"
 			};
 
-			if (key >= KEY::PGUP && key <= KEY::ALT_RIGHT)
+			if (key >= KEY::PGUP && key <= KEY::SHIFT_RIGHT)
 			{
 				name = offset_key[key - TUI_KEY_OFFSET];
 			}

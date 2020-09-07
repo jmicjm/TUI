@@ -58,6 +58,27 @@ namespace tui
 			so making reliable isKeySupported() would be painful
 			*/
 
+			//SHIFT KEYS
+			//pgup,pgdn,home,end,ins,del - same as ALT+F*
+			SHIFT_F1 = TUI_KEY_OFFSET + 32,
+			SHIFT_F2 = TUI_KEY_OFFSET + 33,
+			SHIFT_F3 = TUI_KEY_OFFSET + 34,
+			SHIFT_F4 = TUI_KEY_OFFSET + 35,
+			SHIFT_F5 = TUI_KEY_OFFSET + 36,
+			SHIFT_F6 = TUI_KEY_OFFSET + 37,
+			SHIFT_F7 = TUI_KEY_OFFSET + 38,
+			SHIFT_F8 = TUI_KEY_OFFSET + 39,
+			SHIFT_F9 = TUI_KEY_OFFSET + 40,
+			SHIFT_F10 = TUI_KEY_OFFSET + 41,
+			SHIFT_F11 = TUI_KEY_OFFSET + 42,
+			SHIFT_F12 = TUI_KEY_OFFSET + 43,
+
+			//not supported by windows console
+			SHIFT_UP = TUI_KEY_OFFSET + 44,
+			SHIFT_DOWN = TUI_KEY_OFFSET + 45,
+			SHIFT_LEFT = TUI_KEY_OFFSET + 46,
+			SHIFT_RIGHT = TUI_KEY_OFFSET + 47,
+
 			//CTRL KEYS
 			CTRL_A = 1,
 			CTRL_B = 2,

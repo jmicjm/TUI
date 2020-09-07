@@ -190,7 +190,26 @@ namespace tui
 			{0, 152}, //ALT+UP
 			{0, 160}, //ALT+DOWN
 			{0, 155}, //ALT+LEFT
-			{0, 157}  //ALT+RIGHT
+			{0, 157},  //ALT+RIGHT
+
+			//SHIFT KEYS
+			{0, 84}, //SHIFT+F1
+			{0, 85},
+			{0, 86},
+			{0, 87},
+			{0, 88},
+			{0, 89},
+			{0, 90},
+			{0, 91},
+			{0, 92},
+			{0, 93},
+			{224, 135},
+			{224, 136}, //SHIFT+F12
+
+			{-1, -1}, //SHIFT+UP
+			{-1, -1}, //SHIFT+DOWN
+			{-1, -1}, //SHIFT+LEFT
+			{-1, -1},  //SHIFT+RIGHT
 		};
 
 		for (int i = 0; i < sequences.size(); i++)

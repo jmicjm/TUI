@@ -53,7 +53,26 @@ namespace tui
 			{"kUP3"}, //ALT+UP
 			{"kDN3"}, //ALT+DOWN
 			{"kLFT3"}, //ALT+LEFT
-			{"kRIT3"} //ALT+RIGHT
+			{"kRIT3"}, //ALT+RIGHT
+
+			//SHIFT KEYS
+			{"kf13"}, //SHIFT+F1
+			{"kf14"},
+			{"kf15"},
+			{"kf16"},
+			{"kf17"},
+			{"kf18"},
+			{"kf19"},
+			{"kf20"},
+			{"kf21"},
+			{"kf22"},
+			{"kf23"},
+			{"kf24"}, //SHIFT+F12
+
+			{"kUP"}, //SHIFT+UP
+			{"kDN"}, //SHIFT+DOWN
+			{"kLFT"}, //SHIFT+LEFT
+			{"kRIT"} //SHIFT+RIGHT
 		};
 		unsigned short longest_seq;
 		unsigned short shortest_seq;
