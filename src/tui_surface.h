@@ -56,10 +56,12 @@ namespace tui
 	{
 		SIDE side;
 		float position;
+		vec2i offset;
 
-		anchor_position() : anchor_position(SIDE::RIGHT, POSITION::CENTER) {}
-		anchor_position(SIDE side) : anchor_position(side, POSITION::CENTER) {}
-		anchor_position(SIDE side, float position) : side(side), position(position) {}
+		anchor_position() : anchor_position(SIDE::RIGHT, POSITION::CENTER, { 0,0 }) {}
+		anchor_position(SIDE side) : anchor_position(side, POSITION::CENTER, { 0,0 }) {}
+		anchor_position(SIDE side, float position) : anchor_position(side, position, { 0,0 }) {}
+		anchor_position(SIDE side, float position, vec2i offset) : side(side), position(position), offset(offset) {}
 	};
 
 	struct surface
@@ -260,6 +262,8 @@ namespace tui
 					case SIDE::RIGHT:
 						origin.x += surf.m_anchor->getSize().x;
 					}
+
+					origin += surf.m_anchor_position_info.offset;
 				}
 
 				origin.x = std::round(origin.x);
