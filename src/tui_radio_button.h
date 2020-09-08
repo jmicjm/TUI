@@ -42,13 +42,13 @@ namespace tui
 		}
 
 		void setAppearance(radio_button_appearance appearance) { setElement(*this, appearance); }
-		radio_button_appearance getAppearance() { return *this; }
+		radio_button_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(radio_button_appearance_a active) { setElement(active_appearance, active); }
-		radio_button_appearance_a getActiveAppearance() { return active_appearance; }
+		radio_button_appearance_a getActiveAppearance() const { return active_appearance; }
 
 		void setInactiveAppearance(radio_button_appearance_a inactive) { setElement(inactive_appearance, inactive); }
-		radio_button_appearance_a getInactiveAppearance() { return inactive_appearance; }
+		radio_button_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	template<DIRECTION direction>
@@ -60,7 +60,7 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		radio_button_appearance_a getCurrentAppearance()
+		radio_button_appearance_a getCurrentAppearance() const
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
@@ -116,7 +116,7 @@ namespace tui
 			m_options = amount;
 			m_redraw_needed = true;
 		}
-		unsigned int getOptionsAmount() { return m_options; }
+		unsigned int getOptionsAmount() const { return m_options; }
 
 		void setSelectedOption(unsigned int option)
 		{
@@ -126,7 +126,7 @@ namespace tui
 			}
 			m_redraw_needed = true;
 		}
-		unsigned int getSelectedOption() { return m_selected_option; }
+		unsigned int getSelectedOption() const { return m_selected_option; }
 
 		void nextOption()
 		{

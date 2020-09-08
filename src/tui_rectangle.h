@@ -20,10 +20,10 @@ namespace tui
 		}
 
 		void setAppearance(rectangle_appearance appearance) { setElement(*this, appearance); }
-		rectangle_appearance getAppearance() { return *this; }
+		rectangle_appearance getAppearance() const { return *this; }
 
 		void setFillingSymbol(symbol Filling) { setElement(filling, Filling); }
-		symbol getFillingSymbol() { return filling; }
+		symbol getFillingSymbol() const { return filling; }
 	};
 
 	struct rectangle : surface, rectangle_appearance
@@ -43,11 +43,9 @@ namespace tui
 		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
 		rectangle() : rectangle({{ 1,1 }}) {}
-		rectangle(surface_size size) : rectangle(size, rectangle_appearance()) {}
-		rectangle(surface_size size, rectangle_appearance appearance)
+		rectangle(surface_size size)
 		{
 			setSizeInfo(size);
-			setAppearance(appearance);
 		}
 	};
 }

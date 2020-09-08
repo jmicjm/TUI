@@ -43,13 +43,13 @@ namespace tui
 		}
 
 		void setAppearance(text_appearance appearance) { setElement(*this, appearance); }
-		text_appearance getAppearance() { return *this; }
+		text_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(text_appearance_a active) { setElement(active_appearance, active); }
-		text_appearance_a getActiveAppearance() { return active_appearance; }
+		text_appearance_a getActiveAppearance() const { return active_appearance; }
 
 		void setInactiveAppearance(text_appearance_a inactive) { setElement(inactive_appearance, inactive); }
-		text_appearance_a getInactiveAppearance() { return inactive_appearance; }
+		text_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	struct text : surface, text_appearance, active_element
@@ -67,7 +67,7 @@ namespace tui
 		bool m_redraw_needed = true;
 
 		friend struct input_text;
-		vec2i getSymbolPos(unsigned int i)
+		vec2i getSymbolPos(unsigned int i) const
 		{
 			return m_symbol_pos[i];
 		}
@@ -209,15 +209,15 @@ namespace tui
 			setAppearanceAction();
 		}
 
-		void setText(symbol_string txt)
+		void setText(const symbol_string& txt)
 		{
 			m_unprepared_text = txt;
 			adjustSizes();
 			m_redraw_needed = true;
 		}
-		symbol_string getText() { return m_unprepared_text; }
+		symbol_string getText() const { return m_unprepared_text; }
 
-		int getNumberOfLines()
+		int getNumberOfLines() const
 		{
 			if (m_symbol_pos.size() > 0)
 			{
@@ -226,14 +226,14 @@ namespace tui
 			return 0;
 		}
 
-		void goToLine(int line)
+		void goToLine(unsigned int line)
 		{
 			m_scroll.setTopPosition(line);
 			m_redraw_needed = true;
 		}
 
 		//return current line number
-		int getLine() { return m_scroll.getTopPosition(); }
+		unsigned int getLine() const { return m_scroll.getTopPosition(); }
 
 		void lineUp()
 		{
@@ -262,7 +262,7 @@ namespace tui
 			adjustSizes();
 			m_redraw_needed = true;
 		}
-		bool isUsingControlCharacters() { return m_use_control_characters; }
+		bool isUsingControlCharacters() const { return m_use_control_characters; }
 
 		void useScroll(bool display)
 		{
@@ -271,10 +271,10 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		//is displaying scroll if needed
-		bool isUsingScroll() { return m_display_scroll; }
+		bool isUsingScroll() const { return m_display_scroll; }
 
 		//is displaying scroll currently
-		bool isDisplayingScroll() { return m_display_scroll && m_scroll.isNeeded(); }
+		bool isDisplayingScroll() const { return m_display_scroll && m_scroll.isNeeded(); }
 
 		void resizeToText(unsigned int max_width = 0)
 		{

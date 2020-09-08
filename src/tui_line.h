@@ -36,16 +36,16 @@ namespace tui
 		}
 
 		void setAppearance(line_appearance appearance) { setElement(*this, appearance); }
-		line_appearance getAppearance() { return *this; }
+		line_appearance getAppearance() const { return *this; }
 
 		void setFillingSymbol(symbol Filling) { setElement(filling, Filling); }
-		symbol getFillingSymbol() { return filling; }
+		symbol getFillingSymbol() const { return filling; }
 
 		void setBeginSymbol(symbol Begin) { setElement(begin, Begin); }
-		symbol getBeginSymbol() { return begin; }
+		symbol getBeginSymbol() const { return begin; }
 
 		void setEndSymbol(symbol End) { setElement(end, End); }
-		symbol getEndSymbol() { return end; }
+		symbol getEndSymbol() const { return end; }
 
 	};
 

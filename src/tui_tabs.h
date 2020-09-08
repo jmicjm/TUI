@@ -57,13 +57,13 @@ namespace tui
 		}
 
 		void setAppearance(tabs_appearance appearance) { setElement(*this, appearance); }
-		tabs_appearance getAppearance() { return *this; }
+		tabs_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(tabs_appearance_a appearance) { setElement(active_appearance, appearance); }
-		tabs_appearance_a getActiveAppearance() { return active_appearance; }
+		tabs_appearance_a getActiveAppearance() const { return active_appearance; }
 
 		void setInactiveAppearance(tabs_appearance_a appearance) { setElement(inactive_appearance, appearance); }
-		tabs_appearance_a getInactiveAppearance() { return inactive_appearance; }
+		tabs_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	template<DIRECTION direction>
@@ -84,7 +84,7 @@ namespace tui
 		bool m_display_separator = true;
 		bool m_redraw_needed = true;
 
-		tabs_appearance_a getCurrentAppearance()
+		tabs_appearance_a getCurrentAppearance() const
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
@@ -203,7 +203,7 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
-		std::vector<symbol_string> getTabs()
+		std::vector<symbol_string> getTabs() const
 		{
 			std::vector<symbol_string> tabs;
 
@@ -221,8 +221,8 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
-		unsigned int getTabCount() { return m_tabs.size(); }
-		unsigned int getSelected() { return m_selected; }
+		unsigned int getTabCount() const { return m_tabs.size(); }
+		
 		void setSelected(unsigned int s)
 		{
 			if (m_selected != s)
@@ -231,6 +231,7 @@ namespace tui
 				m_redraw_needed = true;
 			}
 		}
+		unsigned int getSelected() const { return m_selected; }
 
 		void displaySeparator(bool use)
 		{
@@ -241,7 +242,7 @@ namespace tui
 				m_redraw_needed = true; 
 			}
 		}
-		bool isDiplayingSeparator() { return m_display_separator; }
+		bool isDiplayingSeparator() const { return m_display_separator; }
 
 		void nextTab()
 		{

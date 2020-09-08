@@ -45,28 +45,28 @@ namespace tui
 		}
 
 		void setAppearance(bar_appearance appearance) { setElement(*this, appearance); }
-		bar_appearance getAppearance() { return *this; }
+		bar_appearance getAppearance() const { return *this; }
 
 		void setFullSymbol(symbol Full) { setElement(full, Full); }
-		symbol getFullSymbol() { return full; }
+		symbol getFullSymbol() const { return full; }
 
 		void setEmptySymbol(symbol Empty) { setElement(empty, Empty); }
-		symbol getEmptySymbol() { return empty; }
+		symbol getEmptySymbol() const { return empty; }
 
 		void setHalfSymbol(symbol Half) { setElement(half, Half); }
-		symbol getHalfSymbol() { return half; }
+		symbol getHalfSymbol() const { return half; }
 
 		void setValueColor(color Color) { setElement(value_color, Color); }
-		color getValueColor() { return value_color; }
+		color getValueColor() const { return value_color; }
 
 		void setMinColor(color Color) { setElement(min_color, Color); }
-		color getMinColor() { return min_color; }
+		color getMinColor() const { return min_color; }
 
 		void setMaxColor(color Color) { setElement(max_color, Color); }
-		color getMaxColor() { return max_color; }
+		color getMaxColor() const { return max_color; }
 
 		void setPercentageColor(color Color) { setElement(percentage_color, Color); }
-		color getPercentageColor() { return percentage_color; }
+		color getPercentageColor() const { return percentage_color; }
 	};
 
 	template <DIRECTION direction>
@@ -185,14 +185,14 @@ namespace tui
 			if (max < m_min) { max = m_min; }
 			setProperty(m_max, max);
 		}
-		float getMaxValue() { return m_max; }
+		float getMaxValue() const { return m_max; }
 
 		void setMinValue(float min)
 		{
 			if (min > m_max) { min = m_max; }
 			setProperty(m_min, min);
 		}
-		float getMinValue() { return m_min; }
+		float getMinValue() const { return m_min; }
 
 		void setValue(float value)
 		{
@@ -200,7 +200,7 @@ namespace tui
 			if (value > m_max) { value = m_max; }
 			setProperty(m_value, value);
 		}
-		float getValue() { return m_value; }
+		float getValue() const { return m_value; }
 
 		void displayLabels(bool display)
 		{
@@ -211,28 +211,28 @@ namespace tui
 
 			m_redraw_needed = true;
 		}
-		bool isDisplayingLabels() 
+		bool isDisplayingLabels() const
 		{
 			return m_display_value_label || m_display_min_label 
 				  || m_display_max_label || m_display_percentage_label;
 		}
 
 		void displayValueLabel(bool display) { setProperty(m_display_value_label, display); }
-		bool isDisplayingValueLabel() { return m_display_value_label; }
+		bool isDisplayingValueLabel() const { return m_display_value_label; }
 
 		void displayMinLabel(bool display) { setProperty(m_display_min_label, display); }
-		bool isDisplayingMinLabel() { return m_display_min_label; }
+		bool isDisplayingMinLabel() const { return m_display_min_label; }
 
 		void displayMaxLabel(bool display) { setProperty(m_display_max_label, display); }
-		bool isDisplayingMaxLabel() { return m_display_max_label; }
+		bool isDisplayingMaxLabel() const { return m_display_max_label; }
 
 		void displayPercentageLabel(bool display) { setProperty(m_display_percentage_label, display); }
-		bool isDisplayingPercentageLabel() { return m_display_percentage_label; }
+		bool isDisplayingPercentageLabel() const { return m_display_percentage_label; }
 
 		void displayLabelsAtEnd(bool display) { setProperty(m_display_labels_at_end, display); }
-		bool isDisplayingLabelsAtEnd() { return m_display_labels_at_end; }
+		bool isDisplayingLabelsAtEnd() const { return m_display_labels_at_end; }
 
 		void setLabelsPrecision(int precision) { setProperty(m_labels_precision, precision); }
-		int getLabelsPrecision() { return m_labels_precision; }
+		int getLabelsPrecision() const { return m_labels_precision; }
 	};
 }

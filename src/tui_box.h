@@ -35,25 +35,25 @@ namespace tui
 		}
 
 		void setAppearance(box_appearance appearance) { setElement(*this, appearance); }
-		box_appearance getAppearance() { return *this; }
+		box_appearance getAppearance() const { return *this; }
 
 		void setHorizontalLineSymbol(symbol h_line) { setElement(m_horizontal_line,h_line); }
-		symbol getHorizontalLineSymbol() { return m_horizontal_line; }
+		symbol getHorizontalLineSymbol() const { return m_horizontal_line; }
 
 		void setVerticalLineSymbol(symbol v_line) { setElement(m_vertical_line, v_line); }
-		symbol getVerticalLineSymbol() { return m_vertical_line; }
+		symbol getVerticalLineSymbol() const { return m_vertical_line; }
 
 		void setTopLeftSymbol(symbol top_l) { setElement(m_top_left, top_l); }
-		symbol getTopLeftSymbol() { return m_top_left; }
+		symbol getTopLeftSymbol() const { return m_top_left; }
 
 		void setTopRightSymbol(symbol top_r) { setElement(m_top_right, top_r); }
-		symbol getTopRightSymbol() { return m_top_right; }
+		symbol getTopRightSymbol() const { return m_top_right; }
 
 		void setBottomLeftSymbol(symbol bottom_l) { setElement(m_bottom_left, bottom_l); }
-		symbol getBottomLeftSymbol() { return m_bottom_left; }
+		symbol getBottomLeftSymbol() const { return m_bottom_left; }
 
 		void setBottomRightSymbol(symbol bottom_r) { setElement(m_bottom_right, bottom_r); }
-		symbol getBottomRightSymbol() { return m_bottom_right; }
+		symbol getBottomRightSymbol() const { return m_bottom_right; }
 	};
 
 	struct box : surface, box_appearance
@@ -114,13 +114,13 @@ namespace tui
 			m_title = str;
 			m_redraw_needed = true;
 		}
-		symbol_string getTitle() { return m_title; }
+		symbol_string getTitle() const { return m_title; }
 
 		void setTitlePosition(int position)
 		{
 			m_title_position = position;
 			m_redraw_needed = true;
 		}
-		int getTitlePosition() { return m_title_position; }
+		int getTitlePosition() const { return m_title_position; }
 	};
 }

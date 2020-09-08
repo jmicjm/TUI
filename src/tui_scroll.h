@@ -59,13 +59,13 @@ namespace tui
 		}
 
 		void setAppearance(scroll_appearance appearance) { setElement(*this, appearance); }
-		scroll_appearance getAppearance() { return *this; }
+		scroll_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(scroll_appearance_a active) { setElement(m_active_appearance, active); }
-		scroll_appearance_a getActiveAppearance() { return m_active_appearance; }
+		scroll_appearance_a getActiveAppearance() const { return m_active_appearance; }
 
 		void setInactiveAppearance(scroll_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
-		scroll_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
+		scroll_appearance_a getInactiveAppearance() const { return m_inactive_appearance; }
 	};
 
 	template<DIRECTION direction>
@@ -81,13 +81,13 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		int visibleContentLength()
+		int visibleContentLength() const
 		{
 			if (m_visible_content_length < 0) { return surface1D<direction>::getSize(); }
 			else { return m_visible_content_length; }
 		}
 
-		scroll_appearance_a gca()
+		scroll_appearance_a gca() const
 		{
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
@@ -184,7 +184,7 @@ namespace tui
 			surface1D<direction>::setSizeInfo({ size.fixed, size.percentage });
 		}
 
-		bool isNeeded()
+		bool isNeeded() const
 		{
 			return m_content_length > visibleContentLength();
 		};
@@ -196,7 +196,7 @@ namespace tui
 			adjustHandlePosition();
 			m_redraw_needed = true;
 		}
-		int getContentLength() { return m_content_length; }
+		unsigned int getContentLength() const { return m_content_length; }
 
 		void setVisibleContentLength(int length)
 		{
@@ -204,7 +204,7 @@ namespace tui
 			adjustHandlePosition();
 			m_redraw_needed = true;
 		}
-		int getVisibleContentLength() { return m_visible_content_length; }
+		int getVisibleContentLength() const { return m_visible_content_length; }
 
 		void useFreeMode(bool use)
 		{
@@ -214,9 +214,9 @@ namespace tui
 				m_current_position = m_top_position;
 			}
 		}
-		bool isUsingFreeMode() { return m_free_mode; }
+		bool isUsingFreeMode() const { return m_free_mode; }
 
-		void setTopPosition(int handle_position)
+		void setTopPosition(unsigned int handle_position)
 		{
 			m_top_position = handle_position;
 			m_current_position = handle_position;
@@ -224,9 +224,9 @@ namespace tui
 			adjustHandlePosition();
 			m_redraw_needed = true;
 		}
-		int getTopPosition() { return m_top_position; }
+		unsigned int getTopPosition() const { return m_top_position; }
 
-		int getCurrentPosition() { return m_current_position; }
+		unsigned int getCurrentPosition() const { return m_current_position; }
 
 		void up(unsigned int n = 1)
 		{

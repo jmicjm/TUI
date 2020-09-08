@@ -306,7 +306,7 @@ namespace tui
 		void makeBlank() { fill(' '); }
 
 		void setClearSymbol(const symbol& sym) { m_clear_symbol = sym; }
-		symbol getClearSymbol() { return m_clear_symbol; }
+		symbol getClearSymbol() const { return m_clear_symbol; }
 
 		void invert()
 		{

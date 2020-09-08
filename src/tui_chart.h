@@ -99,6 +99,33 @@ namespace tui
 			else { return inactive_appearance; }
 		}
 
+		void updateMinMax()
+		{
+			if (m_values.size() > 0)
+			{
+				m_min = std::min_element(
+					m_values.begin(),
+					m_values.end(),
+					[](const chart_data_unit& a, const chart_data_unit& b)
+					{
+						return a.value < b.value;
+					}
+				)->value;
+				m_max = std::max_element(
+					m_values.begin(),
+					m_values.end(),
+					[](const chart_data_unit& a, const chart_data_unit& b)
+					{
+						return a.value < b.value;
+					}
+				)->value;
+			}
+			else
+			{
+				m_min = 0;
+				m_max = 0;
+			}
+		}
 		void updateMinMaxStr()
 		{
 			m_max_str = (m_max > 0 ? symbol_string(toStringP(m_max, m_value_labels_precision), gca().value_labels_color) : symbol_string("0", gca().value_labels_color)) + getFullWidthString(symbol_string(m_unit, gca().value_labels_color));
@@ -231,32 +258,11 @@ namespace tui
 			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::END, tui::POSITION::BEGIN} });
 		}
 
-		void setData(std::vector<chart_data_unit> values)
+		void setData(const std::vector<chart_data_unit>& values)
 		{
 			m_values = values;
 
-			m_min = 0;
-			m_max = 0;
-			if (m_values.size() > 0)
-			{
-				m_min = std::min_element(
-					m_values.begin(),
-					m_values.end(),
-					[](const chart_data_unit& a, const chart_data_unit& b)
-					{
-						return a.value < b.value;
-					}
-				)->value;
-				m_max = std::max_element(
-					m_values.begin(),
-					m_values.end(),
-					[](const chart_data_unit& a, const chart_data_unit& b)
-					{
-						return a.value < b.value;
-					}
-				)->value;
-			}
-
+			updateMinMax();
 			updateMinMaxStr();
 
 			m_redraw_needed = true;

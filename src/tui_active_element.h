@@ -21,6 +21,6 @@ namespace tui
 			active = false;
 			disactivationAction();
 		}
-		bool isActive() { return active; }
+		bool isActive() const { return active; }
 	};
 }

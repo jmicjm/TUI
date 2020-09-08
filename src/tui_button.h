@@ -41,13 +41,13 @@ namespace tui
 		}
 
 		void setAppearance(button_appearance appearance) { setElement(*this, appearance); }
-		button_appearance getAppearance() { return *this; }
+		button_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(button_appearance_a active) { setElement(m_active_appearance, active); }
-		button_appearance_a getActiveAppearance() { return m_active_appearance; }
+		button_appearance_a getActiveAppearance() const { return m_active_appearance; }
 
 		void setInactiveAppearance(button_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
-		button_appearance_a getInactiveAppearance() { return m_inactive_appearance; }
+		button_appearance_a getInactiveAppearance() const { return m_inactive_appearance; }
 	};
 
 	enum class BUTTON_TYPE { SWITCH, PUSH };
@@ -68,12 +68,12 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		button_appearance_a getCurrentAppearance()
+		button_appearance_a getCurrentAppearance() const
 		{
 			if (isActive()) { return m_active_appearance; }
 			else { return m_inactive_appearance; }
 		}
-		symbol_string getCurrentText()
+		symbol_string getCurrentText() const
 		{
 			if (isSelected()) { return getFullWidthString(m_selected_text); }
 			else { return getFullWidthString(m_deselected_text); }
@@ -125,7 +125,7 @@ namespace tui
 
 		void setType(BUTTON_TYPE type) { m_type = type; }
 	
-		bool isSelected() { return m_selected; }
+		bool isSelected() const { return m_selected; }
 
 		void setSelectedText(const symbol_string& text)
 		{

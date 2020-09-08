@@ -46,13 +46,13 @@ namespace tui
 		}
 
 		void setAppearance(input_text_appearance appearance) { setElement(*this, appearance); }
-		input_text_appearance getAppearance() { return *this; }
+		input_text_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(input_text_appearance_a active) { setElement(active_appearance, active); }
-		input_text_appearance_a getActiveAppearance() { return active_appearance; }
+		input_text_appearance_a getActiveAppearance() const { return active_appearance; }
 
 		void setInactiveAppearance(input_text_appearance_a inactive) { setElement(inactive_appearance, inactive); }
-		input_text_appearance_a getInactiveAppearance() { return inactive_appearance; }
+		input_text_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	struct input_text : surface, active_element, input_text_appearance
@@ -69,7 +69,7 @@ namespace tui
 		bool m_confidential_mode = false;
 		bool m_blink = true;
 
-		input_text_appearance_a gca()
+		input_text_appearance_a gca() const
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
@@ -321,7 +321,7 @@ namespace tui
 			updateText();
 		}
 
-		symbol_string getText() { return m_str; }
+		symbol_string getText() const { return m_str; }
 
 		void useConfidentialMode(bool use)
 		{
@@ -329,7 +329,7 @@ namespace tui
 			updateText();
 			m_redraw_needed = true;
 		}
-		bool isUsingConfidentialMode() { return m_confidential_mode; }
+		bool isUsingConfidentialMode() const { return m_confidential_mode; }
 
 		void update()
 		{
