@@ -12,9 +12,7 @@ namespace tui
 		vec2i fixed;
 		vec2f percentage;
 
-		surface_size() : surface_size({ 0,0 }, { 0,0 }) {}
-		surface_size(vec2i Fixed) : surface_size(Fixed, { 0,0 }) {}
-		surface_size(vec2i Fixed, vec2f Percentage) : fixed(Fixed), percentage(Percentage) {}
+		surface_size(vec2i fixed = { 0,0 }, vec2f percentage = { 0,0 }) : fixed(fixed), percentage(percentage) {}
 	};
 
 	struct surface1D_size
@@ -22,9 +20,7 @@ namespace tui
 		int fixed;
 		float percentage;
 
-		surface1D_size() : surface1D_size(0, 0) {}
-		surface1D_size(int Fixed) : surface1D_size(Fixed, 0) {}
-		surface1D_size(int Fixed, float Percentage) : fixed(Fixed), percentage(Percentage) {}
+		surface1D_size(int fixed = 0, float percentage = 0) : fixed(fixed), percentage(percentage) {}
 	};
 
 	namespace POSITION
@@ -41,10 +37,8 @@ namespace tui
 		vec2f percentage_offset;
 		vec2f relative;
 
-		surface_position() : surface_position({ 0, 0 }, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		surface_position(vec2i offset) : surface_position(offset, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		surface_position(vec2i offset, vec2f percentage_offset) : surface_position(offset, percentage_offset, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		surface_position(vec2i Offset, vec2f Percentage_offset, vec2f Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
+		surface_position(vec2i offset = { 0,0 }, vec2f percentage_offset = { 0,0 }, vec2f relative = { POSITION::BEGIN, POSITION::BEGIN })
+			: offset(offset), percentage_offset(percentage_offset), relative(relative) {}
 	};
 
 	enum class SIDE
@@ -58,10 +52,8 @@ namespace tui
 		float position;
 		vec2i offset;
 
-		anchor_position() : anchor_position(SIDE::RIGHT, POSITION::CENTER, { 0,0 }) {}
-		anchor_position(SIDE side) : anchor_position(side, POSITION::CENTER, { 0,0 }) {}
-		anchor_position(SIDE side, float position) : anchor_position(side, position, { 0,0 }) {}
-		anchor_position(SIDE side, float position, vec2i offset) : side(side), position(position), offset(offset) {}
+		anchor_position(SIDE side = SIDE::RIGHT, float position = POSITION::CENTER, vec2i offset = { 0,0 }) 
+			: side(side), position(position), offset(offset) {}
 	};
 
 	struct surface
