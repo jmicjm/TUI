@@ -203,7 +203,7 @@ namespace tui
 			setSizeInfo(size);
 			m_text.setSizeInfo({ {-1,0}, {100,100} });
 
-			m_scroll.setPositionInfo(position({ 0,0 }, { 0,0 }, { POSITION::END, POSITION::BEGIN }));
+			m_scroll.setPositionInfo(surface_position({ 0,0 }, { 0,0 }, { POSITION::END, POSITION::BEGIN }));
 			setText(txt);
 
 			setAppearanceAction();

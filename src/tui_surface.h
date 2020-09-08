@@ -35,16 +35,16 @@ namespace tui
 		};
 	}
 
-	struct position
+	struct surface_position
 	{
 		vec2i offset;
 		vec2f percentage_offset;
 		vec2f relative;
 
-		position() : position({ 0, 0 }, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		position(vec2i offset) : position(offset, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		position(vec2i offset, vec2f percentage_offset) : position(offset, percentage_offset, { POSITION::BEGIN, POSITION::BEGIN }) {}
-		position(vec2i Offset, vec2f Percentage_offset, vec2f Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
+		surface_position() : surface_position({ 0, 0 }, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		surface_position(vec2i offset) : surface_position(offset, { 0, 0 }, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		surface_position(vec2i offset, vec2f percentage_offset) : surface_position(offset, percentage_offset, { POSITION::BEGIN, POSITION::BEGIN }) {}
+		surface_position(vec2i Offset, vec2f Percentage_offset, vec2f Relative) : offset(Offset), percentage_offset(Percentage_offset), relative(Relative) {}
 	};
 
 	enum class SIDE
@@ -69,7 +69,7 @@ namespace tui
 	private:
 		std::vector<symbol> m_symbols;
 		unsigned int m_width = 1;
-		position m_position_info;
+		surface_position m_position_info;
 		vec2i m_position;
 		vec2i m_global_position;
 		surface_size m_size_info;
@@ -175,8 +175,8 @@ namespace tui
 			m_position_info.offset += offset;
 		}
 
-		void setPositionInfo(position pos) { m_position_info = pos; }
-		position getPositionInfo() const { return m_position_info; }
+		void setPositionInfo(surface_position pos) { m_position_info = pos; }
+		surface_position getPositionInfo() const { return m_position_info; }
 
 		vec2i getPosition() const { return m_position; }
 		vec2i getGlobalPosition() const { return m_global_position; }
