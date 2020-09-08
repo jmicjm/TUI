@@ -1,97 +1,81 @@
 #pragma once
-#include "tui_utils.h"
 #include "tui_active_element.h"
 #include "tui_input.h"
 
 #include <vector>
-
+#include <algorithm>
 
 namespace tui
 {
-	struct navigation_group : active_element
+	struct navigation_group : active_element, private std::vector<active_element*>
 	{
 	private:
-		std::vector<active_element*> m_elements;
-		int m_selected = -1;
+		size_t m_selected = 0;
 		bool m_blocked = false;
 
-		void disactivateAll()
+		void disable(int except = -1)
 		{
-			for (int i = 0; i < m_elements.size(); i++)
+			for (int i = 0; i < size(); i++)
 			{
-				m_elements[i]->disactivate();
-			}
-		}
-		void disactivationAction() { disactivateAll(); }
-		void activationAction()
-		{
-			disactivateAll();
-			m_blocked = false;
-
-			if (m_selected > m_elements.size() - 1)
-			{
-				m_selected = m_elements.size() - 1;
-			}
-
-			if (m_elements.size() > 0)
-			{
-				m_elements[m_selected]->activate();
-			}
-		}
-	public:
-		int key_next = -1;
-		int key_prev = -1;
-		int key_block = -1;
-
-		void addElement(active_element& element)
-		{
-			m_elements.push_back(&element);
-		}
-
-		void removeElement(active_element& element)
-		{
-			for (int i = 0; i < m_elements.size(); i++)
-			{
-				if (m_elements[i] == &element)
+				if ((*this)[i]->isActive() && i != except)
 				{
-					m_elements.erase(m_elements.begin() + i);
-
-					if (m_selected == i)
-					{
-						m_selected = 0;
-					}
+					(*this)[i]->disactivate();
 				}
 			}
 		}
+		void enable()
+		{
+			m_selected = size() > 0 ? std::min(m_selected, size()-1) : 0;
+			disable(m_selected);
+
+			if (size() > 0 && !(*this)[m_selected]->isActive())
+			{
+				(*this)[m_selected]->activate();
+			}
+		}
+
+		void disactivationAction() override { disable(); }
+		void activationAction() override { enable(); }
+	public:
+		short key_next = input::KEY::CTRL_RIGHT;
+		short key_prev = input::KEY::CTRL_LEFT;
+		short key_block = -1;
+
+		navigation_group() {}
+		navigation_group(active_element* element) : std::vector<active_element*>({ element }) {}
+		navigation_group(std::vector<active_element*> elements) : std::vector<active_element*>(elements) {}
+
+		using std::vector<active_element*>::size;
+		using std::vector<active_element*>::operator[];
+		using std::vector<active_element*>::push_back;
+		using std::vector<active_element*>::pop_back;
+		using std::vector<active_element*>::insert;
+		using std::vector<active_element*>::begin;
+		using std::vector<active_element*>::end;
+		using std::vector<active_element*>::clear;
+		using std::vector<active_element*>::erase;
 
 		void update()
 		{
 			if (isActive())
 			{
-				if (tui::input::isKeyPressed(key_block))
+				if (input::isKeyPressed(key_block))
 				{
 					m_blocked = !m_blocked;
 				}
 
-				if (tui::input::isKeyPressed(key_next) && !m_blocked)
+				if (!m_blocked)
 				{
-					disactivateAll();
-
-					if (m_selected < m_elements.size() - 1) { m_selected++; }
-					else { m_selected = 0; }
-
-					m_elements[m_selected]->activate();
+					if (input::isKeyPressed(key_next))
+					{
+						m_selected < size() - 1 ? m_selected++ : m_selected = 0;
+					}
+					if (input::isKeyPressed(key_prev))
+					{
+						m_selected > 0 ? m_selected-- : m_selected = size()-1;					
+					}			
 				}
-
-				if (tui::input::isKeyPressed(key_prev) && !m_blocked)
-				{
-					disactivateAll();
-
-					if (m_selected > 0) { m_selected--; }
-					else { m_selected = m_elements.size() - 1; }
-
-					m_elements[m_selected]->activate();
-				}
+				enable();
 			}
 		}
 	};
