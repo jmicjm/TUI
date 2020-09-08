@@ -53,13 +53,13 @@ namespace tui
 			setAppearanceAction();
 		}
 		void setAppearance(chart_appearance appearance) { setElement(*this, appearance); }
-		chart_appearance getAppearance() { return *this; }
+		chart_appearance getAppearance() const { return *this; }
 
 		void setActiveAppearance(chart_appearance_a active) { setElement(active_appearance, active); }
-		chart_appearance_a getActiveAppearance() { return active_appearance; }
+		chart_appearance_a getActiveAppearance() const { return active_appearance; }
 
 		void setInactiveAppearance(chart_appearance_a inactive) { setElement(inactive_appearance, inactive); }
-		chart_appearance_a getInactiveAppearance() { return inactive_appearance; }
+		chart_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	struct chart_data_unit
@@ -93,7 +93,7 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		chart_appearance_a gca()
+		chart_appearance_a gca() const
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
@@ -125,6 +125,7 @@ namespace tui
 				m_min = 0;
 				m_max = 0;
 			}
+			updateMinMaxStr();
 		}
 		void updateMinMaxStr()
 		{
@@ -261,21 +262,65 @@ namespace tui
 		void setData(const std::vector<chart_data_unit>& values)
 		{
 			m_values = values;
-
 			updateMinMax();
-			updateMinMaxStr();
+			m_redraw_needed = true;
+		}
+		std::vector<chart_data_unit> getData() const { return m_values; }
+
+		void setDataAt(const chart_data_unit& data, unsigned int i) 
+		{ 
+			m_values[i] = data; 
+			updateMinMax();
+			m_redraw_needed = true;
+		}
+		chart_data_unit getDataAt(unsigned int i) const { return m_values[i]; }
+
+		void removeDataAt(unsigned int i) 
+		{ 
+			m_values.erase(m_values.begin() + i); 
+			updateMinMax();
+			m_redraw_needed = true;
+		}
+
+		void insertDataAt(const chart_data_unit& data, unsigned int i)
+		{
+			m_values.insert(m_values.begin() + i, data);
+			
+			bool dst_ch = data.value > m_max || data.value < m_min;
+
+			m_max = std::max(m_max, data.value);
+			m_min = std::min(m_min, data.value);
+
+			if (dst_ch) { updateMinMaxStr(); }
 
 			m_redraw_needed = true;
 		}
-		std::vector<chart_data_unit> getData() { return m_values; }
+
+		void addData(const chart_data_unit& data, bool scroll_to = false)
+		{
+			m_values.push_back(data);
+
+			bool dst_ch = data.value > m_max || data.value < m_min;
+
+			m_max = std::max(m_max, data.value);
+			m_min = std::min(m_min, data.value);
+
+			if (dst_ch) { updateMinMaxStr(); }
+
+			if (scroll_to) { goToBar(m_values.size()); }
+
+			m_redraw_needed = true;
+		}
+
+		unsigned int size() const { return m_values.size(); }
 
 		void goToBar(unsigned int line)
 		{
 			m_scroll.setTopPosition(line * m_distance);
 			m_redraw_needed = true;
 		}
-		//returns first visible bar
-		unsigned int getBar() { return std::ceil(m_scroll.getTopPosition() / (float)m_distance); }
+		//returns index of first visible bar
+		unsigned int getBar() const { return std::ceil(m_scroll.getTopPosition() / (float)m_distance); }
 
 		void setDistance(unsigned int distance)
 		{
@@ -283,36 +328,36 @@ namespace tui
 			else { m_distance = 1; }
 			m_redraw_needed = true;
 		}
-		unsigned int getDistance() { return m_distance; }
+		unsigned int getDistance() const { return m_distance; }
 
 		void displayValueLabels(bool display)
 		{
 			m_display_value_labels = display;
 			m_redraw_needed = true;
 		}
-		bool isDisplayingValueLabels() { return m_display_value_labels; }
+		bool isDisplayingValueLabels() const { return m_display_value_labels; }
 
 		void setValueLabelsPrecision(int precision)
 		{
 			m_value_labels_precision = precision;
 			m_redraw_needed = true;
 		}
-		int getValueLabelsPrecision() { return m_value_labels_precision; }
+		int getValueLabelsPrecision() const { return m_value_labels_precision; }
 
-		void setValueUnit(std::string unit)
+		void setValueUnit(const std::string& unit)
 		{
 			m_unit = unit;
 			updateMinMaxStr();
 			m_redraw_needed = true;
 		}
-		std::string getValueUnit() { return m_unit; }
+		std::string getValueUnit() const { return m_unit; }
 
 		void displayDataLabels(bool display)
 		{
 			m_display_data_labels = display;
 			m_redraw_needed = true;
 		}
-		bool isDisplayingDataLabels() { return m_display_data_labels; }
+		bool isDisplayingDataLabels() const { return m_display_data_labels; }
 
 		void update()
 		{
