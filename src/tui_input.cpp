@@ -406,10 +406,7 @@ namespace tui
 				return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
 #endif
 #if defined(_WIN32)
-				if (!(key >= KEY::SHIFT_UP && key <= KEY::SHIFT_RIGHT) && key != KEY::CTRL_PGUP)
-				{
-					return term_info.getSeq(key - TUI_KEY_OFFSET).size() > 0;
-				}
+				return term_info.getSeq(key - TUI_KEY_OFFSET)[0] != -1;
 #endif
 			}
 			return false;	
