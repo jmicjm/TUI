@@ -124,6 +124,7 @@ namespace tui
 		}
 
 		void setType(BUTTON_TYPE type) { m_type = type; }
+		BUTTON_TYPE getType() { return m_type; }
 	
 		bool isSelected() const { return m_selected; }
 
@@ -132,11 +133,15 @@ namespace tui
 			m_selected_text = text;
 			if (isSelected()) { m_redraw_needed = true; }
 		}
+		symbol_string getSelectedText() { return m_selected_text; }
+
 		void setDeselectedText(const symbol_string& text)
 		{
 			m_deselected_text = text;
 			if (!isSelected()) { m_redraw_needed = true; }
 		}
+		symbol_string getDeselectedText() { return m_deselected_text; }
+
 		void setText(const symbol_string& text)
 		{
 			m_selected_text = text;
