@@ -4,6 +4,7 @@
 #include "tui_text_utils.h"
 #include "tui_active_element.h"
 #include "tui_input.h"
+#include "tui_time_frame.h"
 
 namespace tui
 {

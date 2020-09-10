@@ -1,7 +1,8 @@
-#include "tui_output.h"
 #include "tui_input.h"
-#include "tui_text_utils.h"
+#include "tui_output.h"
 #include "tui_terminal_info.h"
+#include "tui_text_utils.h"
+#include "tui_time_frame.h"
 
 #include <cstdlib>
 #include <vector>

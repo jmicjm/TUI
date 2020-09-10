@@ -1,5 +1,5 @@
 #pragma once
-#include "tui_utils.h"
+#include "tui_vec2.h"
 #include "tui_text_utils.h"
 
 #include <vector>
