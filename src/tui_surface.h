@@ -188,7 +188,10 @@ namespace tui
 		void setSizeInfo(surface_size size)
 		{
 			m_size_info = size;
-			resize(size.fixed);
+			if (size.percentage == vec2f(0.f, 0.f))
+			{
+				resize(size.fixed);
+			}
 		}
 		surface_size getSizeInfo() const { return m_size_info; }
 
