@@ -86,21 +86,46 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
+		symbol_string getValStr() const
+		{
+			symbol_string val_str;
+
+			if (m_display_percentage_label)
+			{
+				float val;
+
+				switch (m_value > 0)
+				{
+				case true:
+					val = m_value / m_max;
+					break;
+				case false:
+					if (m_min != 0)
+					{
+						val = m_value / m_min * -1;
+					}
+					else
+					{
+						val = 0;
+					}
+				}
+
+				val_str += {toStringP(val * 100, m_labels_precision) + '%', percentage_color};
+			}
+			if (m_display_min_label) { val_str += {toStringP(m_min, m_labels_precision) + '/', min_color}; }
+			if (m_display_value_label) { val_str += {toStringP(m_value, m_labels_precision), value_color}; }
+			if (m_display_max_label) { val_str += {'/' + toStringP(m_max, m_labels_precision), max_color}; }
+
+			return val_str;
+		}
+
 		void fill()
 		{
 			float distance = fabs(m_min - m_max);
 
 			if (distance > 0)
 			{
-				symbol_string val_str;
-
-				if (isDisplayingLabels())
-				{
-					if (m_display_percentage_label) { val_str += {toStringP(abs(m_min - m_value) / distance * 100, m_labels_precision) + '%', percentage_color}; }
-					if (m_display_min_label) { val_str += {toStringP(m_min, m_labels_precision) + '/', min_color}; }
-					if (m_display_value_label) { val_str += {toStringP(m_value, m_labels_precision), value_color}; }
-					if (m_display_max_label) { val_str += {'/' + toStringP(m_max, m_labels_precision), max_color}; }
-				}
+				symbol_string val_str = getValStr();
 
 				auto getBarSize = [&]()
 				{
