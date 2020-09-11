@@ -205,22 +205,20 @@ namespace tui
 
 		void setMaxValue(float max)
 		{
-			if (max < m_min) { max = m_min; }
-			setProperty(m_max, max);
+			setProperty(m_max, std::max(max, m_min));
 		}
 		float getMaxValue() const { return m_max; }
 
 		void setMinValue(float min)
 		{
-			if (min > m_max) { min = m_max; }
-			setProperty(m_min, min);
+			setProperty(m_min, std::min(min, m_max));
 		}
 		float getMinValue() const { return m_min; }
 
 		void setValue(float value)
 		{
-			if (value < m_min) { value = m_min; }
-			if (value > m_max) { value = m_max; }
+			value = std::max(value, m_min);
+			value = std::min(value, m_max);
 			setProperty(m_value, value);
 		}
 		float getValue() const { return m_value; }
@@ -260,12 +258,15 @@ namespace tui
 		void useAbsoluteStep(bool use) { m_use_absolute_step = use; }
 		bool isUsingAbsoluteStep() const { return m_use_absolute_step; }
 
+		void setStepValue(float step) { m_step = step; }
+		float getStepValue() const { return m_step; }
+
 		void stepUp()
 		{
 			switch (m_use_absolute_step)
 			{
 			case false:
-				setValue(m_value + m_step * (abs(m_min - m_max)));
+				setValue(m_value + m_step * abs(m_min - m_max));
 				break;
 			case true:
 				setValue(m_value + m_step);
@@ -276,7 +277,7 @@ namespace tui
 			switch (m_use_absolute_step)
 			{
 			case false:
-				setValue(m_value - m_step * (abs(m_min - m_max)));
+				setValue(m_value - m_step * abs(m_min - m_max));
 				break;
 			case true:
 				setValue(m_value - m_step);
