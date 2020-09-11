@@ -194,9 +194,8 @@ namespace tui
 
 		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
-		bar() : bar(1) {}
-		bar(surface1D_size size) : bar(size, 0,0,0) {}
-		bar(surface1D_size size, float min, float max, float value) : m_min(min), m_max(max), m_value(0), bar_appearance(direction)
+		bar(surface1D_size size = surface1D_size(), float min = 0, float max = 0, float value = 0)
+			: m_min(min), m_max(max), m_value(0), bar_appearance(direction)
 		{
 			setMinValue(min);
 			setMaxValue(max);

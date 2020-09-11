@@ -190,7 +190,8 @@ namespace tui
 		short key_increase = input::KEY::RIGHT;
 		short key_decrease = input::KEY::LEFT;
 
-		slider(float min = 0, float max = 0, float value = 0) : m_min(min), m_max(max), m_value(0), slider_appearance(direction)
+		slider(surface1D_size size = surface1D_size(), float min = 0, float max = 0, float value = 0)
+			: m_min(min), m_max(max), m_value(0), slider_appearance(direction)
 		{
 			setMinValue(min);
 			setMaxValue(max);
@@ -201,6 +202,7 @@ namespace tui
 				key_increase = input::KEY::UP;
 				key_decrease = input::KEY::DOWN;
 			}
+			surface1D<direction>::setSizeInfo(size);
 		}
 
 		void setMaxValue(float max)
