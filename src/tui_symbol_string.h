@@ -20,7 +20,7 @@ namespace tui
 		bool m_underscore = false;
 	public:
 		symbol_string() {}
-		symbol_string(symbol Symbol)
+		symbol_string(const symbol& Symbol)
 		{
 			resize(1);
 			(*this)[0] = Symbol;
@@ -32,26 +32,19 @@ namespace tui
 		symbol_string(const std::string& str, color color) : symbol_string(utf8ToUtf32(str), color) {}
 		symbol_string(const std::u32string& str, color color)
 		{
-			std::vector<symbol> temp_vec;
-
-			if (str.size() > 0)
+			unsigned int i = 0;
+			while (i < str.size())
 			{
-				int i = 0;
-				while (i < str.size())
+				std::u32string current_cluster;
+				current_cluster += str[i];
+
+				for (; (i < str.size() - 1 && !isBreakBetween(str[i], str[i + 1])); i++)
 				{
-					std::u32string temp;
-					temp += str[i];
-
-					for (; (i < str.size() - 1 && !isBreakBetween(str[i], str[i + 1])); i++)
-					{
-						temp += str[i + 1];
-					}
-					temp_vec.push_back(symbol(utf32ToUtf8(temp), color));
-					i++;
+					current_cluster += str[i + 1];
 				}
+				push_back(symbol(utf32ToUtf8(current_cluster), color));
+				i++;
 			}
-
-			(*(std::vector<symbol>*)this) = temp_vec;
 		}
 
 		using std::vector<symbol>::operator[];
