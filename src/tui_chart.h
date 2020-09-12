@@ -136,6 +136,7 @@ namespace tui
 		void fill()
 		{
 			clear();
+			makeBlank();
 
 			unsigned short label_str_width = m_display_value_labels * (m_max_str.size() > m_min_str.size() ? m_max_str.size() : m_min_str.size());
 
@@ -146,6 +147,7 @@ namespace tui
 			if (m_scroll.isNeeded()) { m_chart.setSizeInfo({ {label_str_width * -1,-1},{100,100} }); }
 			else { m_chart.setSizeInfo({ {label_str_width * -1,0},{100,100} }); }
 			updateSurfaceSize(m_chart);
+			m_chart.makeTransparent();
 
 			if (m_display_value_labels)
 			{
