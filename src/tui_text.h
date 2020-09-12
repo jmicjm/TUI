@@ -96,7 +96,7 @@ namespace tui
 
 					if (p.y >= m_text.getSize().y) { break; }
 
-					if (symbolWidth(m_unprepared_text[i]) > 0)
+					if (m_unprepared_text[i].getWidth() > 0)
 					{
 						m_text.setSymbolAt(m_unprepared_text[i], p);
 					}
@@ -113,7 +113,7 @@ namespace tui
 			int pos = 0;
 			for (int i = 0; i < m_unprepared_text.size(); i++)
 			{
-				int sym_w = symbolWidth(m_unprepared_text[i]);
+				int sym_w = m_unprepared_text[i].getWidth();
 
 				int pos_in_line = pos % m_text.getSize().x;
 				if (pos_in_line + sym_w > m_text.getSize().x && pos_in_line != 0)

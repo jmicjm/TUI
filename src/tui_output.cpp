@@ -235,7 +235,7 @@ namespace tui
 				{
 					for (int j = 0; j < getSize().x;)
 					{
-						int sym_w = symbolWidth(buffer[j][i]);
+						int sym_w = buffer[j][i].getWidth();
 
 						if (j + sym_w > getSize().x)
 						{

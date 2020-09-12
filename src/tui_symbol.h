@@ -130,8 +130,39 @@ namespace tui
 			bool operator!=(const hybrid_container& other) const { return !operator==(other); }
 		} m_cluster;
 
-		bool m_underscore = false;
+		uint8_t m_width : 7;
+		bool m_underscore : 1;
 		color m_color;
+
+		uint8_t getClusterWidth(const std::u32string& u32_s) const
+		{
+			//probably broken here and there
+
+			if (u32_s.size() == 0 || isControl(u32_s[0]))
+			{
+				return 0;
+			}
+
+			uint8_t w = 0;
+
+			for (int i = 0; i < u32_s.size(); i++)
+			{
+				uint8_t c_w = 0;
+
+				if (isWide(u32_s[i]))
+				{
+					c_w = 2;
+				}
+				else if (getGraphemeType(u32_s[i]) != GRAPHEME_TYPE::EXTEND)
+				{
+					c_w = 1;
+				}
+
+				w = std::max(w, c_w);
+			}
+
+			return w;
+		}
 
 	public:
 		symbol() : symbol("", color()) {}
@@ -139,7 +170,7 @@ namespace tui
 		symbol(const char* cluster, color color = color()) : symbol(std::string(cluster), color) {}
 		symbol(const char32_t* cluster, color color = color()) : symbol(utf32ToUtf8(std::u32string(cluster)), color) {}
 
-		symbol(const std::string& cluster, color Color = color())
+		symbol(const std::string& cluster, color Color = color()) : m_underscore(false)
 		{
 			setCluster(cluster);
 			setColor(Color);
@@ -157,6 +188,7 @@ namespace tui
 			if (cluster.size() == 0)
 			{
 				m_cluster.setData(nullptr, 0);
+				m_width = 0;
 				return;
 			}
 
@@ -174,8 +206,9 @@ namespace tui
 			utf32_cluster.resize(size);
 
 			std::string new_cluster = utf32ToUtf8(utf32_cluster);
-
 			m_cluster.setData(new_cluster.data(), new_cluster.size());
+
+			m_width = getClusterWidth(utf32_cluster);
 		}
 		std::string getCluster() const
 		{
@@ -189,43 +222,13 @@ namespace tui
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() const { return m_underscore; }
 
+		//returns number of columns occupied by symbol
+		uint8_t getWidth() const { return m_width; }
+
 		bool operator==(const symbol& other) const
 		{
 			return m_cluster == other.m_cluster && m_color == other.m_color && m_underscore == other.m_underscore;
 		}
 		bool operator!=(const symbol& other) const { return !operator==(other); }
 	};
-
-	//returns number of columns occupied by symbol
-	inline int symbolWidth(const symbol& sym)
-	{
-		//probably broken here and there
-
-		std::u32string u32_s = utf8ToUtf32(&sym[0], sym.size(), false);
-
-		if (u32_s.size() == 0 || isControl(u32_s[0]))
-		{
-			return 0;
-		}
-
-		int w = 0;
-
-		for (int i = 0; i < u32_s.size(); i++)
-		{
-			int c_w = 0;
-
-			if (isWide(u32_s[i]))
-			{
-				c_w = 2;
-			}
-			else if (getGraphemeType(u32_s[i]) != GRAPHEME_TYPE::EXTEND)
-			{
-				c_w = 1;
-			}
-
-			w = std::max(w, c_w);
-		}
-
-		return w;
-	}
 }

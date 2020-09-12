@@ -155,14 +155,14 @@ namespace tui
 
 		for (int i = 0; i < str.size(); i++)
 		{
-			w += symbolWidth(str[i]);
+			w += str[i].getWidth();
 		}
 		fw.resize(w);
 
 		for (int i = 0, j = 0; i < str.size() && j < fw.size(); i++)
 		{
 			fw[j] = str[i];
-			j+= symbolWidth(str[i]);
+			j+= str[i].getWidth();
 		}
 
 		return fw;
