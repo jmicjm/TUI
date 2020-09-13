@@ -12,17 +12,19 @@ namespace tui
 	{
 		symbol insert_cursor;
 		symbol overtype_cursor;
-
+		color text_color;
 		text_appearance_a itxt_text_appearance_a;
 
-		input_text_appearance_a() : input_text_appearance_a('_', U'\x2584', text_appearance_a()) {}
-		input_text_appearance_a(symbol insert_cursor, symbol overtype_cursor, text_appearance_a txt_appearance)
-			: insert_cursor(insert_cursor), overtype_cursor(overtype_cursor), itxt_text_appearance_a(txt_appearance) {}
+		input_text_appearance_a() : input_text_appearance_a('_', U'\x2584', color()) {}
+		input_text_appearance_a(symbol insert_cursor, symbol overtype_cursor, color text_color) : input_text_appearance_a(insert_cursor, overtype_cursor, text_color, text_appearance_a()) {}
+		input_text_appearance_a(symbol insert_cursor, symbol overtype_cursor, color text_color, text_appearance_a txt_appearance)
+			: insert_cursor(insert_cursor), overtype_cursor(overtype_cursor), text_color(text_color), itxt_text_appearance_a(txt_appearance) {}
 
 		void setColor(color Color)
 		{
 			insert_cursor.setColor(Color);
 			overtype_cursor.setColor(Color);
+			text_color = Color;
 			itxt_text_appearance_a.setColor(Color);
 		}
 	};
@@ -35,7 +37,7 @@ namespace tui
 	public:
 		input_text_appearance() 
 		{
-			inactive_appearance.setColor(COLOR::DARKGRAY);
+			inactive_appearance.itxt_text_appearance_a.setColor(COLOR::DARKGRAY);
 		}
 		input_text_appearance(input_text_appearance_a active, input_text_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
@@ -264,6 +266,16 @@ namespace tui
 			{
 				clear();
 				insertSurface(m_text, false);
+
+				bool scr = m_text.isDisplayingScroll();
+
+				for (int y = 0; y < getSize().y; y++)
+				{
+					for (int x = 0; x < getSize().x - scr; x++)
+					{
+						(*this)[x][y].setColor(gca().text_color);
+					}
+				}
 			}
 
 			if (isActive() && (m_cursor_blink.isEnd(false) || m_redraw_needed))
@@ -275,7 +287,9 @@ namespace tui
 				}
 				else
 				{
-					setSymbolAt(m_text.getSymbolAt(m_cursor_pos), m_cursor_pos);
+					symbol sym = m_text.getSymbolAt(m_cursor_pos);
+					sym.setColor(gca().text_color);
+					setSymbolAt(sym, m_cursor_pos);
 				}
 
 				if (m_cursor_blink.isEnd(true)) { m_blink = !m_blink; }
