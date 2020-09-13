@@ -15,6 +15,7 @@
 #include "tui_line.h"
 #include "tui_tabs.h"
 #include "tui_slider.h"
+#include "tui_list.h"
 
 #include "tui_group.h"
 #include "tui_navigation_group.h"
