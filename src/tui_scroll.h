@@ -135,15 +135,22 @@ namespace tui
 			else if (m_top_position > m_content_length - visibleContentLength())
 			{
 				m_top_position = m_content_length - visibleContentLength();
-			}
+			}	
 
 			if (!m_free_mode)
 			{
 				m_current_position = m_top_position;
 			}
-			else if (m_current_position >= m_top_position + visibleContentLength())
+			else
 			{
-				m_current_position = m_top_position + visibleContentLength() - 1;
+				if (m_current_position >= m_content_length)
+				{
+					m_current_position = m_content_length - 1;
+				}
+				if (m_current_position >= m_top_position + visibleContentLength())
+				{
+					m_top_position = m_current_position - visibleContentLength() + 1;
+				}
 			}
 
 			if (m_top_position < 0) { m_top_position = 0; }
