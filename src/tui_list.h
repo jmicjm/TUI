@@ -175,9 +175,37 @@ namespace tui
 			m_scroll.useFreeMode(true);
 		}
 
-		void setEntries(std::vector<list_entry> entries)
+		void setEntries(const std::vector<list_entry>& entries)
 		{
 			m_entries = entries;
+			m_redraw_needed = true;
+		}
+		std::vector<list_entry> getEntries() { return m_entries; }
+
+		size_t size() { return m_entries.size(); }
+
+		size_t getHighlighted() { return m_scroll.getCurrentPosition(); }
+
+		void setEntryAt(const list_entry& entry, size_t i) 
+		{
+			m_entries[i] = entry; 
+			m_redraw_needed = true;
+		}
+		list_entry getEntryAt(size_t i) { return m_entries[i]; }
+
+		void removeEntryAt(size_t i)
+		{
+			m_entries.erase(m_entries.begin() + i);
+			m_redraw_needed = true;
+		}
+		void insertEntryAt(const list_entry& entry, size_t i)
+		{
+			m_entries.insert(m_entries.begin() + i, entry);
+			m_redraw_needed = true;
+		}
+		void addEntry(const list_entry& entry)
+		{
+			m_entries.push_back(entry);
 			m_redraw_needed = true;
 		}
 
@@ -189,7 +217,7 @@ namespace tui
 				m_scroll.update();
 				if (pos != m_scroll.getCurrentPosition()) { m_redraw_needed = true; }
 
-				if (input::isKeyPressed(key_check))
+				if (input::isKeyPressed(key_check) && m_entries.size() > 0)
 				{
 					if (m_entries[pos].checked != CHECK_STATE::NONCHECKABLE)
 					{
