@@ -11,7 +11,6 @@ namespace tui
 	{
 	private:
 		size_t m_selected = 0;
-		bool m_blocked = false;
 
 		void disable(int except = -1)
 		{
@@ -39,7 +38,6 @@ namespace tui
 	public:
 		short key_next = input::KEY::CTRL_RIGHT;
 		short key_prev = input::KEY::CTRL_LEFT;
-		short key_block = -1;
 
 		navigation_group() {}
 		navigation_group(active_element* element) : std::vector<active_element*>({ element }) {}
@@ -58,23 +56,16 @@ namespace tui
 		void update()
 		{
 			if (isActive())
-			{
-				if (input::isKeyPressed(key_block))
+			{		
+				if (input::isKeyPressed(key_next))
 				{
-					m_blocked = !m_blocked;
+					m_selected < size() - 1 ? m_selected++ : m_selected = 0;
 				}
-
-				if (!m_blocked)
+				if (input::isKeyPressed(key_prev))
 				{
-					if (input::isKeyPressed(key_next))
-					{
-						m_selected < size() - 1 ? m_selected++ : m_selected = 0;
-					}
-					if (input::isKeyPressed(key_prev))
-					{
-						m_selected > 0 ? m_selected-- : m_selected = size()-1;					
-					}			
-				}
+					m_selected > 0 ? m_selected-- : m_selected = size()-1;					
+				}			
+				
 				enable();
 			}
 		}
