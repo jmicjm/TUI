@@ -81,6 +81,8 @@ namespace tui
 		std::vector<list_entry> m_entries;
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
+		bool m_display_scroll = true;
+
 		bool m_redraw_needed = true;
 
 		list_appearance_a gca()
@@ -128,7 +130,7 @@ namespace tui
 				}
 			}
 
-			insertSurface(m_scroll, false);
+			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll, false); }
 		}
 
 		void resizeAction() override
@@ -206,6 +208,38 @@ namespace tui
 		void addEntry(const list_entry& entry)
 		{
 			m_entries.push_back(entry);
+			m_redraw_needed = true;
+		}
+
+		void displayScroll(bool display)
+		{
+			m_display_scroll = display;
+			m_redraw_needed = true;
+		}
+		//is displaying scroll if needed
+		bool isDisplayingScroll() const { return m_display_scroll; }
+
+		//is displaying scroll currently
+		bool isDisplayingScrollNow() const { return m_display_scroll && m_scroll.isNeeded(); }
+
+		void lineUp()
+		{
+			m_scroll.up();
+			m_redraw_needed = true;
+		}
+		void lineDown()
+		{
+			m_scroll.down();
+			m_redraw_needed = true;
+		}
+		void pageUp()
+		{
+			m_scroll.pageUp();
+			m_redraw_needed = true;
+		}
+		void pageDown()
+		{
+			m_scroll.pageDown();
 			m_redraw_needed = true;
 		}
 

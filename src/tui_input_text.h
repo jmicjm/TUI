@@ -267,7 +267,7 @@ namespace tui
 				clear();
 				insertSurface(m_text, false);
 
-				bool scr = m_text.isDisplayingScroll();
+				bool scr = m_text.isDisplayingScrollNow();
 
 				for (int y = 0; y < getSize().y; y++)
 				{

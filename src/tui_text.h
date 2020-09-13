@@ -264,17 +264,17 @@ namespace tui
 		}
 		bool isUsingControlCharacters() const { return m_use_control_characters; }
 
-		void useScroll(bool display)
+		void displayScroll(bool display)
 		{
 			m_display_scroll = display;
 			adjustSizes();
 			m_redraw_needed = true;
 		}
 		//is displaying scroll if needed
-		bool isUsingScroll() const { return m_display_scroll; }
+		bool isDisplayingScroll() const { return m_display_scroll; }
 
 		//is displaying scroll currently
-		bool isDisplayingScroll() const { return m_display_scroll && m_scroll.isNeeded(); }
+		bool isDisplayingScrollNow() const { return m_display_scroll && m_scroll.isNeeded(); }
 
 		void resizeToText(unsigned int max_width = 0)
 		{
