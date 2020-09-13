@@ -193,8 +193,16 @@ namespace tui
 				{
 					if (m_entries[pos].checked != CHECK_STATE::NONCHECKABLE)
 					{
-						CHECK_STATE state = m_entries[pos].checked;
-						m_entries[pos].checked = static_cast<CHECK_STATE>(!static_cast<bool>(state));
+						switch (m_entries[pos].checked)
+						{
+						case CHECK_STATE::CHECKED:
+							m_entries[pos].checked = CHECK_STATE::NOT_CHECKED;
+							if (m_entries[pos].uncheck_function) { m_entries[pos].uncheck_function(); }
+							break;
+						case CHECK_STATE::NOT_CHECKED:
+							m_entries[pos].checked = CHECK_STATE::CHECKED;
+							if (m_entries[pos].check_function) { m_entries[pos].check_function(); }
+						}
 						m_redraw_needed = true;
 					}
 				}
