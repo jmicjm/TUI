@@ -6,6 +6,7 @@
 #include "tui_input.h"
 
 #include <algorithm>
+#include <functional>
 
 namespace tui
 {
@@ -61,8 +62,8 @@ namespace tui
 
 		BUTTON_TYPE m_type = BUTTON_TYPE::PUSH;
 
-		void (*m_selection_function_ptr)(void) = nullptr;
-		void (*m_deselection_function_ptr)(void) = nullptr;
+		std::function<void()> select_function = nullptr;
+		std::function<void()> deselect_function = nullptr;
 
 		bool m_selected = false;
 
@@ -159,14 +160,14 @@ namespace tui
 			surface1D<direction>::setSizeInfo(longest+2);
 		}
 
-		void setSelectionFunction(void (*func_ptr)(void))
+		void setSelectFunction(std::function<void()> func)
 		{
-			m_selection_function_ptr = *func_ptr;
+			select_function = func;
 		}
 
-		void setDeselectionFunction(void (*func_ptr)(void))
+		void setDeselectFunction(std::function<void()> func)
 		{
-			m_deselection_function_ptr = *func_ptr;
+			deselect_function = func;
 		}
 
 		void update()
@@ -181,18 +182,13 @@ namespace tui
 				{
 					m_selected = !m_selected;
 
-					auto launchFunc = [](void (*func_ptr)(void))
-					{
-						if (func_ptr != nullptr) { (*func_ptr)(); }
-					};
-
 					switch (isSelected())
 					{
 					case true:
-						launchFunc(m_selection_function_ptr);
+						if (select_function) { select_function(); }
 						break;
 					case false:
-						launchFunc(m_deselection_function_ptr);
+						if (deselect_function) { deselect_function(); }
 					}
 				}
 			}
