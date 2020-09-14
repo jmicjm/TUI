@@ -85,7 +85,7 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		list_appearance_a gca()
+		list_appearance_a gca() const
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
@@ -182,18 +182,18 @@ namespace tui
 			m_entries = entries;
 			m_redraw_needed = true;
 		}
-		std::vector<list_entry> getEntries() { return m_entries; }
+		std::vector<list_entry> getEntries() const { return m_entries; }
 
-		size_t size() { return m_entries.size(); }
+		size_t size() const { return m_entries.size(); }
 
-		size_t getHighlighted() { return m_scroll.getCurrentPosition(); }
+		size_t getHighlighted() const { return m_scroll.getCurrentPosition(); }
 
 		void setEntryAt(const list_entry& entry, size_t i) 
 		{
 			m_entries[i] = entry; 
 			m_redraw_needed = true;
 		}
-		list_entry getEntryAt(size_t i) { return m_entries[i]; }
+		list_entry getEntryAt(size_t i) const { return m_entries[i]; }
 
 		void removeEntryAt(size_t i)
 		{
@@ -211,6 +211,14 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
+		void resizeToEntries()
+		{
+			surface_size c_size = getSizeInfo();
+			c_size.percentage.y = 0;
+			c_size.fixed.y = m_entries.size();
+			setSizeInfo(c_size);
+		}
+
 		void displayScroll(bool display)
 		{
 			m_display_scroll = display;
@@ -222,12 +230,12 @@ namespace tui
 		//is displaying scroll currently
 		bool isDisplayingScrollNow() const { return m_display_scroll && m_scroll.isNeeded(); }
 
-		void lineUp()
+		void up()
 		{
 			m_scroll.up();
 			m_redraw_needed = true;
 		}
-		void lineDown()
+		void down()
 		{
 			m_scroll.down();
 			m_redraw_needed = true;
