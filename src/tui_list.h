@@ -112,9 +112,10 @@ namespace tui
 
 				if (checkable && getSize().x > 1) { setSymbolAt(' ', { 1, y }); }
 
-				for (int x = checkable*2, j = 0; x < getSize().x && j < m_entries[i].name.size(); x++, j++)
+				symbol_string w_str = getFullWidthString(m_entries[i].name);
+				for (int x = checkable*2, j = 0; x < getSize().x && j < w_str.size(); x++, j++)
 				{
-					setSymbolAt(m_entries[i].name[j], { x, y });
+					setSymbolAt(w_str[j], { x, y });
 				}
 
 				if (i == m_scroll.getCurrentPosition())
