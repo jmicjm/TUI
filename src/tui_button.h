@@ -118,10 +118,10 @@ namespace tui
 		{
 			resizeToText();
 		}
-		button(const symbol_string& text, surface1D_size size) : button(text, text, size) {}
-		button(const symbol_string& selected, const symbol_string& deselected, surface1D_size size) : m_selected_text(selected), m_deselected_text(deselected)
+		button(surface1D_size size, const symbol_string& text) : button(size, text, text) {}
+		button(surface1D_size size, const symbol_string& selected, const symbol_string& deselected) : m_selected_text(selected), m_deselected_text(deselected)
 		{
-			surface1D<direction>::setSize(size);
+			surface1D<direction>::setSizeInfo(size);
 		}
 
 		void setType(BUTTON_TYPE type) { m_type = type; }
