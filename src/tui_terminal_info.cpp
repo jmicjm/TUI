@@ -145,6 +145,15 @@ namespace tui
 		smkx = vecToStr(getSeq("smkx"));
 		rmkx = vecToStr(getSeq("rmkx"));
 
+		std::string t_home = vecToStr(getSeq("home"));
+		home = t_home.size() > 0 ? t_home : "\033[H";//if no entry replace with ansi one
+
+		std::string t_civis = vecToStr(getSeq("civis"));
+		civis = t_civis.size() > 0 ? t_civis : "\033[?25l";
+
+		std::string t_cvvis = vecToStr(getSeq("cvvis"));
+		cvvis = t_cvvis.size() > 0 ? t_cvvis : "\033[?25h";
+
 
 		std::string colorterm = getCommandOutput("echo $COLORTERM");
 

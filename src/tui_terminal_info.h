@@ -105,6 +105,9 @@ namespace tui
 
 		std::string smkx;
 		std::string rmkx;
+		std::string home;
+		std::string civis;
+		std::string cvvis;
 
 		bool rgb_color;
 

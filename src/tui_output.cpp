@@ -280,7 +280,7 @@ namespace tui
 
 				/* if not doubled last few characters will be displayed after
 				some delay. I dont know why this happen*/
-				std::cout << "\033[H" << str << "\033[H" << str;
+				std::cout << term_info.home << str << term_info.home << str;
 #endif
 				hidePrompt();
 				updateLastBuffer();
@@ -319,7 +319,7 @@ namespace tui
 #endif
 
 #if defined(__linux__) || defined(__unix__) 
-				std::cout << "\033[?25l";
+				std::cout << term_info.civis;
 #endif
 			}
 		} con;
@@ -374,7 +374,7 @@ namespace tui
 #endif
 #if defined(__linux__) || defined(__unix__) 
 			std::string str(getSize().x * getSize().y, ' ');
-			std::cout << "\033[0m" << str << "\033[H";
+			std::cout << "\033[0m" << str << term_info.home;
 #endif
 		}
 
@@ -389,7 +389,7 @@ namespace tui
 #endif
 
 #if defined(__linux__) || defined(__unix__) 
-			std::cout << "\033[?25h";
+			std::cout << term_info.cvvis;
 #endif
 			clearDisplay();
 		}
