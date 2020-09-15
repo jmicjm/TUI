@@ -70,7 +70,7 @@ namespace tui
 		struct console : console_buffer
 		{
 #if defined(_WIN32)
-			HANDLE m_console_handle;
+			HANDLE console_handle;
 #endif
 			time_frame fps_control;
 			bool display_rgb = true;
@@ -79,7 +79,7 @@ namespace tui
 			console() : fps_control(std::chrono::milliseconds(1000) / 30)
 			{
 #if defined(_WIN32)
-				m_console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
 			}
 
@@ -166,14 +166,10 @@ namespace tui
 					}
 				}
 
-				SetConsoleCursorPosition(m_console_handle, { 0,0 });//without this output may be misplaced after console resize if "wrap text on resize" was selected in console options
+				SetConsoleCursorPosition(console_handle, { 0,0 });//without this output may be misplaced after console resize if "wrap text on resize" was selected in console options
 
 				SMALL_RECT srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
-				WriteConsoleOutputW(m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);
-
-				//reset
-				SetConsoleCursorPosition(m_console_handle, { 0,0 });
-				SetConsoleTextAttribute(m_console_handle, getRgbiColor({ COLOR::WHITE, COLOR::BLACK }));
+				WriteConsoleOutputW(console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);
 #endif
 
 #if defined(__linux__) || defined(__unix__) 
@@ -284,7 +280,7 @@ namespace tui
 
 				/* if not doubled last few characters will be displayed after
 				some delay. I dont know why this happen*/
-				std::cout << str << "\033[H" << str << "\033[H" << getEscCodeRgbi({ COLOR::WHITE, COLOR::BLACK });;
+				std::cout << "\033[H" << str << "\033[H" << str;
 #endif
 				hidePrompt();
 				updateLastBuffer();
@@ -296,7 +292,7 @@ namespace tui
 
 #if defined(_WIN32)
 				CONSOLE_SCREEN_BUFFER_INFO buffer_info;
-				GetConsoleScreenBufferInfo(m_console_handle, &buffer_info);
+				GetConsoleScreenBufferInfo(console_handle, &buffer_info);
 
 				console_size.x = buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1;
 				console_size.y = buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1;
@@ -319,15 +315,14 @@ namespace tui
 				cursor_info.bVisible = false;
 				cursor_info.dwSize = 1;
 
-				SetConsoleCursorInfo(m_console_handle, &cursor_info);
+				SetConsoleCursorInfo(console_handle, &cursor_info);
 #endif
 
 #if defined(__linux__) || defined(__unix__) 
 				std::cout << "\033[?25l";
 #endif
 			}
-		};
-		console con;
+		} con;
 
 		void clear() { con.clear(); }
 
@@ -375,11 +370,11 @@ namespace tui
 			i.Attributes = 0;
 			std::vector<CHAR_INFO> temp(getSize().x * getSize().y, i);
 			SMALL_RECT srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
-			WriteConsoleOutputW(con.m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);
+			WriteConsoleOutputW(con.console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);
 #endif
 #if defined(__linux__) || defined(__unix__) 
 			std::string str(getSize().x * getSize().y, ' ');
-			std::cout <<"\033[0m" << str << "\033[H";
+			std::cout << "\033[0m" << str << "\033[H";
 #endif
 		}
 
