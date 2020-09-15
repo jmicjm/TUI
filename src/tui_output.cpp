@@ -366,6 +366,23 @@ namespace tui
 		}
 		bool isDisplayingColor() { return con.display_rgbi || con.display_rgb; }
 
+
+		void clearDisplay()
+		{
+#if defined(_WIN32)
+			CHAR_INFO i;
+			i.Char.UnicodeChar = ' ';
+			i.Attributes = 0;
+			std::vector<CHAR_INFO> temp(getSize().x * getSize().y, i);
+			SMALL_RECT srect = { 0,0,(SHORT)getSize().x, (SHORT)getSize().y };
+			WriteConsoleOutputW(con.m_console_handle, temp.data(), { (SHORT)getSize().x, (SHORT)getSize().y }, { 0,0 }, &srect);
+#endif
+#if defined(__linux__) || defined(__unix__) 
+			std::string str(getSize().x * getSize().y, ' ');
+			std::cout <<"\033[0m" << str << "\033[H";
+#endif
+		}
+
 		void restore()
 		{
 #if defined(_WIN32)
@@ -379,6 +396,7 @@ namespace tui
 #if defined(__linux__) || defined(__unix__) 
 			std::cout << "\033[?25h";
 #endif
+			clearDisplay();
 		}
 
 		void init()
