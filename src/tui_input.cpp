@@ -328,6 +328,14 @@ namespace tui
 #endif
 		}
 
+		void restoreExit()
+		{
+#if defined(__linux__) || defined(__unix__) 
+			tcsetattr(0, TCSANOW, &default_settings);
+			std::cout << term_info.rmkx;
+#endif
+		}
+
 		void init()
 		{
 #if defined(__linux__) || defined(__unix__) 
@@ -345,7 +353,7 @@ namespace tui
 			std::cout << term_info.smkx;
 #endif	
 
-			std::atexit(restore);
+			std::atexit(restoreExit);
 
 			buffer.sync_mtx.lock();
 
