@@ -217,7 +217,7 @@ namespace tui
 		}
 		symbol_string getText() const { return m_unprepared_text; }
 
-		int getNumberOfLines() const
+		unsigned int getNumberOfLines() const
 		{
 			if (m_symbol_pos.size() > 0)
 			{
@@ -232,15 +232,15 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
-		//return current line number
+		//returns current line number
 		unsigned int getLine() const { return m_scroll.getTopPosition(); }
 
-		void lineUp()
+		void up()
 		{
 			m_scroll.up();
 			m_redraw_needed = true;
 		}
-		void lineDown()
+		void down()
 		{
 			m_scroll.down();
 			m_redraw_needed = true;
