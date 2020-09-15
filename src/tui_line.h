@@ -74,6 +74,9 @@ namespace tui
 			m_redraw_needed = false;
 		}
 	public:
-		line() : line_appearance(direction) {}
+		line(surface1D_size size = surface1D_size()) : line_appearance(direction) 
+		{
+			surface1D<direction>::setSizeInfo(size);
+		}
 	};
 }

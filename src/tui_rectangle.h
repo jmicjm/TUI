@@ -42,8 +42,7 @@ namespace tui
 		void resizeAction() override { m_redraw_needed = true; }
 		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
-		rectangle() : rectangle({{ 1,1 }}) {}
-		rectangle(surface_size size)
+		rectangle(surface_size size = surface_size())
 		{
 			setSizeInfo(size);
 		}

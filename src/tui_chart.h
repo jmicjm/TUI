@@ -255,10 +255,12 @@ namespace tui
 		short& key_pgup = m_scroll.key_pgup;
 		short& key_pgdn = m_scroll.key_pgdn;
 
-		chart() : m_scroll({0,100}) 
+		chart(surface_size size = surface_size()) : m_scroll({0,100}) 
 		{
 			m_scroll.setPositionInfo({ { 0,-1 }, { 0,100 } });
 			m_chart.setPositionInfo({ {0,0}, {0,0}, {tui::POSITION::END, tui::POSITION::BEGIN} });
+
+			setSizeInfo(size);
 		}
 
 		void setData(const std::vector<chart_data_unit>& values)

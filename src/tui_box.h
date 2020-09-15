@@ -100,12 +100,9 @@ namespace tui
 		void resizeAction() override { m_redraw_needed = true; }
 		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
-		box() : box({ {3,3} }) {}
-		box(surface_size size) : box(size, box_appearance()) {}
-		box(surface_size size, box_appearance appearance)
+		box(surface_size size = surface_size())
 		{
 			setSizeInfo(size);
-			setAppearance(appearance);
 		}
 
 		void setTitle(const symbol_string& str)

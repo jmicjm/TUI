@@ -330,10 +330,12 @@ namespace tui
 		short key_insert = input::KEY::INS;
 		short key_backspace = input::KEY::BACKSPACE;
 
-		input_text() : m_cursor_blink(std::chrono::milliseconds(500))
+		input_text(surface_size size = surface_size()) : m_cursor_blink(std::chrono::milliseconds(500))
 		{
 			m_text.setSizeInfo({ {0,0},{100,100} });
 			updateText();
+
+			setSizeInfo(size);
 		}
 
 		symbol_string getText() const { return m_str; }

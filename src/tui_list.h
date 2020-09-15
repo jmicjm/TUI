@@ -170,12 +170,13 @@ namespace tui
 		short& key_pgdn = m_scroll.key_pgdn;
 		short key_check = ' ';
 
-		list()
+		list(surface_size size = surface_size())
 		{
 			m_scroll.setPositionInfo({ { 0,0 }, { 0,0 }, { POSITION::END, POSITION::BEGIN } });
 			m_scroll.setSizeInfo({ 0, 100 });
-
 			m_scroll.useFreeMode(true);
+
+			setSizeInfo(size);
 		}
 
 		void setEntries(const std::vector<list_entry>& entries)

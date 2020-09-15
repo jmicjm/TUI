@@ -196,9 +196,7 @@ namespace tui
 		short& key_pgup = m_scroll.key_pgup;
 		short& key_pgdn = m_scroll.key_pgdn;
 
-		text() : text({ {1,1} }) {}
-		text(surface_size size) : text(size, U"") {}
-		text(surface_size size, symbol_string txt) : m_scroll({ 0, 100 })
+		text(surface_size size = surface_size(), symbol_string txt = "") : m_scroll({ 0, 100 })
 		{
 			setSizeInfo(size);
 			m_text.setSizeInfo({ {-1,0}, {100,100} });

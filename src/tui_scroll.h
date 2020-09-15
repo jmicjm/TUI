@@ -180,7 +180,7 @@ namespace tui
 		short key_pgup = input::KEY::PGUP;
 		short key_pgdn = input::KEY::PGDN;
 
-		scroll(surface1D_size size = 1) : scroll_appearance(direction)
+		scroll(surface1D_size size = surface1D_size()) : scroll_appearance(direction)
 		{
 			if(direction == DIRECTION::HORIZONTAL)
 			{
@@ -188,7 +188,7 @@ namespace tui
 				key_down = input::KEY::RIGHT;
 			}
 
-			surface1D<direction>::setSizeInfo({ size.fixed, size.percentage });
+			surface1D<direction>::setSizeInfo(size);
 		}
 
 		bool isNeeded() const

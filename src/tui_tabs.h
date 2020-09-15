@@ -182,13 +182,15 @@ namespace tui
 		short key_prev = input::KEY::LEFT;
 		short key_next = input::KEY::RIGHT;
 
-		tabs() : tabs_appearance(direction) 
+		tabs(surface1D_size size = surface1D_size()) : tabs_appearance(direction) 
 		{
 			if (direction == tui::DIRECTION::VERTICAL)
 			{
 				key_prev = input::KEY::UP;
 				key_next = input::KEY::DOWN;
 			}
+
+			surface1D<direction>::setSizeInfo(size);
 		}
 
 		void setTabs(const std::vector<symbol_string>& tabs)
