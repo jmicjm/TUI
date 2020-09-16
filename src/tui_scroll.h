@@ -143,6 +143,10 @@ namespace tui
 			}
 			else
 			{
+				if (m_current_position < m_top_position)
+				{
+					m_top_position = m_current_position;
+				}
 				if (m_current_position >= m_content_length)
 				{
 					m_current_position = m_content_length - 1;
@@ -233,6 +237,13 @@ namespace tui
 		}
 		unsigned int getTopPosition() const { return m_top_position; }
 
+		void setCurrentPosition(unsigned int handle_position)
+		{
+			m_current_position = handle_position;
+
+			adjustHandlePosition();
+			m_redraw_needed = true;
+		}
 		unsigned int getCurrentPosition() const { return m_current_position; }
 
 		void up(unsigned int n = 1)
@@ -244,10 +255,6 @@ namespace tui
 			else
 			{
 				m_current_position-=n;
-				if (m_current_position < m_top_position)
-				{
-					m_top_position = m_current_position;
-				}
 				adjustHandlePosition();
 			}
 			m_redraw_needed = true;
@@ -261,10 +268,6 @@ namespace tui
 			else
 			{
 				m_current_position+=n;
-				if (m_current_position >= m_top_position + visibleContentLength())
-				{
-					m_top_position = m_current_position - visibleContentLength() + 1;
-				}
 				adjustHandlePosition();
 			}
 			m_redraw_needed = true;
