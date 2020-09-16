@@ -102,7 +102,6 @@ namespace tui
 	{
 	private:
 		std::vector<list_entry> m_entries;
-		size_t m_depth = 1;
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		bool m_display_scroll = true;
@@ -113,24 +112,6 @@ namespace tui
 		{
 			if (isActive()) { return active_appearance; }
 			else { return inactive_appearance; }
-		}
-
-		void updateDepth()
-		{
-			m_depth = 1;
-			for (int i = 0; i < m_entries.size(); i++)
-			{
-				updateD(m_entries[i], 1);
-			}
-		}
-		void updateD(const list_entry& e, size_t d)
-		{
-			if (e.nested_entries.size() > 0) { m_depth = std::max(m_depth, d+1); }
-
-			for (int i = 0; i < e.nested_entries.size(); i++)
-			{
-				updateD(e.nested_entries[i], d+1);
-			}
 		}
 
 		void fill(action_proxy proxy)
@@ -276,7 +257,6 @@ namespace tui
 		void setEntries(const std::vector<list_entry>& entries)
 		{
 			m_entries = entries;
-			updateDepth();
 			m_redraw_needed = true;
 		}
 		std::vector<list_entry> getEntries() const { return m_entries; }
@@ -304,7 +284,6 @@ namespace tui
 		void setEntryAt(const list_entry& entry, size_t i) 
 		{
 			m_entries[i] = entry; 
-			updateDepth();
 			m_redraw_needed = true;
 		}
 		list_entry getEntryAt(size_t i) const { return m_entries[i]; }
@@ -312,19 +291,16 @@ namespace tui
 		void removeEntryAt(size_t i)
 		{
 			m_entries.erase(m_entries.begin() + i);
-			updateDepth();
 			m_redraw_needed = true;
 		}
 		void insertEntryAt(const list_entry& entry, size_t i)
 		{
 			m_entries.insert(m_entries.begin() + i, entry);
-			updateDepth();
 			m_redraw_needed = true;
 		}
 		void addEntry(const list_entry& entry)
 		{
 			m_entries.push_back(entry);
-			updateDepth();
 			m_redraw_needed = true;
 		}
 
