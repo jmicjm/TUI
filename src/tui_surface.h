@@ -105,13 +105,13 @@ namespace tui
 		}
 
 		template<typename T>
-		struct surface_proxy
+		struct array_proxy
 		{
 			friend class surface;
 		private:
 			T* surf;
 			size_t x;
-			surface_proxy(T* s, size_t x) : surf(s), x(x) {}
+			array_proxy(T* s, size_t x) : surf(s), x(x) {}
 		public:
 			symbol& operator[](size_t y)
 			{
@@ -158,13 +158,13 @@ namespace tui
 			return *this;
 		}
 
-		surface_proxy<surface> operator[](size_t x)
+		array_proxy<surface> operator[](size_t x)
 		{
-			return surface_proxy<surface>(this, x);
+			return array_proxy<surface>(this, x);
 		}
-		const surface_proxy<const surface> operator[](size_t x) const 
+		const array_proxy<const surface> operator[](size_t x) const
 		{
-			return surface_proxy<const surface>(this, x);
+			return array_proxy<const surface>(this, x);
 		}
 
 		bool isResized() const { return m_resized; }
