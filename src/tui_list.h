@@ -133,19 +133,16 @@ namespace tui
 			}
 		}
 
-		void fill()
+		void fill(action_proxy proxy)
 		{
-			surface_size old_size_info = getSizeInfo();
-			vec2i old_size = getSize();
-
-			setSizeInfo({ { old_size.x * (int)m_depth, old_size.y * (int)m_depth } });
-			makeTransparent();
+			if (m_redraw_needed)
+			{
+				clear();
+			}
 
 			m_scroll.setContentLength(m_entries.size());
-			m_scroll.setSizeInfo(old_size.y);
-			m_scroll.setPositionInfo({ { old_size.x - 1, 0 } });
 
-			for (int i = m_scroll.getTopPosition(), y = 0; y < old_size.y && i < m_entries.size(); y++, i++)
+			for (int i = m_scroll.getTopPosition(), y = 0; y < getSize().y && i < m_entries.size(); y++, i++)
 			{
 				if (m_redraw_needed)
 				{
@@ -160,10 +157,10 @@ namespace tui
 
 					bool checkable = m_entries[i].checked != CHECK_STATE::NONCHECKABLE;
 
-					if (checkable && old_size.x > 1) { setSymbolAt(' ', { 1, y }); }
+					if (checkable && getSize().x > 1) { setSymbolAt(' ', { 1, y }); }
 
 					symbol_string w_str = getFullWidthString(m_entries[i].name);
-					for (int x = checkable * 2, j = 0; x < old_size.x && j < w_str.size(); x++, j++)
+					for (int x = checkable * 2, j = 0; x < getSize().x && j < w_str.size(); x++, j++)
 					{
 						setSymbolAt(w_str[j], { x, y });
 					}
@@ -171,7 +168,7 @@ namespace tui
 					if (m_entries[i].nested_entries.size() > 0)
 					{
 						bool scr = m_scroll.isNeeded();
-						int ext_p = old_size.x - 1 - scr;
+						int ext_p = getSize().x - 1 - scr;
 						if (ext_p >= 0)
 						{
 							setSymbolAt(gca().extend, { ext_p, y });
@@ -180,7 +177,7 @@ namespace tui
 
 					if (i == m_scroll.getCurrentPosition())
 					{
-						for (int x = 0; x < old_size.x; x++)
+						for (int x = 0; x < getSize().x; x++)
 						{
 							if ((*this)[x][y].getWidth() == 0)
 							{
@@ -194,8 +191,8 @@ namespace tui
 				if (m_entries[i].nested_entries.size() > 0 && m_entries[i].extended)
 				{
 					list l;
-					l.setSizeInfo({ old_size });		
-					l.setPositionInfo({ { old_size.x, y } });
+					l.setSizeInfo({ getSize() });		
+					l.setPositionInfo({ getPosition() + vec2i(getSize().x, y) });
 					l.setEntries(m_entries[i].nested_entries);
 					
 					l.key_up = key_up;
@@ -208,14 +205,14 @@ namespace tui
 					l.key_select = key_select;
 
 					l.m_scroll.setContentLength(m_entries[i].nested_entries.size());
-					l.m_scroll.setSizeInfo({ old_size.y });
+					l.m_scroll.setSizeInfo({ getSize().y });
 					l.m_scroll.setTopPosition(m_entries[i].top);
 					l.m_scroll.setCurrentPosition(m_entries[i].highlighted);
 					l.displayScroll(isDisplayingScroll());
 
 					if (isActive() && m_entries[i].ext_halt == 0) { l.activate(); }
 
-					insertSurface(l);
+					proxy.insertSurface(l);
 			
 					m_entries[i].ext_halt = 0;
 					m_entries[i].nested_entries = l.getEntries();
@@ -224,8 +221,6 @@ namespace tui
 				}
 
 			}
-
-			setSizeInfo(old_size_info, false);
 
 			if (m_display_scroll && m_scroll.isNeeded()) { insertSurface(m_scroll, false); }
 		}
@@ -236,9 +231,9 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		void updateAction() override { update(); }
-		void drawAction() override
+		void drawAction(action_proxy proxy) override
 		{		
-			fill();
+			fill(proxy);
 			m_redraw_needed = false;
 		}
 

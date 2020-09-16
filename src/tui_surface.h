@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <cmath>
+#include <functional>
 
 namespace tui
 {
@@ -123,9 +124,18 @@ namespace tui
 		};
 
 	protected:
+		struct action_proxy
+		{
+		private:
+			surface* surf;
+		public:
+			action_proxy(surface* surf) : surf(surf) {}
+			vec2i getSize() const { return surf->getSize(); }
+			void insertSurface(surface& s, bool update = true) { surf->insertSurface(s, update); }
+		};
 		virtual void resizeAction() {}
 		virtual void updateAction() {}
-		virtual void drawAction() {}
+		virtual void drawAction(action_proxy proxy) {}
 
 		void clear()
 		{
@@ -277,7 +287,7 @@ namespace tui
 				updateSurfacePosition(surf);
 
 				if (update) { surf.updateAction(); }
-				surf.drawAction();
+				surf.drawAction(this);
 
 				vec2i origin = surf.m_position;
 				for (int y = 0; y < surf.getSize().y; y++)

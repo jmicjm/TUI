@@ -9,7 +9,7 @@ namespace tui
 	struct group : surface, private std::vector<surface*>
 	{
 	private:
-		void drawAction() override
+		void drawAction(action_proxy proxy) override
 		{
 			clear();
 

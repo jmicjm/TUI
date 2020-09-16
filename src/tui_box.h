@@ -89,7 +89,7 @@ namespace tui
 				setSymbolAt(fw_str[i], vec2i(t_pos, 0));
 			}
 		}
-		void drawAction() override
+		void drawAction(action_proxy proxy) override
 		{
 			if (m_redraw_needed) 
 			{

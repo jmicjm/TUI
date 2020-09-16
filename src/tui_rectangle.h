@@ -34,7 +34,7 @@ namespace tui
 		{
 			surface::fill(filling);
 		}
-		void drawAction() override
+		void drawAction(action_proxy proxy) override
 		{
 			if (m_redraw_needed) { fill(); }
 			m_redraw_needed = false;

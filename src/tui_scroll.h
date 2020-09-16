@@ -162,7 +162,7 @@ namespace tui
 		}
 
 		void updateAction() override { update(); }
-		void drawAction() override 
+		void drawAction(surface::action_proxy proxy) override
 		{
 			if (m_redraw_needed) { fill(); }
 			m_redraw_needed = false;

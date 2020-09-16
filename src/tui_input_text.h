@@ -300,7 +300,7 @@ namespace tui
 
 		void resizeAction() override { m_redraw_needed = true; }
 		void updateAction() override { update(); }
-		void drawAction() override { fill(); }
+		void drawAction(action_proxy proxy) override { fill(); }
 
 		void activationAction() override
 		{

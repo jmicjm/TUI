@@ -26,7 +26,7 @@ namespace tui
 				insertSurface(m_frames[m_frame]);
 			}
 		}
-		void drawAction() override { fill(); }
+		void drawAction(action_proxy proxy) override { fill(); }
 	public:
 		animation() {}
 		animation(surface frame) : m_frames({frame}) {}

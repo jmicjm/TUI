@@ -167,7 +167,7 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		void updateAction() override { update(); }
-		void drawAction() override
+		void drawAction(action_proxy proxy) override
 		{
 			if (m_redraw_needed) { fill(); }
 			m_redraw_needed = false;
