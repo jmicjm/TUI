@@ -185,10 +185,10 @@ namespace tui
 		void setAnchorPositionInfo(anchor_position anchor_pos) { m_anchor_position_info = anchor_pos; }
 		anchor_position getAnchorPositionInfo() const { return m_anchor_position_info; }
 
-		void setSizeInfo(surface_size size)
+		void setSizeInfo(surface_size size, bool update_fixed = true)
 		{
 			m_size_info = size;
-			if (size.percentage == vec2f(0.f, 0.f))
+			if (size.percentage == vec2f(0.f, 0.f) && update_fixed)
 			{
 				resize(size.fixed);
 			}
