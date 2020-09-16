@@ -78,11 +78,24 @@ namespace tui
 		CHECK_STATE checked;
 		std::function<void()> check_function;
 		std::function<void()> uncheck_function;
+		std::function<void()> select_function;
 
 		std::vector<list_entry> nested_entries;
 
-		list_entry(symbol_string name = "", CHECK_STATE checked = CHECK_STATE::NONCHECKABLE, std::function<void()> check_function = nullptr, std::function<void()> uncheck_function = nullptr, std::vector<list_entry> nested_entries = {})
-			: name(name), checked(checked), check_function(check_function), uncheck_function(uncheck_function), nested_entries(nested_entries) {}
+		list_entry
+		(
+			symbol_string name = "",
+			CHECK_STATE checked = CHECK_STATE::NONCHECKABLE,
+			std::function<void()> check_function = nullptr,
+			std::function<void()> uncheck_function = nullptr,
+			std::function<void()> select_function = nullptr,
+			std::vector<list_entry> nested_entries = {}
+		)	
+			: name(name), checked(checked),
+			check_function(check_function),
+			uncheck_function(uncheck_function),
+			select_function(select_function),
+			nested_entries(nested_entries) {}
 	};
 
 	struct list : surface, active_element, list_appearance
@@ -192,6 +205,7 @@ namespace tui
 					l.key_check = key_check;
 					l.key_right = key_right;
 					l.key_left = key_left;
+					l.key_select = key_select;
 
 					l.m_scroll.setContentLength(m_entries[i].nested_entries.size());
 					l.m_scroll.setSizeInfo({ old_size.y });
@@ -253,6 +267,7 @@ namespace tui
 		short key_check = ' ';
 		short key_right = input::KEY::RIGHT;
 		short key_left = input::KEY::LEFT;
+		short key_select = input::KEY::ENTER;
 
 		list(surface_size size = surface_size())
 		{
@@ -384,6 +399,13 @@ namespace tui
 							if (m_entries[pos].check_function) { m_entries[pos].check_function(); }
 						}
 						m_redraw_needed = true;
+					}
+				}
+				if (input::isKeyPressed(key_select) && m_entries.size() > 0 && !m_entries[pos].extended)
+				{
+					if (m_entries[pos].select_function)
+					{
+						m_entries[pos].select_function();
 					}
 				}
 
