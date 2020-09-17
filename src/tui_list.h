@@ -323,27 +323,6 @@ namespace tui
 		//is displaying scroll currently
 		bool isDisplayingScrollNow() const { return m_display_scroll && m_scroll.isNeeded(); }
 
-		void up()
-		{
-			m_scroll.up();
-			m_redraw_needed = true;
-		}
-		void down()
-		{
-			m_scroll.down();
-			m_redraw_needed = true;
-		}
-		void pageUp()
-		{
-			m_scroll.pageUp();
-			m_redraw_needed = true;
-		}
-		void pageDown()
-		{
-			m_scroll.pageDown();
-			m_redraw_needed = true;
-		}
-
 		void update()
 		{
 			if (isActive())
