@@ -93,6 +93,10 @@ namespace tui
 			{
 				m_first_sym_idx = 0;
 			}
+			if (m_first_sym_idx > m_cursor_sym_idx)
+			{
+				m_first_sym_idx = m_cursor_sym_idx;
+			}
 			if (m_symbol_pos.back() >= getSize() && m_symbol_pos.back() < m_symbol_pos[m_first_sym_idx] + getSize())
 			{
 				auto f_it = std::lower_bound(
@@ -112,10 +116,6 @@ namespace tui
 				);
 
 				m_first_sym_idx = f_it - m_symbol_pos.begin();
-			}
-			if (m_first_sym_idx > m_cursor_sym_idx)
-			{
-				m_first_sym_idx = m_cursor_sym_idx;
 			}
 		}
 
@@ -138,6 +138,7 @@ namespace tui
 					{
 						setSymbolAt('*', m_symbol_pos[i] - f_pos);
 					}
+					(*this)[m_symbol_pos[i] - f_pos].setColor(gca().text_color);
 				}
 			}
 
