@@ -130,7 +130,14 @@ namespace tui
 			{
 				if (m_str[i].getWidth() > 0)
 				{
-					setSymbolAt(m_str[i], m_symbol_pos[i] - f_pos);
+					if (!m_confidential_mode)
+					{
+						setSymbolAt(m_str[i], m_symbol_pos[i] - f_pos);
+					}
+					else
+					{
+						setSymbolAt('*', m_symbol_pos[i] - f_pos);
+					}
 				}
 			}
 
@@ -147,7 +154,7 @@ namespace tui
 					}
 					else
 					{
-						symbol sym = m_str[m_cursor_sym_idx];
+						symbol sym = !m_confidential_mode ? m_str[m_cursor_sym_idx] : '*';
 						sym.setColor(gca().text_color);
 						setSymbolAt(sym, c_pos);
 					}
@@ -199,6 +206,13 @@ namespace tui
 			str.pop_back();
 			return str;
 		}
+
+		void useConfidentialMode(bool use)
+		{
+			m_confidential_mode = use;
+			m_redraw_needed = true;
+		}
+		bool isUsingConfidentialMode() const { return m_confidential_mode; }
 
 		void update()
 		{
