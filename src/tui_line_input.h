@@ -296,17 +296,6 @@ namespace tui
 					{
 						buffer.push_back(input[i]);
 					}
-					else
-					{
-						switch (input[i])
-						{
-						case input::KEY::ENTER:
-							buffer.push_back('\n');
-							break;
-						case input::KEY::TAB:
-							buffer.push_back('\t');
-						}
-					}
 				}
 
 				addText((symbol_string)buffer);
