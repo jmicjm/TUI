@@ -58,9 +58,9 @@ namespace tui
 	{
 	private:
 		symbol_string m_str = " ";
-		std::vector<int> m_symbol_pos = {0};
-		int m_cursor_pos_in_txt = 0;
-		int m_first_pos = 0;
+		std::vector<unsigned int> m_symbol_pos = {0};
+		unsigned int m_cursor_sym_idx = 0;
+		unsigned int m_first_sym_idx = 0;
 		time_frame m_cursor_blink;
 
 		bool m_redraw_needed = true;
@@ -87,13 +87,13 @@ namespace tui
 			}
 		}
 
-		void updateFirstPos()
+		void updateFirstSymIdx()
 		{
 			if (m_symbol_pos.back() < getSize())
 			{
-				m_first_pos = 0;
+				m_first_sym_idx = 0;
 			}
-			if (m_symbol_pos.back() < m_symbol_pos[m_first_pos] + getSize())
+			if (m_symbol_pos.back() >= getSize() && m_symbol_pos.back() < m_symbol_pos[m_first_sym_idx] + getSize())
 			{
 				auto f_it = std::lower_bound(
 					m_symbol_pos.begin(),
@@ -101,32 +101,32 @@ namespace tui
 					m_symbol_pos.back() - getSize() + 1
 				);
 
-				m_first_pos = f_it - m_symbol_pos.begin();
+				m_first_sym_idx = f_it - m_symbol_pos.begin();
 			}
-			if (m_symbol_pos[m_cursor_pos_in_txt] >= m_symbol_pos[m_first_pos] + getSize())
+			if (m_symbol_pos[m_cursor_sym_idx] >= m_symbol_pos[m_first_sym_idx] + getSize())
 			{
 				auto f_it = std::lower_bound(
 					m_symbol_pos.begin(),
 					m_symbol_pos.end(),
-					m_symbol_pos[m_cursor_pos_in_txt] - getSize() + 1
+					m_symbol_pos[m_cursor_sym_idx] - getSize() + 1
 				);
 
-				m_first_pos = f_it - m_symbol_pos.begin();
+				m_first_sym_idx = f_it - m_symbol_pos.begin();
 			}
-			if (m_first_pos > m_cursor_pos_in_txt)
+			if (m_first_sym_idx > m_cursor_sym_idx)
 			{
-				m_first_pos = m_cursor_pos_in_txt;
+				m_first_sym_idx = m_cursor_sym_idx;
 			}
 		}
 
 		void fill()
 		{
 			clear();
-			updateFirstPos();
+			updateFirstSymIdx();
 
-			const int f_pos = m_symbol_pos[m_first_pos];
+			const unsigned int f_pos = m_symbol_pos[m_first_sym_idx];
 
-			for (int i = m_first_pos; i < m_str.size() && m_symbol_pos[i] - f_pos < getSize(); i++)
+			for (int i = m_first_sym_idx; i < m_str.size() && m_symbol_pos[i] - f_pos < getSize(); i++)
 			{
 				if (m_str[i].getWidth() > 0)
 				{
@@ -136,18 +136,21 @@ namespace tui
 
 			if (isActive() && (m_cursor_blink.isEnd(false) || m_redraw_needed))
 			{
-				int c_pos = m_symbol_pos[m_cursor_pos_in_txt] - f_pos;
+				unsigned int c_pos = m_symbol_pos[m_cursor_sym_idx] - f_pos;
 
-				if (m_blink)
+				if (c_pos < getSize())
 				{
-					if (m_insert_mode) { setSymbolAt(gca().insert_cursor, c_pos); }
-					else { setSymbolAt(gca().overtype_cursor, c_pos); }
-				}
-				else
-				{
-					symbol sym = m_str[m_cursor_pos_in_txt];
-					sym.setColor(gca().text_color);
-					setSymbolAt(sym, c_pos);
+					if (m_blink)
+					{
+						if (m_insert_mode) { setSymbolAt(gca().insert_cursor, c_pos); }
+						else { setSymbolAt(gca().overtype_cursor, c_pos); }
+					}
+					else
+					{
+						symbol sym = m_str[m_cursor_sym_idx];
+						sym.setColor(gca().text_color);
+						setSymbolAt(sym, c_pos);
+					}
 				}
 
 				if (m_cursor_blink.isEnd(true)) { m_blink = !m_blink; }
@@ -156,29 +159,13 @@ namespace tui
 
 		void moveCursorRight(unsigned int n = 1)
 		{
-			if (m_cursor_pos_in_txt + n < m_str.size())
-			{
-				m_cursor_pos_in_txt += n;
-				m_redraw_needed = true;
-			}
-			else
-			{
-				m_cursor_pos_in_txt = m_str.size() - 1;
-				m_redraw_needed = true;
-			}
+			m_cursor_sym_idx = std::min(m_cursor_sym_idx + n, (unsigned int)m_str.size() - 1);
+			m_redraw_needed = true;
 		}
 		void moveCursorLeft(unsigned int n = 1)
 		{
-			if (m_cursor_pos_in_txt >= n)
-			{
-				m_cursor_pos_in_txt -= n;
-				m_redraw_needed = true;
-			}
-			else
-			{
-				m_cursor_pos_in_txt = 0;
-				m_redraw_needed = true;
-			}
+			m_cursor_sym_idx = std::max((long long)m_cursor_sym_idx - (long long)n, (long long)0);
+			m_redraw_needed = true;
 		}
 
 		void resizeAction() override { m_redraw_needed = true; }
@@ -226,16 +213,16 @@ namespace tui
 					{
 						for (int i = 0; i < str.size(); i++)
 						{
-							m_str.insert(m_str.begin() + m_cursor_pos_in_txt + i, str[i]);
+							m_str.insert(m_str.begin() + m_cursor_sym_idx + i, str[i]);
 						}
 					}
 					else//overtype
 					{
 						for (int i = 0; i < str.size(); i++)
 						{
-							if (i + m_cursor_pos_in_txt < m_str.size()-1)
+							if (i + m_cursor_sym_idx < m_str.size()-1)
 							{
-								m_str[i + m_cursor_pos_in_txt] = str[i];
+								m_str[i + m_cursor_sym_idx] = str[i];
 							}
 							else
 							{
@@ -268,9 +255,9 @@ namespace tui
 
 						if (input[i] == key_backspace)
 						{
-							if (m_cursor_pos_in_txt > 0)
+							if (m_cursor_sym_idx > 0)
 							{
-								m_str.erase(m_str.begin() + m_cursor_pos_in_txt - 1);
+								m_str.erase(m_str.begin() + m_cursor_sym_idx - 1);
 								moveCursorLeft();
 
 								update_needed = true;
