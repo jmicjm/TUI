@@ -286,7 +286,15 @@ namespace tui
 			m_entries[i] = entry; 
 			m_redraw_needed = true;
 		}
-		list_entry getEntryAt(size_t i) const { return m_entries[i]; }
+		list_entry getEntryAt(size_t i) const 
+		{
+			list_entry entry = m_entries[i];
+			entry.top = 0;
+			entry.highlighted = 0;
+			entry.extended = false;
+			entry.ext_halt = false;
+			return entry; 
+		}
 
 		void removeEntryAt(size_t i)
 		{
