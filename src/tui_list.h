@@ -73,6 +73,17 @@ namespace tui
 		unsigned int top = 0;
 		bool extended = false;
 		bool ext_halt = false;
+		void reset()
+		{
+			highlighted = 0;
+			top = 0;
+			extended = false;
+			ext_halt = false;
+			for (int i = 0; i < nested_entries.size(); i++)
+			{
+				nested_entries[i].reset();
+			}
+		}
 	public:
 		symbol_string name;
 		CHECK_STATE checked;
@@ -289,10 +300,7 @@ namespace tui
 		list_entry getEntryAt(size_t i) const 
 		{
 			list_entry entry = m_entries[i];
-			entry.top = 0;
-			entry.highlighted = 0;
-			entry.extended = false;
-			entry.ext_halt = false;
+			entry.reset();
 			return entry; 
 		}
 
