@@ -312,6 +312,30 @@ namespace tui
 			setSizeInfo(c_size);
 		}
 
+		void retract(bool reset_top_level = false)
+		{
+			if (m_entries.size() > 0)
+			{
+				list_entry* entry = &m_entries[m_scroll.getCurrentPosition()];
+
+				if (reset_top_level)
+				{
+					m_scroll.setCurrentPosition(0);
+				}
+
+				while (entry->nested_entries.size() > 0 && entry->extended)
+				{
+					unsigned int highlighted = entry->highlighted;
+					entry->top = 0;
+					entry->highlighted = 0;
+					entry->extended = false;
+					entry->ext_halt = false;
+					entry = &entry->nested_entries[highlighted];
+				}
+			}
+			m_redraw_needed = true;
+		}
+
 		void displayScroll(bool display)
 		{
 			m_display_scroll = display;
