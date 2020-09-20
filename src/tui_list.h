@@ -202,6 +202,8 @@ namespace tui
 					l.m_scroll.setCurrentPosition(m_entries[i].highlighted);
 					l.displayScroll(isDisplayingScroll());
 
+					l.setClearSymbol(getClearSymbol());
+
 					if (isActive() && m_entries[i].ext_halt == 0) { l.activate(); }
 
 					proxy.insertSurface(l);
