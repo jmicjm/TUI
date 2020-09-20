@@ -77,6 +77,7 @@ namespace tui
 
 			if (m_dropped)
 			{
+				m_list.setClearSymbol(getClearSymbol());
 				proxy.insertSurface(m_list, !m_drop_halt);
 				m_drop_halt = false;
 			}
@@ -197,6 +198,17 @@ namespace tui
 			m_dropped = false;
 			m_drop_halt = false;
 		}
+
+		void displayScroll(bool display)
+		{
+			m_list.displayScroll(display);
+			m_redraw_needed = true;
+		}
+		//is displaying scroll if needed
+		bool isDisplayingScroll() const { return m_list.isDisplayingScroll(); }
+
+		//is displaying scroll currently
+		bool isDisplayingScrollNow() const { return m_list.isDisplayingScrollNow() && m_dropped; }
 
 		void update()
 		{
