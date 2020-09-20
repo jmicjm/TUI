@@ -119,7 +119,7 @@ namespace tui
 		drop_list(surface1D_size size = surface1D_size())
 		{
 			m_list.setAnchor(this);
-			m_list.setAnchorPositionInfo({ tui::SIDE::BOTTOM, tui::POSITION::BEGIN });
+			m_list.setAnchorPositionInfo({ SIDE::BOTTOM, POSITION::BEGIN });
 			m_list.setClearSymbol(' ');
 
 			setSizeInfo(size);
@@ -137,6 +137,13 @@ namespace tui
 			m_list.setSizeInfo(size);
 		}
 		surface_size getListSizeInfo() const { return m_list.getSizeInfo(); }
+
+		void setDropSide(SIDE side)
+		{
+			m_list.setAnchorPositionInfo({ side, POSITION::BEGIN });
+			m_redraw_needed = true;
+		}
+		SIDE getDropSide() { return m_list.getAnchorPositionInfo().side; }
 
 		void setEntries(const std::vector<list_entry>& entries)
 		{
@@ -188,13 +195,35 @@ namespace tui
 		{
 			m_list.retract(true);
 			m_dropped = false;
+			m_drop_halt = false;
 		}
 
 		void update()
 		{
+			short key_drop, key_retract;
+
+			switch (m_list.getAnchorPositionInfo().side)
+			{
+			case SIDE::BOTTOM:
+				key_drop = key_down;
+				key_retract = key_up;
+				break;
+			case SIDE::TOP:
+				key_drop = key_up;
+				key_retract = key_down;
+				break;
+			case SIDE::LEFT:
+				key_drop = key_left;
+				key_retract = key_right;
+				break;
+			case SIDE::RIGHT:
+				key_drop = key_right;
+				key_retract = key_left;
+			}
+
 			if (isActive())
 			{
-				if (input::isKeyPressed(key_down))
+				if (input::isKeyPressed(key_drop))
 				{
 					if (!m_dropped && m_list.size() > 0)
 					{
@@ -202,14 +231,26 @@ namespace tui
 						m_drop_halt = true;
 					}
 				}
-				if (input::isKeyPressed(key_up))
+				if (input::isKeyPressed(key_retract))
 				{
 					if (m_dropped && m_list.size() > 0)
 					{
-						if (m_list.getHighlighted()[0] == 0 && m_list.getHighlighted().size() == 1)
+						bool retract_pos;
+
+						switch (m_list.getAnchorPositionInfo().side)
 						{
-							m_dropped = false;
-							m_drop_halt = false;
+						case SIDE::BOTTOM:
+						case SIDE::LEFT:
+						case SIDE::RIGHT:
+							retract_pos = m_list.getHighlighted().size() == 1 && m_list.getHighlighted()[0] == 0;
+							break;
+						case SIDE::TOP:
+							retract_pos = m_list.getHighlighted().size() == 1 && m_list.getHighlighted()[0] == m_list.size() - 1;
+						}
+
+						if (retract_pos)
+						{
+							retract();
 						}
 					}
 				}
