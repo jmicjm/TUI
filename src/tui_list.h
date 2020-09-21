@@ -180,7 +180,7 @@ namespace tui
 					}
 				}
 
-				if (m_entries[i].nested_entries.size() > 0 && m_entries[i].extended)
+				if (i == m_scroll.getCurrentPosition() && m_entries[i].nested_entries.size() > 0 && m_entries[i].extended)
 				{
 					list l;
 					l.setSizeInfo({ getSize() });		
@@ -209,7 +209,7 @@ namespace tui
 					proxy.insertSurface(l);
 			
 					m_entries[i].ext_halt = 0;
-					m_entries[i].nested_entries = l.getEntries();
+					m_entries[i].nested_entries = l.m_entries;
 					m_entries[i].highlighted = l.m_scroll.getCurrentPosition();
 					m_entries[i].top = l.m_scroll.getTopPosition();
 				}
@@ -272,7 +272,15 @@ namespace tui
 			m_entries = entries;
 			m_redraw_needed = true;
 		}
-		std::vector<list_entry> getEntries() const { return m_entries; }
+		std::vector<list_entry> getEntries() const 
+		{
+			std::vector<list_entry> entries = m_entries;
+			for (int i = 0; i < entries.size(); i++)
+			{
+				entries[i].reset();
+			}
+			return entries; 
+		}
 
 		size_t size() const { return m_entries.size(); }
 
