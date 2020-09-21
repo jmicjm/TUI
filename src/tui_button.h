@@ -13,42 +13,45 @@ namespace tui
 	struct button_appearance_a
 	{
 		symbol first;
+		symbol first_selected;
 		symbol last;
-		button_appearance_a() : button_appearance_a('[',']') {}
-		button_appearance_a(symbol f, symbol l) : first(f), last(l) {}
+		symbol last_selected;
+		button_appearance_a() : button_appearance_a('[','<',']','>') {}
+		button_appearance_a(symbol f, symbol f_sel, symbol l, symbol l_sel) : first(f), first_selected(f_sel), last(l), last_selected(l_sel) {}
 
 		void setColor(color Color)
 		{
 			first.setColor(Color);
+			first_selected.setColor(Color);
 			last.setColor(Color);
+			last_selected.setColor(Color);
 		}
 	};
 
 	struct button_appearance : appearance
 	{
 	protected:
-		button_appearance_a m_active_appearance;
-		button_appearance_a m_inactive_appearance;
+		button_appearance_a active_appearance;
+		button_appearance_a inactive_appearance;
 	public:
-		button_appearance() : button_appearance({ { '[', COLOR::WHITE }, { ']', COLOR::WHITE } },
-												{ { '[', COLOR::DARKGRAY }, { ']', COLOR::DARKGRAY } } ) {}
-		button_appearance(button_appearance_a active, button_appearance_a inactive) : m_active_appearance(active), m_inactive_appearance(inactive) {}
+		button_appearance() {}
+		button_appearance(button_appearance_a active, button_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
 		void setColor(color Color) override
 		{
-			m_active_appearance.setColor(Color);
-			m_inactive_appearance.setColor(Color);
+			active_appearance.setColor(Color);
+			inactive_appearance.setColor(Color);
 			setAppearanceAction();
 		}
 
 		void setAppearance(button_appearance appearance) { setElement(*this, appearance); }
 		button_appearance getAppearance() const { return *this; }
 
-		void setActiveAppearance(button_appearance_a active) { setElement(m_active_appearance, active); }
-		button_appearance_a getActiveAppearance() const { return m_active_appearance; }
+		void setActiveAppearance(button_appearance_a active) { setElement(active_appearance, active); }
+		button_appearance_a getActiveAppearance() const { return active_appearance; }
 
-		void setInactiveAppearance(button_appearance_a inactive) { setElement(m_inactive_appearance, inactive); }
-		button_appearance_a getInactiveAppearance() const { return m_inactive_appearance; }
+		void setInactiveAppearance(button_appearance_a inactive) { setElement(inactive_appearance, inactive); }
+		button_appearance_a getInactiveAppearance() const { return inactive_appearance; }
 	};
 
 	enum class BUTTON_TYPE { SWITCH, PUSH };
@@ -69,12 +72,12 @@ namespace tui
 
 		bool m_redraw_needed = true;
 
-		button_appearance_a getCurrentAppearance() const
+		button_appearance_a gca() const
 		{
-			if (isActive()) { return m_active_appearance; }
-			else { return m_inactive_appearance; }
+			if (isActive()) { return active_appearance; }
+			else { return inactive_appearance; }
 		}
-		symbol_string getCurrentText() const
+		symbol_string gct() const
 		{
 			if (isSelected()) { return getFullWidthString(m_selected_text); }
 			else { return getFullWidthString(m_deselected_text); }
@@ -84,14 +87,23 @@ namespace tui
 		{
 			surface::makeBlank();
 
-			surface1D<direction>::setSymbolAt(getCurrentAppearance().first, 0);
-			for (int i = 1;i<surface1D<direction>::getSize() && i - 1 < getCurrentText().size(); i++)
+			for (int i = 1;i<surface1D<direction>::getSize() && i - 1 < gct().size(); i++)
 			{
-				surface1D<direction>::setSymbolAt(getCurrentText()[i-1], i);
+				surface1D<direction>::setSymbolAt(gct()[i-1], i);
 			}
-			surface1D<direction>::setSymbolAt(getCurrentAppearance().last, surface1D<direction>::getSize()-1);
 
-			if (isSelected()) { surface::invert(); }
+			switch (isSelected())
+			{
+			case false:
+				surface1D<direction>::setSymbolAt(gca().first, 0);
+				surface1D<direction>::setSymbolAt(gca().last, surface1D<direction>::getSize() - 1);
+				break;
+			case true:
+				surface1D<direction>::setSymbolAt(gca().first_selected, 0);
+				surface1D<direction>::setSymbolAt(gca().last_selected, surface1D<direction>::getSize() - 1);
+			}
+
+			if (isActive()) { surface::invert(); }
 		}
 
 		void resizeAction() override { m_redraw_needed = true; }
