@@ -192,6 +192,8 @@ namespace tui
 			m_redraw_needed = true;
 		}
 
+		bool isDropped() const { return m_dropped; }
+
 		void retract()
 		{
 			m_list.retract(true);
