@@ -167,14 +167,18 @@ namespace tui
 						}
 					}
 
+					for (int x = 0; x < getSize().x; x++)
+					{
+						if ((*this)[x][y].getWidth() == 0)
+						{
+							(*this)[x][y] = ' ';
+						}
+					}
+
 					if (i == m_scroll.getCurrentPosition())
 					{
 						for (int x = 0; x < getSize().x; x++)
 						{
-							if ((*this)[x][y].getWidth() == 0)
-							{
-								(*this)[x][y] = ' ';
-							}
 							(*this)[x][y].invert();
 						}
 					}
