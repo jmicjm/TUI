@@ -42,7 +42,7 @@ namespace tui
 	public:
 		chart_appearance()
 		{
-			inactive_appearance.setColor(tui::COLOR::DARKGRAY);
+			inactive_appearance.chart_scroll_appearance_a.setColor(tui::COLOR::DARKGRAY);
 		}
 		chart_appearance(chart_appearance_a active, chart_appearance_a inactive) : active_appearance(active), inactive_appearance(inactive) {}
 
