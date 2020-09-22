@@ -131,6 +131,8 @@ namespace tui
 		public:
 			action_proxy(surface* surf) : surf(surf) {}
 			vec2i getSize() const { return surf->getSize(); }
+			void updateSurfaceSize(surface& s) { surf->updateSurfaceSize(s); }
+			void updateSurfacePosition(surface& s) { surf->updateSurfacePosition(s); }
 			void insertSurface(surface& s, bool update = true) { surf->insertSurface(s, update); }
 		};
 		virtual void resizeAction() {}
