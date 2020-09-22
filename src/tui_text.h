@@ -126,14 +126,19 @@ namespace tui
 					pos += m_text.getSize().x - posInLine();
 				}	
 
+				auto isWB = [](const symbol& sym)//word boundary
+				{
+					return sym[0] == ' ' || sym[0] == '\t';
+				};
+
 				if (m_use_word_breaking)
 				{
-					if (i != 0 && m_unprepared_text[i - 1][0] == ' ')
+					if (i != 0 && isWB(m_unprepared_text[i - 1]))
 					{
 						unsigned int word_len = 0;
 						const unsigned int dst = m_text.getSize().x - posInLine();
 
-						for (int j = 0; j + i < m_unprepared_text.size() && m_unprepared_text[j + i][0] != ' ' && word_len <= getSize().x; j++)
+						for (int j = 0; j + i < m_unprepared_text.size() && !isWB(m_unprepared_text[j + i]) && word_len <= getSize().x; j++)
 						{
 							word_len += m_unprepared_text[j + i].getWidth();
 						}
