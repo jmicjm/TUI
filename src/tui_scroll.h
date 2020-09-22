@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct scroll_appearance_a - describes active/inactive scroll appearance, used by scroll_appearance
+struct scroll_appearance - describes scroll appearance
+struct scroll_button - widget that displays a scroll*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

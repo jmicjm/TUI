@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿//this is "include everything" file
+#pragma once
 
 #include "tui_io.h"
 

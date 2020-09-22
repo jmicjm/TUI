@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct button_appearance_a - describes active/inactive button appearance, used by button_appearance
+struct button_appearance - describes button appearance
+struct button<tui::DIRECTION> - widget that displays a button*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

@@ -1,3 +1,6 @@
+/*this file contains following elements:
+struct rectangle_appearance - describes rectangle appearance
+struct rectangle - widget that displays a rectangle*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

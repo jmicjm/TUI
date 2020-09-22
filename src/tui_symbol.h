@@ -1,3 +1,4 @@
+//this file contains symbol, a basic text unit in this library
 #pragma once
 #include "tui_unicode_utils.h"
 #include "tui_color.h"

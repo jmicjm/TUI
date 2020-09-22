@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct text_appearance_a - describes active/inactive text appearance, used by text_appearance
+struct text_appearance - describes text appearance
+struct text - widget that displays text*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

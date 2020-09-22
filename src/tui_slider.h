@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct slider_appearance_a - describes active/inactive slider appearance, used by slider_appearance
+struct slider_appearance - describes slider appearance
+struct slider_button - widget that displays a slider*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

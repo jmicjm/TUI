@@ -1,3 +1,4 @@
+//this file contains declarations of output functions
 #pragma once
 #include "tui_surface.h"
 

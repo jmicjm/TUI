@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct drop_list_appearance_a - describes active/inactive drop_list appearance, used by drop_list_appearance
+struct drop_list_appearance - describes drop_list appearance
+struct drop_list - widget that displays a drop list*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_active_element.h"

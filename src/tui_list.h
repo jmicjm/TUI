@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct list_appearance_a - describes active/inactive list appearance, used by list_appearance
+struct list_appearance - describes list appearance
+struct list - widget that displays a list*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_active_element.h"

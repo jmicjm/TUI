@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct chart_appearance_a - describes active/inactive chart appearance, used by chart_appearance
+struct chart_appearance - describes chart appearance
+struct chart - widget that displays a chart*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

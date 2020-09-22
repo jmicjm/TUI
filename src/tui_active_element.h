@@ -1,3 +1,4 @@
+//this file contains active_element that is inherited by input handling widgets
 #pragma once
 
 namespace tui

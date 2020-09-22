@@ -1,3 +1,4 @@
+//this file contains appearance that is inherited by widgets
 #pragma once
 #include "tui_text_utils.h"
 

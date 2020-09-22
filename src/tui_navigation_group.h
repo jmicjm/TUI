@@ -1,3 +1,4 @@
+//this file contains navigation_group that could be used to simplyfy content navigation
 #pragma once
 #include "tui_active_element.h"
 #include "tui_input.h"

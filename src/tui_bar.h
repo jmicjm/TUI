@@ -1,3 +1,6 @@
+/*this file contains following elements:
+struct bar_appearance - describes bar appearance
+struct bar - widget that displays a gauge bar*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

@@ -1,3 +1,8 @@
+/*this file contains following elements:
+struct rgb
+struct color
+color constants
+*/
 #pragma once
 
 namespace tui

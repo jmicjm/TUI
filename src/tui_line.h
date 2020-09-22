@@ -1,3 +1,6 @@
+/*this file contains following elements:
+struct line_appearance - describes line appearance
+struct line - widget that displays a line*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

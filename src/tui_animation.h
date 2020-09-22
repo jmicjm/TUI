@@ -1,3 +1,4 @@
+//this file contains animation widget
 #pragma once
 #include "tui_surface.h"
 #include "tui_time_frame.h"

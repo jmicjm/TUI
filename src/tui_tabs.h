@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct tabs_appearance_a - describes active/inactive tabs appearance, used by tabs_appearance
+struct tabs_appearance - describes tabs appearance
+struct tabs - widget that displays tabs*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

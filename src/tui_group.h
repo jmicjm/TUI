@@ -1,3 +1,4 @@
+//this file contains group that could be used to simplyfy content displaying/positioning
 #pragma once
 #include "tui_surface.h"
 

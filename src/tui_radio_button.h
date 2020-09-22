@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct radio_button_appearance_a - describes active/inactive radio_button appearance, used by radio_button_appearance
+struct radio_button_appearance - describes radio_button appearance
+struct radio_button - widget that displays radio buttons*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

@@ -1,3 +1,12 @@
+/*this file contains following elements:
+struct surface_size - describes size of surface
+struct surface1D_size - describes size of surface1D<DIRECTION>
+struct surface_position - describes position of surface
+struct anchor_position - describes position of anchor
+struct surface - surface, could be viewed as array of symbols
+struct surface1D<DIRECTION> - acts as an overlay on top of surface
+enums: POSITION, SIDE, DIRECTION
+*/
 #pragma once
 #include "tui_vec2.h"
 #include "tui_text_utils.h"

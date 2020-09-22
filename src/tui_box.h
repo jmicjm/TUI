@@ -1,3 +1,6 @@
+/*this file contains following elements:
+struct box_appearance - describes bar appearance
+struct box - widget that displays a box/frame*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

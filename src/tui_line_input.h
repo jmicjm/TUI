@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct line_input_appearance_a - describing active/inactive line_input appearance, used by line_input_appearance
+struct line_input_appearance - describing line_input appearance
+struct line_input - widget displaying a single dimensional textbox*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"

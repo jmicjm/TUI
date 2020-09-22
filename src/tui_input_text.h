@@ -1,3 +1,7 @@
+/*this file contains following elements:
+struct input_text_appearance_a - describes active/inactive input_text appearance, used by input_text_appearance
+struct input_text_appearance - describes input_text appearance
+struct input_text - widget that displays a textbox*/
 #pragma once
 #include "tui_surface.h"
 #include "tui_appearance.h"
@@ -5,6 +9,7 @@
 #include "tui_active_element.h"
 #include "tui_input.h"
 #include "tui_time_frame.h"
+#include "tui_text.h"
 
 namespace tui
 {

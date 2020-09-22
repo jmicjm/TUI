@@ -1,3 +1,4 @@
+//this file contains declarations of input functions and keys enums
 #pragma once
 #include <string>
 #include <vector>
