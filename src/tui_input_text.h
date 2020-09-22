@@ -333,6 +333,7 @@ namespace tui
 		input_text(surface_size size = surface_size()) : m_cursor_blink(std::chrono::milliseconds(500))
 		{
 			m_text.setSizeInfo({ {0,0},{100,100} });
+			m_text.useWordBreaking(false);
 			updateText();
 
 			setSizeInfo(size);
@@ -347,6 +348,13 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		bool isUsingConfidentialMode() const { return m_confidential_mode; }
+
+		void useWordBreaking(bool use)
+		{
+			m_text.useWordBreaking(use);
+			m_redraw_needed = true;
+		}
+		bool isUsingWordBreaking() { return m_text.isUsingWordBreaking(); }
 
 		void update()
 		{

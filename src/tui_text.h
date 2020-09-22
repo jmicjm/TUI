@@ -62,6 +62,7 @@ namespace tui
 		std::vector<vec2i> m_symbol_pos;
 
 		bool m_use_control_characters = true;
+		bool m_use_word_breaking = true;
 		bool m_display_scroll = true;
 
 		bool m_redraw_needed = true;
@@ -113,15 +114,34 @@ namespace tui
 			int pos = 0;
 			for (int i = 0; i < m_unprepared_text.size(); i++)
 			{
-				int sym_w = m_unprepared_text[i].getWidth();
+				const uint8_t sym_w = m_unprepared_text[i].getWidth();
 
-				int pos_in_line = pos % m_text.getSize().x;
-				if (pos_in_line + sym_w > m_text.getSize().x && pos_in_line != 0)
+				auto posInLine = [&]()
 				{
-					pos += m_text.getSize().x - pos_in_line;
-					pos_in_line = pos % m_text.getSize().x;
-				}		
-				m_symbol_pos[i] = { pos_in_line, pos / m_text.getSize().x };
+					return pos % m_text.getSize().x;
+				};
+
+				if (posInLine() + sym_w > m_text.getSize().x && posInLine() != 0)
+				{
+					pos += m_text.getSize().x - posInLine();
+				}	
+
+				if (m_use_word_breaking)
+				{
+					if (i != 0 && m_unprepared_text[i - 1][0] == ' ')
+					{
+						unsigned int word_len = 0;
+						const unsigned int dst = m_text.getSize().x - posInLine();
+
+						for (int j = 0; j + i < m_unprepared_text.size() && m_unprepared_text[j + i][0] != ' ' && word_len <= getSize().x; j++)
+						{
+							word_len += m_unprepared_text[j + i].getWidth();
+						}
+						if (word_len >= dst && word_len < getSize().x) { pos += dst; }
+					}
+				}
+
+				m_symbol_pos[i] = { posInLine(), pos / m_text.getSize().x };
 
 				if (sym_w == 0)
 				{
@@ -130,7 +150,7 @@ namespace tui
 						switch (m_unprepared_text[i][0])
 						{
 						case '\n':
-							pos += m_text.getSize().x - pos_in_line;
+							pos += m_text.getSize().x - posInLine();
 							break;
 						case '\t':
 							pos += 4;
@@ -261,6 +281,14 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		bool isUsingControlCharacters() const { return m_use_control_characters; }
+
+		void useWordBreaking(bool use)
+		{
+			m_use_word_breaking = use;
+			adjustSizes();
+			m_redraw_needed = true;
+		}
+		bool isUsingWordBreaking() { return m_use_word_breaking; }
 
 		void displayScroll(bool display)
 		{
