@@ -132,7 +132,7 @@ namespace tui
 
 				auto isWB = [](const symbol& sym)//word boundary
 				{
-					return sym[0] == ' ' || sym[0] == '\t';
+					return sym[0] == ' '  || sym[0] == '\n' || sym[0] == '\t';
 				};
 
 				if (m_use_word_breaking)
