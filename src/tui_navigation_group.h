@@ -26,9 +26,12 @@ namespace tui
 		{
 			for (int i = 0; i < size(); i++)
 			{
-				if ((*this)[i].element->isActive() && i != except)
+				if ((*this)[i].element != nullptr)
 				{
-					(*this)[i].element->disactivate();
+					if ((*this)[i].element->isActive() && i != except)
+					{
+						(*this)[i].element->disactivate();
+					}
 				}
 			}
 		}
@@ -37,9 +40,12 @@ namespace tui
 			m_selected = size() > 0 ? std::min(m_selected, size()-1) : 0;
 			disable(m_selected);
 
-			if (size() > 0 && !(*this)[m_selected].element->isActive())
+			if ((*this)[m_selected].element != nullptr)
 			{
-				(*this)[m_selected].element->activate();
+				if (size() > 0 && !(*this)[m_selected].element->isActive())
+				{
+					(*this)[m_selected].element->activate();
+				}
 			}
 		}
 
