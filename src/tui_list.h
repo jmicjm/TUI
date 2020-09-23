@@ -120,6 +120,7 @@ namespace tui
 		scroll<DIRECTION::VERTICAL> m_scroll;
 
 		bool m_display_scroll = true;
+		bool m_deactivation_retract = true;
 
 		bool m_redraw_needed = true;
 
@@ -246,6 +247,10 @@ namespace tui
 		}
 		void deactivationAction() override
 		{
+			if (m_deactivation_retract)
+			{
+				retract(true);
+			}
 			m_scroll.deactivate();
 			m_redraw_needed = true;
 		}
@@ -369,6 +374,15 @@ namespace tui
 			}
 			m_redraw_needed = true;
 		}
+		void retractUponDeactivation(bool r)
+		{
+			m_deactivation_retract = r;
+			if (r == true && !isActive())
+			{
+				retract(true);
+			}
+		}
+		bool isRetractingUponDeactivation() { return m_deactivation_retract; }
 
 		void displayScroll(bool display)
 		{

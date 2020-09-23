@@ -65,6 +65,8 @@ namespace tui
 		bool m_dropped = false;
 		bool m_drop_halt = false;
 
+		bool m_deactivation_retract = true;
+
 		bool m_redraw_needed = true;
 
 		void fill(surface::action_proxy proxy)
@@ -102,6 +104,10 @@ namespace tui
 		}
 		void deactivationAction() override
 		{
+			if (m_deactivation_retract)
+			{
+				retract();
+			}
 			m_list.deactivate();
 			m_redraw_needed = true;
 		}
@@ -204,6 +210,16 @@ namespace tui
 			m_dropped = false;
 			m_drop_halt = false;
 		}
+
+		void retractUponDeactivation(bool r)
+		{
+			m_deactivation_retract = r;
+			if (r == true && !isActive())
+			{
+				retract();
+			}
+		}
+		bool isRetractingUponDeactivation() { return m_deactivation_retract; }
 
 		void displayScroll(bool display)
 		{
