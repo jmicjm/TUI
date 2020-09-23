@@ -121,7 +121,7 @@ namespace tui
 			}
 		}
 		void activationAction() override { m_redraw_needed = true; }
-		void disactivationAction() override { m_redraw_needed = true; }
+		void deactivationAction() override { m_redraw_needed = true; }
 
 		void setAppearanceAction() override { m_redraw_needed = true; }
 

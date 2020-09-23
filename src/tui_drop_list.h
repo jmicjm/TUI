@@ -100,9 +100,9 @@ namespace tui
 			m_list.activate();
 			m_redraw_needed = true;
 		}
-		void disactivationAction() override
+		void deactivationAction() override
 		{
-			m_list.disactivate();
+			m_list.deactivate();
 			m_redraw_needed = true;
 		}
 

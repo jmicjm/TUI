@@ -240,9 +240,9 @@ namespace tui
 			updateMinMaxStr();
 			m_redraw_needed = true; 
 		}
-		void disactivationAction() override
+		void deactivationAction() override
 		{
-			m_scroll.disactivate();
+			m_scroll.deactivate();
 			updateMinMaxStr();
 			m_redraw_needed = true;
 		}

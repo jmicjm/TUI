@@ -312,9 +312,9 @@ namespace tui
 			m_text.activate();
 			m_redraw_needed = true;
 		}
-		void disactivationAction() override
+		void deactivationAction() override
 		{
-			m_text.disactivate();
+			m_text.deactivate();
 			m_redraw_needed = true;
 		}
 

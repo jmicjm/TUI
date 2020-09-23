@@ -100,7 +100,7 @@ namespace tui
 
 		void setAppearanceAction() override { m_redraw_needed = true; }
 		void activationAction() override { m_redraw_needed = true; }
-		void disactivationAction() override { m_redraw_needed = true; }
+		void deactivationAction() override { m_redraw_needed = true; }
 
 	public:
 		short key_next = input::KEY::DOWN;

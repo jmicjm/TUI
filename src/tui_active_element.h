@@ -9,7 +9,7 @@ namespace tui
 		bool active = false;
 	protected:
 		virtual void activationAction() {}
-		virtual void disactivationAction() {}
+		virtual void deactivationAction() {}
 	public:
 		virtual ~active_element() {}
 		void activate()
@@ -17,10 +17,10 @@ namespace tui
 			active = true;
 			activationAction();
 		}
-		void disactivate()
+		void deactivate()
 		{
 			active = false;
-			disactivationAction();
+			deactivationAction();
 		}
 		bool isActive() const { return active; }
 	};

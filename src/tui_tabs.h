@@ -177,7 +177,7 @@ namespace tui
 			generateTabs();
 			m_redraw_needed = true;
 		}
-		void disactivationAction() override
+		void deactivationAction() override
 		{
 			generateTabs();
 			m_redraw_needed = true;

@@ -30,7 +30,7 @@ namespace tui
 				{
 					if ((*this)[i].element->isActive() && i != except)
 					{
-						(*this)[i].element->disactivate();
+						(*this)[i].element->deactivate();
 					}
 				}
 			}
@@ -58,7 +58,7 @@ namespace tui
 			return false;
 		}
 
-		void disactivationAction() override { disable(); }
+		void deactivationAction() override { disable(); }
 		void activationAction() override { enable(); }
 	public:
 		short key_next = input::KEY::RIGHT;

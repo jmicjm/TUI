@@ -207,9 +207,9 @@ namespace tui
 			m_scroll.activate(); 
 			m_redraw_needed = true;
 		}
-		void disactivationAction() override 
+		void deactivationAction() override 
 		{
-			m_scroll.disactivate(); 
+			m_scroll.deactivate(); 
 			m_redraw_needed = true;
 		}
 
