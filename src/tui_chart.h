@@ -161,7 +161,8 @@ namespace tui
 				}
 				for (int i = 0; i < m_min_str.size(); i++)
 				{
-					setSymbolAt(m_min_str[i], { i,m_chart.getSize().y - 1 });
+					int y_pos = std::max(0, m_chart.getSize().y - 1 - m_display_data_labels);
+					setSymbolAt(m_min_str[i], { i,y_pos });
 				}
 			}
 
