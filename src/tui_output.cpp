@@ -60,7 +60,7 @@ namespace tui
 
 			bool isResized() { return buffer.isResized(); }
 
-			void draw(surface& surf) { buffer.insertSurface(surf); }
+			void draw(surface& surf, bool update = true) { buffer.insertSurface(surf, update); }
 
 			void updateSurfaceSize(surface& surf) { buffer.updateSurfaceSize(surf); }
 
@@ -326,7 +326,7 @@ namespace tui
 
 		void clear() { con.clear(); }
 
-		void draw(surface& surf) { con.draw(surf); }
+		void draw(surface& surf, bool update) { con.draw(surf, update); }
 
 		void display() { con.display(); }
 

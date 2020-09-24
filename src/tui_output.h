@@ -10,37 +10,37 @@ namespace tui
 
 		void restore();
 
-		//clear buffer + update size
+		//clears buffer + updates size
 		void clear();
 
-		//copy surface to buffer
-		void draw(surface&);
+		//copies surface to buffer
+		void draw(surface& surf, bool update = true);
 
-		//display buffer content
+		//displays buffer content
 		void display();
 
-		//return console size
+		//returns console size
 		vec2i getSize();
 
 		bool isResized();
 
-		//update surface size relative to console size
-		void updateSurfaceSize(surface&);
+		//updates surface size relative to console size
+		void updateSurfaceSize(surface& surf);
 
-		//update surface position relative to console size
-		void updateSurfacePosition(surface&);
+		//updates surface position relative to console size
+		void updateSurfacePosition(surface& surf);
 
-		void setFpslimit(unsigned int);
+		void setFpslimit(unsigned int fps);
 
 		bool isTimeToDisplay();
 
-		void displayRgbColor(bool);
+		void displayRgbColor(bool display);
 		bool isDisplayingRgbColor();
 
-		void displayRgbiColor(bool);
+		void displayRgbiColor(bool dsiplay);
 		bool isDisplayingRgbiColor();
 
-		void displayColor(bool);
+		void displayColor(bool display);
 		bool isDisplayingColor();
 	}
 }
