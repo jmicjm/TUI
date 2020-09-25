@@ -86,6 +86,7 @@ int main()
       * platform specific dependencies
     * terminal
 6. Compiling
+7. Documentation
     
 ## 1. Basic data types
 
@@ -216,3 +217,6 @@ g++:
 ```
 g++ file.cpp path_to_src/*.cpp -Ipath_to_src -pthread -std=c++14
 ```
+
+## 7. Documentation
+[Doxygen](https://jmicjm.github.io/TUI/html/index.html)
