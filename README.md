@@ -1,5 +1,5 @@
 # Terminal user interface library
-![](https://raw.githubusercontent.com/jmicjm/TUI/master/examples/readme_example.gif?token=AJ3U3AVAASERDFDV4XF77JC7NXSMC)
+![](examples/readme_example.gif)
 
 [source of this example](https://github.com/jmicjm/TUI/blob/master/examples/readme_example.cpp), stripped example(first tab only) below:
 ```c++
