@@ -63,9 +63,11 @@ int main()
     * symbol_string
     * surface
     * surface1D<horizontal/vertical>
-2. Output
-3. Input
-4. Widgets
+2. IO
+    * initialization
+    * output
+    * input
+3. Widgets
     * bar<horizontal/vertical>
     * box
     * button<horizontal/vertical>
@@ -81,31 +83,31 @@ int main()
     * slider<horizontal/vertical>
     * tabs<horizontal/vertical>
     * text
-5. Compatibility
+4. Compatibility
     * system
       * platform specific dependencies
     * terminal
-6. Compiling
-7. Documentation
+5. Compiling
+6. Documentation
     
 ## 1. Basic data types
 
-### rgb
+### [rgb](https://jmicjm.github.io/TUI/html/structtui_1_1rgb.html)
 Represents red, green and blue color channels
 ```c++
 #include "tui_color.h"
 tui::rgb rgb(r,g,b);
 ```
-There are also 16 predefined constants inside tui::COLOR namespace
+There are also 16 predefined constants inside ```tui::COLOR``` namespace
 
-### color
+### [color](https://jmicjm.github.io/TUI/html/structtui_1_1color.html)
 Represents foreground and background colors
 ```c++
 #include "tui_color.h"
 tui::color color(rgb foreground, rgb background);
 ```
 
-### symbol
+### [symbol](https://jmicjm.github.io/TUI/html/structtui_1_1symbol.html)
 Represents single [grapheme cluster](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) + color + underline  
 Its designed to avoid allocation for small clusters
 ```c++
@@ -116,14 +118,15 @@ a.setColor(color c);
 a.setUnderscore(bool);
 ```
 
-### symbol_string
+### [symbol_string](https://jmicjm.github.io/TUI/html/structtui_1_1symbol__string.html)
 String of symbols
 ```c++
 #include "tui_symbol_string.h"
 tui::symbol_string str = "abcdefgh";
+str << tui::COLOR::RED << "red text";
 ```
 
-### surface
+### [surface](https://jmicjm.github.io/TUI/html/structtui_1_1surface.html)
 Represents 2D array of symbols. Its size and position are controlled by ```tui::surface_size``` and ```tui::surface_position```/```tui::anchor_position``` members
 ```c++
 #include "tui_surface.h"
@@ -139,7 +142,7 @@ surface.setSymbolAt('a', {x,y});//same as above
 ```
 [examples](https://github.com/jmicjm/TUI/tree/master/examples/basic)
 
-### surface1D<horizontal/vertical>
+### [surface1D<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1surface1_d.html)
 Acts as an overlay on top of surface. Its size is controlled by ```tui::surface1D_size```
 ```c++
 #include "tui_surface.h"
@@ -148,10 +151,27 @@ tui::surface1D<tui::DIRECTION::HORIZONTAL> h_surface;
 tui::surface1D<tui::DIRECTION::VERTICAL> v_surface;
 ```
 
-## 2. Output
+## 2. IO
+```c++
+#include "tui_io.h"
+```
+### initialization
+Initialization is performed by
+```c++
+tui::init();
+```
+It launches input buffer, hides cursor and sets terminal to raw mode
+
+Restoration to original state is performed by
+```c++
+tui::restore();
+```
+It stops input buffer, displays cursor and sets terminal to cooked mode  
+It is automatically called at the exit of program, so there is no need to call it unless you want to use standard input/output methods
+
+### output
 Remember to call ```tui::init()``` before using following functions
 ```c++
-#include "tui_output.h" //or tui_io.h
 //output loop
 while(/**/)
 {
@@ -161,34 +181,36 @@ tui::output::display();
 }
 ```
 
-## 3. Input
-```c++
-#include "tui_input.h" //or tui_io.h
-```
-Remember to call ```tui::init()``` before using following functions
-```c++
-tui::input::getInput(); // returns std::vector<short> with pressed keys
-```
-```c++
-tui::input::getStringInput(); // returns std::string with pressed keys(alphanumeric only)
-```
-```c++
-tui::input::getRawInput(); // returns std::string with uninterpreted input, equivalent to calling getchar() in loop
-```
-```c++
-tui::input::isKeyPressed(short key);
-//for aplhanumeric use char value, for non-alphanumeric use enum from tui::input::KEY
-```
-```c++
-tui::input::isKeySupported(short key); //return true if key is supported by terminal
-```
-```c++
-tui::input::getKeyName(short key); // returns std::string with key name
-```
+### input
+Non-alphanumeric keys(arrows, F-keys etc) values are stored in enum ```tui::input::KEY```
 
-## 4. Widgets
+Remember to call ```tui::init()``` before using following functions  
 
-## 5. Compatibility
+```tui::input::getInput();``` returns ```std::vector<short>``` with pressed keys  
+```tui::input::getStringInput();``` returns ```std::string``` with pressed keys(alphanumeric only)  
+```tui::input::getRawInput();``` returns ```std::string``` with uninterpreted input, equivalent to calling ```getchar()``` in loop  
+```tui::input::isKeyPressed(short key);``` returns amount of key press  
+```tui::input::isKeySupported(short key);``` returns true if key is supported by terminal  
+```tui::input::getKeyName(short key);``` returns ```std::string``` with key name  
+
+## 3. Widgets
+### [bar<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1bar.html)
+### [box](https://jmicjm.github.io/TUI/html/structtui_1_1box.html)
+### [button<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1button.html)
+### [chart](https://jmicjm.github.io/TUI/html/structtui_1_1chart.html)
+### [input_text](https://jmicjm.github.io/TUI/html/structtui_1_1input__text.html)
+### [line<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1line.html)
+### [line_input](https://jmicjm.github.io/TUI/html/structtui_1_1line__input.html)
+### [list](https://jmicjm.github.io/TUI/html/structtui_1_1list.html)
+### [drop_list](https://jmicjm.github.io/TUI/html/structtui_1_1drop__list.html)
+### [radio_button<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1radio__button.html)
+### [rectangle](https://jmicjm.github.io/TUI/html/structtui_1_1rectangle.html)
+### [scroll<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1scroll.html)
+### [slider<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1slider.html)
+### [tabs<horizontal/vertical>](https://jmicjm.github.io/TUI/html/structtui_1_1tabs.html)
+### [text](https://jmicjm.github.io/TUI/html/structtui_1_1text.html)
+
+## 4. Compatibility
 ### system
 Should work on most UNIX-like and Windows systems  
 I personally tested it on few linux distributions, freeBSD and Windows10/7
@@ -212,11 +234,11 @@ Uses predefined key sequences
 
 In absence of RGB color automatically map colors to 4bit rgbi
 
-## 6. Compiling
+## 5. Compiling
 g++:  
 ```
 g++ file.cpp path_to_src/*.cpp -Ipath_to_src -pthread -std=c++14
 ```
 
-## 7. Documentation
+## 6. Documentation
 [Doxygen](https://jmicjm.github.io/TUI/html/index.html)
