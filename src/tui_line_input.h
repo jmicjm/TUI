@@ -202,6 +202,7 @@ namespace tui
 
 		line_input(surface1D_size size = surface1D_size()) : m_cursor_blink(std::chrono::milliseconds(500))
 		{
+			setClearSymbol(' ');
 			setSizeInfo(size);
 		}
 
