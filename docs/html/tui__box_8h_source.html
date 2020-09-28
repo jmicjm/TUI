@@ -80,123 +80,162 @@ $(function() {
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="structtui_1_1box__appearance.html">   12</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> : <a class="code" href="structtui_1_1appearance.html">appearance</a></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_horizontal_line;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_vertical_line;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_top_left;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_top_right;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_bottom_left;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> m_bottom_right;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>() : <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(U<span class="stringliteral">&#39;\x2550&#39;</span>, U<span class="stringliteral">&#39;\x2551&#39;</span>, U<span class="stringliteral">&#39;\x2554&#39;</span>, U<span class="stringliteral">&#39;\x2557&#39;</span>, U<span class="stringliteral">&#39;\x255A&#39;</span>, U<span class="stringliteral">&#39;\x255D&#39;</span>) {}</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(<a class="code" href="structtui_1_1symbol.html">symbol</a> Symbol) : <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(Symbol, Symbol, Symbol, Symbol, Symbol, Symbol) {}</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(<a class="code" href="structtui_1_1symbol.html">symbol</a> h_line, <a class="code" href="structtui_1_1symbol.html">symbol</a> v_line, <a class="code" href="structtui_1_1symbol.html">symbol</a> top_l, <a class="code" href="structtui_1_1symbol.html">symbol</a> top_r, <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_l, <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_r)</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            : m_horizontal_line(h_line), m_vertical_line(v_line), m_top_left(top_l),</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            m_top_right(top_r), m_bottom_left(bottom_l), m_bottom_right(bottom_r) {}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordtype">void</span> setColor(<a class="code" href="structtui_1_1color.html">color</a> Color)<span class="keyword"> override</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            m_horizontal_line.setColor(Color);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            m_vertical_line.setColor(Color);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            m_top_left.setColor(Color);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            m_top_right.setColor(Color);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            m_bottom_left.setColor(Color);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            m_bottom_right.setColor(Color);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            setAppearanceAction();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">void</span> setAppearance(<a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> <a class="code" href="structtui_1_1appearance.html">appearance</a>) { setElement(*<span class="keyword">this</span>, <a class="code" href="structtui_1_1appearance.html">appearance</a>); }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> getAppearance()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">void</span> setHorizontalLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> h_line) { setElement(m_horizontal_line,h_line); }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getHorizontalLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_horizontal_line; }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">void</span> setVerticalLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> v_line) { setElement(m_vertical_line, v_line); }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getVerticalLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_vertical_line; }</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> horizontal_top_line;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> horizontal_bottom_line;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> vertical_left_line;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> vertical_right_line;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> top_left;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> top_right;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_left;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_right;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>() </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            *<span class="keyword">this</span> = double_line;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(<a class="code" href="structtui_1_1symbol.html">symbol</a> s) : <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(s, s, s, s, s, s, s, s) {}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a>(</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> ht_line,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> hb_line,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> vl_line,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> vr_line,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> top_l,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> top_r,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_l,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_r</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        )</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            : horizontal_top_line(ht_line),</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            horizontal_bottom_line(hb_line),</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            vertical_left_line(vl_line),</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            vertical_right_line(vr_line),</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            top_left(top_l),</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            top_right(top_r),</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            bottom_left(bottom_l),</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            bottom_right(bottom_r) {}</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> setTopLeftSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> top_l) { setElement(m_top_left, top_l); }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getTopLeftSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_top_left; }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">void</span> setTopRightSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> top_r) { setElement(m_top_right, top_r); }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getTopRightSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_top_right; }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> thin_line;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> double_line;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> medium_line;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> thick_line;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">void</span> setBottomLeftSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_l) { setElement(m_bottom_left, bottom_l); }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getBottomLeftSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_bottom_left; }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keywordtype">void</span> setBottomRightSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_r) { setElement(m_bottom_right, bottom_r); }</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getBottomRightSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_bottom_right; }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    };</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structtui_1_1box.html">   61</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1box.html">box</a> : <a class="code" href="structtui_1_1surface.html">surface</a>, <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> m_title;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">int</span> m_title_position = POSITION::CENTER;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">void</span> setColor(<a class="code" href="structtui_1_1color.html">color</a> Color)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            horizontal_top_line.setColor(Color);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            horizontal_bottom_line.setColor(Color);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            vertical_left_line.setColor(Color);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            vertical_right_line.setColor(Color);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            top_left.setColor(Color);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            top_right.setColor(Color);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            bottom_left.setColor(Color);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            bottom_right.setColor(Color);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            setAppearanceAction();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">bool</span> m_redraw_needed = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">void</span> fill()</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            clear();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">void</span> setAppearance(<a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> <a class="code" href="structtui_1_1appearance.html">appearance</a>) { setElement(*<span class="keyword">this</span>, <a class="code" href="structtui_1_1appearance.html">appearance</a>); }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> getAppearance()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> setHorizontalTopLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> h_line) { setElement(horizontal_top_line,h_line); }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getHorizontalTopLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> horizontal_top_line; }</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            setSymbolAt(m_top_left, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, 0));</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            setSymbolAt(m_top_right, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, 0));</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            setSymbolAt(m_bottom_left, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, getSize().y - 1));</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            setSymbolAt(m_bottom_right, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, getSize().y - 1));</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().x - 1; i++) { setSymbolAt(m_horizontal_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(i, 0)); }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().x - 1; i++) { setSymbolAt(m_horizontal_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(i, getSize().y - 1)); }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().y - 1; i++) { setSymbolAt(m_vertical_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, i)); }</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().y - 1; i++) { setSymbolAt(m_vertical_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, i)); }</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> fw_str = getFullWidthString(m_title);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keywordtype">bool</span> shift = getSize().x &gt; fw_str.size();</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordtype">int</span> t_pos = (getSize().x-2) * (m_title_position / 100.f) - fw_str.size() * (m_title_position / 100.f) + shift;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordflow">if</span> (t_pos &lt; 0) { t_pos = 0; }</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; fw_str.size() &amp;&amp; t_pos &lt; getSize().x; i++, t_pos++)</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                setSymbolAt(fw_str[i], <a class="code" href="structtui_1_1vec2.html">vec2i</a>(t_pos, 0));</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordtype">void</span> drawAction(<a class="code" href="structtui_1_1surface_1_1action__proxy.html">action_proxy</a> proxy)<span class="keyword"> override</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="keywordflow">if</span> (m_redraw_needed) </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            {</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                fill(); </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                m_redraw_needed = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            }</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        }</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordtype">void</span> resizeAction()<span class="keyword"> override </span>{ m_redraw_needed = <span class="keyword">true</span>; }</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordtype">void</span> setAppearanceAction()<span class="keyword"> override </span>{ m_redraw_needed = <span class="keyword">true</span>; }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <a class="code" href="structtui_1_1box.html">box</a>(<a class="code" href="structtui_1_1surface__size.html">surface_size</a> size = <a class="code" href="structtui_1_1surface__size.html">surface_size</a>())</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        {</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            setSizeInfo(size);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        }</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keywordtype">void</span> setTitle(<span class="keyword">const</span> <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a>&amp; str)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        {</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            m_title = str;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            m_redraw_needed = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        }</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> getTitle()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_title; }</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordtype">void</span> setTitlePosition(<span class="keywordtype">int</span> position)</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        {</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            m_title_position = position;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            m_redraw_needed = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keywordtype">int</span> getTitlePosition()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_title_position; }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    };</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordtype">void</span> setHorizontalBottomLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> h_line) { setElement(horizontal_bottom_line, h_line); }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getHorizontalBottomLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> horizontal_bottom_line; }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">void</span> setVerticalLeftLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> v_line) { setElement(vertical_left_line, v_line); }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getVerticalLeftLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> vertical_left_line; }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">void</span> setVerticalRightLineSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> v_line) { setElement(vertical_right_line, v_line); }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getVerticalRightLineSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> vertical_right_line; }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordtype">void</span> setTopLeftSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> top_l) { setElement(top_left, top_l); }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getTopLeftSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> top_left; }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordtype">void</span> setTopRightSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> top_r) { setElement(top_right, top_r); }</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getTopRightSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> top_right; }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordtype">void</span> setBottomLeftSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_l) { setElement(bottom_left, bottom_l); }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getBottomLeftSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> bottom_left; }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordtype">void</span> setBottomRightSymbol(<a class="code" href="structtui_1_1symbol.html">symbol</a> bottom_r) { setElement(bottom_right, bottom_r); }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getBottomRightSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> bottom_right; }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    };</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">const</span> <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a> box_appearance::thin_line   = { U<span class="stringliteral">&#39;\x2500&#39;</span>, U<span class="stringliteral">&#39;\x2500&#39;</span>, U<span class="stringliteral">&#39;\x2502&#39;</span>, U<span class="stringliteral">&#39;\x2502&#39;</span>, U<span class="stringliteral">&#39;\x250C&#39;</span>, U<span class="stringliteral">&#39;\x2510&#39;</span>, U<span class="stringliteral">&#39;\x2514&#39;</span>, U<span class="stringliteral">&#39;\x2518&#39;</span> };</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">const</span> box_appearance box_appearance::double_line = { U<span class="stringliteral">&#39;\x2550&#39;</span>, U<span class="stringliteral">&#39;\x2550&#39;</span>, U<span class="stringliteral">&#39;\x2551&#39;</span>, U<span class="stringliteral">&#39;\x2551&#39;</span>, U<span class="stringliteral">&#39;\x2554&#39;</span>, U<span class="stringliteral">&#39;\x2557&#39;</span>, U<span class="stringliteral">&#39;\x255A&#39;</span>, U<span class="stringliteral">&#39;\x255D&#39;</span> };</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">const</span> box_appearance box_appearance::medium_line = { U<span class="stringliteral">&#39;\x2580&#39;</span>, U<span class="stringliteral">&#39;\x2584&#39;</span>, U<span class="stringliteral">&#39;\x258C&#39;</span>, U<span class="stringliteral">&#39;\x2590&#39;</span>, U<span class="stringliteral">&#39;\x259B&#39;</span>, U<span class="stringliteral">&#39;\x259C&#39;</span>, U<span class="stringliteral">&#39;\x2599&#39;</span>, U<span class="stringliteral">&#39;\x259F&#39;</span> };</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">const</span> box_appearance box_appearance::thick_line  = { U<span class="stringliteral">&#39;\x2588&#39;</span> };</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structtui_1_1box.html">  100</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1box.html">box</a> : <a class="code" href="structtui_1_1surface.html">surface</a>, <a class="code" href="structtui_1_1box__appearance.html">box_appearance</a></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> m_title;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keywordtype">int</span> m_title_position = POSITION::CENTER;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keywordtype">bool</span> m_redraw_needed = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keywordtype">void</span> fill()</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            clear();</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            setSymbolAt(top_left, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, 0));</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            setSymbolAt(top_right, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, 0));</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            setSymbolAt(bottom_left, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, getSize().y - 1));</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            setSymbolAt(bottom_right, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, getSize().y - 1));</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().x - 1; i++) { setSymbolAt(horizontal_top_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(i, 0)); }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().x - 1; i++) { setSymbolAt(horizontal_bottom_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(i, getSize().y - 1)); }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().y - 1; i++) { setSymbolAt(vertical_left_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(0, i)); }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; getSize().y - 1; i++) { setSymbolAt(vertical_right_line, <a class="code" href="structtui_1_1vec2.html">vec2i</a>(getSize().x - 1, i)); }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> fw_str = getFullWidthString(m_title);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            <span class="keywordtype">bool</span> shift = getSize().x &gt; fw_str.size();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            <span class="keywordtype">int</span> t_pos = (getSize().x-2) * (m_title_position / 100.f) - fw_str.size() * (m_title_position / 100.f) + shift;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordflow">if</span> (t_pos &lt; 0) { t_pos = 0; }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; fw_str.size() &amp;&amp; t_pos &lt; getSize().x; i++, t_pos++)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                setSymbolAt(fw_str[i], <a class="code" href="structtui_1_1vec2.html">vec2i</a>(t_pos, 0));</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordtype">void</span> drawAction(<a class="code" href="structtui_1_1surface_1_1action__proxy.html">action_proxy</a> proxy)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keywordflow">if</span> (m_redraw_needed) </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                fill(); </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                m_redraw_needed = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordtype">void</span> resizeAction()<span class="keyword"> override </span>{ m_redraw_needed = <span class="keyword">true</span>; }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keywordtype">void</span> setAppearanceAction()<span class="keyword"> override </span>{ m_redraw_needed = <span class="keyword">true</span>; }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <a class="code" href="structtui_1_1box.html">box</a>(<a class="code" href="structtui_1_1surface__size.html">surface_size</a> size = <a class="code" href="structtui_1_1surface__size.html">surface_size</a>())</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        {</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            setSizeInfo(size);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keywordtype">void</span> setTitle(<span class="keyword">const</span> <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a>&amp; str)</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            m_title = str;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            m_redraw_needed = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        }</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="structtui_1_1symbol__string.html">symbol_string</a> getTitle()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_title; }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordtype">void</span> setTitlePosition(<span class="keywordtype">int</span> position)</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            m_title_position = position;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            m_redraw_needed = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordtype">int</span> getTitlePosition()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_title_position; }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    };</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="astructtui_1_1surface__size_html"><div class="ttname"><a href="structtui_1_1surface__size.html">tui::surface_size</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:21</div></div>
 <div class="ttc" id="astructtui_1_1box__appearance_html"><div class="ttname"><a href="structtui_1_1box__appearance.html">tui::box_appearance</a></div><div class="ttdef"><b>Definition:</b> tui_box.h:13</div></div>
 <div class="ttc" id="astructtui_1_1vec2_html"><div class="ttname"><a href="structtui_1_1vec2.html">tui::vec2&lt; int &gt;</a></div></div>
 <div class="ttc" id="astructtui_1_1symbol__string_html"><div class="ttname"><a href="structtui_1_1symbol__string.html">tui::symbol_string</a></div><div class="ttdef"><b>Definition:</b> tui_symbol_string.h:17</div></div>
-<div class="ttc" id="astructtui_1_1box_html"><div class="ttname"><a href="structtui_1_1box.html">tui::box</a></div><div class="ttdef"><b>Definition:</b> tui_box.h:62</div></div>
+<div class="ttc" id="astructtui_1_1box_html"><div class="ttname"><a href="structtui_1_1box.html">tui::box</a></div><div class="ttdef"><b>Definition:</b> tui_box.h:101</div></div>
 <div class="ttc" id="astructtui_1_1surface_html"><div class="ttname"><a href="structtui_1_1surface.html">tui::surface</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:70</div></div>
 <div class="ttc" id="astructtui_1_1color_html"><div class="ttname"><a href="structtui_1_1color.html">tui::color</a></div><div class="ttdef"><b>Definition:</b> tui_color.h:45</div></div>
 <div class="ttc" id="astructtui_1_1surface_1_1action__proxy_html"><div class="ttname"><a href="structtui_1_1surface_1_1action__proxy.html">tui::surface::action_proxy</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:137</div></div>

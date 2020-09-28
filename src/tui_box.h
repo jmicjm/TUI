@@ -12,51 +12,90 @@ namespace tui
 	struct box_appearance : appearance
 	{
 	protected:
-		symbol m_horizontal_line;
-		symbol m_vertical_line;
-		symbol m_top_left;
-		symbol m_top_right;
-		symbol m_bottom_left;
-		symbol m_bottom_right;
+		symbol horizontal_top_line;
+		symbol horizontal_bottom_line;
+		symbol vertical_left_line;
+		symbol vertical_right_line;
+		symbol top_left;
+		symbol top_right;
+		symbol bottom_left;
+		symbol bottom_right;
 	public:
-		box_appearance() : box_appearance(U'\x2550', U'\x2551', U'\x2554', U'\x2557', U'\x255A', U'\x255D') {}
-		box_appearance(symbol Symbol) : box_appearance(Symbol, Symbol, Symbol, Symbol, Symbol, Symbol) {}
-		box_appearance(symbol h_line, symbol v_line, symbol top_l, symbol top_r, symbol bottom_l, symbol bottom_r)
-			: m_horizontal_line(h_line), m_vertical_line(v_line), m_top_left(top_l),
-			m_top_right(top_r), m_bottom_left(bottom_l), m_bottom_right(bottom_r) {}
+		box_appearance() 
+		{
+			*this = double_line;
+		}
+		box_appearance(symbol s) : box_appearance(s, s, s, s, s, s, s, s) {}
+		box_appearance(
+			symbol ht_line,
+			symbol hb_line,
+			symbol vl_line,
+			symbol vr_line,
+			symbol top_l,
+			symbol top_r,
+			symbol bottom_l,
+			symbol bottom_r
+		)
+			: horizontal_top_line(ht_line),
+			horizontal_bottom_line(hb_line),
+			vertical_left_line(vl_line),
+			vertical_right_line(vr_line),
+			top_left(top_l),
+			top_right(top_r),
+			bottom_left(bottom_l),
+			bottom_right(bottom_r) {}
+
+		static const box_appearance thin_line;
+		static const box_appearance double_line;
+		static const box_appearance medium_line;
+		static const box_appearance thick_line;
+
 
 		void setColor(color Color) override
 		{
-			m_horizontal_line.setColor(Color);
-			m_vertical_line.setColor(Color);
-			m_top_left.setColor(Color);
-			m_top_right.setColor(Color);
-			m_bottom_left.setColor(Color);
-			m_bottom_right.setColor(Color);
+			horizontal_top_line.setColor(Color);
+			horizontal_bottom_line.setColor(Color);
+			vertical_left_line.setColor(Color);
+			vertical_right_line.setColor(Color);
+			top_left.setColor(Color);
+			top_right.setColor(Color);
+			bottom_left.setColor(Color);
+			bottom_right.setColor(Color);
 			setAppearanceAction();
 		}
 
 		void setAppearance(box_appearance appearance) { setElement(*this, appearance); }
 		box_appearance getAppearance() const { return *this; }
 
-		void setHorizontalLineSymbol(symbol h_line) { setElement(m_horizontal_line,h_line); }
-		symbol getHorizontalLineSymbol() const { return m_horizontal_line; }
+		void setHorizontalTopLineSymbol(symbol h_line) { setElement(horizontal_top_line,h_line); }
+		symbol getHorizontalTopLineSymbol() const { return horizontal_top_line; }
 
-		void setVerticalLineSymbol(symbol v_line) { setElement(m_vertical_line, v_line); }
-		symbol getVerticalLineSymbol() const { return m_vertical_line; }
+		void setHorizontalBottomLineSymbol(symbol h_line) { setElement(horizontal_bottom_line, h_line); }
+		symbol getHorizontalBottomLineSymbol() const { return horizontal_bottom_line; }
 
-		void setTopLeftSymbol(symbol top_l) { setElement(m_top_left, top_l); }
-		symbol getTopLeftSymbol() const { return m_top_left; }
+		void setVerticalLeftLineSymbol(symbol v_line) { setElement(vertical_left_line, v_line); }
+		symbol getVerticalLeftLineSymbol() const { return vertical_left_line; }
 
-		void setTopRightSymbol(symbol top_r) { setElement(m_top_right, top_r); }
-		symbol getTopRightSymbol() const { return m_top_right; }
+		void setVerticalRightLineSymbol(symbol v_line) { setElement(vertical_right_line, v_line); }
+		symbol getVerticalRightLineSymbol() const { return vertical_right_line; }
 
-		void setBottomLeftSymbol(symbol bottom_l) { setElement(m_bottom_left, bottom_l); }
-		symbol getBottomLeftSymbol() const { return m_bottom_left; }
+		void setTopLeftSymbol(symbol top_l) { setElement(top_left, top_l); }
+		symbol getTopLeftSymbol() const { return top_left; }
 
-		void setBottomRightSymbol(symbol bottom_r) { setElement(m_bottom_right, bottom_r); }
-		symbol getBottomRightSymbol() const { return m_bottom_right; }
+		void setTopRightSymbol(symbol top_r) { setElement(top_right, top_r); }
+		symbol getTopRightSymbol() const { return top_right; }
+
+		void setBottomLeftSymbol(symbol bottom_l) { setElement(bottom_left, bottom_l); }
+		symbol getBottomLeftSymbol() const { return bottom_left; }
+
+		void setBottomRightSymbol(symbol bottom_r) { setElement(bottom_right, bottom_r); }
+		symbol getBottomRightSymbol() const { return bottom_right; }
 	};
+
+	const box_appearance box_appearance::thin_line   = { U'\x2500', U'\x2500', U'\x2502', U'\x2502', U'\x250C', U'\x2510', U'\x2514', U'\x2518' };
+	const box_appearance box_appearance::double_line = { U'\x2550', U'\x2550', U'\x2551', U'\x2551', U'\x2554', U'\x2557', U'\x255A', U'\x255D' };
+	const box_appearance box_appearance::medium_line = { U'\x2580', U'\x2584', U'\x258C', U'\x2590', U'\x259B', U'\x259C', U'\x2599', U'\x259F' };
+	const box_appearance box_appearance::thick_line  = { U'\x2588' };
 
 	struct box : surface, box_appearance
 	{
@@ -70,16 +109,16 @@ namespace tui
 		{
 			clear();
 
-			setSymbolAt(m_top_left, vec2i(0, 0));
-			setSymbolAt(m_top_right, vec2i(getSize().x - 1, 0));
-			setSymbolAt(m_bottom_left, vec2i(0, getSize().y - 1));
-			setSymbolAt(m_bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
+			setSymbolAt(top_left, vec2i(0, 0));
+			setSymbolAt(top_right, vec2i(getSize().x - 1, 0));
+			setSymbolAt(bottom_left, vec2i(0, getSize().y - 1));
+			setSymbolAt(bottom_right, vec2i(getSize().x - 1, getSize().y - 1));
 
-			for (int i = 1; i < getSize().x - 1; i++) { setSymbolAt(m_horizontal_line, vec2i(i, 0)); }
-			for (int i = 1; i < getSize().x - 1; i++) { setSymbolAt(m_horizontal_line, vec2i(i, getSize().y - 1)); }
+			for (int i = 1; i < getSize().x - 1; i++) { setSymbolAt(horizontal_top_line, vec2i(i, 0)); }
+			for (int i = 1; i < getSize().x - 1; i++) { setSymbolAt(horizontal_bottom_line, vec2i(i, getSize().y - 1)); }
 
-			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(0, i)); }
-			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(m_vertical_line, vec2i(getSize().x - 1, i)); }
+			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(vertical_left_line, vec2i(0, i)); }
+			for (int i = 1; i < getSize().y - 1; i++) { setSymbolAt(vertical_right_line, vec2i(getSize().x - 1, i)); }
 
 			symbol_string fw_str = getFullWidthString(m_title);
 
