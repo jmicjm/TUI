@@ -146,11 +146,24 @@ namespace tui
 						{
 							word_len += m_unprepared_text[j + i].getWidth();
 						}
-						if (word_len >= dst && word_len < getSize().x) { pos += dst; }
+						if (word_len > dst && word_len < getSize().x) 
+						{
+							pos += dst; 
+						}
 					}
 				}
 
 				m_symbol_pos[i] = { posInLine(), pos / m_text.getSize().x };
+
+				if (posInLine() == 0 && m_unprepared_text[i][0] == ' ' 
+					&& 
+					(
+						(i>0 && m_symbol_pos[i].y == m_symbol_pos[i-1].y) ? m_unprepared_text[i-1][0] != ' ' : true
+					)
+				)
+				{
+					continue;
+				}
 
 				if (sym_w == 0)
 				{
