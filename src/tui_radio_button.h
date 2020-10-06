@@ -60,7 +60,8 @@ namespace tui
 	{
 	private:
 		unsigned int m_options = 0;
-		unsigned int m_selected_option = 0;
+		unsigned int m_selected = 0;
+		bool m_wrap_around = true;
 
 		bool m_redraw_needed = true;
 
@@ -76,7 +77,7 @@ namespace tui
 
 			for (int i = 0; i < m_options && i < surface1D<direction>::getSize(); i++)
 			{
-				if (i == m_selected_option)
+				if (i == m_selected)
 				{
 					surface1D<direction>::setSymbolAt(getCurrentAppearance().selected, i);
 				}
@@ -126,34 +127,23 @@ namespace tui
 		{
 			if (option <= m_options)
 			{
-				m_selected_option = option;
+				m_selected = option;
 			}
 			m_redraw_needed = true;
 		}
-		unsigned int getSelectedOption() const { return m_selected_option; }
+		unsigned int getSelectedOption() const { return m_selected; }
+
+		void useWrappingAround(bool use) { m_wrap_around = use; }
+		bool isUsingWrappingAround() { return m_wrap_around; }
 
 		void nextOption()
 		{
-			if (m_selected_option < m_options - 1)
-			{
-				m_selected_option++;
-			}
-			else
-			{
-				m_selected_option = 0;
-			}
+			m_selected = m_selected < m_options-1 ? m_selected+1 : (m_wrap_around ? 0 : m_selected);
 			m_redraw_needed = true;
 		}
-		void previousOption()
+		void prevOption()
 		{
-			if (m_selected_option > 0)
-			{
-				m_selected_option--;
-			}
-			else
-			{
-				m_selected_option = m_options -1;
-			}
+			m_selected = m_selected > 0 ? m_selected-1 : (m_wrap_around ? m_options-1 : m_selected);
 			m_redraw_needed = true;
 		}
 
@@ -167,7 +157,7 @@ namespace tui
 			if (isActive())
 			{
 				if (input::isKeyPressed(key_next)) { nextOption(); }
-				if (input::isKeyPressed(key_previous)) { previousOption(); }
+				if (input::isKeyPressed(key_previous)) { prevOption(); }
 			}
 		}
 	};

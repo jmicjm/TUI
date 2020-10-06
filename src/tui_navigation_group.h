@@ -21,6 +21,7 @@ namespace tui
 	{
 	private:
 		size_t m_selected = 0;
+		bool m_wrap_around = true;
 
 		void disable(int except = -1)
 		{
@@ -78,6 +79,9 @@ namespace tui
 		using std::vector<navigation_group_entry>::clear;
 		using std::vector<navigation_group_entry>::erase;
 
+		void useWrappingAround(bool use) { m_wrap_around = use; }
+		bool isUsingWrappingAround() { return m_wrap_around; }
+
 		void update()
 		{
 			if (isActive())
@@ -86,11 +90,11 @@ namespace tui
 				{
 					if (input::isKeyPressed(key_next))
 					{
-						m_selected < size() - 1 ? m_selected++ : m_selected = 0;
+						m_selected = m_selected < size()-1 ? m_selected+1 : (m_wrap_around ? 0 : m_selected);
 					}
 					if (input::isKeyPressed(key_prev))
 					{
-						m_selected > 0 ? m_selected-- : m_selected = size() - 1;
+						m_selected = m_selected > 0 ? m_selected-1 : (m_wrap_around ? size()-1 : m_selected);
 					}
 
 					enable();

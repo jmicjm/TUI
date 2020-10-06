@@ -86,6 +86,7 @@ namespace tui
 		unsigned int m_first_pos = 0;
 
 		bool m_display_separator = true;
+		bool m_wrap_around = true;
 		bool m_redraw_needed = true;
 
 		tabs_appearance_a getCurrentAppearance() const
@@ -250,22 +251,17 @@ namespace tui
 		}
 		bool isDiplayingSeparator() const { return m_display_separator; }
 
+		void useWrappingAround(bool use) { m_wrap_around = use; }
+		bool isUsingWrappingAround() { return m_wrap_around; }
+
 		void nextTab()
 		{
-			if (m_selected < m_tabs.size() - 1)
-			{
-				m_selected++;
-			}
-			else { m_selected = 0; }
+			m_selected = m_selected < m_tabs.size()-1 ? m_selected+1 : (m_wrap_around ? 0 : m_selected);
 			m_redraw_needed = true;
 		}
 		void prevTab()
 		{
-			if (m_selected > 0)
-			{
-				m_selected--;
-			}
-			else { m_selected = m_tabs.size() - 1; }
+			m_selected = m_selected > 0 ? m_selected-1 : (m_wrap_around ? m_tabs.size()-1 : m_selected);
 			m_redraw_needed = true;
 		}
 
