@@ -12,6 +12,7 @@ struct list - widget that displays a list*/
 
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 namespace tui
 {
@@ -345,9 +346,17 @@ namespace tui
 
 		void resizeToEntries()
 		{
-			surface_size c_size = getSizeInfo();
-			c_size.percentage.y = 0;
+			surface_size c_size;
 			c_size.fixed.y = m_entries.size();
+			c_size.fixed.x = 
+				std::max_element(
+					m_entries.begin(),
+					m_entries.end(),
+					[](const list_entry& a, const list_entry& b)
+					{
+						return a.name.size() < b.name.size();
+					}
+			)->name.size();
 			setSizeInfo(c_size);
 		}
 
