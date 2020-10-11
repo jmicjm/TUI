@@ -109,6 +109,18 @@ namespace tui
 		}
 		bool operator!=(const symbol_string& other) const { return !operator==(other); }
 
+		std::string getStdString()
+		{
+			std::string str;
+
+			for (auto& i : *this)
+			{
+				str += i.getCluster();
+			}
+
+			return str;
+		}
+
 		void setSelectedColor(color Color) { m_selected_color = Color; }
 		void setSelectedUnderscore(bool underscore) { m_underscore = underscore; }
 
