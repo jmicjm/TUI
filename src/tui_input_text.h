@@ -344,6 +344,12 @@ namespace tui
 			setSizeInfo(size);
 		}
 
+		void setText(const symbol_string& str)
+		{
+			m_str = str;
+			updateText();
+			m_redraw_needed = true;
+		}
 		symbol_string getText() const { return m_str; }
 
 		void useConfidentialMode(bool use)

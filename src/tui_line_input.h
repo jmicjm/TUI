@@ -206,6 +206,12 @@ namespace tui
 			setSizeInfo(size);
 		}
 
+		void setText(const symbol_string& str)
+		{
+			m_str = str;
+			m_str += " ";
+			m_redraw_needed = true;
+		}
 		symbol_string getText()
 		{
 			symbol_string str = m_str;
