@@ -347,16 +347,20 @@ namespace tui
 		void resizeToEntries()
 		{
 			surface_size c_size;
+
+			auto max_e = std::max_element(
+				m_entries.begin(),
+				m_entries.end(),
+				[](const list_entry& a, const list_entry& b)
+				{
+					size_t a_size = a.name.size() + static_cast<uint8_t>(a.checked != CHECK_STATE::NONCHECKABLE) * 2;
+					size_t b_size = b.name.size() + static_cast<uint8_t>(b.checked != CHECK_STATE::NONCHECKABLE) * 2;
+					return a_size < b_size;
+				}
+			);
+			c_size.fixed.x = max_e->name.size() + static_cast<uint8_t>(max_e->checked != CHECK_STATE::NONCHECKABLE) * 2;
 			c_size.fixed.y = m_entries.size();
-			c_size.fixed.x = 
-				std::max_element(
-					m_entries.begin(),
-					m_entries.end(),
-					[](const list_entry& a, const list_entry& b)
-					{
-						return a.name.size() < b.name.size();
-					}
-			)->name.size();
+
 			setSizeInfo(c_size);
 		}
 
