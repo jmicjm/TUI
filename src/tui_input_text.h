@@ -87,7 +87,7 @@ namespace tui
 		{
 			vec2i old_pos = m_cursor_pos;
 
-			if (m_text.getText().size() > 0)
+			if (m_str.size() > 0)
 			{
 				auto getRelativePos = [&]()
 				{
