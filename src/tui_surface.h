@@ -300,18 +300,37 @@ namespace tui
 				if (update) { surf.updateAction(); }
 				surf.drawAction(this);
 
-				vec2i origin = surf.m_position;
+				const vec2i origin = surf.m_position;
 				for (int y = 0; y < surf.getSize().y; y++)
 				{
 					for (int x = 0; x < surf.getSize().x; x++)
 					{
-						if (surf[x][y][0] != 0 //transparent
+						color c = surf[x][y].getColor();
+
+						switch (surf[x][y].getBgTransparencySrc())
+						{
+						case TRANSPARENCY_SRC::NONE:
+							break;
+						case TRANSPARENCY_SRC::BG:
+							c.background = (*this)[origin.x + x][origin.y + y].getColor().background;
+							break;
+						case TRANSPARENCY_SRC::FG:
+							c.background = (*this)[origin.x + x][origin.y + y].getColor().foreground;
+							break;
+						case TRANSPARENCY_SRC::AVG:
+							rgb fg = (*this)[origin.x + x][origin.y + y].getColor().foreground;
+							rgb bg = (*this)[origin.x + x][origin.y + y].getColor().background;
+							c.background = { (uint8_t)((fg.r + bg.r)/2), (uint8_t)((fg.g + bg.g)/2), (uint8_t)((fg.b + bg.b)/2) };
+						}
+
+						if (surf[x][y][0] != 0 //fully transparent
 							&& origin.x + x >= 0
 							&& origin.y + y >= 0
 							&& origin.x + x < getSize().x
 							&& origin.y + y < getSize().y)
 						{
 							setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });
+							(*this)[origin.x + x][origin.y + y].setColor(c);
 						}
 					}
 				}

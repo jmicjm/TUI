@@ -8,6 +8,14 @@
 
 namespace tui
 {
+	enum class TRANSPARENCY_SRC : uint8_t
+	{
+		NONE = 0,
+		BG = 1,
+		FG = 2,
+		AVG = 3
+	};
+
 	struct symbol
 	{
 	private:
@@ -131,7 +139,8 @@ namespace tui
 			bool operator!=(const hybrid_container& other) const { return !operator==(other); }
 		} m_cluster;
 
-		uint8_t m_width : 7;
+		uint8_t m_width : 5;
+		uint8_t m_bg_transparency_src : 2;
 		bool m_underscore : 1;
 		color m_color;
 
@@ -166,12 +175,17 @@ namespace tui
 		}
 
 	public:
-		symbol() : symbol("", color()) {}
-		symbol(char32_t c, color Color = color()) : symbol(utf32ToUtf8(std::u32string(&c, 1)), Color) {}
-		symbol(const char* cluster, color color = color()) : symbol(std::string(cluster), color) {}
-		symbol(const char32_t* cluster, color color = color()) : symbol(utf32ToUtf8(std::u32string(cluster)), color) {}
+		symbol() 
+			: symbol("", color(), TRANSPARENCY_SRC::NONE) {}
+		symbol(char32_t c, color Color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
+			: symbol(utf32ToUtf8(std::u32string(&c, 1)), Color, t_src) {}
+		symbol(const char* cluster, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
+			: symbol(std::string(cluster), color, t_src) {}
+		symbol(const char32_t* cluster, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
+			: symbol(utf32ToUtf8(std::u32string(cluster)), color, t_src) {}
 
-		symbol(const std::string& cluster, color Color = color()) : m_underscore(false)
+		symbol(const std::string& cluster, color Color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE)
+			: m_underscore(false), m_bg_transparency_src(static_cast<uint8_t>(t_src))
 		{
 			setCluster(cluster);
 			setColor(Color);
@@ -220,6 +234,13 @@ namespace tui
 
 		void setColor(color Color) { m_color = Color; }
 		color getColor() const { return m_color; }
+
+		void setBgTransparencySrc(TRANSPARENCY_SRC t_src)
+		{
+			m_bg_transparency_src = static_cast<uint8_t>(t_src);
+		}
+		TRANSPARENCY_SRC getBgTransparencySrc() { return static_cast<TRANSPARENCY_SRC>(m_bg_transparency_src); }
+
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() const { return m_underscore; }
 

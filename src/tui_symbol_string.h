@@ -25,12 +25,13 @@ namespace tui
 			resize(1);
 			(*this)[0] = Symbol;
 		}
-		symbol_string(const char* str) : symbol_string(utf8ToUtf32(str)) {}
-		symbol_string(const char32_t* str) : symbol_string(std::u32string(str)) {}
-		symbol_string(const std::string& str) : symbol_string(utf8ToUtf32(str), color()) {}
-		symbol_string(const std::u32string& str) : symbol_string(str, color()) {}
-		symbol_string(const std::string& str, color color) : symbol_string(utf8ToUtf32(str), color) {}
-		symbol_string(const std::u32string& str, color color)
+		symbol_string(const char* str) 
+			: symbol_string(utf8ToUtf32(str)) {}
+		symbol_string(const char32_t* str) 
+			: symbol_string(std::u32string(str)) {}
+		symbol_string(const std::string& str, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
+			: symbol_string(utf8ToUtf32(str), color, t_src) {}
+		symbol_string(const std::u32string& str, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE)
 		{
 			unsigned int i = 0;
 			while (i < str.size())
@@ -45,6 +46,8 @@ namespace tui
 				push_back(symbol(utf32ToUtf8(current_cluster), color));
 				i++;
 			}
+
+			setBgTransparencySrc(t_src);
 		}
 
 		using std::vector<symbol>::operator[];
@@ -140,6 +143,14 @@ namespace tui
 			for (int i = 0; i < size(); i++)
 			{
 				(*this)[i].setColor(Color);
+			}
+		}
+
+		void setBgTransparencySrc(TRANSPARENCY_SRC t_src)
+		{
+			for (auto& i : *this)
+			{
+				i.setBgTransparencySrc(t_src);
 			}
 		}
 
