@@ -11,6 +11,7 @@ struct line_input - widget displaying a single dimensional textbox*/
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 namespace tui
 {
@@ -66,6 +67,8 @@ namespace tui
 		unsigned int m_cursor_sym_idx = 0;
 		unsigned int m_first_sym_idx = 0;
 		time_frame m_cursor_blink;
+
+		std::function<void()> m_enter_function;
 
 		bool m_redraw_needed = true;
 		bool m_insert_mode = true;
@@ -198,6 +201,7 @@ namespace tui
 		short key_right = input::KEY::RIGHT;
 		short key_insert = input::KEY::INS;
 		short key_backspace = input::KEY::BACKSPACE;
+		short key_enter = input::KEY::ENTER;
 
 
 		line_input(surface1D_size size = surface1D_size()) : m_cursor_blink(std::chrono::milliseconds(500))
@@ -225,6 +229,9 @@ namespace tui
 			m_redraw_needed = true;
 		}
 		bool isUsingConfidentialMode() const { return m_confidential_mode; }
+
+		void setEnterFunction(std::function<void()> func) { m_enter_function = func; }
+		std::function<void()> getEnterFunction() { return m_enter_function; }
 
 		void update()
 		{
@@ -263,7 +270,8 @@ namespace tui
 					return key == key_backspace
 						|| key == key_insert
 						|| key == key_left
-						|| key == key_right;
+						|| key == key_right
+						|| key == key_enter;
 				};
 
 				bool update_needed = false;
@@ -300,6 +308,13 @@ namespace tui
 						else if (input[i] == key_insert)
 						{
 							m_insert_mode = !m_insert_mode;
+						}
+						else if (input[i] = key_enter)
+						{
+							if (m_enter_function)
+							{
+								m_enter_function();
+							}
 						}
 
 						buffer.clear();
