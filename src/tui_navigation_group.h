@@ -41,18 +41,21 @@ namespace tui
 			m_selected = size() > 0 ? std::min(m_selected, size()-1) : 0;
 			disable(m_selected);
 
-			if ((*this)[m_selected].element != nullptr)
+			if (size() > 0)
 			{
-				if (size() > 0 && !(*this)[m_selected].element->isActive())
+				if ((*this)[m_selected].element != nullptr)
 				{
-					(*this)[m_selected].element->activate();
+					if (!(*this)[m_selected].element->isActive())
+					{
+						(*this)[m_selected].element->activate();
+					}
 				}
 			}
 		}
 
 		bool isBlocked()
 		{
-			if ((*this)[m_selected].block_function)
+			if (size() > 0 && (*this)[m_selected].block_function)
 			{
 				return (*this)[m_selected].block_function();
 			}
@@ -82,6 +85,22 @@ namespace tui
 		void useWrappingAround(bool use) { m_wrap_around = use; }
 		bool isUsingWrappingAround() { return m_wrap_around; }
 
+		void setSelected(unsigned int selected)
+		{
+			m_selected = selected;
+			if (isActive()) { enable(); }
+		}
+		unsigned int getSelected() { return m_selected; }
+
+		void next()
+		{
+			m_selected = m_selected < size() - 1 ? m_selected + 1 : (m_wrap_around ? 0 : m_selected);
+		}
+		void prev()
+		{
+			m_selected = m_selected > 0 ? m_selected - 1 : (m_wrap_around ? size() - 1 : m_selected);
+		}
+
 		void update()
 		{
 			if (isActive())
@@ -90,11 +109,11 @@ namespace tui
 				{
 					if (input::isKeyPressed(key_next))
 					{
-						m_selected = m_selected < size()-1 ? m_selected+1 : (m_wrap_around ? 0 : m_selected);
+						next();
 					}
 					if (input::isKeyPressed(key_prev))
 					{
-						m_selected = m_selected > 0 ? m_selected-1 : (m_wrap_around ? size()-1 : m_selected);
+						prev();
 					}
 
 					enable();
