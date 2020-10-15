@@ -223,6 +223,13 @@ namespace tui
 			return str;
 		}
 
+		void setCursorIndex(unsigned int idx)
+		{
+			m_cursor_sym_idx = std::min(idx, (unsigned int)m_str.size() - 1);
+			m_redraw_needed = true;
+		}
+		unsigned int getCursorIndex() { return m_cursor_sym_idx; }
+
 		void useConfidentialMode(bool use)
 		{
 			m_confidential_mode = use;
