@@ -93,15 +93,30 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a865c5182d7d718a57221fa4938210d"><td class="memItemLeft" align="right" valign="top"><a id="a6a865c5182d7d718a57221fa4938210d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>line_input</b> (<a class="el" href="structtui_1_1surface1_d__size.html">surface1D_size</a> size=<a class="el" href="structtui_1_1surface1_d__size.html">surface1D_size</a>())</td></tr>
 <tr class="separator:a6a865c5182d7d718a57221fa4938210d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab66c07b35a4501ddcc23815914f8c51d"><td class="memItemLeft" align="right" valign="top"><a id="ab66c07b35a4501ddcc23815914f8c51d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setText</b> (const <a class="el" href="structtui_1_1symbol__string.html">symbol_string</a> &amp;str)</td></tr>
+<tr class="separator:ab66c07b35a4501ddcc23815914f8c51d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a330187f74b88b56486a2d89ca0a2691d"><td class="memItemLeft" align="right" valign="top"><a id="a330187f74b88b56486a2d89ca0a2691d"></a>
 <a class="el" href="structtui_1_1symbol__string.html">symbol_string</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getText</b> ()</td></tr>
 <tr class="separator:a330187f74b88b56486a2d89ca0a2691d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96a583e26ea839bcbfca4d43607c6e36"><td class="memItemLeft" align="right" valign="top"><a id="a96a583e26ea839bcbfca4d43607c6e36"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setCursorIndex</b> (unsigned int idx)</td></tr>
+<tr class="separator:a96a583e26ea839bcbfca4d43607c6e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a312f75cd401728e4b6ea494e3c3a6571"><td class="memItemLeft" align="right" valign="top"><a id="a312f75cd401728e4b6ea494e3c3a6571"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>getCursorIndex</b> ()</td></tr>
+<tr class="separator:a312f75cd401728e4b6ea494e3c3a6571"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a908e1c341edc9c60a95cb516dde692ae"><td class="memItemLeft" align="right" valign="top"><a id="a908e1c341edc9c60a95cb516dde692ae"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>useConfidentialMode</b> (bool use)</td></tr>
 <tr class="separator:a908e1c341edc9c60a95cb516dde692ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed60cf4fd6daed76ec1396734141a78f"><td class="memItemLeft" align="right" valign="top"><a id="aed60cf4fd6daed76ec1396734141a78f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>isUsingConfidentialMode</b> () const</td></tr>
 <tr class="separator:aed60cf4fd6daed76ec1396734141a78f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc0a1c3e445d4556ea24b93739347821"><td class="memItemLeft" align="right" valign="top"><a id="adc0a1c3e445d4556ea24b93739347821"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setEnterFunction</b> (std::function&lt; void()&gt; func)</td></tr>
+<tr class="separator:adc0a1c3e445d4556ea24b93739347821"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3657d66ec3fd53b7f1cadec2d0e77eca"><td class="memItemLeft" align="right" valign="top"><a id="a3657d66ec3fd53b7f1cadec2d0e77eca"></a>
+std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getEnterFunction</b> ()</td></tr>
+<tr class="separator:a3657d66ec3fd53b7f1cadec2d0e77eca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8853b010c380c9eb98342ffd5b7ffca"><td class="memItemLeft" align="right" valign="top"><a id="ad8853b010c380c9eb98342ffd5b7ffca"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ()</td></tr>
 <tr class="separator:ad8853b010c380c9eb98342ffd5b7ffca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,6 +283,9 @@ short&#160;</td><td class="memItemRight" valign="bottom"><b>key_insert</b> = inp
 <tr class="memitem:a1f3a0daf653f5be5025aad0e4f6a10c3"><td class="memItemLeft" align="right" valign="top"><a id="a1f3a0daf653f5be5025aad0e4f6a10c3"></a>
 short&#160;</td><td class="memItemRight" valign="bottom"><b>key_backspace</b> = input::KEY::BACKSPACE</td></tr>
 <tr class="separator:a1f3a0daf653f5be5025aad0e4f6a10c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2d56ce5a34cfeb7586b11d093742572"><td class="memItemLeft" align="right" valign="top"><a id="ad2d56ce5a34cfeb7586b11d093742572"></a>
+short&#160;</td><td class="memItemRight" valign="bottom"><b>key_enter</b> = input::KEY::ENTER</td></tr>
+<tr class="separator:ad2d56ce5a34cfeb7586b11d093742572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>

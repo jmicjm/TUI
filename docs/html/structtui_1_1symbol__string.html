@@ -91,18 +91,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d1072bf504e3376715a5ec44ac8c4b7"><td class="memItemLeft" align="right" valign="top"><a id="a0d1072bf504e3376715a5ec44ac8c4b7"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const char32_t *str)</td></tr>
 <tr class="separator:a0d1072bf504e3376715a5ec44ac8c4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac598d9187b7ee74a68bd9ba1b3c7e3c3"><td class="memItemLeft" align="right" valign="top"><a id="ac598d9187b7ee74a68bd9ba1b3c7e3c3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::string &amp;str)</td></tr>
-<tr class="separator:ac598d9187b7ee74a68bd9ba1b3c7e3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7052376fcf1e0f5e45ce572cfac17e98"><td class="memItemLeft" align="right" valign="top"><a id="a7052376fcf1e0f5e45ce572cfac17e98"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::u32string &amp;str)</td></tr>
-<tr class="separator:a7052376fcf1e0f5e45ce572cfac17e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a283eb1aa2a54dfb64d3ff178e8635e5e"><td class="memItemLeft" align="right" valign="top"><a id="a283eb1aa2a54dfb64d3ff178e8635e5e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>)</td></tr>
-<tr class="separator:a283eb1aa2a54dfb64d3ff178e8635e5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c427998e9ae4bdc2e1333096df659f2"><td class="memItemLeft" align="right" valign="top"><a id="a4c427998e9ae4bdc2e1333096df659f2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::u32string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>)</td></tr>
-<tr class="separator:a4c427998e9ae4bdc2e1333096df659f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3eebd0457a7285f4c1970558001b3ad"><td class="memItemLeft" align="right" valign="top"><a id="ad3eebd0457a7285f4c1970558001b3ad"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), TRANSPARENCY_SRC t_src=TRANSPARENCY_SRC::NONE)</td></tr>
+<tr class="separator:ad3eebd0457a7285f4c1970558001b3ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8df01591419af20fba8d774307a4487e"><td class="memItemLeft" align="right" valign="top"><a id="a8df01591419af20fba8d774307a4487e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::u32string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), TRANSPARENCY_SRC t_src=TRANSPARENCY_SRC::NONE)</td></tr>
+<tr class="separator:a8df01591419af20fba8d774307a4487e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad88bbfb1368387ff846cc3eac1a53837"><td class="memItemLeft" align="right" valign="top"><a id="ad88bbfb1368387ff846cc3eac1a53837"></a>
 <a class="el" href="structtui_1_1symbol__string.html">symbol_string</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (<a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>)</td></tr>
 <tr class="separator:ad88bbfb1368387ff846cc3eac1a53837"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,6 +115,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const
 <tr class="memitem:a53ee68f2f7e0acce9a837a3d7482f585"><td class="memItemLeft" align="right" valign="top"><a id="a53ee68f2f7e0acce9a837a3d7482f585"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="structtui_1_1symbol__string.html">symbol_string</a> &amp;other) const</td></tr>
 <tr class="separator:a53ee68f2f7e0acce9a837a3d7482f585"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54740e6eaad511a171d2a79464d0cba5"><td class="memItemLeft" align="right" valign="top"><a id="a54740e6eaad511a171d2a79464d0cba5"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getStdString</b> ()</td></tr>
+<tr class="separator:a54740e6eaad511a171d2a79464d0cba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd1b15c4c80c6f33b09ce76d06fd7683"><td class="memItemLeft" align="right" valign="top"><a id="abd1b15c4c80c6f33b09ce76d06fd7683"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setSelectedColor</b> (<a class="el" href="structtui_1_1color.html">color</a> Color)</td></tr>
 <tr class="separator:abd1b15c4c80c6f33b09ce76d06fd7683"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,6 +136,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>invert</b> ()</td></t
 <tr class="memitem:a1d178bc2b52a8380b688e05b322b5a02"><td class="memItemLeft" align="right" valign="top"><a id="a1d178bc2b52a8380b688e05b322b5a02"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (<a class="el" href="structtui_1_1color.html">color</a> Color)</td></tr>
 <tr class="separator:a1d178bc2b52a8380b688e05b322b5a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a932ee388b48e61c800e4471b792b30b7"><td class="memItemLeft" align="right" valign="top"><a id="a932ee388b48e61c800e4471b792b30b7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setBgTransparencySrc</b> (TRANSPARENCY_SRC t_src)</td></tr>
+<tr class="separator:a932ee388b48e61c800e4471b792b30b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18c2fec6a37cdc472321591df7bc2b54"><td class="memItemLeft" align="right" valign="top"><a id="a18c2fec6a37cdc472321591df7bc2b54"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setUnderscore</b> (bool set)</td></tr>
 <tr class="separator:a18c2fec6a37cdc472321591df7bc2b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
