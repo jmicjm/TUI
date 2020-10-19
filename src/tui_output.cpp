@@ -122,42 +122,59 @@ namespace tui
 				};
 
 #if defined(_WIN32)
-				std::vector<CHAR_INFO> temp;
+				std::vector<CHAR_INFO> temp(getSize().x * getSize().y);
 
 				auto getRgbiColor = [&](color c)
 				{
 					return 16 * rgbToRgbi(c.background) + rgbToRgbi(c.foreground);
 				};
 
-				for (int i = 0; i < getSize().y; i++)
+				for (int y = 0; y < getSize().y; y++)
 				{
-					for (int j = 0; j < getSize().x; j++)
+					for (int x = 0; x < getSize().x;)
 					{
 						CHAR_INFO ch_info;
+						uint8_t sym_w = buffer[x][y].getWidth();
 
-						char32_t c = utf8ToUtf32(buffer[j][i].getCluster())[0];
+						char32_t c = utf8ToUtf32(buffer[x][y].getCluster())[0];
 
-						if (c < pow(2, (sizeof(wchar_t) * 8)) && !isControl(c))
+						if (c < pow(2, (sizeof(wchar_t) * 8)) && sym_w != 0)
 						{
+							uint8_t sym_w = buffer[x][y].getWidth();
+
 							ch_info.Char.UnicodeChar = c;
 						}
 						else { ch_info.Char.UnicodeChar = '?'; }
 
 						if (display_rgbi)
 						{
-							ch_info.Attributes = getRgbiColor(buffer[j][i].getColor());
+							ch_info.Attributes = getRgbiColor(buffer[x][y].getColor());
 						}
 						else
 						{
 							ch_info.Attributes = getRgbiColor({ COLOR::WHITE, COLOR::BLACK });
 						}
 
-						if (buffer[j][i].isUnderscore())
+						if (buffer[x][y].isUnderscore())
 						{
 							ch_info.Attributes |= COMMON_LVB_UNDERSCORE;
 						}
 
-						temp.push_back(ch_info);
+						temp[y*getSize().x + x] = ch_info;
+
+						if (sym_w > 1)
+						{
+							CHAR_INFO filler_ch;
+							filler_ch.Attributes = ch_info.Attributes;
+							filler_ch.Char.UnicodeChar = ' ';
+
+							for (int i = 1; i < sym_w && x + i < getSize().x; i++)
+							{
+								temp[y * getSize().x + x + i] = filler_ch;
+							}
+						}
+
+						x += sym_w > 0 ? sym_w : 1;
 					}
 				}
 
