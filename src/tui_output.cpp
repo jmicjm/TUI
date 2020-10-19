@@ -54,8 +54,9 @@ namespace tui
 				return false;
 			}
 
-			void clearBuffer() { buffer.makeBlank(); }
 		public:
+			void clearBuffer(rgb c) { buffer.fill({ ' ', {c,c} }); }
+
 			vec2i getSize() { return buffer.getSize(); }
 
 			bool isResized() { return buffer.isResized(); }
@@ -81,12 +82,6 @@ namespace tui
 #if defined(_WIN32)
 				console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
-			}
-
-			void clear()
-			{
-				updateSize();
-				clearBuffer();
 			}
 
 			void display()
@@ -324,7 +319,11 @@ namespace tui
 			}
 		} con;
 
-		void clear() { con.clear(); }
+		void clear(rgb c) 
+		{
+			con.updateSize();
+			con.clearBuffer(c);
+		}
 
 		void draw(surface& surf, bool update) { con.draw(surf, update); }
 

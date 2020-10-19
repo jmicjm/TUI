@@ -11,7 +11,7 @@ namespace tui
 		void restore();
 
 		//clears buffer + updates size
-		void clear();
+		void clear(rgb c = tui::COLOR::BLACK);
 
 		//copies surface to buffer
 		void draw(surface& surf, bool update = true);
