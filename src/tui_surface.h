@@ -344,6 +344,11 @@ namespace tui
 		void makeTransparent() { fill((char32_t)0); }
 		void makeBlank() { fill(' '); }
 
+		void fillBgTransparencySrc(TRANSPARENCY_SRC bg_t)
+		{
+			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].setBgTransparencySrc(bg_t); }
+		}
+
 		void setClearSymbol(const symbol& sym) { m_clear_symbol = sym; }
 		symbol getClearSymbol() const { return m_clear_symbol; }
 
