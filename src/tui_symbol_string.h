@@ -29,9 +29,9 @@ namespace tui
 			: symbol_string(utf8ToUtf32(str)) {}
 		symbol_string(const char32_t* str) 
 			: symbol_string(std::u32string(str)) {}
-		symbol_string(const std::string& str, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
-			: symbol_string(utf8ToUtf32(str), color, t_src) {}
-		symbol_string(const std::u32string& str, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE)
+		symbol_string(const std::string& str, color color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
+			: symbol_string(utf8ToUtf32(str), color, c_t) {}
+		symbol_string(const std::u32string& str, color color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
 		{
 			unsigned int i = 0;
 			while (i < str.size())
@@ -47,7 +47,7 @@ namespace tui
 				i++;
 			}
 
-			setBgTransparencySrc(t_src);
+			setColorTransparency(c_t);
 		}
 
 		using std::vector<symbol>::operator[];
@@ -146,11 +146,11 @@ namespace tui
 			}
 		}
 
-		void setBgTransparencySrc(TRANSPARENCY_SRC t_src)
+		void setColorTransparency(COLOR_TRANSPARENCY c_t)
 		{
 			for (auto& i : *this)
 			{
-				i.setBgTransparencySrc(t_src);
+				i.setColorTransparency(c_t);
 			}
 		}
 

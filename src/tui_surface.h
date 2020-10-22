@@ -305,32 +305,35 @@ namespace tui
 				{
 					for (int x = 0; x < surf.getSize().x; x++)
 					{
-						color c = surf[x][y].getColor();
-
-						switch (surf[x][y].getBgTransparencySrc())
-						{
-						case TRANSPARENCY_SRC::NONE:
-							break;
-						case TRANSPARENCY_SRC::BG:
-							c.background = (*this)[origin.x + x][origin.y + y].getColor().background;
-							break;
-						case TRANSPARENCY_SRC::FG:
-							c.background = (*this)[origin.x + x][origin.y + y].getColor().foreground;
-							break;
-						case TRANSPARENCY_SRC::AVG:
-							rgb fg = (*this)[origin.x + x][origin.y + y].getColor().foreground;
-							rgb bg = (*this)[origin.x + x][origin.y + y].getColor().background;
-							c.background = { (uint8_t)((fg.r + bg.r)/2), (uint8_t)((fg.g + bg.g)/2), (uint8_t)((fg.b + bg.b)/2) };
-						}
-
 						if (surf[x][y][0] != 0 //fully transparent
 							&& origin.x + x >= 0
 							&& origin.y + y >= 0
 							&& origin.x + x < getSize().x
 							&& origin.y + y < getSize().y)
 						{
+							color n_color = surf[x][y].getColor();
+							color o_color = (*this)[origin.x + x][origin.y + y].getColor();
+
+							uint8_t n_transparency = static_cast<uint8_t>(surf[x][y].getColorTransparency());
+							uint8_t o_transparency = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
+
+							switch (surf[x][y].getColorTransparency())
+							{
+							case COLOR_TRANSPARENCY::NONE:
+								break;
+							case COLOR_TRANSPARENCY::BG:
+								n_color.background = o_color.background;
+								break;
+							case COLOR_TRANSPARENCY::FG:
+								n_color.foreground = o_color.foreground;
+								break;
+							case COLOR_TRANSPARENCY::BG_FG:
+								n_color = o_color;
+							}
+
 							setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });
-							(*this)[origin.x + x][origin.y + y].setColor(c);
+							(*this)[origin.x + x][origin.y + y].setColor(n_color);
+							(*this)[origin.x + x][origin.y + y].setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency & o_transparency));
 						}
 					}
 				}
@@ -344,9 +347,9 @@ namespace tui
 		void makeTransparent() { fill((char32_t)0); }
 		void makeBlank() { fill(' '); }
 
-		void fillBgTransparencySrc(TRANSPARENCY_SRC bg_t)
+		void fillColorTransparency(COLOR_TRANSPARENCY c_t)
 		{
-			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].setBgTransparencySrc(bg_t); }
+			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].setColorTransparency(c_t); }
 		}
 
 		void setClearSymbol(const symbol& sym) { m_clear_symbol = sym; }

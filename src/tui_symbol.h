@@ -8,12 +8,12 @@
 
 namespace tui
 {
-	enum class TRANSPARENCY_SRC : uint8_t
+	enum class COLOR_TRANSPARENCY : uint8_t
 	{
-		NONE = 0,
-		BG = 1,
-		FG = 2,
-		AVG = 3
+		NONE = 0b0,
+		BG = 0b1,
+		FG = 0b10,
+		BG_FG = 0b11
 	};
 
 	struct symbol
@@ -140,7 +140,7 @@ namespace tui
 		} m_cluster;
 
 		uint8_t m_width : 5;
-		uint8_t m_bg_transparency_src : 2;
+		uint8_t m_color_transparency : 2;
 		bool m_underscore : 1;
 		color m_color;
 
@@ -176,16 +176,16 @@ namespace tui
 
 	public:
 		symbol() 
-			: symbol("", color(), TRANSPARENCY_SRC::NONE) {}
-		symbol(char32_t c, color Color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
-			: symbol(utf32ToUtf8(std::u32string(&c, 1)), Color, t_src) {}
-		symbol(const char* cluster, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
-			: symbol(std::string(cluster), color, t_src) {}
-		symbol(const char32_t* cluster, color color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE) 
-			: symbol(utf32ToUtf8(std::u32string(cluster)), color, t_src) {}
+			: symbol("", color(), COLOR_TRANSPARENCY::NONE) {}
+		symbol(char32_t c, color Color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
+			: symbol(utf32ToUtf8(std::u32string(&c, 1)), Color, c_t) {}
+		symbol(const char* cluster, color color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
+			: symbol(std::string(cluster), color, c_t) {}
+		symbol(const char32_t* cluster, color color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
+			: symbol(utf32ToUtf8(std::u32string(cluster)), color, c_t) {}
 
-		symbol(const std::string& cluster, color Color = color(), TRANSPARENCY_SRC t_src = TRANSPARENCY_SRC::NONE)
-			: m_underscore(false), m_bg_transparency_src(static_cast<uint8_t>(t_src))
+		symbol(const std::string& cluster, color Color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
+			: m_underscore(false), m_color_transparency(static_cast<uint8_t>(c_t))
 		{
 			setCluster(cluster);
 			setColor(Color);
@@ -235,11 +235,11 @@ namespace tui
 		void setColor(color Color) { m_color = Color; }
 		color getColor() const { return m_color; }
 
-		void setBgTransparencySrc(TRANSPARENCY_SRC t_src)
+		void setColorTransparency(COLOR_TRANSPARENCY c_t)
 		{
-			m_bg_transparency_src = static_cast<uint8_t>(t_src);
+			m_color_transparency = static_cast<uint8_t>(c_t);
 		}
-		TRANSPARENCY_SRC getBgTransparencySrc() { return static_cast<TRANSPARENCY_SRC>(m_bg_transparency_src); }
+		COLOR_TRANSPARENCY getColorTransparency() { return static_cast<COLOR_TRANSPARENCY>(m_color_transparency); }
 
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() const { return m_underscore; }
