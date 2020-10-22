@@ -373,142 +373,150 @@ $(function() {
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                {</div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> x = 0; x &lt; surf.getSize().x; x++)</div>
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                    {</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                        color c = surf[x][y].getColor();</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                        <span class="keywordflow">switch</span> (surf[x][y].getBgTransparencySrc())</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                        {</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                        <span class="keywordflow">case</span> TRANSPARENCY_SRC::NONE:</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                        <span class="keywordflow">case</span> TRANSPARENCY_SRC::BG:</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                            c.background = (*this)[origin.x + x][origin.y + y].getColor().background;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                        <span class="keywordflow">case</span> TRANSPARENCY_SRC::FG:</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                            c.background = (*this)[origin.x + x][origin.y + y].getColor().foreground;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                        <span class="keywordflow">case</span> TRANSPARENCY_SRC::AVG:</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                            rgb fg = (*this)[origin.x + x][origin.y + y].getColor().foreground;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                            rgb bg = (*this)[origin.x + x][origin.y + y].getColor().background;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                            c.background = { (uint8_t)((fg.r + bg.r)/2), (uint8_t)((fg.g + bg.g)/2), (uint8_t)((fg.b + bg.b)/2) };</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                        }</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                        <span class="keywordflow">if</span> (surf[x][y][0] != 0 <span class="comment">//fully transparent</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                            &amp;&amp; origin.x + x &gt;= 0</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                            &amp;&amp; origin.y + y &gt;= 0</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                            &amp;&amp; origin.x + x &lt; getSize().x</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                            &amp;&amp; origin.y + y &lt; getSize().y)</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                        {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                            setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                            (*this)[origin.x + x][origin.y + y].setColor(c);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                        }</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                    }</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                }</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            }</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        }</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> symbol&amp; Symbol)</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        {</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; m_symbols.size(); i++) { m_symbols[i] = Symbol; }</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        }</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="keywordtype">void</span> makeTransparent() { fill((char32_t)0); }</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keywordtype">void</span> makeBlank() { fill(<span class="charliteral">&#39; &#39;</span>); }</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160; </div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordtype">void</span> setClearSymbol(<span class="keyword">const</span> symbol&amp; sym) { m_clear_symbol = sym; }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        symbol getClearSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_clear_symbol; }</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                        <span class="keywordflow">if</span> (surf[x][y][0] != 0 <span class="comment">//fully transparent</span></div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                            &amp;&amp; origin.x + x &gt;= 0</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                            &amp;&amp; origin.y + y &gt;= 0</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                            &amp;&amp; origin.x + x &lt; getSize().x</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                            &amp;&amp; origin.y + y &lt; getSize().y)</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                        {</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                            color n_color = surf[x][y].getColor();</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                            color o_color = (*this)[origin.x + x][origin.y + y].getColor();</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                            uint8_t n_transparency = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(surf[x][y].getColorTransparency());</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                            uint8_t o_transparency = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>((*this)[origin.x + x][origin.y + y].getColorTransparency());</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                            <span class="keywordflow">switch</span> (surf[x][y].getColorTransparency())</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                            {</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                            <span class="keywordflow">case</span> COLOR_TRANSPARENCY::NONE:</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                            <span class="keywordflow">case</span> COLOR_TRANSPARENCY::BG:</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                                n_color.background = o_color.background;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                            <span class="keywordflow">case</span> COLOR_TRANSPARENCY::FG:</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                                n_color.foreground = o_color.foreground;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                            <span class="keywordflow">case</span> COLOR_TRANSPARENCY::BG_FG:</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                                n_color = o_color;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                            }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                            setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                            (*this)[origin.x + x][origin.y + y].setColor(n_color);</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                            (*this)[origin.x + x][origin.y + y].setColorTransparency(<span class="keyword">static_cast&lt;</span>COLOR_TRANSPARENCY<span class="keyword">&gt;</span>(n_transparency &amp; o_transparency));</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                        }</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                    }</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                }</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="keywordtype">void</span> fill(<span class="keyword">const</span> symbol&amp; Symbol)</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        {</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; m_symbols.size(); i++) { m_symbols[i] = Symbol; }</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        }</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordtype">void</span> makeTransparent() { fill((char32_t)0); }</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="keywordtype">void</span> makeBlank() { fill(<span class="charliteral">&#39; &#39;</span>); }</div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="keywordtype">void</span> invert()</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="keywordtype">void</span> fillColorTransparency(COLOR_TRANSPARENCY c_t)</div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        {</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; m_symbols.size(); i++) { m_symbols[i].invert(); }</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; m_symbols.size(); i++) { m_symbols[i].setColorTransparency(c_t); }</div>
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        }</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    };</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keyword">enum class</span> DIRECTION : bool</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    {</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        HORIZONTAL = 0,</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        VERTICAL</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    };</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    </div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keyword">template</span>&lt;DIRECTION direction&gt;</div>
-<div class="line"><a name="l00363"></a><span class="lineno"><a class="line" href="structtui_1_1surface1_d.html">  363</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1surface1_d.html">surface1D</a> : <a class="code" href="structtui_1_1surface.html">surface</a></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    {</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        <a class="code" href="structtui_1_1surface1_d.html">surface1D</a>(<a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> size = { 1, 0 })</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        {</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            setSizeInfo(size);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        }</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="keywordtype">void</span> setSizeInfo(<a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> size)</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            {</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                surface::setSizeInfo({ {size.fixed, 1},{size.percentage, 0} });</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                surface::setSizeInfo({ {1, size.fixed},{0, size.percentage} });</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;            }</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        }</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keywordtype">int</span> getSize()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;            {</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                <span class="keywordflow">return</span> surface::getSize().x;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                <span class="keywordflow">return</span> surface::getSize().y;</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;            }</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        }</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        <span class="keywordtype">void</span> setSymbolAt(<span class="keyword">const</span> <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; character, <span class="keywordtype">int</span> position)</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        {</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;            {</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                surface::setSymbolAt(character, { position, 0 });</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                surface::setSymbolAt(character, { 0, position });</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            }</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getSymbolAt(<span class="keywordtype">int</span> position)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            {</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <span class="keywordflow">return</span> surface::getSymbolAt({ position, 0 });</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                <span class="keywordflow">return</span> surface::getSymbolAt({ 0, position });</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            }</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        }</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; operator[](<span class="keywordtype">size_t</span> i)</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;        {</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            {</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                <span class="keywordflow">return</span> surface::operator[](i)[0];</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                <span class="keywordflow">return</span> surface::operator[](0)[i];</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;            }</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        }</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        <span class="keyword">const</span> <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; operator[](<span class="keywordtype">size_t</span> i)<span class="keyword"> const </span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;            {</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                <span class="keywordflow">return</span> surface::operator[](i)[0];</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <span class="keywordflow">return</span> surface::operator[](0)[i];</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;            }</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        }</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> getSizeInfo()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            {</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a>(surface::getSizeInfo().fixed.x, surface::getSizeInfo().percentage.x);</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a>(surface::getSizeInfo().fixed.y, surface::getSizeInfo().percentage.y);;</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            }</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        }</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    };</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;}</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <span class="keywordtype">void</span> setClearSymbol(<span class="keyword">const</span> symbol&amp; sym) { m_clear_symbol = sym; }</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        symbol getClearSymbol()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_clear_symbol; }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <span class="keywordtype">void</span> invert()</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        {</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; m_symbols.size(); i++) { m_symbols[i].invert(); }</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        }</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    };</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keyword">enum class</span> DIRECTION : bool</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        HORIZONTAL = 0,</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        VERTICAL</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    };</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keyword">template</span>&lt;DIRECTION direction&gt;</div>
+<div class="line"><a name="l00371"></a><span class="lineno"><a class="line" href="structtui_1_1surface1_d.html">  371</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1surface1_d.html">surface1D</a> : <a class="code" href="structtui_1_1surface.html">surface</a></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    {</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <a class="code" href="structtui_1_1surface1_d.html">surface1D</a>(<a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> size = { 1, 0 })</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        {</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            setSizeInfo(size);</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        }</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        <span class="keywordtype">void</span> setSizeInfo(<a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> size)</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;            {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                surface::setSizeInfo({ {size.fixed, 1},{size.percentage, 0} });</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                surface::setSizeInfo({ {1, size.fixed},{0, size.percentage} });</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            }</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        }</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="keywordtype">int</span> getSize()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;            {</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                <span class="keywordflow">return</span> surface::getSize().x;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                <span class="keywordflow">return</span> surface::getSize().y;</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            }</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        }</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        <span class="keywordtype">void</span> setSymbolAt(<span class="keyword">const</span> <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; character, <span class="keywordtype">int</span> position)</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            {</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                surface::setSymbolAt(character, { position, 0 });</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                surface::setSymbolAt(character, { 0, position });</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;            }</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;        }</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a> getSymbolAt(<span class="keywordtype">int</span> position)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;            {</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                <span class="keywordflow">return</span> surface::getSymbolAt({ position, 0 });</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                <span class="keywordflow">return</span> surface::getSymbolAt({ 0, position });</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            }</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;        }</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; operator[](<span class="keywordtype">size_t</span> i)</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        {</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;            {</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                <span class="keywordflow">return</span> surface::operator[](i)[0];</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                <span class="keywordflow">return</span> surface::operator[](0)[i];</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            }</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;        }</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;        <span class="keyword">const</span> <a class="code" href="structtui_1_1symbol.html">symbol</a>&amp; operator[](<span class="keywordtype">size_t</span> i)<span class="keyword"> const </span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            {</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                <span class="keywordflow">return</span> surface::operator[](i)[0];</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                <span class="keywordflow">return</span> surface::operator[](0)[i];</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            }</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        }</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a> getSizeInfo()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            <span class="keywordflow">switch</span> (direction)</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            {</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::HORIZONTAL:</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a>(surface::getSizeInfo().fixed.x, surface::getSizeInfo().percentage.x);</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">case</span> tui::DIRECTION::VERTICAL:</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="structtui_1_1surface1_d__size.html">surface1D_size</a>(surface::getSizeInfo().fixed.y, surface::getSizeInfo().percentage.y);;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;            }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        }</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;    };</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="astructtui_1_1surface__size_html"><div class="ttname"><a href="structtui_1_1surface__size.html">tui::surface_size</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:21</div></div>
 <div class="ttc" id="astructtui_1_1surface1_d__size_html"><div class="ttname"><a href="structtui_1_1surface1_d__size.html">tui::surface1D_size</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:29</div></div>
@@ -519,7 +527,7 @@ $(function() {
 <div class="ttc" id="astructtui_1_1surface__position_html"><div class="ttname"><a href="structtui_1_1surface__position.html">tui::surface_position</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:45</div></div>
 <div class="ttc" id="astructtui_1_1symbol_html"><div class="ttname"><a href="structtui_1_1symbol.html">tui::symbol</a></div><div class="ttdef"><b>Definition:</b> tui_symbol.h:20</div></div>
 <div class="ttc" id="astructtui_1_1anchor__position_html"><div class="ttname"><a href="structtui_1_1anchor__position.html">tui::anchor_position</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:60</div></div>
-<div class="ttc" id="astructtui_1_1surface1_d_html"><div class="ttname"><a href="structtui_1_1surface1_d.html">tui::surface1D</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:364</div></div>
+<div class="ttc" id="astructtui_1_1surface1_d_html"><div class="ttname"><a href="structtui_1_1surface1_d.html">tui::surface1D</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:372</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

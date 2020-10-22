@@ -91,12 +91,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d1072bf504e3376715a5ec44ac8c4b7"><td class="memItemLeft" align="right" valign="top"><a id="a0d1072bf504e3376715a5ec44ac8c4b7"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const char32_t *str)</td></tr>
 <tr class="separator:a0d1072bf504e3376715a5ec44ac8c4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3eebd0457a7285f4c1970558001b3ad"><td class="memItemLeft" align="right" valign="top"><a id="ad3eebd0457a7285f4c1970558001b3ad"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), TRANSPARENCY_SRC t_src=TRANSPARENCY_SRC::NONE)</td></tr>
-<tr class="separator:ad3eebd0457a7285f4c1970558001b3ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8df01591419af20fba8d774307a4487e"><td class="memItemLeft" align="right" valign="top"><a id="a8df01591419af20fba8d774307a4487e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::u32string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), TRANSPARENCY_SRC t_src=TRANSPARENCY_SRC::NONE)</td></tr>
-<tr class="separator:a8df01591419af20fba8d774307a4487e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a197a588a01499d62d170be8efec842cc"><td class="memItemLeft" align="right" valign="top"><a id="a197a588a01499d62d170be8efec842cc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), COLOR_TRANSPARENCY c_t=COLOR_TRANSPARENCY::NONE)</td></tr>
+<tr class="separator:a197a588a01499d62d170be8efec842cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4048a105ea7d75cd1a78a47e218768b1"><td class="memItemLeft" align="right" valign="top"><a id="a4048a105ea7d75cd1a78a47e218768b1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>symbol_string</b> (const std::u32string &amp;str, <a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>=<a class="el" href="structtui_1_1color.html">color</a>(), COLOR_TRANSPARENCY c_t=COLOR_TRANSPARENCY::NONE)</td></tr>
+<tr class="separator:a4048a105ea7d75cd1a78a47e218768b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad88bbfb1368387ff846cc3eac1a53837"><td class="memItemLeft" align="right" valign="top"><a id="ad88bbfb1368387ff846cc3eac1a53837"></a>
 <a class="el" href="structtui_1_1symbol__string.html">symbol_string</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (<a class="el" href="structtui_1_1color.html">color</a> <a class="el" href="structtui_1_1color.html">color</a>)</td></tr>
 <tr class="separator:ad88bbfb1368387ff846cc3eac1a53837"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,9 +136,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>invert</b> ()</td></t
 <tr class="memitem:a1d178bc2b52a8380b688e05b322b5a02"><td class="memItemLeft" align="right" valign="top"><a id="a1d178bc2b52a8380b688e05b322b5a02"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (<a class="el" href="structtui_1_1color.html">color</a> Color)</td></tr>
 <tr class="separator:a1d178bc2b52a8380b688e05b322b5a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a932ee388b48e61c800e4471b792b30b7"><td class="memItemLeft" align="right" valign="top"><a id="a932ee388b48e61c800e4471b792b30b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setBgTransparencySrc</b> (TRANSPARENCY_SRC t_src)</td></tr>
-<tr class="separator:a932ee388b48e61c800e4471b792b30b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa85626b26de4ccfd75c2d33ed3a290c3"><td class="memItemLeft" align="right" valign="top"><a id="aa85626b26de4ccfd75c2d33ed3a290c3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setColorTransparency</b> (COLOR_TRANSPARENCY c_t)</td></tr>
+<tr class="separator:aa85626b26de4ccfd75c2d33ed3a290c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18c2fec6a37cdc472321591df7bc2b54"><td class="memItemLeft" align="right" valign="top"><a id="a18c2fec6a37cdc472321591df7bc2b54"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setUnderscore</b> (bool set)</td></tr>
 <tr class="separator:a18c2fec6a37cdc472321591df7bc2b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
