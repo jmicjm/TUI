@@ -144,7 +144,7 @@ namespace tui
 
 							ch_info.Char.UnicodeChar = c;
 						}
-						else { ch_info.Char.UnicodeChar = '?'; }
+						else { ch_info.Char.UnicodeChar = U'\xFFFD'; }
 
 						if (display_rgbi)
 						{
@@ -239,32 +239,32 @@ namespace tui
 				color last_color = buffer[0][0].getColor();
 				bool last_underscore = false;
 
-				for (int i = 0; i < getSize().y; i++)
+				for (int y = 0; y < getSize().y; y++)
 				{
-					for (int j = 0; j < getSize().x;)
+					for (int x = 0; x < getSize().x;)
 					{
-						int sym_w = buffer[j][i].getWidth();
+						uint8_t sym_w = buffer[x][y].getWidth();
 
-						if (j + sym_w > getSize().x)
+						if (x + sym_w > getSize().x)
 						{
 							str += '\n';
 							break;
 						}
 
-						if (last_color != buffer[j][i].getColor())
+						if (last_color != buffer[x][y].getColor())
 						{
 							if (display_rgbi)
 							{
-								str += getEscCodeRgbi(buffer[j][i].getColor());
+								str += getEscCodeRgbi(buffer[x][y].getColor());
 							}
 							if (display_rgb)
 							{
-								str += getEscCodeRgb(buffer[j][i].getColor());
+								str += getEscCodeRgb(buffer[x][y].getColor());
 							}
 						}
-						last_color = buffer[j][i].getColor();
+						last_color = buffer[x][y].getColor();
 
-						switch (buffer[j][i].isUnderscore())
+						switch (buffer[x][y].isUnderscore())
 						{
 						case true:
 							if (last_underscore) { break; }
@@ -274,19 +274,19 @@ namespace tui
 							if (!last_underscore) { break; }
 							str += "\033[24m";
 						}
-						last_underscore = buffer[j][i].isUnderscore();
+						last_underscore = buffer[x][y].isUnderscore();
 
-						if (!isControl(utf8ToUtf32(buffer[j][i].getCluster())[0]))
+						if (!isControl(utf8ToUtf32(buffer[x][y].getCluster())[0]))
 						{
-							str += buffer[j][i].getCluster();
+							str += buffer[x][y].getCluster();
 						}
 						else
 						{
-							str += "?";
+							str += "\xEF\xBF\xBD";
 						}
 
 						
-						j += sym_w > 0 ? sym_w : 1;
+						x += sym_w > 0 ? sym_w : 1;
 					}
 				}
 
