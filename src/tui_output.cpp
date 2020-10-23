@@ -26,7 +26,6 @@ namespace tui
 	{
 		struct console_buffer
 		{
-		protected:
 			surface buffer;
 			surface last_buffer;
 
@@ -54,7 +53,6 @@ namespace tui
 				return false;
 			}
 
-		public:
 			void clearBuffer(rgb c) { buffer.fill({ ' ', {c,c} }); }
 
 			vec2i getSize() { return buffer.getSize(); }
@@ -342,7 +340,27 @@ namespace tui
 			con.clearBuffer(c);
 		}
 
-		void draw(surface& surf, bool update) { con.draw(surf, update); }
+		void draw(surface& surf, bool update) 
+		{
+			con.buffer.insertSurface(surf, update); 
+		}
+		void draw(surface& surf, surface::color_override c_override, bool update)
+		{
+			con.buffer.insertSurface(surf, c_override, update);
+		}
+		void draw(surface& surf, surface::color_transparency_override c_t_override, bool update)
+		{
+			con.buffer.insertSurface(surf, c_t_override, update);
+		}
+		void draw(
+			surface& surf,
+			surface::color_override c_override,
+			surface::color_transparency_override c_t_override,
+			bool update
+		)
+		{
+			con.buffer.insertSurface(surf, c_override, c_t_override, update);
+		}
 
 		void display() { con.display(); }
 

@@ -15,6 +15,14 @@ namespace tui
 
 		//copies surface to buffer
 		void draw(surface& surf, bool update = true);
+		void draw(surface& surf, surface::color_override c_override, bool update = true);
+		void draw(surface& surf, surface::color_transparency_override c_t_override, bool update = true);
+		void draw(
+			surface& surf,
+			surface::color_override c_override,
+			surface::color_transparency_override c_t_override,
+			bool update = true
+		);
 
 		//displays buffer content
 		void display();
