@@ -35,6 +35,9 @@ namespace tui
 		termios noncanon_settings;
 		termios nonblocking_settings;
 #endif
+		bool running = false;
+		bool terminate_req = false;
+		std::mutex sync_mtx;
 #if defined(_WIN32)
 		bool nonblocking = false;
 #endif
@@ -64,6 +67,17 @@ namespace tui
 			switch (nonblocking)
 			{
 			case false:
+				while (!_kbhit()) 
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(10));
+					sync_mtx.lock();
+					if (terminate_req)
+					{
+						sync_mtx.unlock();
+						return -1;
+					}
+					sync_mtx.unlock();
+				}
 				return _getch();
 			case true:
 				if (_kbhit())
@@ -122,9 +136,7 @@ namespace tui
 			std::string str[2];
 			std::vector<short> input[2];
 
-			bool running = false;
-			bool terminate_req = false;
-			std::mutex sync_mtx;
+			
 
 			void bufferThread()
 			{
@@ -315,12 +327,12 @@ namespace tui
 
 		void restore()
 		{
-			buffer.sync_mtx.lock();
-			if (buffer.running)
+			sync_mtx.lock();
+			if (running)
 			{
-				buffer.terminate_req = true;
+				terminate_req = true;
 			}
-			buffer.sync_mtx.unlock();
+			sync_mtx.unlock();
 
 #if defined(__linux__) || defined(__unix__) 
 			tcsetattr(0, TCSANOW, &default_settings);
@@ -355,20 +367,20 @@ namespace tui
 
 			std::atexit(restoreExit);
 
-			buffer.sync_mtx.lock();
+			sync_mtx.lock();
 
-			switch (buffer.running)
+			switch (running)
 			{
 			case true:
-				buffer.terminate_req = false;
+				terminate_req = false;
 				break;
 			case false:
 				std::thread keyboardBufferThread([&] {buffer.bufferThread(); });
 				keyboardBufferThread.detach();
-				buffer.running = true;
+				running = true;
 			}
 
-			buffer.sync_mtx.unlock();
+			sync_mtx.unlock();
 		}
 
 		std::vector<short> getInput()
