@@ -217,7 +217,7 @@ namespace tui
 
 					if (isActive() && m_entries[i].ext_halt == 0) { l.activate(); }
 
-					proxy.insertSurface(l);
+					proxy.insertSurface(l, proxy.c_override, proxy.c_t_override);
 			
 					m_entries[i].ext_halt = 0;
 					m_entries[i].nested_entries = l.m_entries;
