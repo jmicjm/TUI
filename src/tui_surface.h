@@ -132,17 +132,53 @@ namespace tui
 			}
 		};
 
+		template<typename T>
+		struct property_override
+		{
+			friend struct surface;
+		private:
+			T value;
+			bool use;
+		public:
+			property_override() : use(false) {}
+			property_override(T value) : value(value), use(true) {}
+		};
+	public:
+		using color_override = property_override<color>;
+		using color_transparency_override = property_override<COLOR_TRANSPARENCY>;
+
 	protected:
 		struct action_proxy
 		{
 		private:
 			surface* surf;
 		public:
-			action_proxy(surface* surf) : surf(surf) {}
+			color_override c_override;
+			color_transparency_override c_t_override;
+
+			action_proxy(surface* surf, color_override c_o, color_transparency_override c_t_o) 
+				: surf(surf), c_override(c_o), c_t_override(c_t_o) {}
+
 			vec2i getSize() const { return surf->getSize(); }
 			void updateSurfaceSize(surface& s) { surf->updateSurfaceSize(s); }
 			void updateSurfacePosition(surface& s) { surf->updateSurfacePosition(s); }
-			void insertSurface(surface& s, bool update = true) { surf->insertSurface(s, update); }
+			void insertSurface(surface& s, bool update = true) 
+			{
+				surf->insertSurface(s, update);
+			}
+			void insertSurface(surface& s, color_override c_o, bool update = true)
+			{
+				surf->insertSurface(s, c_o, color_transparency_override(), update);
+			}
+			void insertSurface(surface& s, color_transparency_override c_t_o, bool update = true)
+			{
+				surf->insertSurface(s, color_override(), c_t_o, update);
+			}
+			void insertSurface(surface& s, color_override c_o, color_transparency_override c_t_o, bool update = true)
+			{
+				surf->insertSurface(s, c_o, c_t_o, update);
+			}
+
 		};
 		virtual void resizeAction() {}
 		virtual void updateAction() {}
@@ -289,21 +325,6 @@ namespace tui
 				surf.m_global_position = m_global_position + origin;
 			}
 		}
-	private:
-		template<typename T>
-		struct property_override
-		{
-			friend struct surface;
-		private:
-			T value;
-			bool use;
-		public:
-			property_override() : use(false) {}
-			property_override(T value) : value(value), use(true) {}
-		};
-	public:
-		using color_override = property_override<color>;
-		using color_transparency_override = property_override<COLOR_TRANSPARENCY>;
 
 		void insertSurface(surface& surf, bool update = true) 
 		{
@@ -330,7 +351,7 @@ namespace tui
 				updateSurfacePosition(surf);
 
 				if (update) { surf.updateAction(); }
-				surf.drawAction(this);
+				surf.drawAction({ this, c_override, c_t_override });
 
 				const vec2i origin = surf.m_position;
 				for (int y = 0; y < surf.getSize().y; y++)
