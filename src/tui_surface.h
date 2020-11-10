@@ -412,6 +412,11 @@ break;
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].setColorTransparency(c_t); }
 		}
 
+		void fillColor(color c)
+		{
+			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i].setColor(c); }
+		}
+
 		void setClearSymbol(const symbol& sym) { m_clear_symbol = sym; }
 		symbol getClearSymbol() const { return m_clear_symbol; }
 
