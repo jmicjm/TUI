@@ -277,14 +277,14 @@ namespace tui
 				switch (surf.m_anchor == nullptr)
 				{
 				case true:
-					origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
-						+ surf.getPositionInfo().offset.x
-						+ surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
++ surf.getPositionInfo().offset.x
++ surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-					origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
-						+ surf.getPositionInfo().offset.y
-						+ surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
-					break;
+origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
++ surf.getPositionInfo().offset.y
++ surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+break;
 
 				case false:
 					origin = surf.m_anchor->getPosition();
@@ -294,7 +294,7 @@ namespace tui
 					case SIDE::TOP:
 					case SIDE::BOTTOM:
 						origin.x += surf.m_anchor->getSize().x * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().x * (surf.m_anchor_position_info.position / 100.f);
-						break;	
+						break;
 					case SIDE::LEFT:
 					case SIDE::RIGHT:
 						origin.y += surf.m_anchor->getSize().y * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().y * (surf.m_anchor_position_info.position / 100.f);
@@ -326,17 +326,17 @@ namespace tui
 			}
 		}
 
-		void insertSurface(surface& surf, bool update = true) 
+		void insertSurface(surface& surf, bool update = true)
 		{
-			insertSurface(surf, color_override(), color_transparency_override(), update); 
+			insertSurface(surf, color_override(), color_transparency_override(), update);
 		}
-		void insertSurface(surface& surf, color_override c_override, bool update = true) 
+		void insertSurface(surface& surf, color_override c_override, bool update = true)
 		{
-			insertSurface(surf, c_override, color_transparency_override(), update); 
+			insertSurface(surf, c_override, color_transparency_override(), update);
 		}
-		void insertSurface(surface& surf, color_transparency_override c_t_override, bool update = true) 
+		void insertSurface(surface& surf, color_transparency_override c_t_override, bool update = true)
 		{
-			insertSurface(surf, color_override(), c_t_override, update); 
+			insertSurface(surf, color_override(), c_t_override, update);
 		}
 		void insertSurface(
 			surface& surf,
@@ -367,11 +367,9 @@ namespace tui
 							color n_color = c_override.use ? c_override.value : surf[x][y].getColor();
 							color o_color = (*this)[origin.x + x][origin.y + y].getColor();
 
-							COLOR_TRANSPARENCY s_transparency = c_t_override.use ? c_t_override.value : surf[x][y].getColorTransparency();
-							uint8_t n_transparency = static_cast<uint8_t>(s_transparency);
-							uint8_t o_transparency = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
+							COLOR_TRANSPARENCY n_transparency = c_t_override.use ? c_t_override.value : surf[x][y].getColorTransparency();
 
-							switch (s_transparency)
+							switch (n_transparency)
 							{
 							case COLOR_TRANSPARENCY::NONE:
 								break;
@@ -385,9 +383,17 @@ namespace tui
 								n_color = o_color;
 							}
 
+							if (surf[x][y].isInverted())
+							{
+								n_color.invert();
+							}
+
 							setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });
 							(*this)[origin.x + x][origin.y + y].setColor(n_color);
-							(*this)[origin.x + x][origin.y + y].setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency & o_transparency));
+
+							uint8_t n_transparency_val = static_cast<uint8_t>(n_transparency);
+							uint8_t o_transparency_val = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
+							(*this)[origin.x + x][origin.y + y].setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
 						}
 					}
 				}

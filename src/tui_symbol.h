@@ -139,8 +139,9 @@ namespace tui
 			bool operator!=(const hybrid_container& other) const { return !operator==(other); }
 		} m_cluster;
 
-		uint8_t m_width : 5;
+		uint8_t m_width : 4;
 		uint8_t m_color_transparency : 2;
+		bool m_inverted : 1;
 		bool m_underscore : 1;
 		color m_color;
 
@@ -185,7 +186,7 @@ namespace tui
 			: symbol(utf32ToUtf8(std::u32string(cluster)), color, c_t) {}
 
 		symbol(const std::string& cluster, color Color = color(), COLOR_TRANSPARENCY c_t = COLOR_TRANSPARENCY::NONE)
-			: m_underscore(false), m_color_transparency(static_cast<uint8_t>(c_t))
+			: m_underscore(false), m_color_transparency(static_cast<uint8_t>(c_t)), m_inverted(false)
 		{
 			setCluster(cluster);
 			setColor(Color);
@@ -230,7 +231,8 @@ namespace tui
 			return std::string(m_cluster.getData(), m_cluster.size());
 		}
 
-		void invert() { m_color.invert(); }
+		void invert() { m_inverted = !m_inverted; }
+		bool isInverted() { return m_inverted; }
 
 		void setColor(color Color) { m_color = Color; }
 		color getColor() const { return m_color; }
