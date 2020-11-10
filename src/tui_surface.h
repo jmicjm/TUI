@@ -277,14 +277,14 @@ namespace tui
 				switch (surf.m_anchor == nullptr)
 				{
 				case true:
-origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
-+ surf.getPositionInfo().offset.x
-+ surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
+					origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
+							 + surf.getPositionInfo().offset.x
+							 + surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
-+ surf.getPositionInfo().offset.y
-+ surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
-break;
+					origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
+							 + surf.getPositionInfo().offset.y
+							 + surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
+					break;
 
 				case false:
 					origin = surf.m_anchor->getPosition();
