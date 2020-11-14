@@ -12,15 +12,24 @@ namespace tui
 	struct navigation_group_entry
 	{
 		active_element* element;
-		std::function<bool()> block_function;
+		std::function<bool()> unblock_check;//should return true to unblock, if not present blocking wont be used
+		std::function<bool()> block_check;//should return true to block
 
-		navigation_group_entry(active_element* element, std::function<bool()> block_function = nullptr) : element(element), block_function(block_function) {}
+		navigation_group_entry(
+			active_element* element,
+			std::function<bool()> unblock_check = nullptr,
+			std::function<bool()> block_check = nullptr
+		)
+			: element(element),
+			unblock_check(unblock_check),
+			block_check(block_check) {}
 	};
 
 	struct navigation_group : active_element, private std::vector<navigation_group_entry>
 	{
 	private:
 		size_t m_selected = 0;
+		bool m_blocked = false;
 		bool m_wrap_around = true;
 
 		void disable(int except = -1)
@@ -49,17 +58,33 @@ namespace tui
 					{
 						(*this)[m_selected].element->activate();
 					}
+					
+					m_blocked = (bool)((*this)[m_selected].unblock_check);//block only if there is way to unblock
 				}
 			}
 		}
 
-		bool isBlocked()
+		void updateBlocked()
 		{
-			if (size() > 0 && (*this)[m_selected].block_function)
+			m_selected = size() > 0 ? std::min(m_selected, size() - 1) : 0;
+			if (size() > 0)
 			{
-				return (*this)[m_selected].block_function();
+				if ((*this)[m_selected].unblock_check)
+				{
+					if ((*this)[m_selected].unblock_check())
+					{
+						m_blocked = false;
+					}
+					if ((*this)[m_selected].block_check && (*this)[m_selected].block_check())
+					{
+						m_blocked = true;
+					}
+				}
+				else
+				{
+					m_blocked = false;
+				}
 			}
-			return false;
 		}
 
 		void deactivationAction() override { disable(); }
@@ -95,17 +120,20 @@ namespace tui
 		void next()
 		{
 			m_selected = m_selected < size() - 1 ? m_selected + 1 : (m_wrap_around ? 0 : m_selected);
+			enable();
 		}
 		void prev()
 		{
 			m_selected = m_selected > 0 ? m_selected - 1 : (m_wrap_around ? size() - 1 : m_selected);
+			enable();
 		}
 
 		void update()
 		{
 			if (isActive())
 			{		
-				if (!isBlocked())
+				updateBlocked();
+				if (!m_blocked)
 				{
 					if (input::isKeyPressed(key_next))
 					{
@@ -115,8 +143,6 @@ namespace tui
 					{
 						prev();
 					}
-
-					enable();
 				}
 			}
 		}
