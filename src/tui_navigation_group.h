@@ -6,6 +6,8 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <cmath>
+#include <float.h>
 
 namespace tui
 {
@@ -31,6 +33,7 @@ namespace tui
 		size_t m_selected = 0;
 		bool m_blocked = false;
 		bool m_wrap_around = true;
+		bool m_index_based = true;
 
 		void disable(int except = -1)
 		{
@@ -58,9 +61,8 @@ namespace tui
 					{
 						(*this)[m_selected].element->activate();
 					}
-					
-					m_blocked = (bool)((*this)[m_selected].unblock_check);//block only if there is way to unblock
 				}
+				m_blocked = (bool)((*this)[m_selected].unblock_check);//block only if there is way to unblock
 			}
 		}
 
@@ -87,11 +89,81 @@ namespace tui
 			}
 		}
 
+		unsigned int getClosestIdx(SIDE side)
+		{
+			unsigned int cl_idx = m_selected;
+			float cl_dst = FLT_MAX;
+
+			auto center = [](surface* s)
+			{
+				return vec2f(s->getPosition() + s->getSize() / 2.f);
+			};
+
+			auto dst = [&](surface* l, surface* r)
+			{
+				vec2f cl = center(l);
+				vec2f cr = center(r);
+
+				return sqrt((cr.x - cl.x) * (cr.x - cl.x) + (cr.y - cl.y) * (cr.y - cl.y));
+			};
+
+			surface* sel_ptr = dynamic_cast<surface*>((*this)[m_selected].element);
+
+			if (sel_ptr != nullptr)
+			{
+				for (int i = 0; i < size(); i++)
+				{
+					if (i != m_selected)
+					{
+						surface* curr_ptr = dynamic_cast<surface*>((*this)[i].element);
+
+						if (curr_ptr != nullptr)
+						{
+							switch (side)
+							{
+							case SIDE::TOP:
+								if (center(sel_ptr).y <= center(curr_ptr).y) { continue; }
+								break;
+							case SIDE::BOTTOM:
+								if (center(sel_ptr).y >= center(curr_ptr).y) { continue; }
+								break;
+							case SIDE::LEFT:
+								if (center(sel_ptr).x <= center(curr_ptr).x) { continue; }
+								break;
+							case SIDE::RIGHT:
+								if (center(sel_ptr).x >= center(curr_ptr).x) { continue; }
+							}
+
+							float curr_dst = dst(sel_ptr, curr_ptr);
+
+							if (curr_dst < cl_dst)
+							{
+								cl_idx = i;
+								cl_dst = curr_dst;
+							}
+						}
+					}
+				}
+			}
+
+			return cl_idx;
+		}
+
+		void dirMove(SIDE side)
+		{
+			m_selected = getClosestIdx(side);
+			enable();
+		}
+
 		void deactivationAction() override { disable(); }
 		void activationAction() override { enable(); }
 	public:
 		short key_next = input::KEY::RIGHT;
 		short key_prev = input::KEY::LEFT;
+		short key_up = input::KEY::UP;
+		short key_down = input::KEY::DOWN;
+		short key_left = input::KEY::LEFT;
+		short key_right = input::KEY::RIGHT;
 
 		navigation_group() {}
 		navigation_group(navigation_group_entry element) : std::vector<navigation_group_entry>({ element }) {}
@@ -109,6 +181,13 @@ namespace tui
 
 		void useWrappingAround(bool use) { m_wrap_around = use; }
 		bool isUsingWrappingAround() { return m_wrap_around; }
+
+		/*
+		index based: navigation relies on position in vector
+		non index based: navigation relies on surface position 
+		*/
+		void useIndexBasedNavigation(bool use) { m_index_based = use; }
+		bool isUsingIndexBasedNavigation() { return m_index_based; }
 
 		void setSelected(unsigned int selected)
 		{
@@ -128,6 +207,11 @@ namespace tui
 			enable();
 		}
 
+		void up()    { dirMove(SIDE::TOP);    }
+		void down()  { dirMove(SIDE::BOTTOM); }
+		void left()  { dirMove(SIDE::LEFT);   }
+		void right() { dirMove(SIDE::RIGHT);  }
+
 		void update()
 		{
 			if (isActive())
@@ -135,13 +219,35 @@ namespace tui
 				updateBlocked();
 				if (!m_blocked)
 				{
-					if (input::isKeyPressed(key_next))
+					switch (m_index_based)
 					{
-						next();
-					}
-					if (input::isKeyPressed(key_prev))
-					{
-						prev();
+					case true:
+						if (input::isKeyPressed(key_next))
+						{
+							next();
+						}
+						if (input::isKeyPressed(key_prev))
+						{
+							prev();
+						}
+						break;
+					case false:
+						if (input::isKeyPressed(key_up))
+						{
+							up();
+						}
+						if (input::isKeyPressed(key_down))
+						{
+							down();
+						}
+						if (input::isKeyPressed(key_left))
+						{
+							left();
+						}
+						if (input::isKeyPressed(key_right))
+						{
+							right();
+						}
 					}
 				}
 			}
