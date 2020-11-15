@@ -50,6 +50,21 @@ namespace tui
 			y -= r.y;
 			return *this;
 		}
+
+		template<typename Y>
+		vec2<T>& operator*=(Y r)
+		{
+			x *= r;
+			y *= r;
+			return *this;
+		}
+		template<typename Y>
+		vec2<T>& operator/=(Y r)
+		{
+			x /= r;
+			y /= r;
+			return *this;
+		}
 	};
 
 	template <typename T, typename Y>
@@ -61,6 +76,17 @@ namespace tui
 	inline vec2<typename std::common_type<T, Y>::type> operator-(vec2<T> l, vec2<Y> r)
 	{
 		return vec2<typename std::common_type<T, Y>::type>(l.x - r.x, l.y - r.y);
+	}
+
+	template<typename T, typename Y>
+	inline vec2<typename std::common_type<T, Y>::type> operator*(vec2<T> v, Y r)
+	{
+		return vec2<typename std::common_type<T, Y>::type>(v.x*r, v.y*r);
+	}
+	template<typename T, typename Y>
+	inline vec2<typename std::common_type<T, Y>::type> operator/(vec2<T> v, Y r)
+	{
+		return vec2<typename std::common_type<T, Y>::type>(v.x/r, v.y/r);
 	}
 
 	using vec2i = vec2<int>;
