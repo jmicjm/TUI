@@ -251,7 +251,11 @@ namespace tui
 
 		bool operator==(const symbol& other) const
 		{
-			return m_cluster == other.m_cluster && m_color == other.m_color && m_underscore == other.m_underscore;
+			return m_cluster == other.m_cluster 
+				&& m_color == other.m_color 
+				&& m_color_transparency == other.m_color_transparency
+				&& m_underscore == other.m_underscore
+				&& m_inverted == other.m_inverted;
 		}
 		bool operator!=(const symbol& other) const { return !operator==(other); }
 	};
