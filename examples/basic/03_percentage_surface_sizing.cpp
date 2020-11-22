@@ -4,7 +4,7 @@ int main()
 {
 	tui::init();
 
-	tui::surface_size surface_size(tui::vec2i(0, 0), tui::vec2f(30, 20)); //creates surface with size equal to 30%,20%
+	tui::surface_size surface_size(tui::vec2i(0, 0), tui::vec2f(30, 20)); //size equal to 30%,20%
 	/*
 		surface_size.percentage = tui::vec2f(30,20); //<-equivalent
 	*/

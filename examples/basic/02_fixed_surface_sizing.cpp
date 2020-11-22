@@ -4,7 +4,7 @@ int main()
 {
 	tui::init(); //initializes io
 
-	tui::surface_size surface_size(tui::vec2i(4, 3)); //creates surface with fixed 4,3 size
+	tui::surface_size surface_size(tui::vec2i(4, 3)); //fixed 4,3 size
 	/*
 		surface_size.fixed = tui::vec2i(4,3); //<-equivalent
 	*/
