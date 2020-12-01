@@ -368,6 +368,8 @@ namespace tui
 							color o_color = (*this)[origin.x + x][origin.y + y].getColor();
 
 							COLOR_TRANSPARENCY n_transparency = c_t_override.use ? c_t_override.value : surf[x][y].getColorTransparency();
+							uint8_t n_transparency_val = static_cast<uint8_t>(n_transparency);
+							uint8_t o_transparency_val = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
 
 							switch (n_transparency)
 							{
@@ -383,17 +385,11 @@ namespace tui
 								n_color = o_color;
 							}
 
-							if (surf[x][y].isInverted())
-							{
-								n_color.invert();
-							}
+							symbol s = surf[x][y];
+							s.setColor(n_color);
+							s.setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
 
-							setSymbolAt(surf[x][y], { origin.x + x, origin.y + y });
-							(*this)[origin.x + x][origin.y + y].setColor(n_color);
-
-							uint8_t n_transparency_val = static_cast<uint8_t>(n_transparency);
-							uint8_t o_transparency_val = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
-							(*this)[origin.x + x][origin.y + y].setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
+							setSymbolAt(s, { origin.x + x, origin.y + y });
 						}
 					}
 				}

@@ -119,6 +119,16 @@ namespace tui
 					return smallest_dst_id;
 				};
 
+				auto getIColor = [](const symbol& s)
+				{
+					color c = s.getColor();
+					if (s.isInverted())
+					{
+						c.invert();
+					}
+					return c;
+				};
+
 #if defined(_WIN32)
 				std::vector<CHAR_INFO> temp(getSize().x * getSize().y);
 
@@ -146,7 +156,7 @@ namespace tui
 
 						if (display_rgbi)
 						{
-							ch_info.Attributes = getRgbiColor(buffer[x][y].getColor());
+							ch_info.Attributes = getRgbiColor(getIColor(buffer[x][y]));
 						}
 						else
 						{
@@ -225,16 +235,17 @@ namespace tui
 
 				std::string str = "\033[24m";
 				
+				color f_color = getIColor(buffer[0][0]);
 				if (display_rgbi)
 				{
-					str += getEscCodeRgbi(buffer[0][0].getColor());
+					str += getEscCodeRgbi(f_color);
 				}
 				if (display_rgb)
 				{
-					str += getEscCodeRgb(buffer[0][0].getColor());
+					str += getEscCodeRgb(f_color);
 				}
 
-				color last_color = buffer[0][0].getColor();
+				color last_color = f_color;
 				bool last_underscore = false;
 
 				for (int y = 0; y < getSize().y; y++)
@@ -249,18 +260,19 @@ namespace tui
 							break;
 						}
 
-						if (last_color != buffer[x][y].getColor())
+						color c_color = getIColor(buffer[x][y]);
+						if (last_color != c_color)
 						{
 							if (display_rgbi)
 							{
-								str += getEscCodeRgbi(buffer[x][y].getColor());
+								str += getEscCodeRgbi(c_color);
 							}
 							if (display_rgb)
 							{
-								str += getEscCodeRgb(buffer[x][y].getColor());
+								str += getEscCodeRgb(c_color);
 							}
 						}
-						last_color = buffer[x][y].getColor();
+						last_color = c_color;
 
 						switch (buffer[x][y].isUnderscore())
 						{

@@ -232,7 +232,8 @@ namespace tui
 		}
 
 		void invert() { m_inverted = !m_inverted; }
-		bool isInverted() { return m_inverted; }
+		void setInversion(bool set) { m_inverted = set; }
+		bool isInverted() const { return m_inverted; }
 
 		void setColor(color Color) { m_color = Color; }
 		color getColor() const { return m_color; }
