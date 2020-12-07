@@ -12,9 +12,8 @@ namespace tui
 	private:
 		void drawAction(action_proxy proxy) override
 		{
-			clear();
-
-			for (auto i : *(std::vector<surface*>*)this)
+			surface::clear();
+			for (auto i : *this)
 			{
 				insertSurface(*i);
 			}
