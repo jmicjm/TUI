@@ -400,7 +400,10 @@ namespace tui
 		{
 			for (int i = 0; i < m_symbols.size(); i++) { m_symbols[i] = Symbol; }
 		}
-		void makeTransparent() { fill((char32_t)0); }
+		void makeTransparent() 
+		{
+			fill({U'\0', color(), COLOR_TRANSPARENCY::BG_FG});
+		}
 		void makeBlank() { fill(' '); }
 
 		void fillColorTransparency(COLOR_TRANSPARENCY c_t)
