@@ -11,23 +11,23 @@ namespace tui
 	{
 		surface* surf;
 		surface::color_override c_override;
-		surface::color_transparency_override co_override;
+		surface::color_transparency_override ct_override;
 
 		group_entry(surface* surf) : surf(surf) {}
 		group_entry(
 			surface* surf,
-			surface::color_transparency_override co_override
+			surface::color_transparency_override ct_override
 		)
 			: surf(surf),
-			co_override(co_override) {}
+			ct_override(ct_override) {}
 		group_entry(
 			surface* surf,
 			surface::color_override c_override,
-			surface::color_transparency_override co_override = surface::color_transparency_override()
+			surface::color_transparency_override ct_override = surface::color_transparency_override()
 		)
 			: surf(surf),
 			c_override(c_override),
-			co_override(co_override) {}
+			ct_override(ct_override) {}
 	};
 
 	struct group : surface, private std::vector<group_entry>
@@ -38,7 +38,7 @@ namespace tui
 			surface::clear();
 			for (auto i : *this)
 			{
-				insertSurface(*i.surf, i.c_override, i.co_override);
+				insertSurface(*i.surf, i.c_override, i.ct_override);
 			}
 		}
 	public:
