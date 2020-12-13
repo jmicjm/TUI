@@ -79,7 +79,7 @@ namespace tui
 		surface* m_anchor = nullptr;
 		anchor_position m_anchor_position_info;
 
-		symbol m_clear_symbol = U'\0';
+		symbol m_clear_symbol = { U'\0', color(), COLOR_TRANSPARENCY::BG_FG };
 
 		bool m_resized;
 
