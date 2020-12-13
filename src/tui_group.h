@@ -7,7 +7,30 @@
 
 namespace tui
 {
-	struct group : surface, private std::vector<surface*>
+	struct group_entry
+	{
+		surface* surf;
+		surface::color_override c_override;
+		surface::color_transparency_override co_override;
+
+		group_entry(surface* surf) : surf(surf) {}
+		group_entry(
+			surface* surf,
+			surface::color_transparency_override co_override
+		)
+			: surf(surf),
+			co_override(co_override) {}
+		group_entry(
+			surface* surf,
+			surface::color_override c_override,
+			surface::color_transparency_override co_override = surface::color_transparency_override()
+		)
+			: surf(surf),
+			c_override(c_override),
+			co_override(co_override) {}
+	};
+
+	struct group : surface, private std::vector<group_entry>
 	{
 	private:
 		void drawAction(action_proxy proxy) override
@@ -15,22 +38,21 @@ namespace tui
 			surface::clear();
 			for (auto i : *this)
 			{
-				insertSurface(*i);
+				insertSurface(*i.surf, i.c_override, i.co_override);
 			}
 		}
 	public:
 		group(){}
-		group(surface* surf) : std::vector<surface*>({ surf }) {}
-		group(std::vector<surface*> surfaces) : std::vector<surface*>(surfaces) {}
+		group(std::vector<group_entry> entries) : std::vector<group_entry>(entries) {}
 
-		using std::vector<surface*>::size;
-		using std::vector<surface*>::operator[];
-		using std::vector<surface*>::push_back;
-		using std::vector<surface*>::pop_back;
-		using std::vector<surface*>::insert;
-		using std::vector<surface*>::begin;
-		using std::vector<surface*>::end;
-		using std::vector<surface*>::clear;
-		using std::vector<surface*>::erase;
+		using std::vector<group_entry>::size;
+		using std::vector<group_entry>::operator[];
+		using std::vector<group_entry>::push_back;
+		using std::vector<group_entry>::pop_back;
+		using std::vector<group_entry>::insert;
+		using std::vector<group_entry>::begin;
+		using std::vector<group_entry>::end;
+		using std::vector<group_entry>::clear;
+		using std::vector<group_entry>::erase;
 	};
 }
