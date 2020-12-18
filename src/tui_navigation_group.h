@@ -96,15 +96,33 @@ namespace tui
 
 			auto center = [](surface* s)
 			{
-				return vec2f(s->getPosition() + s->getSize() / 2.f);
+				return vec2f(s->getGlobalPosition() + s->getSize() / 2.f);
 			};
 
-			auto dst = [&](surface* l, surface* r)
+			//returns distance between center of 'a' and edge of 'b'
+			//if center of 'a' intersects with 'b' return value is negative
+			auto dst = [&](surface* a, surface* b)
 			{
-				vec2f cl = center(l);
-				vec2f cr = center(r);
+				const vec2f ca = center(a);
+				const vec2f cb = center(b);
+				const vec2i sb = b->getSize();
 
-				return sqrt((cr.x - cl.x) * (cr.x - cl.x) + (cr.y - cl.y) * (cr.y - cl.y));
+				vec2f d = { 
+					std::fabs(ca.x - cb.x) - sb.x/2.f,
+					std::fabs(ca.y - cb.y) - sb.y/2.f
+				};
+				const bool  intersect = d.x < 0 && d.y < 0;
+
+				if (!intersect)
+				{
+					d.x = std::max(d.x, 0.f);
+					d.y = std::max(d.y, 0.f);
+					return std::sqrt(d.x * d.x + d.y * d.y);
+				}
+				else
+				{
+					return std::max(d.x, d.y);
+				}		
 			};
 
 			surface* sel_ptr = dynamic_cast<surface*>((*this)[m_selected].element);
