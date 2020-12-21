@@ -79,6 +79,9 @@ namespace tui
 		surface* m_anchor = nullptr;
 		anchor_position m_anchor_position_info;
 
+		std::function<vec2i()> m_custom_size = nullptr;
+		std::function<vec2i()> m_custom_position = nullptr;
+
 		symbol m_clear_symbol = { U'\0', color(), COLOR_TRANSPARENCY::BG_FG };
 
 		bool m_resized;
@@ -245,26 +248,42 @@ namespace tui
 		void setSizeInfo(surface_size size, bool update_fixed = true)
 		{
 			m_size_info = size;
-			if (size.percentage == vec2f(0.f, 0.f) && update_fixed)
+			if (!m_custom_size)
 			{
-				resize(size.fixed);
+				if (size.percentage == vec2f(0.f, 0.f) && update_fixed)
+				{
+					resize(size.fixed);
+				}
 			}
 		}
 		surface_size getSizeInfo() const { return m_size_info; }
 
 		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
 
+		void setSizeFunction(std::function<vec2i()> f_size) { m_custom_size = f_size; }
+		std::function<vec2i()> getSizeFunction() { return m_custom_size; }
+
+		void setPositionFunction(std::function<vec2i()> f_position) { m_custom_position = f_position; }
+		std::function<vec2i()> getPositionFunction() { return m_custom_position; }
+
 		void updateSurfaceSize(surface& surf) const
 		{
 			if (&surf != this)
 			{	
-				vec2i int_size = surf.getSizeInfo().fixed;
-				vec2f perc_size = surf.getSizeInfo().percentage;
+				if (!surf.m_custom_size)
+				{
+					vec2i int_size = surf.getSizeInfo().fixed;
+					vec2f perc_size = surf.getSizeInfo().percentage;
 
-				int x = std::round((perc_size.x / 100.f) * getSize().x + int_size.x);
-				int y = std::round((perc_size.y / 100.f) * getSize().y + int_size.y);
+					int x = std::round((perc_size.x / 100.f) * getSize().x + int_size.x);
+					int y = std::round((perc_size.y / 100.f) * getSize().y + int_size.y);
 
-				surf.resize({ x,y });
+					surf.resize({ x,y });
+				}
+				else
+				{
+					surf.resize(surf.m_custom_size());
+				}
 			}
 		}
 
@@ -274,52 +293,59 @@ namespace tui
 			{
 				vec2f origin;
 
-				switch (surf.m_anchor == nullptr)
+				if (!surf.m_custom_position)
 				{
-				case true:
-					origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
-							 + surf.getPositionInfo().offset.x
-							 + surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
-
-					origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
-							 + surf.getPositionInfo().offset.y
-							 + surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
-					break;
-
-				case false:
-					origin = surf.m_anchor->getPosition();
-
-					switch (surf.m_anchor_position_info.side)
+					switch (surf.m_anchor == nullptr)
 					{
-					case SIDE::TOP:
-					case SIDE::BOTTOM:
-						origin.x += surf.m_anchor->getSize().x * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().x * (surf.m_anchor_position_info.position / 100.f);
-						break;
-					case SIDE::LEFT:
-					case SIDE::RIGHT:
-						origin.y += surf.m_anchor->getSize().y * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().y * (surf.m_anchor_position_info.position / 100.f);
-					}
+					case true:
+						origin.x = getSize().x * (surf.getPositionInfo().relative.x / 100.f) - surf.getSize().x * (surf.getPositionInfo().relative.x / 100.f)
+							+ surf.getPositionInfo().offset.x
+							+ surf.getPositionInfo().percentage_offset.x * getSize().x / 100.f;
 
-					switch (surf.m_anchor_position_info.side)
-					{
-					case SIDE::TOP:
-						origin.y -= surf.getSize().y;
+						origin.y = getSize().y * (surf.getPositionInfo().relative.y / 100.f) - surf.getSize().y * (surf.getPositionInfo().relative.y / 100.f)
+							+ surf.getPositionInfo().offset.y
+							+ surf.getPositionInfo().percentage_offset.y * getSize().y / 100.f;
 						break;
-					case SIDE::BOTTOM:
-						origin.y += surf.m_anchor->getSize().y;
-						break;
-					case SIDE::LEFT:
-						origin.x -= surf.getSize().x;
-						break;
-					case SIDE::RIGHT:
-						origin.x += surf.m_anchor->getSize().x;
-					}
 
-					origin += surf.m_anchor_position_info.offset;
+					case false:
+						origin = surf.m_anchor->getPosition();
+
+						switch (surf.m_anchor_position_info.side)
+						{
+						case SIDE::TOP:
+						case SIDE::BOTTOM:
+							origin.x += surf.m_anchor->getSize().x * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().x * (surf.m_anchor_position_info.position / 100.f);
+							break;
+						case SIDE::LEFT:
+						case SIDE::RIGHT:
+							origin.y += surf.m_anchor->getSize().y * (surf.m_anchor_position_info.position / 100.f) - surf.getSize().y * (surf.m_anchor_position_info.position / 100.f);
+						}
+
+						switch (surf.m_anchor_position_info.side)
+						{
+						case SIDE::TOP:
+							origin.y -= surf.getSize().y;
+							break;
+						case SIDE::BOTTOM:
+							origin.y += surf.m_anchor->getSize().y;
+							break;
+						case SIDE::LEFT:
+							origin.x -= surf.getSize().x;
+							break;
+						case SIDE::RIGHT:
+							origin.x += surf.m_anchor->getSize().x;
+						}
+
+						origin += surf.m_anchor_position_info.offset;
+					}
+					origin.x = std::round(origin.x);
+					origin.y = std::round(origin.y);
 				}
-
-				origin.x = std::round(origin.x);
-				origin.y = std::round(origin.y);
+				else
+				{
+					origin = surf.m_custom_position();
+				}
+				
 
 				surf.m_position = origin;
 				surf.m_global_position = m_global_position + origin;
