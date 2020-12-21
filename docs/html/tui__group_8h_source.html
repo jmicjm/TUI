@@ -75,38 +75,60 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>tui</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="structtui_1_1group.html">   10</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1group.html">group</a> : <a class="code" href="structtui_1_1surface.html">surface</a>, <span class="keyword">private</span> std::vector&lt;surface*&gt;</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="structtui_1_1group__entry.html">   10</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1group__entry.html">group_entry</a></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keywordtype">void</span> drawAction(<a class="code" href="structtui_1_1surface_1_1action__proxy.html">action_proxy</a> proxy)<span class="keyword"> override</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">        </span>{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            clear();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; i : *<span class="keyword">this</span>)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                insertSurface(*i);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        }</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <a class="code" href="structtui_1_1group.html">group</a>(){}</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="structtui_1_1group.html">group</a>(<a class="code" href="structtui_1_1surface.html">surface</a>* surf) : std::vector&lt;surface*&gt;({ surf }) {}</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="structtui_1_1group.html">group</a>(std::vector&lt;surface*&gt; surfaces) : std::vector&lt;surface*&gt;(surfaces) {}</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::size;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::operator[];</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::push_back;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::pop_back;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::insert;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::begin;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::end;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::clear;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">using</span> std::vector&lt;surface*&gt;::erase;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    };</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <a class="code" href="structtui_1_1surface.html">surface</a>* surf;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        surface::color_override c_override;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        surface::color_transparency_override ct_override;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="structtui_1_1group__entry.html">group_entry</a>(<a class="code" href="structtui_1_1surface.html">surface</a>* surf) : surf(surf) {}</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="structtui_1_1group__entry.html">group_entry</a>(</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <a class="code" href="structtui_1_1surface.html">surface</a>* surf,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            surface::color_transparency_override ct_override</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        )</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            : surf(surf),</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            ct_override(ct_override) {}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <a class="code" href="structtui_1_1group__entry.html">group_entry</a>(</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            <a class="code" href="structtui_1_1surface.html">surface</a>* surf,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            surface::color_override c_override,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            surface::color_transparency_override ct_override = surface::color_transparency_override()</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        )</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            : surf(surf),</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            c_override(c_override),</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            ct_override(ct_override) {}</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    };</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structtui_1_1group.html">   33</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structtui_1_1group.html">group</a> : <a class="code" href="structtui_1_1surface.html">surface</a>, <span class="keyword">private</span> std::vector&lt;group_entry&gt;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">void</span> drawAction(<a class="code" href="structtui_1_1surface_1_1action__proxy.html">action_proxy</a> proxy)<span class="keyword"> override</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">        </span>{</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            surface::clear();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span> i : *<span class="keyword">this</span>)</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                insertSurface(*i.surf, i.c_override, i.ct_override);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="structtui_1_1group.html">group</a>(){}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="structtui_1_1group.html">group</a>(std::vector&lt;group_entry&gt; entries) : std::vector&lt;group_entry&gt;(entries) {}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::size;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::operator[];</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::push_back;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::pop_back;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::insert;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::begin;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::end;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::clear;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">using</span> std::vector&lt;group_entry&gt;::erase;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    };</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructtui_1_1group_html"><div class="ttname"><a href="structtui_1_1group.html">tui::group</a></div><div class="ttdef"><b>Definition:</b> tui_group.h:11</div></div>
+<div class="ttc" id="astructtui_1_1group_html"><div class="ttname"><a href="structtui_1_1group.html">tui::group</a></div><div class="ttdef"><b>Definition:</b> tui_group.h:34</div></div>
 <div class="ttc" id="astructtui_1_1surface_html"><div class="ttname"><a href="structtui_1_1surface.html">tui::surface</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:70</div></div>
-<div class="ttc" id="astructtui_1_1surface_1_1action__proxy_html"><div class="ttname"><a href="structtui_1_1surface_1_1action__proxy.html">tui::surface::action_proxy</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:137</div></div>
+<div class="ttc" id="astructtui_1_1surface_1_1action__proxy_html"><div class="ttname"><a href="structtui_1_1surface_1_1action__proxy.html">tui::surface::action_proxy</a></div><div class="ttdef"><b>Definition:</b> tui_surface.h:155</div></div>
+<div class="ttc" id="astructtui_1_1group__entry_html"><div class="ttname"><a href="structtui_1_1group__entry.html">tui::group_entry</a></div><div class="ttdef"><b>Definition:</b> tui_group.h:11</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
