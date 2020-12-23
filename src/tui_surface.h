@@ -147,7 +147,22 @@ namespace tui
 			property_override(T value) : value(value), use(true) {}
 		};
 	public:
-		using color_override = property_override<color>;
+		struct color_override
+		{
+			friend struct surface;
+		private:
+			color value;
+			int8_t foreground;
+			bool use;
+		public:
+			color_override() : use(false) {}
+			color_override(color value) : value(value), foreground(-1), use(true) {}
+			color_override(rgb c, bool foreground) : foreground(foreground), use(true)
+			{
+				if (foreground) { value.foreground = c; }
+				else { value.background = c; }
+			}
+		};
 		using color_transparency_override = property_override<COLOR_TRANSPARENCY>;
 
 	protected:
@@ -389,7 +404,26 @@ namespace tui
 							&& origin.x + x < getSize().x
 							&& origin.y + y < getSize().y)
 						{
-							color n_color = c_override.use ? c_override.value : surf[x][y].getColor();
+							color n_color;
+								switch (c_override.use)
+								{
+								case true:
+									switch (c_override.foreground)
+									{
+									case -1:
+										n_color = c_override.value;
+										break;
+									case 0:
+										n_color = color{ surf[x][y].getColor().foreground, c_override.value.background };
+										break;
+									case 1:
+										n_color = color{ c_override.value.foreground, surf[x][y].getColor().background };
+									}
+									break;
+								case false:
+									n_color = surf[x][y].getColor();
+								}
+
 							color o_color = (*this)[origin.x + x][origin.y + y].getColor();
 
 							COLOR_TRANSPARENCY n_transparency = c_t_override.use ? c_t_override.value : surf[x][y].getColorTransparency();
@@ -409,7 +443,6 @@ namespace tui
 							case COLOR_TRANSPARENCY::BG_FG:
 								n_color = o_color;
 							}
-
 							symbol s = surf[x][y];
 							s.setColor(n_color);
 							s.setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
