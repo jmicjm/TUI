@@ -107,18 +107,13 @@ namespace tui
 		};
 
 		unsigned short longest = 0;
-		unsigned short shortest = pow(2, sizeof(short) * 8) - 1;
-
 		for (int i = 0; i < sequences.size(); i++)
 		{
 			sequences[i].seq = getSeq(sequences[i].name);
 
 			longest = std::max(sequences[i].seq.size(), (size_t)longest);
-			shortest = std::min(sequences[i].seq.size(), (size_t)shortest);
 		}
-
 		longest_seq = longest;
-		shortest_seq = shortest;
 
 		if (longest_seq <= 1)
 		{

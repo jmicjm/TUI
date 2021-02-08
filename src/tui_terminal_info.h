@@ -101,7 +101,6 @@ namespace tui
 			{"kRIT5"} //CTRL+RIGHT
 		};
 		unsigned short longest_seq;
-		unsigned short shortest_seq;
 
 		std::string smkx;
 		std::string rmkx;
