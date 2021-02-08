@@ -436,58 +436,57 @@ namespace tui
 		{
 			std::string name;
 
-			if (key > 32 && key < 128)
+			if (key > 0 && key < 32)
 			{
-				name = key;
+				name = std::string("CTRL+") + char(key + 64);
+
+				if (!use_ctrl_name)
+				{
+					switch (key)
+					{
+					case BACKSPACE:
+						name = "BACKSPACE";
+						break;
+					case TAB:
+						name = "TAB";
+						break;
+					case ENTER:
+						name = "ENTER";
+						break;
+					case ESC:
+						name = "ESC";
+					}
+				}
 			}
 			else if (key == 32)
 			{
 				name = "SPACE";
 			}
-			else if (key > 0 && key < 32)
+			else if (key > 32 && key < 128)
 			{
-				name = std::string("CTRL+") + char(key+64);
+				name = key;
 			}
-
-			if (!use_ctrl_name)
+			else if(key >= KEY::PGUP && key <= KEY::CTRL_RIGHT)
 			{
-				switch (key)
-				{
-				case BACKSPACE:
-					name = "BACKSPACE";
-					break;
-				case TAB:
-					name = "TAB";
-					break;
-				case ENTER:
-					name = "ENTER";
-					break;
-				case ESC:
-					name = "ESC";
-				}
-			}
+				static const std::string offset_key[70] = {
+					"PGUP","PGDN","DEL","INS","END","HOME",
+					"F1","F2","F3","F4","F5","F6",
+					"F7","F8","F9","F10","F11","F12",
+					"UP","DOWN","LEFT","RIGHT",
 
-			static const std::string offset_key[70] = {
-				"PGUP","PGDN","DEL","INS","END","HOME",
-				"F1","F2","F3","F4","F5","F6",
-				"F7","F8","F9","F10","F11","F12",
-				"UP","DOWN","LEFT","RIGHT",
+					"ALT+PGUP","ALT+PGDN","ALT+DEL","ALT+INS","ALT+END","ALT+HOME",
+					"ALT+UP","ALT+DOWN","ALT+LEFT","ALT+RIGHT",
 
-				"ALT+PGUP","ALT+PGDN","ALT+DEL","ALT+INS","ALT+END","ALT+HOME",
-				"ALT+UP","ALT+DOWN","ALT+LEFT","ALT+RIGHT",
+					"SHIFT+F1","SHIFT+F2","SHIFT+F3","SHIFT+F4","SHIFT+F5","SHIFT+F6",
+					"SHIFT+F7","SHIFT+F8","SHIFT+F9","SHIFT+F10","SHIFT+F11","SHIFT+F12",
+					"SHIFT+UP","SHIFT+DOWN","SHIFT+LEFT","SHIFT+RIGHT",
 
-				"SHIFT+F1","SHIFT+F2","SHIFT+F3","SHIFT+F4","SHIFT+F5","SHIFT+F6",
-				"SHIFT+F7","SHIFT+F8","SHIFT+F9","SHIFT+F10","SHIFT+F11","SHIFT+F12",
-				"SHIFT+UP","SHIFT+DOWN","SHIFT+LEFT","SHIFT+RIGHT",
+					"CTRL+PGUP","CTRL+PGDN","CTRL+DEL","CTRL+INS","CTRL+END","CTRL+HOME",
+					"CTRL+F1","CTRL+F2","CTRL+F3","CTRL+F4","CTRL+F5","CTRL+F6",
+					"CTRL+F7","CTRL+F8","CTRL+F9","CTRL+F10","CTRL+F11","CTRL+F12",
+					"CTRL+UP","CTRL+DOWN","CTRL+LEFT","CTRL+RIGHT"
+				};
 
-				"CTRL+PGUP","CTRL+PGDN","CTRL+DEL","CTRL+INS","CTRL+END","CTRL+HOME",
-				"CTRL+F1","CTRL+F2","CTRL+F3","CTRL+F4","CTRL+F5","CTRL+F6",
-				"CTRL+F7","CTRL+F8","CTRL+F9","CTRL+F10","CTRL+F11","CTRL+F12",
-				"CTRL+UP","CTRL+DOWN","CTRL+LEFT","CTRL+RIGHT"
-			};
-
-			if (key >= KEY::PGUP && key <= KEY::CTRL_RIGHT)
-			{
 				name = offset_key[key - TUI_KEY_OFFSET];
 			}
 
