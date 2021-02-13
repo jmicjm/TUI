@@ -366,6 +366,76 @@ namespace tui
 			}
 		}
 
+		/*similar to setSymbolAt(), but sets symbol with respect to transparency instead of just replacing it and allows use of overrides*/
+		void insertSymbolAt(const symbol& sym, vec2i position)
+		{
+			insertSymbolAt(sym, position, color_override(), color_transparency_override());
+		}
+		void insertSymbolAt(const symbol& sym, vec2i position, color_override c_override)
+		{
+			insertSymbolAt(sym, position, c_override, color_transparency_override());
+		}
+		void insertSymbolAt(const symbol& sym, vec2i position, color_transparency_override c_t_override)
+		{
+			insertSymbolAt(sym, position, color_override(), c_t_override);
+		}
+		void insertSymbolAt(
+			const symbol& sym,
+			vec2i position,
+			color_override c_override,
+			color_transparency_override c_t_override
+		) 
+		{  
+			if (sym[0] != 0)//fully transparent, ignore
+			{
+				color n_color;
+				switch (c_override.use)
+				{
+				case true:
+					switch (c_override.foreground)
+					{
+					case -1:
+						n_color = c_override.value;
+						break;
+					case 0:
+						n_color = color{ sym.getColor().foreground, c_override.value.background };
+						break;
+					case 1:
+						n_color = color{ c_override.value.foreground, sym.getColor().background };
+					}
+					break;
+				case false:
+					n_color = sym.getColor();
+				}
+
+				color o_color = (*this)[position.x][position.y].getColor();
+
+				COLOR_TRANSPARENCY n_transparency = c_t_override.use ? c_t_override.value : sym.getColorTransparency();
+				uint8_t n_transparency_val = static_cast<uint8_t>(n_transparency);
+				uint8_t o_transparency_val = static_cast<uint8_t>((*this)[position.x][position.y].getColorTransparency());
+
+				switch (n_transparency)
+				{
+				case COLOR_TRANSPARENCY::NONE:
+					break;
+				case COLOR_TRANSPARENCY::BG:
+					n_color.background = o_color.background;
+					break;
+				case COLOR_TRANSPARENCY::FG:
+					n_color.foreground = o_color.foreground;
+					break;
+				case COLOR_TRANSPARENCY::BG_FG:
+					n_color = o_color;
+				}
+				symbol s = sym;
+				s.setColor(n_color);
+				s.setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
+
+				setSymbolAt(s, position);
+			}
+		}
+
+
 		void insertSurface(surface& surf, bool update = true)
 		{
 			insertSurface(surf, color_override(), color_transparency_override(), update);
@@ -398,56 +468,12 @@ namespace tui
 				{
 					for (int x = 0; x < surf.getSize().x; x++)
 					{
-						if (surf[x][y][0] != 0 //fully transparent
-							&& origin.x + x >= 0
+						if (origin.x + x >= 0
 							&& origin.y + y >= 0
 							&& origin.x + x < getSize().x
 							&& origin.y + y < getSize().y)
 						{
-							color n_color;
-								switch (c_override.use)
-								{
-								case true:
-									switch (c_override.foreground)
-									{
-									case -1:
-										n_color = c_override.value;
-										break;
-									case 0:
-										n_color = color{ surf[x][y].getColor().foreground, c_override.value.background };
-										break;
-									case 1:
-										n_color = color{ c_override.value.foreground, surf[x][y].getColor().background };
-									}
-									break;
-								case false:
-									n_color = surf[x][y].getColor();
-								}
-
-							color o_color = (*this)[origin.x + x][origin.y + y].getColor();
-
-							COLOR_TRANSPARENCY n_transparency = c_t_override.use ? c_t_override.value : surf[x][y].getColorTransparency();
-							uint8_t n_transparency_val = static_cast<uint8_t>(n_transparency);
-							uint8_t o_transparency_val = static_cast<uint8_t>((*this)[origin.x + x][origin.y + y].getColorTransparency());
-
-							switch (n_transparency)
-							{
-							case COLOR_TRANSPARENCY::NONE:
-								break;
-							case COLOR_TRANSPARENCY::BG:
-								n_color.background = o_color.background;
-								break;
-							case COLOR_TRANSPARENCY::FG:
-								n_color.foreground = o_color.foreground;
-								break;
-							case COLOR_TRANSPARENCY::BG_FG:
-								n_color = o_color;
-							}
-							symbol s = surf[x][y];
-							s.setColor(n_color);
-							s.setColorTransparency(static_cast<COLOR_TRANSPARENCY>(n_transparency_val & o_transparency_val));
-
-							setSymbolAt(s, { origin.x + x, origin.y + y });
+							insertSymbolAt(surf[x][y], origin+vec2i{ x,y }, c_override, c_t_override);
 						}
 					}
 				}

@@ -242,7 +242,7 @@ namespace tui
 		{
 			m_color_transparency = static_cast<uint8_t>(c_t);
 		}
-		COLOR_TRANSPARENCY getColorTransparency() { return static_cast<COLOR_TRANSPARENCY>(m_color_transparency); }
+		COLOR_TRANSPARENCY getColorTransparency() const { return static_cast<COLOR_TRANSPARENCY>(m_color_transparency); }
 
 		void setUnderscore(bool set) { m_underscore = set; }
 		bool isUnderscore() const { return m_underscore; }
