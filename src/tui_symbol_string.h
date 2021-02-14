@@ -112,7 +112,7 @@ namespace tui
 		}
 		bool operator!=(const symbol_string& other) const { return !operator==(other); }
 
-		std::string getStdString()
+		std::string getStdString() const
 		{
 			std::string str;
 

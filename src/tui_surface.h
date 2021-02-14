@@ -276,10 +276,10 @@ namespace tui
 		vec2i getSize() const { return vec2i(m_width, m_symbols.size() / m_width); }
 
 		void setSizeFunction(std::function<vec2i()> f_size) { m_custom_size = f_size; }
-		std::function<vec2i()> getSizeFunction() { return m_custom_size; }
+		std::function<vec2i()> getSizeFunction() const { return m_custom_size; }
 
 		void setPositionFunction(std::function<vec2i()> f_position) { m_custom_position = f_position; }
-		std::function<vec2i()> getPositionFunction() { return m_custom_position; }
+		std::function<vec2i()> getPositionFunction() const { return m_custom_position; }
 
 		void updateSurfaceSize(surface& surf) const
 		{
