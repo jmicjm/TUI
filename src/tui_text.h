@@ -233,10 +233,10 @@ namespace tui
 		}
 
 	public:
-		short& key_up = m_scroll.key_up;
-		short& key_down = m_scroll.key_down;
-		short& key_pgup = m_scroll.key_pgup;
-		short& key_pgdn = m_scroll.key_pgdn;
+		input::key_t& key_up = m_scroll.key_up;
+		input::key_t& key_down = m_scroll.key_down;
+		input::key_t& key_pgup = m_scroll.key_pgup;
+		input::key_t& key_pgdn = m_scroll.key_pgdn;
 
 		text(surface_size size = surface_size(), symbol_string txt = "") : m_scroll({ 0, 100 })
 		{

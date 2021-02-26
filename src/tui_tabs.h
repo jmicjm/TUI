@@ -184,8 +184,8 @@ namespace tui
 			m_redraw_needed = true;
 		}
 	public:
-		short key_prev = input::KEY::LEFT;
-		short key_next = input::KEY::RIGHT;
+		input::key_t key_prev = input::KEY::LEFT;
+		input::key_t key_next = input::KEY::RIGHT;
 
 		tabs(surface1D_size size = surface1D_size()) : tabs_appearance(direction) 
 		{

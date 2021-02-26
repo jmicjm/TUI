@@ -264,14 +264,14 @@ namespace tui
 		}
 
 	public:
-		short& key_up = m_scroll.key_up;
-		short& key_down = m_scroll.key_down;
-		short& key_pgup = m_scroll.key_pgup;
-		short& key_pgdn = m_scroll.key_pgdn;
-		short key_check = ' ';
-		short key_right = input::KEY::RIGHT;
-		short key_left = input::KEY::LEFT;
-		short key_select = input::KEY::ENTER;
+		input::key_t& key_up = m_scroll.key_up;
+		input::key_t& key_down = m_scroll.key_down;
+		input::key_t& key_pgup = m_scroll.key_pgup;
+		input::key_t& key_pgdn = m_scroll.key_pgdn;
+		input::key_t key_check = ' ';
+		input::key_t key_right = input::KEY::RIGHT;
+		input::key_t key_left = input::KEY::LEFT;
+		input::key_t key_select = input::KEY::ENTER;
 
 		list(surface_size size = surface_size())
 		{

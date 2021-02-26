@@ -183,10 +183,10 @@ namespace tui
 		void deactivationAction() override { m_redraw_needed = true; }
 
 	public:
-		short key_up = input::KEY::UP;
-		short key_down = input::KEY::DOWN;
-		short key_pgup = input::KEY::PGUP;
-		short key_pgdn = input::KEY::PGDN;
+		input::key_t key_up = input::KEY::UP;
+		input::key_t key_down = input::KEY::DOWN;
+		input::key_t key_pgup = input::KEY::PGUP;
+		input::key_t key_pgdn = input::KEY::PGDN;
 
 		scroll(surface1D_size size = surface1D_size()) : scroll_appearance(direction)
 		{

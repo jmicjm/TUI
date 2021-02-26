@@ -118,14 +118,14 @@ namespace tui
 			m_redraw_needed = true;
 		}
 	public:
-		short& key_up = m_list.key_up;
-		short& key_down = m_list.key_down;
-		short& key_pgup = m_list.key_pgup;
-		short& key_pgdn = m_list.key_pgdn;
-		short& key_check = m_list.key_check;
-		short& key_right = m_list.key_right;
-		short& key_left = m_list.key_left;
-		short& key_select = m_list.key_select;
+		input::key_t& key_up = m_list.key_up;
+		input::key_t& key_down = m_list.key_down;
+		input::key_t& key_pgup = m_list.key_pgup;
+		input::key_t& key_pgdn = m_list.key_pgdn;
+		input::key_t& key_check = m_list.key_check;
+		input::key_t& key_right = m_list.key_right;
+		input::key_t& key_left = m_list.key_left;
+		input::key_t& key_select = m_list.key_select;
 
 		drop_list(surface1D_size size = surface1D_size())
 		{

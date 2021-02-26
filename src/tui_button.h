@@ -126,7 +126,7 @@ namespace tui
 		void setAppearanceAction() override { m_redraw_needed = true; }
 
 	public:
-		short key_select = input::KEY::ENTER;
+		input::key_t key_select = input::KEY::ENTER;
 
 		button() : button(' ') {}
 		button(const symbol_string& text) : button(text, text) {}

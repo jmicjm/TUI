@@ -9,7 +9,9 @@ namespace tui
 {
 	namespace input
 	{
-		enum KEY
+		using key_t = short;
+
+		enum KEY : key_t
 		{
 			ENTER = 13,
 			BACKSPACE = 8,
@@ -138,7 +140,7 @@ namespace tui
 
 		void restore();
 
-		std::vector<short> getInput();
+		std::vector<key_t> getInput();
 
 		//uninterpreted input
 		std::string getRawInput();
@@ -147,7 +149,7 @@ namespace tui
 		std::string getStringInput();
 
 		//amount of key press
-		int isKeyPressed(short key);
+		int isKeyPressed(key_t key);
 
 		//amount of key press
 		int isCodePointPressed(char32_t code_point);
@@ -158,9 +160,9 @@ namespace tui
 		//clear buffers
 		void clear();
 
-		bool isKeySupported(short key);
+		bool isKeySupported(key_t key);
 
-		std::string getKeyName(short key, bool use_ctrl_name = false);
+		std::string getKeyName(key_t key, bool use_ctrl_name = false);
 
 
 		/*NOTE ABOUT DOUBLE BUFFERING

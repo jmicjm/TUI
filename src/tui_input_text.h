@@ -324,16 +324,16 @@ namespace tui
 			m_redraw_needed = true;
 		}
 	public:
-		short key_up = input::KEY::UP;
-		short key_down = input::KEY::DOWN;
-		short key_pgup = input::KEY::PGUP;
-		short key_pgdn = input::KEY::PGDN;
-		short key_left = input::KEY::LEFT;
-		short key_right = input::KEY::RIGHT;
-		short key_home = input::KEY::HOME;
-		short key_end = input::KEY::END;
-		short key_insert = input::KEY::INS;
-		short key_backspace = input::KEY::BACKSPACE;
+		input::key_t key_up = input::KEY::UP;
+		input::key_t key_down = input::KEY::DOWN;
+		input::key_t key_pgup = input::KEY::PGUP;
+		input::key_t key_pgdn = input::KEY::PGDN;
+		input::key_t key_left = input::KEY::LEFT;
+		input::key_t key_right = input::KEY::RIGHT;
+		input::key_t key_home = input::KEY::HOME;
+		input::key_t key_end = input::KEY::END;
+		input::key_t key_insert = input::KEY::INS;
+		input::key_t key_backspace = input::KEY::BACKSPACE;
 
 		input_text(surface_size size = surface_size()) : m_cursor_blink(std::chrono::milliseconds(500))
 		{

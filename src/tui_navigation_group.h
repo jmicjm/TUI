@@ -176,12 +176,12 @@ namespace tui
 		void deactivationAction() override { disable(); }
 		void activationAction() override { enable(); }
 	public:
-		short key_next = input::KEY::RIGHT;
-		short key_prev = input::KEY::LEFT;
-		short key_up = input::KEY::UP;
-		short key_down = input::KEY::DOWN;
-		short key_left = input::KEY::LEFT;
-		short key_right = input::KEY::RIGHT;
+		input::key_t key_next = input::KEY::RIGHT;
+		input::key_t key_prev = input::KEY::LEFT;
+		input::key_t key_up = input::KEY::UP;
+		input::key_t key_down = input::KEY::DOWN;
+		input::key_t key_left = input::KEY::LEFT;
+		input::key_t key_right = input::KEY::RIGHT;
 
 		navigation_group() {}
 		navigation_group(navigation_group_entry element) : std::vector<navigation_group_entry>({ element }) {}

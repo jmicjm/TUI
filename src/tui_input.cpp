@@ -134,7 +134,7 @@ namespace tui
 		public:
 			std::string raw[2];
 			std::string str[2];
-			std::vector<short> input[2];
+			std::vector<key_t> input[2];
 
 			
 
@@ -383,7 +383,7 @@ namespace tui
 			sync_mtx.unlock();
 		}
 
-		std::vector<short> getInput()
+		std::vector<key_t> getInput()
 		{
 			return buffer.input[0];
 		}
@@ -396,11 +396,11 @@ namespace tui
 			return buffer.str[0];
 		}
 
-		int isKeyPressed(short key)
+		int isKeyPressed(key_t key)
 		{
 			if (key >= 0)
 			{
-				std::vector<short>& input = buffer.input[0];
+				std::vector<key_t>& input = buffer.input[0];
 				return std::count(input.begin(), input.end(), key);
 
 			}
@@ -417,7 +417,7 @@ namespace tui
 
 		void clear() { buffer.clear(); }
 
-		bool isKeySupported(short key)
+		bool isKeySupported(key_t key)
 		{
 			if (key >= 0 && key <= 255) { return true; }
 			else if (key >= KEY::PGUP && key <= KEY::CTRL_RIGHT)
@@ -432,7 +432,7 @@ namespace tui
 			return false;	
 		}
 
-		std::string getKeyName(short key, bool use_ctrl_name)
+		std::string getKeyName(key_t key, bool use_ctrl_name)
 		{
 			std::string name;
 

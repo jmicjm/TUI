@@ -197,11 +197,11 @@ namespace tui
 		void setAppearanceAction() override { m_redraw_needed = true; }
 
 	public:
-		short key_left = input::KEY::LEFT;
-		short key_right = input::KEY::RIGHT;
-		short key_insert = input::KEY::INS;
-		short key_backspace = input::KEY::BACKSPACE;
-		short key_enter = input::KEY::ENTER;
+		input::key_t key_left = input::KEY::LEFT;
+		input::key_t key_right = input::KEY::RIGHT;
+		input::key_t key_insert = input::KEY::INS;
+		input::key_t key_backspace = input::KEY::BACKSPACE;
+		input::key_t key_enter = input::KEY::ENTER;
 
 
 		line_input(surface1D_size size = surface1D_size()) : m_cursor_blink(std::chrono::milliseconds(500))

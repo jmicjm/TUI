@@ -104,8 +104,8 @@ namespace tui
 		void deactivationAction() override { m_redraw_needed = true; }
 
 	public:
-		short key_next = input::KEY::DOWN;
-		short key_previous = input::KEY::UP;
+		input::key_t key_next = input::KEY::DOWN;
+		input::key_t key_previous = input::KEY::UP;
 
 		radio_button()
 		{

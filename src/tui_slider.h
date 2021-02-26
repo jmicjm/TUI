@@ -191,8 +191,8 @@ namespace tui
 
 		void setAppearanceAction() override { m_redraw_needed = true; }
 	public:
-		short key_increase = input::KEY::RIGHT;
-		short key_decrease = input::KEY::LEFT;
+		input::key_t key_increase = input::KEY::RIGHT;
+		input::key_t key_decrease = input::KEY::LEFT;
 
 		slider(surface1D_size size = surface1D_size(), float min = 0, float max = 0, float value = 0)
 			: m_min(min), m_max(max), m_value(0), slider_appearance(direction)
