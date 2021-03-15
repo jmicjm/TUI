@@ -112,15 +112,24 @@ namespace tui
 		}
 		bool operator!=(const symbol_string& other) const { return !operator==(other); }
 
+		//returns number of columns occupied by string
+		size_t getWidth() const
+		{
+			size_t w = 0;
+			for (const auto& i : *this)
+			{
+				w += i.getWidth();
+			}
+			return w;
+		}
+
 		std::string getStdString() const
 		{
 			std::string str;
-
-			for (auto& i : *this)
+			for (const auto& i : *this)
 			{
 				str += i.getCluster();
 			}
-
 			return str;
 		}
 
