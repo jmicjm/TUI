@@ -4,6 +4,7 @@ struct color
 color constants
 */
 #pragma once
+#include <cstdint>
 
 namespace tui
 {
