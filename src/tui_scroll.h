@@ -258,10 +258,8 @@ namespace tui
 			}
 			else
 			{
-				m_current_position-=n;
-				adjustHandlePosition();
+				setCurrentPosition(getCurrentPosition() - n);
 			}
-			m_redraw_needed = true;
 		}
 		void down(unsigned int n = 1)
 		{
@@ -271,10 +269,8 @@ namespace tui
 			}
 			else
 			{
-				m_current_position+=n;
-				adjustHandlePosition();
+				setCurrentPosition(getCurrentPosition() + n);
 			}
-			m_redraw_needed = true;
 		}
 
 		void pageUp(unsigned int n = 1)
